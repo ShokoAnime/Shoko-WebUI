@@ -31,7 +31,7 @@ const miscSlice = createSlice({
   } as State,
   reducers: {
     setItem(sliceState, action: PayloadAction<object>) {
-      return Object.assign({}, sliceState, action.payload);
+      return { ...sliceState, ...action.payload };
     },
   },
 });

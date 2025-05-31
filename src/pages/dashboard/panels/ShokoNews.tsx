@@ -41,7 +41,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
   );
 };
 
-function ShokoNews() {
+const ShokoNews = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const newsQuery = useShokoNewsQuery();
   const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
@@ -53,6 +53,6 @@ function ShokoNews() {
       </div>
     </ShokoPanel>
   );
-}
+};
 
 export default ShokoNews;

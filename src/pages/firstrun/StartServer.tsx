@@ -18,7 +18,7 @@ type OutletContextType = {
   setIsPersistent: (value: boolean) => void;
 };
 
-function StartServer() {
+const StartServer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
 
@@ -94,6 +94,6 @@ function StartServer() {
       </TransitionDiv>
     </>
   );
-}
+};
 
 export default StartServer;

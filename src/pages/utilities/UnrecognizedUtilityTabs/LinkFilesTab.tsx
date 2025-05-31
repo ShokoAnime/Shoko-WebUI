@@ -190,7 +190,7 @@ const AnimeSelectPanel = (
   );
 };
 
-function LinkFilesTab() {
+const LinkFilesTab = () => {
   const navigate = useNavigateVoid();
   const { selectedRows } = (useLocation().state ?? { selectedRows: [] }) as { selectedRows: FileType[] };
   const [{ createdNewSeries, isLinking, isLinkingRunning }, setLoading] = useState({
@@ -274,14 +274,14 @@ function LinkFilesTab() {
 
   const addLink = useEventCallback(
     (FileID: number, EpisodeID = 0, LinkID?: number) =>
-      setLinks((immerState) => {
+      setLinks((draftState) => {
         if (EpisodeID === 0) {
-          immerState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
+          draftState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
         } else {
           const itemIndex = LinkID
-            ? immerState.findIndex(link => link.LinkID === LinkID)
-            : immerState.findIndex(link => link.FileID === FileID);
-          immerState[itemIndex].EpisodeID = EpisodeID;
+            ? draftState.findIndex(link => link.LinkID === LinkID)
+            : draftState.findIndex(link => link.FileID === FileID);
+          draftState[itemIndex].EpisodeID = EpisodeID;
         }
       }),
   );
@@ -720,6 +720,6 @@ function LinkFilesTab() {
       <RangeFillModal show={showRangeFillModal} onClose={closeRangeFill} rangeFill={rangeFill} />
     </>
   );
-}
+};
 
 export default LinkFilesTab;

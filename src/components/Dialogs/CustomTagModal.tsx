@@ -24,7 +24,7 @@ export type Props = {
   onClose: () => void;
 };
 
-function CustomTagModal({ onClose, seriesId, show }: Props) {
+const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
   const userTagsQuery = useUserTagsQuery({ pageSize: 0, includeCount: true }, show);
   const activeTagSetQuery = useSeriesUserTagsSetQuery(seriesId, show);
   const { mutate: addUserTagMutation } = useAddUserTagMutation();
@@ -328,6 +328,6 @@ function CustomTagModal({ onClose, seriesId, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default CustomTagModal;

@@ -18,7 +18,7 @@ type Props = {
   saveFunction?: () => void;
 };
 
-function Footer(props: Props) {
+const Footer = (props: Props) => {
   const navigate = useNavigateVoid();
 
   const { mutate: runAction } = useRunActionMutation();
@@ -81,6 +81,6 @@ function Footer(props: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default Footer;

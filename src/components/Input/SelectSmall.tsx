@@ -12,7 +12,7 @@ type Props = {
   isFetching?: boolean;
 };
 
-function SelectSmall(props: Props) {
+const SelectSmall = (props: Props) => {
   const {
     children,
     className,
@@ -38,7 +38,7 @@ function SelectSmall(props: Props) {
               id={id}
               value={value}
               onChange={onChange}
-              className="w-full appearance-none rounded border border-panel-border bg-panel-input py-1 pl-3 pr-8 text-sm transition ease-in-out focus:border-panel-text-primary focus:shadow-none focus:outline-none"
+              className="w-full appearance-none rounded-sm border border-panel-border bg-panel-input py-1 pl-3 pr-8 text-sm transition ease-in-out focus:border-panel-text-primary focus:shadow-none focus:outline-hidden"
             >
               {children}
             </select>
@@ -49,6 +49,6 @@ function SelectSmall(props: Props) {
         )}
     </label>
   );
-}
+};
 
 export default SelectSmall;

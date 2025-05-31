@@ -100,7 +100,7 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
         tags,
         (item: TagType) =>
           findIndex(selectedValues, { Name: item.Name }) === -1 && findIndex(unsavedValues, { Name: item.Name }) === -1
-          && (search === '' ? true : item.Name.indexOf(search) !== -1),
+          && (search === '' ? true : item.Name.includes(search)),
       ),
     [tags, search, selectedValues, unsavedValues],
   );

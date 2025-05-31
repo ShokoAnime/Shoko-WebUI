@@ -11,7 +11,7 @@ import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-function MainPage() {
+const MainPage = () => {
   const dispatch = useDispatch();
 
   const settingsQuery = useSettingsQuery();
@@ -68,6 +68,6 @@ function MainPage() {
       </div>
     </>
   );
-}
+};
 
 export default MainPage;

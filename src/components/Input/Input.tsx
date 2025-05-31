@@ -121,7 +121,7 @@ const Input = React.memo((props: Props) => {
           <input
             className={cx([
               inputClassName ?? '',
-              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-4 py-3 rounded-lg transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
+              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-hidden px-4 py-3 rounded-lg transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
               center && 'text-center',
               startIcon && '!pl-11',
             ])}

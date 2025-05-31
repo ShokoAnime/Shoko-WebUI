@@ -62,7 +62,7 @@ const AvatarEditorModal = (props: Props) => {
         height={256}
         borderRadius={9999}
         scale={scale}
-        className="h-auto w-full self-center rounded bg-panel-background"
+        className="h-auto w-full self-center rounded-sm bg-panel-background"
         onLoadFailure={onLoadFailure}
         ref={imageEditor}
       />

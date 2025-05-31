@@ -7,7 +7,7 @@ import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
-function Acknowledgement() {
+const Acknowledgement = () => {
   const dispatch = useDispatch();
 
   const serverStatusQuery = useServerStatusQuery();
@@ -60,6 +60,6 @@ function Acknowledgement() {
       </TransitionDiv>
     </>
   );
-}
+};
 
 export default Acknowledgement;

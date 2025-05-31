@@ -79,7 +79,7 @@ const Menu = (
   );
 };
 
-function IgnoredFilesTab() {
+const IgnoredFilesTab = () => {
   const {
     debouncedSearch,
     search,
@@ -184,6 +184,6 @@ function IgnoredFilesTab() {
       </div>
     </>
   );
-}
+};
 
 export default IgnoredFilesTab;

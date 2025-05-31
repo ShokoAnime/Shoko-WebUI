@@ -70,7 +70,7 @@ const QueueCount = () => {
   );
 };
 
-function TopNav() {
+const TopNav = () => {
   const dispatch = useDispatch();
 
   const navigate = useNavigateVoid();
@@ -364,6 +364,6 @@ function TopNav() {
       <DashboardSettingsModal show={showDashboardSettingsModal} onClose={() => setShowDashboardSettingsModal(false)} />
     </>
   );
-}
+};
 
 export default TopNav;

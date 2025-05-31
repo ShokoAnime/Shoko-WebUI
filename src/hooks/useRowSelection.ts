@@ -28,9 +28,9 @@ const useRowSelection = <T extends EpisodeType | FileType | SeriesType>(items: T
   );
 
   const handleRowSelect = useEventCallback((id: number, select: boolean) => {
-    setRowSelection((immerState) => {
-      immerState[id] = select;
-      return immerState;
+    setRowSelection((draftState) => {
+      draftState[id] = select;
+      return draftState;
     });
   });
 

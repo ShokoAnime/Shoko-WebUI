@@ -24,10 +24,10 @@ const tabStates = [
   { value: 'Logos' },
 ];
 
-const InfoLine = ({ title, value }) => (
+const InfoLine = ({ title, value }: { title: string, value: string }) => (
   <div className="flex w-full flex-col gap-y-1">
     <span className="font-semibold text-panel-text">{title}</span>
-    <span className="line-clamp-1" title={`${value}`}>{value}</span>
+    <span className="line-clamp-1" title={value}>{value}</span>
   </div>
 );
 
@@ -84,7 +84,7 @@ const SeriesImages = () => {
             transparent
             sticky
           >
-            <InfoLine title="Filename" value={filename} />
+            <InfoLine title="Filename" value={filename ?? 'N/A'} />
             <InfoLine title="Location" value={filepath} />
             <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
             <InfoLine

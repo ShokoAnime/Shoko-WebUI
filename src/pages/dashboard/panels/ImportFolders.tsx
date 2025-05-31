@@ -23,7 +23,7 @@ const Options = ({ onClick }: { onClick: () => void }) => (
   </Button>
 );
 
-function ImportFolders() {
+const ImportFolders = () => {
   const dispatch = useDispatch();
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -109,6 +109,6 @@ function ImportFolders() {
         : importFolders.map(importFolder => renderFolder(importFolder))}
     </ShokoPanel>
   );
-}
+};
 
 export default ImportFolders;

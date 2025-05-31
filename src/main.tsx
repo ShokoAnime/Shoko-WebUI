@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import App from './core/app';
 import { isDebug, uiVersion } from './core/util';
 import './css/main.css';
+import './css/tailwind.css';
 
 if (!isDebug()) {
   Sentry.init({

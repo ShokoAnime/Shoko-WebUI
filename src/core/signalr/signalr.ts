@@ -104,7 +104,7 @@ const startSignalRConnection = (connection: HubConnection) =>
 
 const signalRMiddleware: Middleware<object, RootState> = ({
   dispatch,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Not our code, so we cannot fix it
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   getState,
 }) =>
 next =>

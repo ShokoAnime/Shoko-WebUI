@@ -27,7 +27,7 @@ const Title = ({ fileCount }: { fileCount: number }) => (
   </div>
 );
 
-function DeleteFilesModal(props: Props) {
+const DeleteFilesModal = (props: Props) => {
   const { onClose, onConfirm, removeFile, selectedFiles, show: showModal } = props;
 
   const handleConfirm = useEventCallback(() => {
@@ -90,6 +90,6 @@ function DeleteFilesModal(props: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default DeleteFilesModal;

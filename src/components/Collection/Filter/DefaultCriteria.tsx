@@ -13,8 +13,8 @@ type Props = {
   criteria: FilterExpression;
 };
 
-const Options = (props: { onClick: () => void }) => (
-  <div onClick={props.onClick}>
+const Options = ({ onClick }: { onClick: () => void }) => (
+  <div onClick={onClick}>
     <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
   </div>
 );

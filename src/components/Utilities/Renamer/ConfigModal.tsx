@@ -72,7 +72,7 @@ const ConfigModal = (props: Props) => {
           },
         );
       }
-    } catch (error) {
+    } catch (_) {
       changeSelectedConfig(config.Name);
       toast.error(`Error while ${rename ? 'renaming' : 'creating'} config!`);
       return;

@@ -145,7 +145,7 @@ const getFilter = (query: string): FilterType => ((query === '') ? {} : {
   Sorting: { Type: 'Name', IsInverted: false },
 });
 
-function GroupTab({ seriesId }: Props) {
+const GroupTab = ({ seriesId }: Props) => {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
@@ -233,6 +233,6 @@ function GroupTab({ seriesId }: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default GroupTab;

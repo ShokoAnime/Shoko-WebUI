@@ -36,20 +36,18 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
         &nbsp;-&nbsp;
         {count}
       </span>
-      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <span className={`text-${getColor(item)} font-semibold`}>
         {countPercentage.toFixed(2)}
         %
       </span>
     </div>
     <div className="flex rounded-lg bg-panel-input">
-      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className={`bg-${getColor(item)} h-4 rounded-lg`} style={{ width: `${countPercentage}%` }} />
     </div>
   </div>
 );
 
-function MediaType() {
+const MediaType = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const seriesSummaryQuery = useDashboardSeriesSummaryQuery();
 
@@ -78,6 +76,6 @@ function MediaType() {
       <div className="flex grow flex-col justify-between">{items}</div>
     </ShokoPanel>
   );
-}
+};
 
 export default MediaType;

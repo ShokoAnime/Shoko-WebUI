@@ -14,7 +14,7 @@ type Props = {
   setStatus: (status: TestStatusType) => void;
 };
 
-function AniDBTab({ setStatus }: Props) {
+const AniDBTab = ({ setStatus }: Props) => {
   const { newSettings, updateSetting } = useFirstRunSettingsContext();
 
   const {
@@ -189,6 +189,6 @@ function AniDBTab({ setStatus }: Props) {
       </div>
     </TransitionDiv>
   );
-}
+};
 
 export default AniDBTab;

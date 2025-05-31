@@ -6,7 +6,7 @@ const PathMatchRuleSet: PathMatchRule[] = [];
 
 try {
   // TODO: mohan couldn't find a dprint setting to make the = go to next line. This needs to be fixed.
-  // eslint-disable-next-line operator-linebreak
+  // eslint-disable-next-line @stylistic/operator-linebreak
   const TrimShowNameRegex =
     /(?![\s_.]*\(part[\s_.]*[ivx]+\))(?![\s_.]*\((?:19|20)\d{2}\))(?:[\s_.]*(?:[([{][^)\]}\n]*[)\]}]|(?:(?<![a-z])(?:jpn?|jap(?:anese)?|en|eng(?:lish)?|es|(?:spa(?:nish)?|de|ger(?:man)?)|\d{3,4}[pi](?:-+hi\w*)?|(?:[uf]?hd|sd)|\d{3,4}x\d{3,4}|dual[\s_.-]*audio|(?:www|web|bd|dvd|ld|blu[\s_.-]*ray)(?:[\s_.-]*(?:rip|dl))?|dl|rip|(?:av1|hevc|[hx]26[45])(?:-[a-z0-9]{1,6})?|(?:dolby(?:[\s_.-]*atmos)?|dts|opus|ac3|aac|flac)(?:[\s._]*[257]\.[0124](?:[_.-]+\w{1,3})?)?|(?:\w{2,3}[\s_.-]*)?(?:sub(?:title)?s?|dub)|(?:un)?cen(?:\.|sored)?)[\s_.]*){1,20})){0,20}[\s_.]*$/i;
 
@@ -14,15 +14,15 @@ try {
 
   const Crc32Regex = /\(([0-9a-fA-F]{8})\)|\[([0-9a-fA-F]{8})\]/;
 
-  // eslint-disable-next-line operator-linebreak
+  // eslint-disable-next-line @stylistic/operator-linebreak
   const ThemeSongCheckRegex =
     /(?<isThemeSong>(?<![a-z0-9])(?:(?:nc|creditless)[\s_.]*)?(?:ed|op)(?![a-z]))(?:[\s_.]*(?<episode>\d+(?!\d*p)))?/i;
 
-  // eslint-disable-next-line operator-linebreak
+  // eslint-disable-next-line @stylistic/operator-linebreak
   const TrailerCheckRegex =
     /(?<isTrailer>(?<![a-z0-9])(?:(?:character)[\s_.]*)?(?:cm|pv|trailer)(?![a-z]))(?:[\s_.]*(?<episode>\d+(?!\d*p)))?/i;
 
-  // eslint-disable-next-line operator-linebreak
+  // eslint-disable-next-line @stylistic/operator-linebreak
   const ExtraCheckRegex =
     /(?<isTrailer>(?<![a-z0-9])(?:(?:bd)[\s_.]*)?(?:menu|web preview)(?![a-z]))(?:[\s_.]*(?<episode>\d+(?!\d*p)))?/i;
 
@@ -86,14 +86,14 @@ try {
         }
       }
 
-      if (showName.match(/ S\d+$/)) {
-        const result = showName.match(/ S(\d+)$/)!;
+      if (/ S\d+$/.exec(showName)) {
+        const result = / S(\d+)$/.exec(showName)!;
         showName = showName.slice(0, -result[0].length);
         modifiedDetails.season = parseInt(result[1], 10);
       }
 
-      if (showName.match(/\s+\b([IVX]+)\s*$/)) {
-        const result = showName.match(/\s+\b(?<letters>[IVX]+)\s*$/)!;
+      if (/\s+\b([IVX]+)\s*$/.exec(showName)) {
+        const result = /\s+\b(?<letters>[IVX]+)\s*$/.exec(showName)!;
         const seasonNumber = parseRomanNumerals(result.groups!.letters);
         if (seasonNumber !== -1) {
           showName = showName.slice(0, -result[0].length);
@@ -102,7 +102,7 @@ try {
       }
 
       // Fix up year for some shows.
-      if (showName.match(/ \d{4}$/)) {
+      if (/ \d{4}$/.exec(showName)) {
         showName = `${showName.slice(0, -5)} (${showName.slice(-4)})`;
       }
 

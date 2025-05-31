@@ -30,7 +30,7 @@ const items = [
   { name: 'API Keys', path: 'api-keys' },
 ];
 
-function SettingsPage() {
+const SettingsPage = () => {
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
@@ -214,6 +214,6 @@ function SettingsPage() {
       />
     </div>
   );
-}
+};
 
 export default SettingsPage;

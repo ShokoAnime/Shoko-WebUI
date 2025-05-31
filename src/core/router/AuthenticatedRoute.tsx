@@ -10,7 +10,7 @@ type Props = {
   children: JSX.Element;
 };
 
-function AuthenticatedRoute(props: Props) {
+const AuthenticatedRoute = ({ children }: Props) => {
   const location = useLocation();
   const from = encodeURIComponent(location.pathname + location.search + location.hash);
   const isAuthenticated = useSelector((state: RootState) => state.apiSession.apikey !== '');
@@ -18,8 +18,8 @@ function AuthenticatedRoute(props: Props) {
   const serverState = serverStatusQuery.data?.State ?? 'Started';
 
   return (serverState === 'Started' && isAuthenticated)
-    ? props.children
+    ? children
     : <Navigate to={from === '/' || from === '/webui/' ? '/webui/login' : `/webui/login?redirectTo=${from}`} replace />;
-}
+};
 
 export default AuthenticatedRoute;

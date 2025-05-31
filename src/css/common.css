@@ -22,14 +22,14 @@ input[type='range'] {
 
 /* For Chrome, Safari, Edge */
 input[type='range']::-webkit-slider-runnable-track {
-  background: theme('colors.slider-background');
+  background: var(--slider-background);
   height: 0.5rem;
   border-radius: 2rem;
 }
 
 /* For Firefox */
 input[type='range']::-moz-range-track {
-  background: theme('colors.slider-background');
+  background: var(--slider-background);
   height: 0.5rem;
   border-radius: 2rem;
 }
@@ -40,7 +40,7 @@ input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -4px;
-  background-color: theme('colors.slider-color');
+  background-color: var(--slider-color);
   height: 1rem;
   width: 1rem;
   border-radius: 9999px;
@@ -49,7 +49,7 @@ input[type='range']::-webkit-slider-thumb {
 /* For Firefox */
 input[type='range']::-moz-range-thumb {
   border: none;
-  background-color: theme('colors.slider-color');
+  background-color: var(--slider-color);
   height: 1rem;
   width: 1rem;
   border-radius: 9999px;
@@ -61,20 +61,21 @@ input[type='range']:focus {
 
 /* For Chrome, Safari, Edge */
 input[type='range']:focus::-webkit-slider-thumb {
-  outline: 1px solid theme('colors.button-primary-hover');
+  outline: 1px solid var(--button-primary-hover);
   outline-offset: 0.125rem;
 }
 
 /* For Firefox */
 input[type='range']:focus::-moz-range-thumb {
-  outline: 1px solid theme('colors.button-primary-hover');
+  outline: 1px solid var(--button-primary-hover);
   outline-offset: 0.125rem;
 }
 
 body {
-  background-color: theme('colors.panel-background-alt');
-  color: theme('colors.panel-text');
-  font-weight: 400;
+  background-color: var(--panel-background-alt);
+  color: var(--panel-text);
+  font-family: var(--font-body), serif;
+  font-weight: var(--font-weight-medium);
   line-height: 1.6rem
 }
 
@@ -84,39 +85,39 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: theme('colors.slider-background');
+  background: var(--slider-background);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: theme('colors.slider-color');
+  background: var(--slider-color);
   border-radius: 10px;
-  border: 2px solid theme('colors.slider-background');
+  border: 2px solid var(--slider-background);
   height: 15%;
 }
 
 .bg-panel-input::-webkit-scrollbar-track {
-  background: theme('colors.slider-background-alt');
+  background: var(--slider-background-alt);
   border-radius: 10px;
 }
 
 .bg-panel-input::-webkit-scrollbar-thumb {
-  background: theme('colors.slider-color-alt');
+  background: var(--slider-color-alt);
   border-radius: 10px;
-  border: 2px solid theme('colors.slider-background-alt');
+  border: 2px solid var(--slider-background-alt);
   height: 15%;
 }
 
 /* Fixes Scrollbars breaking on other browsers and only applies the following when using Mozilla. */
-/* stylelint-disable-next-line at-rule-no-vendor-prefix */
+/* stylelint-disable-next-line at-rule-no-vendor-prefix,at-rule-prelude-no-invalid */
 @-moz-document url-prefix() {
   div {
-    scrollbar-color: theme('colors.slider-color') theme('colors.slider-background');
+    scrollbar-color: var(--slider-color) var(--slider-background);
     scrollbar-width: thin;
   }
 
   div * .bg-panel-input {
-    scrollbar-color: theme('colors.slider-color-alt') theme('colors.slider-background-alt');
+    scrollbar-color: var(--slider-color-alt) var(--slider-background-alt);
     scrollbar-width: thin;
   }
 }
@@ -140,31 +141,31 @@ body {
 
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__toast {
-  background: theme('colors.panel-background') !important;
-  border: 1px solid theme('colors.panel-border') !important;
+  background: var(--panel-background) !important;
+  border: 1px solid var(--panel-border) !important;
   border-radius: 5px !important;
-  color: theme('colors.panel-text') !important;
+  color: var(--panel-text) !important;
   font-family: Sora, sans, serif, mono !important;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--success {
-  background: theme('colors.panel-text-important') !important;
+  background: var(--panel-text-important) !important;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--error {
-  background: theme('colors.panel-text-danger') !important;
+  background: var(--panel-text-danger) !important;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--info {
-  background: theme('colors.panel-text-primary') !important;
+  background: var(--panel-text-primary) !important;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--warning {
-  background: theme('colors.panel-text-warning') !important;
+  background: var(--panel-text-warning) !important;
 }
 
 .login-image-default {
@@ -182,7 +183,7 @@ input:-webkit-autofill:focus {
 
 /* Firefox Autofill Fix */
 input:autofill {
-  background: theme('colors.panel-input');
+  background: var(--panel-input);
 }
 
 .react-grid-item > .react-resizable-handle::after {

@@ -195,7 +195,7 @@ const SeriesList = (
 
   const handleEpisodeSelect = useEventCallback((episodeId: number, select: boolean) => {
     if (type === ReleaseManagementItemType.MissingEpisodes) handleRowSelect(episodeId, select);
-    else setSelectedEpisode(episodes.filter(episode => episode.IDs.ID === episodeId)[0]);
+    else setSelectedEpisode(episodes.find(episode => episode.IDs.ID === episodeId)!);
   });
 
   useEffect(() => {

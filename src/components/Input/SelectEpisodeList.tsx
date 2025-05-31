@@ -48,7 +48,7 @@ const SelectOption = ({ option }: { option: Option }) => (
 const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: number, selected: Option }) => (
   <ListboxButton
     className={cx(
-      'relative w-full h-full border border-panel-border rounded-lg px-4 py-2 text-left focus:outline-none focus:border-panel-text-primary data-[open]:border-panel-text-primary transition-colors',
+      'relative w-full h-full border border-panel-border rounded-lg px-4 py-2 text-left focus:outline-hidden focus:border-panel-text-primary data-[open]:border-panel-text-primary transition-colors',
       rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
     )}
   >
@@ -111,7 +111,7 @@ const SelectEpisodeList = React.memo((
                 padding: '1rem',
                 gap: '0.25rem',
               }}
-              className="z-[110] w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-none"
+              className="z-[110] w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-hidden"
             >
               <Input
                 autoFocus

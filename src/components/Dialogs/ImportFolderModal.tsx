@@ -31,7 +31,7 @@ const defaultImportFolder = {
   ID: 0,
 } as ImportFolderType;
 
-function ImportFolderModal() {
+const ImportFolderModal = () => {
   const dispatch = useDispatch();
 
   const { ID, edit, status } = useSelector((state: RootState) => state.modals.importFolder);
@@ -170,6 +170,6 @@ function ImportFolderModal() {
       <BrowseFolderModal onSelect={onFolderSelect} />
     </>
   );
-}
+};
 
 export default ImportFolderModal;

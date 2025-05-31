@@ -123,7 +123,7 @@ const Group = ({ group }: GroupProps) => {
   const locationDetails = group.FileLocation ?? '-';
 
   return (
-    <div className="flex flex-col gap-y-6 rounded border border-panel-border bg-panel-background-transparent p-6">
+    <div className="flex flex-col gap-y-6 rounded-sm border border-panel-border bg-panel-background-transparent p-6">
       <div className="flex text-xl font-semibold">
         <Header ranges={group.RangeByType} />
       </div>
@@ -146,6 +146,7 @@ const Group = ({ group }: GroupProps) => {
 type Props = {
   groups?: WebuiSeriesFileSummaryGroupType[];
 };
+// eslint-disable-next-line react/prop-types
 const FilesSummaryGroups = React.memo(({ groups = [] }: Props) => (
   // eslint-disable-next-line react/no-array-index-key
   groups.map((group, index) => <Group key={index} group={group} />)

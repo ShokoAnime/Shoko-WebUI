@@ -31,7 +31,7 @@ import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
-import ApiKey from '@/pages/settings/tabs/ApiKeys';
+import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
@@ -122,7 +122,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />
-            <Route path="api-keys" element={<ApiKey />} />
+            <Route path="api-keys" element={<ApiKeys />} />
           </Route>
         </Route>
       </Route>

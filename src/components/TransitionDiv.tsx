@@ -11,7 +11,7 @@ type Props = {
   appear?: boolean;
 };
 
-function TransitionDiv(props: Props) {
+const TransitionDiv = (props: Props) => {
   const {
     appear,
     children,
@@ -38,6 +38,6 @@ function TransitionDiv(props: Props) {
       </div>
     </Transition>
   );
-}
+};
 
 export default TransitionDiv;

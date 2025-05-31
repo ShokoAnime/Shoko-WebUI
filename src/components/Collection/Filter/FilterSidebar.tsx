@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFilterPlusOutline } from '@mdi/js';
 import { keys, map, values } from 'lodash';
@@ -32,14 +32,12 @@ const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
   return <DefaultCriteria criteria={criteria} />;
 };
 
-type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
-const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
+const OptionButton = ({ icon, onClick }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => (
   <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
 );
-type OptionsProps = {
-  showModal: () => void;
-};
-const Options = ({ showModal }: OptionsProps) => <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />;
+const Options = ({ showModal }: { showModal: () => void }) => (
+  <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />
+);
 
 const FilterSidebar = () => {
   const [criteriaModal, setCriteriaModal] = useState(false);

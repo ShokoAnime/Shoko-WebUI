@@ -87,9 +87,9 @@ const Menu = (
 
   const removeFileFromSelection = useEventCallback(
     (fileId: number) =>
-      setSelectedRows((immerState) => {
-        immerState[fileId] = false;
-        return immerState;
+      setSelectedRows((draftState) => {
+        draftState[fileId] = false;
+        return draftState;
       }),
   );
 
@@ -234,7 +234,7 @@ const Menu = (
   );
 };
 
-function UnrecognizedTab() {
+const UnrecognizedTab = () => {
   const navigate = useNavigateVoid();
 
   const {
@@ -454,6 +454,6 @@ function UnrecognizedTab() {
       />
     </>
   );
-}
+};
 
 export default UnrecognizedTab;

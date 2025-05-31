@@ -36,7 +36,7 @@ export const loadState = (): RootState => {
         version: VITE_APPVERSION,
       },
     } as RootState;
-  } catch (err) {
+  } catch (_) {
     return ({} as RootState);
   }
 };
@@ -47,7 +47,7 @@ export const saveState = (state: RootState) => {
       globalThis.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
     }
     globalThis.sessionStorage.setItem('state', JSON.stringify(state));
-  } catch (err) { // Ignore write errors.
+  } catch (_) { // Ignore write errors.
   }
 };
 

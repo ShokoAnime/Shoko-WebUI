@@ -47,7 +47,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
     <div className="flex w-full gap-x-6">
       <BackgroundImagePlaceholderDiv
         image={poster}
-        className="aspect-[5/6] h-[32.1rem] min-w-[22rem] rounded drop-shadow-md lg:aspect-[4/6]"
+        className="aspect-[5/6] h-[32.1rem] min-w-[22rem] rounded-sm drop-shadow-md lg:aspect-[4/6]"
       >
         {(series.AniDB?.Restricted ?? false) && (
           <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
