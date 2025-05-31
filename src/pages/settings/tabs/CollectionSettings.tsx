@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo, useState } from 'react';
 import { mdiLoading, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';

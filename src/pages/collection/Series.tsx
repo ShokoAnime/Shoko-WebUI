@@ -31,8 +31,7 @@ import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-type SeriesTabProps = (props: { icon: string, text: string, to: string }) => React.ReactNode;
-const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
+const SeriesTab = ({ icon, text, to }: { icon: string, text: string, to: string }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>

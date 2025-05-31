@@ -36,7 +36,7 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
   );
 };
 
-function FirstRunPage() {
+const FirstRunPage = () => {
   const navigate = useNavigateVoid();
 
   const versionQuery = useVersionQuery();
@@ -152,6 +152,6 @@ function FirstRunPage() {
       <div className="login-image-default fixed left-0 top-0 -z-10 size-full opacity-20" />
     </div>
   );
-}
+};
 
 export default FirstRunPage;

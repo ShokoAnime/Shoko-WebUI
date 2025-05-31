@@ -15,7 +15,7 @@ type Props = {
   type?: 'Movie' | 'Show';
 };
 
-const MetadataLink = ({ id, seriesId, site, type }: Props) => {
+const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Movie');
 
@@ -112,4 +112,4 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
   );
 };
 
-export default MetadataLink;
+export default SeriesMetadata;

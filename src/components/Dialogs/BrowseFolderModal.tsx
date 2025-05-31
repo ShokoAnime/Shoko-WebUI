@@ -13,7 +13,7 @@ type Props = {
   onSelect: (value: string) => void;
 };
 
-function BrowseFolderModal(props: Props) {
+const BrowseFolderModal = ({ onSelect }: Props) => {
   const dispatch = useDispatch();
 
   const status = useSelector((state: RootState) => state.modals.browseFolder.status);
@@ -22,8 +22,8 @@ function BrowseFolderModal(props: Props) {
   const handleClose = useEventCallback(() => dispatch(setStatus(false)));
 
   const handleSelect = useEventCallback(() => {
-    if (typeof props.onSelect === 'function') {
-      props.onSelect(selectedNode.path);
+    if (typeof onSelect === 'function') {
+      onSelect(selectedNode.path);
     }
     dispatch(setStatus(false));
     dispatch(setSelectedNode({ id: -1, path: '' }));
@@ -46,6 +46,6 @@ function BrowseFolderModal(props: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default BrowseFolderModal;

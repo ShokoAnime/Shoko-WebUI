@@ -31,7 +31,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
 
       return filter(
         possibleValues,
-        item => selectedValues.indexOf(item) === -1 && unsavedValues.indexOf(item) === -1,
+        item => !selectedValues.includes(item) && !unsavedValues.includes(item),
       );
     },
     [criteria.PossibleParameters, criteria.PossibleParameterPairs, selectedValues, unsavedValues],
@@ -47,10 +47,10 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
   };
 
   const removeValue = (value: string) => {
-    if (unsavedValues.indexOf(value) !== -1) {
+    if (unsavedValues.includes(value)) {
       setUnsavedValues(pull([...unsavedValues], value));
     }
-    if (selectedValues.indexOf(value) !== -1) {
+    if (selectedValues.includes(value)) {
       dispatch(setFilterValues({ [criteria.Expression]: pull([...selectedValues], value) }));
     }
   };

@@ -97,7 +97,7 @@ const QueueItems = () => { // This is a separate component so that the whole Sho
     : <div className="flex grow items-center justify-center pb-14 font-semibold">Queue is empty!</div>;
 };
 
-function QueueProcessor() {
+const QueueProcessor = () => {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
@@ -111,6 +111,6 @@ function QueueProcessor() {
       <QueueItems />
     </ShokoPanel>
   );
-}
+};
 
 export default QueueProcessor;

@@ -85,7 +85,7 @@ export const useTmdbSearchQuery = (
         try {
           const idLookupData: TmdbSearchResultType = await axios.get(`Tmdb/${type}/Online/${query}`);
           finalData.push(idLookupData);
-        } catch (error) {
+        } catch (_) {
           // Ignore, show/movie not found on TMDB with provided ID
         }
       }

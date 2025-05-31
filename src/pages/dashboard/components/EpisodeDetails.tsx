@@ -43,7 +43,7 @@ const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string =
   }
 };
 
-function EpisodeDetails({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode {
+const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode => {
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
     const duration = dayjs.duration(convertTimeSpanToMs(episode.Duration));
@@ -84,6 +84,6 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
       </SeriesPoster>
     </div>
   );
-}
+};
 
 export default EpisodeDetails;

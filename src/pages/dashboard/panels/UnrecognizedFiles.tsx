@@ -58,7 +58,7 @@ const FileItem = ({ file }: { file: FileType }) => {
   );
 };
 
-function UnrecognizedFiles() {
+const UnrecognizedFiles = () => {
   const filesQuery = useFilesInfiniteQuery({
     pageSize: 20,
     include_only: ['Unrecognized'],
@@ -104,6 +104,6 @@ function UnrecognizedFiles() {
       )}
     </ShokoPanel>
   );
-}
+};
 
 export default UnrecognizedFiles;

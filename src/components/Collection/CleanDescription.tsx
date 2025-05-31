@@ -5,11 +5,11 @@ import { trim } from 'lodash';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
 // The question marks are there because people can't spell…
-// eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
+// eslint-disable-next-line @stylistic/operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const CleanInfoLinesRegex =
   /\(?\b((Modified )?Sour?ces?|Note( [1-9])?|Summ?ary|From|See Also):(?!$| a daikon)([^\r\n]+|$)/img;
 
-// eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
+// eslint-disable-next-line @stylistic/operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const CleanMiscLinesRegex =
   /^(\*|[\u2014~-] (adapted|source|description|summary|translated|written):?) ([^\r\n]+|$)/img;
 
@@ -21,7 +21,7 @@ const CleanMultiEmptyLinesRegex = /\n{2,}/g;
 
 const CleanMultiSpacesRegex = /\s{2,}/g;
 
-// eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
+// eslint-disable-next-line @stylistic/operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const LinkRegex =
   /(?<url>http:\/\/anidb\.net\/(?<type>ch|co|cr|[feast]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
@@ -52,7 +52,7 @@ const CleanDescription = React.memo(({ altText, className, text }: Props) => {
         .replaceAll(CleanMultiSpacesRegex, ' ');
     }
 
-    const lines = [] as React.ReactNode[];
+    const lines: string[] = [];
     let prevPos = 0;
     let pos = 0;
     let link = LinkRegex.exec(cleanedText);

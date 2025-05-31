@@ -26,7 +26,7 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
 
-function LoginPage() {
+const LoginPage = () => {
   const navigate = useNavigateVoid();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -299,6 +299,6 @@ function LoginPage() {
       </div>
     </>
   );
-}
+};
 
 export default LoginPage;

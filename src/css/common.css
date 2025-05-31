@@ -109,7 +109,7 @@ body {
 }
 
 /* Fixes Scrollbars breaking on other browsers and only applies the following when using Mozilla. */
-/* stylelint-disable-next-line at-rule-no-vendor-prefix */
+/* stylelint-disable-next-line at-rule-no-vendor-prefix,at-rule-prelude-no-invalid */
 @-moz-document url-prefix() {
   div {
     scrollbar-color: var(--slider-color) var(--slider-background);

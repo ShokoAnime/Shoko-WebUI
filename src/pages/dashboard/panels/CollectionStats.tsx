@@ -46,7 +46,7 @@ const Item = (
   );
 };
 
-function CollectionStats() {
+const CollectionStats = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const statsQuery = useDashbordStatsQuery();
@@ -61,7 +61,7 @@ function CollectionStats() {
     <Item
       key="collection-size"
       title="Collection Size"
-      value={`${prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}`}
+      value={prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}
     />,
     <Item
       key="files"
@@ -128,6 +128,6 @@ function CollectionStats() {
       </div>
     </ShokoPanel>
   );
-}
+};
 
 export default CollectionStats;

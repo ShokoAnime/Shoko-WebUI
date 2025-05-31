@@ -1,7 +1,7 @@
 import * as React from 'react';
 import cx from 'classnames';
 
-const SVGComponent = React.memo(({ className }: { className?: string }) => (
+const ShokoIcon = React.memo(({ className }: { className?: string }) => (
   <svg
     className={cx('size-20', className)}
     xmlns="http://www.w3.org/2000/svg"
@@ -126,4 +126,4 @@ const SVGComponent = React.memo(({ className }: { className?: string }) => (
   </svg>
 ));
 
-export default SVGComponent;
+export default ShokoIcon;

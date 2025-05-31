@@ -55,7 +55,7 @@ const Toast = React.memo((
   );
 });
 
-function DashboardPage() {
+const DashboardPage = () => {
   const dispatch = useDispatch();
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -223,6 +223,6 @@ function DashboardPage() {
       <WelcomeModal onClose={() => setShowWelcomeModal(false)} show={showWelcomeModal} />
     </>
   );
-}
+};
 
 export default DashboardPage;

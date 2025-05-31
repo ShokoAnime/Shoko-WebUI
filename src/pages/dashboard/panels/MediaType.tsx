@@ -47,7 +47,7 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
   </div>
 );
 
-function MediaType() {
+const MediaType = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const seriesSummaryQuery = useDashboardSeriesSummaryQuery();
 
@@ -76,6 +76,6 @@ function MediaType() {
       <div className="flex grow flex-col justify-between">{items}</div>
     </ShokoPanel>
   );
-}
+};
 
 export default MediaType;

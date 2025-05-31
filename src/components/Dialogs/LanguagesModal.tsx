@@ -15,7 +15,7 @@ type Props = {
   onClose: () => void;
 };
 
-function LanguagesModal({ onClose, type }: Props) {
+const LanguagesModal = ({ onClose, type }: Props) => {
   const settings = useSettingsQuery().data;
 
   const languagesQuery = useSupportedLanguagesQuery();
@@ -106,6 +106,6 @@ function LanguagesModal({ onClose, type }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default LanguagesModal;

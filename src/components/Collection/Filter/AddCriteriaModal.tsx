@@ -18,7 +18,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
   const allCriteria = useFilterExpressionsQuery(show).data;
   const selectedKeys = useSelector(selectActiveCriteria);
-  const unusedCriteria = useMemo(() => filter(allCriteria, item => selectedKeys.indexOf(item.Expression) === -1), [
+  const unusedCriteria = useMemo(() => filter(allCriteria, item => !selectedKeys.includes(item.Expression)), [
     allCriteria,
     selectedKeys,
   ]);

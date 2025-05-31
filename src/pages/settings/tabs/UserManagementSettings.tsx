@@ -24,7 +24,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UserType } from '@/core/types/api/user';
 
-function UserManagementSettings() {
+const UserManagementSettings = () => {
   const dispatch = useDispatch();
 
   const currentUserQuery = useCurrentUserQuery();
@@ -399,6 +399,6 @@ function UserManagementSettings() {
       />
     </>
   );
-}
+};
 
 export default UserManagementSettings;

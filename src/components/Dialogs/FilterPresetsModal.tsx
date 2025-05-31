@@ -74,7 +74,7 @@ const SidePanel = (
     if (subFiltersQuery.isSuccess) {
       return subFiltersQuery.data.List.filter(
         item => (!item.IsDirectory
-          && (debouncedSearch === '' || item.Name.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1)),
+          && (debouncedSearch === '' || item.Name.toLowerCase().includes(debouncedSearch.toLowerCase()))),
       );
     }
     return [];
@@ -146,7 +146,7 @@ const SidePanel = (
   );
 };
 
-function FilterPresetsModal({ onClose, show }: Props) {
+const FilterPresetsModal = ({ onClose, show }: Props) => {
   const filtersQuery = useFiltersQuery(show);
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
@@ -212,6 +212,6 @@ function FilterPresetsModal({ onClose, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default FilterPresetsModal;

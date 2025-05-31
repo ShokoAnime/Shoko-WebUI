@@ -52,7 +52,7 @@ const TabContent = React.memo(({ setStatus, tab }: { setStatus: (status: TestSta
   }
 });
 
-function MetadataSources() {
+const MetadataSources = () => {
   const { saveSettings } = useFirstRunSettingsContext();
 
   const dispatch = useDispatch();
@@ -104,6 +104,6 @@ function MetadataSources() {
       </TransitionDiv>
     </>
   );
-}
+};
 
 export default MetadataSources;

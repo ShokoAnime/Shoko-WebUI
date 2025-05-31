@@ -161,7 +161,7 @@ const TmdbLinking = () => {
 
       forEach(linkOverrides, (overrideIds, episodeId) => {
         // The rule makes it unreadable....
-        // eslint-disable-next-line prefer-destructuring
+        // eslint-disable-next-line  @typescript-eslint/prefer-destructuring
         tempXrefs[toNumber(episodeId)] = overrideIds[0];
       });
 
@@ -248,7 +248,7 @@ const TmdbLinking = () => {
       }
       // Note: The tmdb linking page's parent is the collection page, so we need to navigate from the collection page to the series page, even though we use the series id on the tmdb linking page too.
       navigate(`../series/${seriesId}`);
-    } catch (error) {
+    } catch (_) {
       toast.error('Failed to save links!');
     }
     setCreateInProgress(false);

@@ -12,7 +12,7 @@ type Props = {
   isFetching?: boolean;
 };
 
-function SelectSmall(props: Props) {
+const SelectSmall = (props: Props) => {
   const {
     children,
     className,
@@ -49,6 +49,6 @@ function SelectSmall(props: Props) {
         )}
     </label>
   );
-}
+};
 
 export default SelectSmall;

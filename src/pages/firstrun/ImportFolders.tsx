@@ -73,7 +73,7 @@ const Folder = (props: ImportFolderType) => {
   );
 };
 
-function ImportFolders() {
+const ImportFolders = () => {
   const dispatch = useDispatch();
 
   const importFolderQuery = useImportFoldersQuery();
@@ -112,6 +112,6 @@ function ImportFolders() {
       <ImportFolderModal />
     </>
   );
-}
+};
 
 export default ImportFolders;

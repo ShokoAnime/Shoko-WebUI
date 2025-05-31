@@ -12,7 +12,7 @@ import Footer from './Footer';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 
-function AniDBAccount() {
+const AniDBAccount = () => {
   const {
     newSettings,
     saveSettings,
@@ -106,6 +106,6 @@ function AniDBAccount() {
       </TransitionDiv>
     </>
   );
-}
+};
 
 export default AniDBAccount;

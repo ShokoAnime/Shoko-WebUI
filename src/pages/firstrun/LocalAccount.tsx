@@ -12,7 +12,7 @@ import Footer from './Footer';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 
-function LocalAccount() {
+const LocalAccount = () => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
 
@@ -82,6 +82,6 @@ function LocalAccount() {
       </TransitionDiv>
     </>
   );
-}
+};
 
 export default LocalAccount;

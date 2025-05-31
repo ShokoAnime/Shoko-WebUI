@@ -39,7 +39,7 @@ function orderingToDescription(ordering: AlternateOrderingTypeEnum | undefined):
   }
 }
 
-function TmdbShowSettingsModal({ onClose, show, showId }: Props) {
+const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
   const orderingQuery = useTmdbShowOrderingQuery(showId, show && showId > 0);
   const { mutate: setOrdering, status: setOrderingStatus } = useSetPreferredTmdbShowOrderingMutation(
     showId,
@@ -142,6 +142,6 @@ function TmdbShowSettingsModal({ onClose, show, showId }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default TmdbShowSettingsModal;

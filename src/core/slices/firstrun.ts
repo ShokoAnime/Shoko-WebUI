@@ -23,13 +23,13 @@ const firstrunSlice = createSlice({
   initialState,
   reducers: {
     setSaved(sliceState, action: PayloadAction<string>) {
-      sliceState.saved = Object.assign({}, sliceState.saved, { [action.payload]: true });
+      sliceState.saved = { ...sliceState.saved, [action.payload]: true };
     },
     setUser(sliceState, action: PayloadAction<UserType>) {
-      sliceState.user = Object.assign({}, sliceState.user, action.payload);
+      sliceState.user = { ...sliceState.user, ...action.payload };
     },
     unsetSaved(sliceState, action: PayloadAction<string>) {
-      sliceState.saved = Object.assign({}, sliceState.saved, { [action.payload]: false });
+      sliceState.saved = { ...sliceState.saved, [action.payload]: false };
     },
   },
 });

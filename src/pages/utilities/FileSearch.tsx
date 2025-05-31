@@ -84,9 +84,9 @@ const Menu = (
 
   const removeFileFromSelection = useEventCallback(
     (fileId: number) =>
-      setSelectedRows((immerState) => {
-        immerState[fileId] = false;
-        return immerState;
+      setSelectedRows((draftState) => {
+        draftState[fileId] = false;
+        return draftState;
       }),
   );
 

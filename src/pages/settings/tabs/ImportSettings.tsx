@@ -6,7 +6,7 @@ import InputSmall from '@/components/Input/InputSmall';
 import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
-function ImportSettings() {
+const ImportSettings = () => {
   const { newSettings, updateSetting } = useSettingsContext();
 
   const {
@@ -106,6 +106,6 @@ function ImportSettings() {
       <div className="border-b border-panel-border" />
     </>
   );
-}
+};
 
 export default ImportSettings;

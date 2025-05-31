@@ -103,7 +103,7 @@ const EpisodeRow = React.memo((props: Props) => {
       }
 
       if (newTmdbId === undefined) {
-        delete draftState[episodeId][offset];
+        draftState[episodeId].splice(offset, 1);
         return;
       }
 

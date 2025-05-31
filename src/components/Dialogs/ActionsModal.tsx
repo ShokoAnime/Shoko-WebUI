@@ -130,7 +130,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
   );
 };
 
-function ActionsModal({ onClose, show }: Props) {
+const ActionsModal = ({ onClose, show }: Props) => {
   const [activeTab, setActiveTab] = useState('import');
 
   return (
@@ -171,6 +171,6 @@ function ActionsModal({ onClose, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default ActionsModal;

@@ -19,7 +19,7 @@ let themeUpdateCounter = 0;
 
 const UI_VERSION = uiVersion();
 
-function GeneralSettings() {
+const GeneralSettings = () => {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
   const {
@@ -312,6 +312,6 @@ function GeneralSettings() {
       <div className="border-b border-panel-border" />
     </>
   );
-}
+};
 
 export default GeneralSettings;

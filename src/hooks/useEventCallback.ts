@@ -5,7 +5,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 
 // Typed same as useCallback
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 const useEventCallback = <T extends Function>(func: T): T => {
   const ref = useRef<T>(func);
   useLayoutEffect(() => {
@@ -15,7 +15,7 @@ const useEventCallback = <T extends Function>(func: T): T => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useMemo<T>(() => (...args: any[]) => {
     const { current } = ref;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-argument
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
     return current(...args);
   }, []);
 };

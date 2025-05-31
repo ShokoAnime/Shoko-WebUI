@@ -5,7 +5,7 @@
 
   --default-transition-duration: 300ms;
 
-  --drop-shadow-md: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  --drop-shadow-md: 0px 4px 4px rgb(0, 0, 0, 0.25);
 
   --font-weight-extralight: 100;
   --font-weight-light: 200;
@@ -16,7 +16,7 @@
   --font-weight-extrabold: 700;
   --font-weight-black: 800;
 
-  --shadow-md: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0px 4px 4px rgb(0, 0, 0, 0.25);
 
   --text-base--line-height: 1.6rem;
   --text-lg--line-height: 1.8rem;

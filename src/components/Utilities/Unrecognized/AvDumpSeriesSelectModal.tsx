@@ -54,7 +54,7 @@ const StepDescription = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
+const AvDumpSeriesSelectModal = ({ getLinks, onClose, show }: Props) => {
   const { mutateAsync: rescanFile } = useRescanFileMutation();
   const [clickedLink, setClickedLink] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -257,6 +257,6 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default AvDumpSeriesSelectModal;

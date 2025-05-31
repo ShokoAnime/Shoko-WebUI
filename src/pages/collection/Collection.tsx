@@ -82,7 +82,7 @@ const getFilter = (
   );
 };
 
-function Collection() {
+const Collection = () => {
   const { pathname } = useLocation();
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
@@ -287,6 +287,6 @@ function Collection() {
       </div>
     </>
   );
-}
+};
 
 export default Collection;
