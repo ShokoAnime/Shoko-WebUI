@@ -4,10 +4,13 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import PathMatchRuleSet from './auto-match-regexes';
 
+import type { ReleaseSource } from '@/core/types/api/file';
+
 export type PathDetails = {
   filePath: string;
   fileExtension: string | null;
   releaseGroup: string | null;
+  source: ReleaseSource | null;
   showName: string | null;
   season: number | null;
   episodeName: string | null;
@@ -117,6 +120,7 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
         fileExtension: match.groups.extension || null,
         releaseGroup: match.groups.releaseGroup || null,
         showName,
+        source: null,
         season: match.groups.season ? parseFloat(match.groups.season) : null,
         episodeName: match.groups.episodeName || null,
         episodeStart,

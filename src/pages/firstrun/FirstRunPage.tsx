@@ -19,7 +19,7 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
   const saved = useSelector((state: RootState) => state.firstrun.saved);
 
   const path = useMemo(() => {
-    if (pathname === `/webui/firstrun/${id}`) return mdiCircleHalfFull;
+    if (pathname === `/firstrun/${id}`) return mdiCircleHalfFull;
     if (saved[id]) return mdiCheckboxMarkedCircleOutline;
     return mdiCheckboxBlankCircleOutline;
   }, [pathname, saved, id]);
@@ -77,7 +77,7 @@ function FirstRunPage() {
   };
 
   const saveSettings = async () => {
-    await patchSettings({ newSettings, skipValidation: true });
+    await patchSettings(newSettings);
   };
 
   const parsedVersion = useMemo(() => {
@@ -112,7 +112,7 @@ function FirstRunPage() {
             <MenuItem text="AniDB Account" id="anidb-account" />
             <MenuItem text="Metadata Sources" id="metadata-sources" />
             <MenuItem text="Start Server" id="start-server" />
-            <MenuItem text="Import Folders" id="import-folders" />
+            <MenuItem text="Managed Folders" id="managed-folders" />
             <MenuItem text="Data Collection" id="data-collection" />
           </div>
 

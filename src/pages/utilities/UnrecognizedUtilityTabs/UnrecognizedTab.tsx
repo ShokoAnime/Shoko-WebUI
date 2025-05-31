@@ -40,7 +40,7 @@ import {
   useRescanFileMutation,
 } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
-import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
@@ -48,7 +48,7 @@ import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -153,7 +153,7 @@ const Menu = (
 
   const handleRename = useEventCallback(() => {
     dispatch(addFiles(selectedRows));
-    navigate('/webui/utilities/renamer');
+    navigate('/utilities/renamer');
   });
 
   const renderSelectedRowActions = useMemo(() => (
@@ -243,13 +243,13 @@ function UnrecognizedTab() {
     setSearch,
     setSortCriteria,
     sortCriteria,
-  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ImportFolderName);
+  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ManagedFolderName);
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
 
   const { mutate: avdumpFiles } = useAvdumpFilesMutation();
 
-  const importFolderQuery = useImportFoldersQuery();
-  const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
+  const managedFolderQuery = useManagedFoldersQuery();
+  const managedFolders = useMemo(() => managedFolderQuery?.data ?? [], [managedFolderQuery.data]);
 
   const sortOrder = useMemo(() => {
     if (!sortCriteria) return undefined;
@@ -270,23 +270,23 @@ function UnrecognizedTab() {
   const columns = useMemo<UtilityHeaderType<FileType>[]>(
     () => [
       {
-        id: 'importFolder',
-        name: 'Import Folder',
+        id: 'managedFolder',
+        name: 'Managed Folder',
         className: 'w-40',
         item: (file) => {
-          const importFolder = find(
-            importFolders,
-            { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+          const managedFolder = find(
+            managedFolders,
+            { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
           )?.Name ?? '<Unknown>';
 
           return (
             <div
               className="truncate"
               data-tooltip-id="tooltip"
-              data-tooltip-content={importFolder}
+              data-tooltip-content={managedFolder}
               data-tooltip-delay-show={500}
             >
-              {importFolder}
+              {managedFolder}
             </div>
           );
         },
@@ -299,7 +299,7 @@ function UnrecognizedTab() {
         item: file => <AVDumpFileIcon file={file} />,
       },
     ],
-    [importFolders],
+    [managedFolders],
   );
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
@@ -309,7 +309,7 @@ function UnrecognizedTab() {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(files);
+  } = useRowSelection(files, fileIdSelector);
 
   const isAvdumpFinished = useMemo(
     () => (selectedRows.length > 0

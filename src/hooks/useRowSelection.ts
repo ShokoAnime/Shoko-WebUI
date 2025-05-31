@@ -8,7 +8,11 @@ import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
 
-const useRowSelection = <T extends EpisodeType | FileType | SeriesType>(items: T[]) => {
+export const fileIdSelector = (file: FileType) => file.ID;
+
+export const episodeOrSeriesIdSelector = (item: EpisodeType | SeriesType) => item.IDs.ID;
+
+const useRowSelection = <T extends object>(items: T[], idSelector: (item: NoInfer<T>) => number) => {
   const [rowSelection, setRowSelection] = useImmer<Record<number, boolean>>({});
 
   const selectedRows = useMemo(
@@ -18,13 +22,13 @@ const useRowSelection = <T extends EpisodeType | FileType | SeriesType>(items: T
         .filter(key => rowSelection[key])
         .reduce((result, key) => {
           const row = items.find((item) => {
-            if ('ID' in item) return item.ID === toNumber(key);
-            return item.IDs.ID === toNumber(key);
+            const id = idSelector(item);
+            return id === toNumber(key);
           });
-          if (row) return [...result, row];
+          if (row) result.push(row);
           return result;
         }, [] as T[]),
-    [rowSelection, items],
+    [rowSelection, items, idSelector],
   );
 
   const handleRowSelect = useEventCallback((id: number, select: boolean) => {

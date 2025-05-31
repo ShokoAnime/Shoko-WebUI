@@ -14,12 +14,12 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { staticColumns } from '@/components/Utilities/constants';
 import { useIgnoreFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
-import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -86,10 +86,10 @@ function IgnoredFilesTab() {
     setSearch,
     setSortCriteria,
     sortCriteria,
-  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ImportFolderName);
+  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ManagedFolderName);
 
-  const importFolderQuery = useImportFoldersQuery();
-  const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
+  const managedFolderQuery = useManagedFoldersQuery();
+  const managedFolders = useMemo(() => managedFolderQuery?.data ?? [], [managedFolderQuery.data]);
 
   const sortOrder = useMemo(() => {
     if (!sortCriteria) return undefined;
@@ -110,18 +110,18 @@ function IgnoredFilesTab() {
   const columns = useMemo<UtilityHeaderType<FileType>[]>(
     () => [
       {
-        id: 'importFolder',
-        name: 'Import Folder',
+        id: 'managedFolder',
+        name: 'Managed Folder',
         className: 'w-40',
         item: file =>
           find(
-            importFolders,
-            { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+            managedFolders,
+            { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
           )?.Name ?? '<Unknown>',
       },
       ...staticColumns,
     ],
-    [importFolders],
+    [managedFolders],
   );
 
   const {
@@ -129,7 +129,7 @@ function IgnoredFilesTab() {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(files);
+  } = useRowSelection(files, fileIdSelector);
 
   return (
     <>

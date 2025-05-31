@@ -14,7 +14,7 @@ import { ReleaseManagementItemType } from '@/core/react-query/release-management
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { episodeOrSeriesIdSelector } from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -44,7 +44,7 @@ const seriesColumns: UtilityHeaderType<ReleaseManagementSeriesType>[] = [
           </div>
         </a>
         <span>|</span>
-        <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+        <Link to={`/collection/series/${series.IDs.ID}`}>
           <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
             <ShokoIcon className="size-6" />
             {series.IDs.ID}
@@ -187,7 +187,7 @@ const SeriesList = (
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<EpisodeType>(episodes);
+  } = useRowSelection(episodes, episodeOrSeriesIdSelector);
 
   useEffect(() => {
     setSelectedEpisodes(selectedRows);

@@ -67,7 +67,7 @@ const initialLayout = {
         static: false,
       },
       {
-        i: 'importFolders',
+        i: 'managedFolders',
         x: 6,
         y: 37,
         w: 3,
@@ -190,7 +190,7 @@ const initialLayout = {
         static: false,
       },
       {
-        i: 'importFolders',
+        i: 'managedFolders',
         x: 5,
         y: 51,
         w: 5,
@@ -267,6 +267,10 @@ export const initialSettings: SettingsType = {
     toastPosition: 'bottom-right',
     updateChannel: semver.prerelease(uiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
+    linking: {
+      enabledReleaseProviders: [],
+      releaseProviderOrder: [],
+    },
     collection: {
       view: 'poster',
       poster: {
@@ -298,7 +302,7 @@ export const initialSettings: SettingsType = {
       hideRecentlyImported: false,
       hideCollectionStats: false,
       hideMediaType: false,
-      hideImportFolders: false,
+      hideManagedFolders: false,
       hideShokoNews: false,
       hideContinueWatching: false,
       hideNextUp: false,
