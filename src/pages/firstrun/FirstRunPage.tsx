@@ -99,7 +99,7 @@ const FirstRunPage = () => {
       <div className="flex size-full max-w-[120rem] gap-x-6 p-6">
         <div className="flex w-[31.25rem] flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
           <div className="flex flex-col items-center gap-y-4">
-            <ShokoIcon className="w-32" />
+            <ShokoIcon className="size-32" />
             <div className="flex items-center gap-x-2 font-semibold">
               Version:&nbsp;
               {parsedVersion}
