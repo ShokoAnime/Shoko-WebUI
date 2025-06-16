@@ -214,7 +214,7 @@ function LinkFilesTabVideo(props: LinksFilesTab2FileProps): React.JSX.Element {
           </span>
           <span className="col-span-1">
             Version:&nbsp;
-            {link.release.Revision}
+            {link.release.Version}
           </span>
           <span className="col-span-1">
             Comment:&nbsp;

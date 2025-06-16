@@ -60,7 +60,7 @@ const useMediaInfo = (file: FileType): FileInfo =>
 
     const groupInfo = [file.Release?.Group?.Name ?? 'Unknown'];
     if (file.Release?.Source) groupInfo.push(file.Release.Source);
-    if (file.Release?.Revision) groupInfo.push(`v${file.Release.Revision}`);
+    if (file.Release?.Version) groupInfo.push(`v${file.Release.Version}`);
 
     return {
       Name: fileName ?? '',

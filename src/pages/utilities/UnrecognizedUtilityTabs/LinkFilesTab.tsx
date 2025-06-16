@@ -249,7 +249,7 @@ function LinkFilesTab() {
           MediaInfo: null,
           OriginalFilename: file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? null,
           ProviderName: 'User',
-          Revision: 1,
+          Version: 1,
           Source: ReleaseSource.Unknown,
           Comment: null,
           CrossReferences: [],
@@ -313,7 +313,7 @@ function LinkFilesTab() {
             };
           }
           if (showData.version != null && showData.version > 0) {
-            release.Revision = showData.version;
+            release.Version = showData.version;
           }
         }
 

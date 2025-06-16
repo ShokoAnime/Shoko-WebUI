@@ -39,7 +39,7 @@ export type ReleaseInfoType = {
   ID: string | null;
   ProviderName: string;
   ReleaseURI: string | null;
-  Revision: number;
+  Version: number;
   FileSize: number | null;
   Comment: string | null;
   OriginalFilename: string | null;
