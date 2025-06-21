@@ -67,7 +67,7 @@ const DropdownButton = (props: Props) => {
         type="button"
         title={tooltip}
         className={cx([
-          `${className} button rounded-sm font-semibold transition ease-in-out focus:shadow-none focus:outline-hidden min-w-full px-4 py-3`,
+          `${className} rounded-sm font-semibold transition ease-in-out focus:shadow-none focus:outline-hidden min-w-full px-4 py-3`,
           buttonTypes !== undefined
           && `${buttonTypeClasses[buttonTypes ?? 'secondary']} hover:bg-button-${
             buttonTypes ?? 'secondary'
