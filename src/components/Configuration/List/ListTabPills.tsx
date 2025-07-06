@@ -24,7 +24,7 @@ function ListTabPills(props: ListTabPillsProps): React.JSX.Element {
       <nav
         aria-label="Tabs"
         className={cx(
-          'isolate flex shrink-0 grow divide-x divide-panel-toggle-background-alt overflow-x-auto rounded-lg shadow-sm',
+          'isolate flex divide-x divide-panel-toggle-background-alt overflow-x-auto rounded-lg shadow-sm',
           tabs.length === 0 && 'hidden',
         )}
       >
@@ -52,9 +52,9 @@ function ListTabPills(props: ListTabPillsProps): React.JSX.Element {
           disabled={!canAdd}
           onClick={addItem}
           className={cx(
-            'group relative min-w-0 place-items-center overflow-hidden whitespace-nowrap rounded-lg bg-panel-background p-4 text-sm font-medium text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover focus:z-10',
-            tabs.length > 0 && 'grow-0 shrink',
-            tabs.length === 0 && 'grow shrink-0',
+            'group relative min-w-0 shrink-0 flex place-items-center overflow-hidden whitespace-nowrap rounded-lg bg-panel-background p-4 text-sm font-medium text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover focus:z-10',
+            tabs.length > 0 && 'grow-0',
+            tabs.length === 0 && 'grow',
           )}
         >
           <Icon path={mdiPlus} size={1} />
