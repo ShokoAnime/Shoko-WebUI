@@ -12,17 +12,19 @@ import Icon from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
+import toast from '@/components/Toast';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
-import { copyToClipboard } from '@/core/util';
+import { copyToClipboard, processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
+import type { AxiosError } from 'axios';
 
 const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boolean }) => {
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
-  const { mutate: avdumpFiles } = useAvdumpFilesMutation();
+  const { mutateAsync: avdumpFiles } = useAvdumpFilesMutation();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
 
@@ -94,7 +96,8 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const handleDump = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
-      avdumpFiles({ FileIDs: [fileId], Priority: true });
+      avdumpFiles({ FileIDs: [fileId], Priority: true })
+        .catch((error: AxiosError) => toast.error('AVDump failed!', processError(error)));
     }
   });
 

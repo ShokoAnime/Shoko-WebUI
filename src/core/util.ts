@@ -5,10 +5,13 @@ import calendar from 'dayjs/plugin/calendar';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
-import { toNumber } from 'lodash';
+import { reduce, toNumber } from 'lodash';
 import semver from 'semver';
 
 import toast from '@/components/Toast';
+
+import type { ShokoError } from '@/core/types/api';
+import type { AxiosError } from 'axios';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
@@ -69,3 +72,16 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
 };
 
 export const padNumber = (num: number | string, size = 2) => num.toString().padStart(size, '0');
+
+export const processError = (axiosError: AxiosError) => {
+  const errorData = axiosError.response?.data as ShokoError;
+  if (!errorData) return 'Please check the logs.';
+
+  const errors = reduce(
+    errorData.errors,
+    (result, value, _) => result.concat(value),
+    [] as string[],
+  );
+
+  return errors.join(', ');
+};
