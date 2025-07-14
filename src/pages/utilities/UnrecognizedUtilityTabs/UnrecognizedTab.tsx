@@ -44,6 +44,7 @@ import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries'
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
+import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -54,6 +55,7 @@ import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCrit
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
+import type { AxiosError } from 'axios';
 import type { Updater } from 'use-immer';
 
 const Menu = (
@@ -246,7 +248,7 @@ const UnrecognizedTab = () => {
   } = useTableSearchSortCriteria(FileSortCriteriaEnum.ImportFolderName);
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
 
-  const { mutate: avdumpFiles } = useAvdumpFilesMutation();
+  const { mutateAsync: avdumpFiles } = useAvdumpFilesMutation();
 
   const importFolderQuery = useImportFoldersQuery();
   const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
@@ -336,7 +338,8 @@ const UnrecognizedTab = () => {
             return !AVDump?.LastDumpedAt && !AVDump.Status;
           })
           .map(file => file.ID),
-      });
+      })
+        .catch((error: AxiosError) => toast.error('AVDump failed!', processError(error)));
     }
   });
 
