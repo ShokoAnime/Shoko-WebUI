@@ -21,6 +21,12 @@ const quickActions = {
     info:
       'Downloads XML data from AniDB forcefully. Use this only if the XML has been edited, deleted, or if Shoko has unexpectedly closed or crashed.',
   },
+  'create-missing-series': {
+    name: 'Create Missing Series',
+    functionName: 'CreateMissingSeries',
+    info:
+      'Add all series that have data and files, but no series. This helps if you\'ve deleted a series, and it\'s stuck in limbo.',
+  },
   'update-anidb-calendar': {
     name: 'Update AniDB Calendar',
     functionName: 'UpdateAnidbCalendar',

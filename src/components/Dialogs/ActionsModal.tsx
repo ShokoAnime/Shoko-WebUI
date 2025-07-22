@@ -62,6 +62,7 @@ const actions = {
     title: 'Shoko',
     data: [
       'avdump-mismatched-files',
+      'create-missing-series',
       'recreate-all-groups',
       'rename-all-groups',
       'update-missing-anidb-file-release-groups',
