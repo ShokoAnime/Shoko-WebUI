@@ -211,7 +211,7 @@ const LinkFilesTab = () => {
   const { mutateAsync: linkOneFileToManyEpisodes } = useLinkOneFileToManyEpisodesMutation();
   const { mutateAsync: linkManyFilesToOneEpisode } = useLinkManyFilesToOneEpisodeMutation();
 
-  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(selectedSeries.ShokoID ?? 0);
+  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(selectedSeries?.ShokoID ?? 0);
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
   const { mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
   const { mutateAsync: getSeriesAniDBData } = useGetSeriesAniDBMutation();
