@@ -9,6 +9,7 @@ import {
   mdiOpenInNew,
   mdiPencilCircleOutline,
   mdiPlusCircleMultipleOutline,
+  mdiRefresh,
   mdiSortAlphabeticalAscending,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -35,6 +36,7 @@ import {
   useDeleteSeriesMutation,
   useGetSeriesAniDBMutation,
   useRefreshAniDBSeriesMutation,
+  useRefreshSeriesAniDBInfoMutation,
 } from '@/core/react-query/series/mutations';
 import {
   useSeriesAniDBEpisodesQuery,
@@ -209,6 +211,7 @@ const LinkFilesTab = () => {
   const { mutateAsync: linkOneFileToManyEpisodes } = useLinkOneFileToManyEpisodesMutation();
   const { mutateAsync: linkManyFilesToOneEpisode } = useLinkManyFilesToOneEpisodeMutation();
 
+  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(selectedSeries.ShokoID ?? 0);
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
   const { mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
   const { mutateAsync: getSeriesAniDBData } = useGetSeriesAniDBMutation();
@@ -330,6 +333,10 @@ const LinkFilesTab = () => {
 
     setSeriesUpdating(false);
   };
+
+  const refreshSelectedSeries = useEventCallback(() => {
+    refreshAnidb({ force: true });
+  });
 
   const editSelectedSeries = useEventCallback(() => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
@@ -701,7 +708,20 @@ const LinkFilesTab = () => {
                   {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
                 </a>
-                <Button onClick={editSelectedSeries} className="ml-auto text-panel-text-primary" disabled={isLinking}>
+                <Button
+                  onClick={refreshSelectedSeries}
+                  className="ml-auto text-panel-text-primary"
+                  tooltip="Force Refresh"
+                  disabled={isLinking}
+                >
+                  <Icon path={mdiRefresh} size={1} />
+                </Button>
+                <Button
+                  onClick={editSelectedSeries}
+                  className="ml-2 text-panel-text-primary"
+                  tooltip="Edit Link"
+                  disabled={isLinking}
+                >
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>
