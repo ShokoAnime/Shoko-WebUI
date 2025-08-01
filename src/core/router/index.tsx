@@ -29,6 +29,7 @@ import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
+import AnidbAnimeRedirect from '@/pages/redirect/AnidbAnimeRedirect';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
@@ -72,6 +73,14 @@ const router = sentryCreateBrowserRouter(
           <Route path="import-folders" element={<ImportFolders />} />
           <Route path="data-collection" element={<DataCollection />} />
         </Route>
+        <Route
+          path="redirect/anidb/anime/:animeId"
+          element={
+            <AuthenticatedRoute>
+              <AnidbAnimeRedirect />
+            </AuthenticatedRoute>
+          }
+        />
         <Route path="unsupported" element={<UnsupportedPage />} />
         <Route
           element={

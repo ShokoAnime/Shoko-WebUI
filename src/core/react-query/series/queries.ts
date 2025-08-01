@@ -39,6 +39,13 @@ export const useSeriesQuery = (
     enabled,
   });
 
+export const useSeriesByAnidbIdQuery = (anidbId: number, enabled = true) =>
+  useQuery<SeriesType>({
+    queryKey: ['series', 'anidb', anidbId, 'series'],
+    queryFn: () => axios.get(`Series/AniDB/${anidbId}/Series`),
+    enabled,
+  });
+
 export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
   useQuery<SeriesAniDBSearchResult>({
     queryKey: ['series', 'anidb', anidbId],
