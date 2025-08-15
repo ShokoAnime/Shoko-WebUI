@@ -458,8 +458,8 @@ const Renamer = () => {
 
     if (selectedConfig.Name) changeSelectedConfig(selectedConfig.Name);
     else changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
-    // This shouldn't run when selectecConfig.Name changes.
-    // We are resetting selectedConfig when new data arrives so that is up-to-date
+    // This shouldn't run when `selectedConfig.Name` changes.
+    // We are resetting `selectedConfig` when new data arrives so that it is up-to-date for `configEdited` flag
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changeSelectedConfig, renamerConfigsQuery.data, renamerConfigsQuery.isSuccess, settings]);
 
