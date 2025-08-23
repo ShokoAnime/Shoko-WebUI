@@ -75,7 +75,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoBackdrops"
           value={MaxAutoBackdrops}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -97,7 +98,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoPosters"
           value={MaxAutoPosters}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -119,7 +121,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoLogos"
           value={MaxAutoLogos}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -141,7 +144,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoThumbnails"
           value={MaxAutoThumbnails}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -163,7 +167,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoStaffImages"
           value={MaxAutoStaffImages}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
