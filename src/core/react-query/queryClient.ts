@@ -39,19 +39,19 @@ const queryClient = new QueryClient({
       staleTime: 1000, // To prevent duplicate requests from same page
       refetchOnWindowFocus: false,
       retry: (failureCount, error: AxiosError | Error) => {
-        const processedError = processError(error);
+        const { header, message, status } = processError(error);
 
         if (
           isAxiosError(error) && (error.request as XMLHttpRequest).responseURL.endsWith('/Settings')
-          && processedError.status === 401
+          && status === 401
         ) {
           store.dispatch({ type: Events.AUTH_LOGOUT });
           return false;
         }
 
-        if (processedError.status !== 404 && failureCount < 4) return true; // 1 initial request + retry 4 times
+        if (status !== 404 && failureCount < 4) return true; // 1 initial request + retry 4 times
 
-        toast.error(processedError.header, processedError.message);
+        toast.error(header, message);
 
         return false;
       },
@@ -59,8 +59,8 @@ const queryClient = new QueryClient({
   },
   mutationCache: new MutationCache({
     onError: (error: AxiosError | Error) => {
-      const processedError = processError(error);
-      toast.error(processedError.header, processedError.message);
+      const { header, message } = processError(error);
+      toast.error(header, message);
     },
   }),
 });
