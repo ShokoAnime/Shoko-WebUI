@@ -45,6 +45,7 @@ export type DashboardEpisodeDetailsType = {
   Watched: string | null;
   SeriesTitle: string;
   SeriesPoster: ImageType;
+  Thumbnail?: ImageType;
 };
 
 export type DashboardNewsType = {

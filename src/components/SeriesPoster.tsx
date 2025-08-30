@@ -73,7 +73,9 @@ const SeriesPoster = React.memo((props: Props) => {
       {subtitle && (
         <div
           className="truncate text-center text-sm font-semibold opacity-65"
-          title={subtitle}
+          data-tooltip-id="tooltip"
+          data-tooltip-content={subtitle}
+          data-tooltip-delay-show={500}
         >
           {subtitle}
         </div>
