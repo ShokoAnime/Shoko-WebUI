@@ -97,7 +97,7 @@ const Collection = () => {
   const setSearch = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
 
-    if (!query) {
+    if (!query.trim()) {
       setSearchParams({}, { replace: true });
       setGroupSearch('');
       setSeriesSearch('');
@@ -112,8 +112,8 @@ const Collection = () => {
       setGroupSearch(query);
     }
   });
-  const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
-  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
+  const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
+  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
 
   const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
   const activeFilter = useMemo(() => {
