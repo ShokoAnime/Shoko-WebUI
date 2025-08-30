@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { mdiCloseCircleOutline, mdiLoading, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiPauseCircleOutline, mdiPlayCircleOutline, mdiProgressClock } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { map } from 'lodash';
 
@@ -85,7 +85,7 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
       </span>
       {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
-    {item.IsRunning && <Icon path={mdiLoading} size={1} spin className="shrink-0 text-panel-text-primary" />}
+    {item.IsRunning && <Icon path={mdiProgressClock} size={1} className="shrink-0 text-panel-text-primary" />}
   </div>
 );
 
