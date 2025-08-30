@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 
+import DashboardEpisode from '@/components/Dashboard/DashboardEpisode';
 import SeriesPoster from '@/components/SeriesPoster';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
 
@@ -44,6 +46,10 @@ const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string =
 };
 
 const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode => {
+  const settings = useSettingsQuery().data;
+
+  const { useThumbnailsForEpisodes } = settings.WebUI_Settings.dashboard;
+
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
     const duration = dayjs.duration(convertTimeSpanToMs(episode.Duration));
@@ -57,6 +63,21 @@ const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: P
     () => `${anidbEpisodePrefixes(episode.Type, episode.Number)} - ${episode.Title}`,
     [episode.Type, episode.Title, episode.Number],
   );
+
+  // showDate is only true for Upcoming Anime panel
+  // I didn't want to add another prop
+  if (useThumbnailsForEpisodes && !showDate) {
+    return (
+      <DashboardEpisode
+        key={`episode-${episode.IDs.ID}`}
+        episodeId={episode.IDs.ID}
+        shokoId={episode.IDs.ShokoSeries!}
+        thumbnail={episode.Thumbnail}
+        title={episode.SeriesTitle}
+        subtitle={episode.Title}
+      />
+    );
+  }
 
   return (
     <div

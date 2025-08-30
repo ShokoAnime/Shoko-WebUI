@@ -70,6 +70,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     recentlyImportedEpisodesCount,
     recentlyImportedSeriesCount,
     shokoNewsPostsCount,
+    useThumbnailsForEpisodes,
   } = newSettings.WebUI_Settings.dashboard;
 
   const updateSetting = (key: string, value: boolean | number) => {
@@ -228,6 +229,13 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 label="Combine Continue Watching & Next Up"
                 id="combineContinueWatching"
                 isChecked={combineContinueWatching}
+                onChange={handleUpdate}
+              />
+              <Checkbox
+                justify
+                label="Use Thumbnails for Episodes"
+                id="useThumbnailsForEpisodes"
+                isChecked={useThumbnailsForEpisodes}
                 onChange={handleUpdate}
               />
               <Checkbox

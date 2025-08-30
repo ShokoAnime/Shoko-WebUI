@@ -305,6 +305,7 @@ export const initialSettings: SettingsType = {
       hideUpcomingAnime: false,
       hideRecommendedAnime: false,
       combineContinueWatching: false,
+      useThumbnailsForEpisodes: false,
       hideR18Content: true,
       shokoNewsPostsCount: 5,
       recentlyImportedEpisodesCount: 30,

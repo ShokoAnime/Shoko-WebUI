@@ -428,6 +428,7 @@ export type WebUISettingsType = {
     hideUpcomingAnime: boolean;
     hideRecommendedAnime: boolean;
     combineContinueWatching: boolean;
+    useThumbnailsForEpisodes: boolean;
     hideR18Content: boolean;
     shokoNewsPostsCount: number;
     recentlyImportedEpisodesCount: number;
