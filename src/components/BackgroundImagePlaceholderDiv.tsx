@@ -53,9 +53,9 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     if (!imageSource) {
       let imageErrorText = '';
       if (imageSource === null) {
-        imageErrorText = inCollection
-          ? 'Image is not available. Run the validate image action or wait for the queue to settle.'
-          : 'Image is not available. Series not in collection.';
+        imageErrorText = (inCollection === false)
+          ? 'Image is not available. Series not in collection.'
+          : 'Image is not available. Run the validate image action or wait for the queue to settle.';
       } else {
         imageErrorText = 'No image metadata.';
       }
