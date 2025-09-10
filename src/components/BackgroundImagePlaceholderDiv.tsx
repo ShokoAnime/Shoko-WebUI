@@ -16,6 +16,7 @@ type Props = {
   overlayOnHover?: boolean;
   zoomOnHover?: boolean;
   linkToImage?: boolean;
+  inCollection?: boolean;
 };
 
 const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
@@ -28,6 +29,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     linkToImage,
     overlayOnHover,
     zoomOnHover,
+    inCollection,
   } = props;
   const fit = contain ? 'contain' : 'cover';
   const settings = useSettingsQuery().data;
@@ -49,15 +51,15 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   useEffect(() => {
     setBackgroundImage(null);
     if (!imageSource) {
-      setImageError(
-        imageSource === null
-          ? (
-            'Image is not available. Run the validate image action or wait for the queue to settle.'
-          )
-          : (
-            'No image metadata.'
-          ),
-      );
+      let imageErrorText = '';
+      if (imageSource === null) {
+        imageErrorText = inCollection
+          ? 'Image is not available. Run the validate image action or wait for the queue to settle.'
+          : 'Image is not available. Series not in collection.';
+      } else {
+        imageErrorText = 'No image metadata.';
+      }
+      setImageError(imageErrorText);
       return undefined;
     }
     setImageError(null);
@@ -79,7 +81,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     return () => {
       complete = true;
     };
-  }, [imageSource]);
+  }, [imageSource, inCollection]);
 
   return (
     <div className={cx(className, 'relative overflow-hidden')}>

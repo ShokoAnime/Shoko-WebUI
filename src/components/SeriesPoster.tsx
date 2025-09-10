@@ -44,6 +44,7 @@ const SeriesPoster = React.memo((props: Props) => {
         hidePlaceholderOnHover
         overlayOnHover
         zoomOnHover
+        inCollection={inCollection}
       >
         {isAnidb && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
