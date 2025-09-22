@@ -36,7 +36,6 @@ import {
   useDeleteSeriesMutation,
   useGetSeriesAniDBMutation,
   useRefreshAniDBSeriesMutation,
-  useRefreshSeriesAniDBInfoMutation,
 } from '@/core/react-query/series/mutations';
 import {
   useSeriesAniDBEpisodesQuery,
@@ -211,7 +210,6 @@ const LinkFilesTab = () => {
   const { mutateAsync: linkOneFileToManyEpisodes } = useLinkOneFileToManyEpisodesMutation();
   const { mutateAsync: linkManyFilesToOneEpisode } = useLinkManyFilesToOneEpisodeMutation();
 
-  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(selectedSeries?.ShokoID ?? 0);
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
   const { mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
   const { mutateAsync: getSeriesAniDBData } = useGetSeriesAniDBMutation();
@@ -335,7 +333,16 @@ const LinkFilesTab = () => {
   };
 
   const refreshSelectedSeries = useEventCallback(() => {
-    refreshAnidb({ force: true });
+    if (!selectedSeries?.ID) return;
+    refreshSeries({ anidbID: selectedSeries.ID, force: true, immediate: true })
+      .then(async () => {
+        const seriesData = await getSeriesAniDBData(selectedSeries.ID);
+        setSelectedSeries(seriesData);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Failed to get series data!');
+      });
   });
 
   const editSelectedSeries = useEventCallback(() => {
