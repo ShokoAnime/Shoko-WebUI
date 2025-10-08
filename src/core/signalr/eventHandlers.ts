@@ -30,12 +30,11 @@ const invalidateReleaseManagement = debounce(
 );
 
 const invalidateSeries = debounce(
-  (seriesId: number, groupIds: number[]) => {
-    invalidateQueries(['series', seriesId]);
-    invalidateQueries(['webui', 'series-overview', seriesId]);
-
-    groupIds.forEach(groupId => invalidateQueries(['group', groupId]));
-  },
+  (seriesIds: number[]) =>
+    seriesIds.forEach((seriesId) => {
+      invalidateQueries(['series', seriesId]);
+      invalidateQueries(['webui', 'series-overview', seriesId]);
+    }),
   1000,
 );
 
@@ -63,8 +62,7 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
     case 'SeriesUpdated':
       invalidateDashboard();
       invalidateImportFolders();
-      if (!data?.ShokoGroupIDs || !data?.ShokoSeriesIDs) return;
-      invalidateSeries(data.ShokoSeriesIDs[0], data.ShokoGroupIDs);
+      if (data?.ShokoSeriesIDs) invalidateSeries(data.ShokoSeriesIDs);
       break;
     default:
   }
