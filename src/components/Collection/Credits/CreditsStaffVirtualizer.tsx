@@ -13,13 +13,8 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
   const [containerRef, { width: containerWidth }] = useMeasure();
   const cardSize = useMemo(() => ({ x: 450, y: 174, gap: 24 }), []);
 
-  // Calculate the number of lanes based on card width
-  const minLanes = 1;
-  const maxLanes = 3;
-  const lanes = Math.max(
-    minLanes,
-    Math.min(maxLanes, Math.floor((containerWidth || 1) / (cardSize.x + cardSize.gap))),
-  );
+  // Calculate the number of lanes from 1 to 3 based on card width
+  const lanes = Math.max(1, Math.min(3, Math.floor((containerWidth || 1) / (cardSize.x + cardSize.gap))));
 
   // Calculate dynamic card width to fill available space
   const dynamicCardSize = useMemo(() => ({
@@ -28,7 +23,7 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
   }), [containerWidth, lanes, cardSize]);
 
   // Dynamic overscan based on lanes
-  const overscan = lanes === 1 ? 15 : 30;
+  const overscan = 10 * lanes;
 
   const virtualizerOptions = useMemo(() => ({
     count: castArray.length,
