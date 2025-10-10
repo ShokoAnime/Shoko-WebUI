@@ -24,7 +24,7 @@ const getColor = (type: string) => {
     case 'OVA':
       return 'panel-text-warning';
     default:
-      return 'panel-text-primary';
+      return 'panel-text-other';
   }
 };
 

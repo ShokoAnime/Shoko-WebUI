@@ -12,7 +12,7 @@ const getThumbnailUrl = (item: SeriesCast, mode: CreditsModeType) => {
 };
 
 const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: CreditsModeType }) => (
-  <div className="flex w-full flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+  <div className="flex w-full h-full flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
     <div className="z-10 flex gap-x-2">
       {mode === 'Character' && (
         <CharacterImage
