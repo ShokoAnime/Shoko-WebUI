@@ -9,6 +9,8 @@ export type DashboardSeriesSummaryType = {
   Web: number;
   Other: number;
   None?: number;
+  MusicVideo?: number;
+  Unknown?: number;
 };
 
 export type DashboardStatsType = {
