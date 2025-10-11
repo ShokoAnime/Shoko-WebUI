@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
+import { applyPatch } from 'fast-json-patch';
 import { cloneDeep, get, isEqual, set, unset } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -76,6 +77,104 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
   const hasChanged = useMemo(() => !isEqual(config, props.config), [config, props.config]);
   const toastId = useRef<number | string>(undefined);
 
+  const performCustomAction = useEventCallback((path: (string | number)[], actionName: string) => {
+    performActionRemote({ config, path: pathToString(path), actionName }, {
+      onError(error) {
+        toast.error(`Failed to perform custom action "${actionName}" on ${JSON.stringify(path)}: ${error.message}`);
+      },
+      onSuccess(data) {
+        if (data.Redirect) {
+          if (data.Redirect.Location.startsWith('http://') || data.Redirect.Location.startsWith('https://')) {
+            if (!data.Redirect.OpenInNewTab) {
+              window.open(data.Redirect.Location, '_self', 'noopener,noreferrer');
+              // Return early because we can't show the toasts if we're opening
+              // the URL in the current window.
+              return;
+            }
+
+            window.open(data.Redirect.Location, '_blank', 'noopener,noreferrer');
+          } else if (data.Redirect.OpenInNewTab) {
+            try {
+              const url = new URL(data.Redirect.Location, window.location.href);
+              window.open(url.href, '_blank', 'noopener,noreferrer');
+            } catch (error) {
+              toast.error(`Failed to open "${data.Redirect.Location}"!}`);
+              console.error(
+                error,
+                `Failed to open "${data.Redirect.Location}": ${error instanceof Error ? error.message : error}`,
+              );
+            }
+          } else {
+            navigate(data.Redirect.Location);
+          }
+        }
+
+        if (data.PatchOperations && data.PatchOperations.length > 0) {
+          const newConfig = cloneDeep(config);
+          applyPatch(newConfig, data.PatchOperations);
+          setSchemaAndConfig([schema, newConfig]);
+        }
+        if (data.ShowSaveMessage) {
+          toast.success(`Successfully saved configuration for "${schema.title}"`);
+          if (props.onSave) props.onSave();
+        }
+        for (const { Message: message } of data.Messages) {
+          toast.info(message);
+        }
+      },
+    });
+  });
+
+  const performReactiveAction = useEventCallback(
+    (newConfig: unknown, path: (string | number)[], actionType: 'Saved' | 'Loaded' | 'Changed') => {
+      performActionRemote({ config: newConfig, path: pathToString(path), actionType }, {
+        onError(error) {
+          toast.error(`Failed to perform reactive action "${actionType}" on ${JSON.stringify(path)}: ${error.message}`);
+        },
+        onSuccess(data) {
+          if (data.Redirect) {
+            if (data.Redirect.Location.startsWith('http://') || data.Redirect.Location.startsWith('https://')) {
+              if (!data.Redirect.OpenInNewTab) {
+                window.open(data.Redirect.Location, '_self', 'noopener,noreferrer');
+                // Return early because we can't show the toasts if we're opening
+                // the URL in the current window.
+                return;
+              }
+
+              window.open(data.Redirect.Location, '_blank', 'noopener,noreferrer');
+            } else if (data.Redirect.OpenInNewTab) {
+              try {
+                const url = new URL(data.Redirect.Location, window.location.href);
+                window.open(url.href, '_blank', 'noopener,noreferrer');
+              } catch (error) {
+                toast.error(`Failed to open "${data.Redirect.Location}"!}`);
+                console.error(
+                  error,
+                  `Failed to open "${data.Redirect.Location}": ${error instanceof Error ? error.message : error}`,
+                );
+              }
+            } else {
+              navigate(data.Redirect.Location);
+            }
+          }
+
+          if (data.PatchOperations && data.PatchOperations.length > 0) {
+            const newerConfig = cloneDeep(newConfig);
+            applyPatch(newerConfig, data.PatchOperations);
+            setSchemaAndConfig([schema, newerConfig]);
+          }
+          if (data.ShowSaveMessage) {
+            toast.success(`Successfully saved configuration for "${schema.title}"`);
+            if (props.onSave) props.onSave();
+          }
+          for (const { Message: message } of data.Messages) {
+            toast.info(message);
+          }
+        },
+      });
+    },
+  );
+
   const updateField = useEventCallback(
     (
       path: string[],
@@ -120,63 +219,28 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
         set(newConfig as Record<string, unknown>, path, configValue);
       }
       setSchemaAndConfig([schema, newConfig]);
+      if (props.info.HasReactiveActions) {
+        performReactiveAction(newConfig, path, 'Changed');
+      }
     },
   );
-
-  const performAction = useEventCallback((path: (string | number)[], action: string) => {
-    performActionRemote({ config, path: pathToString(path), action }, {
-      onError(error) {
-        toast.error(`Failed to perform action "${action}" on ${JSON.stringify(path)}: ${error.message}`);
-      },
-      onSuccess(data) {
-        if (data.Redirect) {
-          if (data.Redirect.Location.startsWith('http://') || data.Redirect.Location.startsWith('https://')) {
-            if (!data.Redirect.OpenInNewTab) {
-              window.open(data.Redirect.Location, '_self', 'noopener,noreferrer');
-              // Return early because we can't show the toasts if we're opening
-              // the URL in the current window.
-              return;
-            }
-
-            window.open(data.Redirect.Location, '_blank', 'noopener,noreferrer');
-          } else if (data.Redirect.OpenInNewTab) {
-            try {
-              const url = new URL(data.Redirect.Location, window.location.href);
-              window.open(url.href, '_blank', 'noopener,noreferrer');
-            } catch (error) {
-              toast.error(`Failed to open "${data.Redirect.Location}"!}`);
-              console.error(
-                error,
-                `Failed to open "${data.Redirect.Location}": ${error instanceof Error ? error.message : error}`,
-              );
-            }
-          } else {
-            navigate(data.Redirect.Location);
-          }
-        }
-
-        if (data.ShowDefaultSaveMessage) {
-          toast.success(`Successfully saved configuration for "${schema.title}"`);
-        }
-        for (const { Message: message } of data.Messages) {
-          toast.info(message);
-        }
-      },
-    });
-  });
 
   const defaultSave = useEventCallback(() => {
     if (!hasChanged) return;
 
-    defaultSaveRemote(config, {
-      onError(error) {
-        toast.error(`Failed to save: ${error.message}`);
-      },
-      onSuccess() {
-        toast.success(`Successfully saved configuration for "${schema.title}"`);
-        if (props.onSave) props.onSave();
-      },
-    });
+    if (props.info.HasReactiveActions) {
+      performReactiveAction(config, [], 'Saved');
+    } else {
+      defaultSaveRemote(config, {
+        onError(error) {
+          toast.error(`Failed to save: ${error.message}`);
+        },
+        onSuccess() {
+          toast.success(`Successfully saved configuration for "${schema.title}"`);
+          if (props.onSave) props.onSave();
+        },
+      });
+    }
   });
 
   const [debouncedUnsavedChanges] = useDebounceValue(hasChanged, 100);
@@ -205,6 +269,13 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
     setSchemaAndConfig([props.schema, cloneDeep(props.config)]);
   }, [props.config, props.schema]);
 
+  useEffect(() => {
+    if (props.info.HasReactiveActions) {
+      performReactiveAction(props.config, [], 'Loaded');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.info.HasReactiveActions, props.configGuid]);
+
   const hideButtons =
     (schema['x-uiDefinition'] as Partial<SectionsConfigurationUiDefinitionType> | undefined)?.actions?.hideSaveAction
       ?? false;
@@ -232,7 +303,7 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
         restartPendingFor={props.info.RestartPendingFor}
         loadedEnvironmentVariables={props.info.LoadedEnvironmentVariables}
         advancedMode={showAdvancedSettings}
-        performAction={performAction}
+        performAction={performCustomAction}
         updateField={updateField}
         renderHeader={false}
         configHasChanged={hasChanged}

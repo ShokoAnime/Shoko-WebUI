@@ -16,9 +16,16 @@ export const useSaveConfigurationActionMutation = (configId: string) =>
 export const usePerformConfigurationActionMutation = (configId: string) =>
   useMutation({
     mutationKey: ['configuration', configId, 'action'],
-    mutationFn: ({ action, config, path }: { config: any, path: string, action: string }) =>
+    mutationFn: (
+      { actionName, actionType = 'Custom', config, path }: {
+        config: any;
+        path: string;
+        actionName?: string;
+        actionType?: 'Custom' | 'Saved' | 'Loaded' | 'Changed';
+      },
+    ) =>
       axios.post<any, ConfigurationActionResultType>(`/Configuration/${configId}/PerformAction`, config, {
-        params: { path, action },
+        params: { path, actionName, actionType },
       }),
-    onSuccess: data => data.RefreshConfiguration && invalidateQueries(['configuration', configId]),
+    onSuccess: data => data.Refresh && invalidateQueries(['configuration', configId]),
   });

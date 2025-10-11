@@ -1,4 +1,5 @@
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
+import type { Operation } from 'fast-json-patch';
 import type { JSONSchema4 } from 'json-schema';
 
 /**
@@ -147,10 +148,11 @@ export type CustomUiActionType = {
 };
 
 export type ConfigurationActionResultType = {
-  ShowDefaultSaveMessage: boolean;
-  RefreshConfiguration: boolean;
+  ShowSaveMessage: boolean;
+  Refresh: boolean;
   Messages: ConfigurationActionResultMessageType[];
   Redirect: ConfigurationActionRedirectType | null;
+  PatchOperations: Operation[] | null;
 };
 
 export type ConfigurationActionResultMessageType = {
