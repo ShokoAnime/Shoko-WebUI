@@ -358,7 +358,7 @@ const TmdbLinking = () => {
                   {seriesQuery.data.Name}
                 </div>
 
-                <div className="ml-2 shrink-0">
+                <div className="mx-1 shrink-0">
                   <Icon path={mdiOpenInNew} size={1} />
                 </div>
               </a>
@@ -392,31 +392,33 @@ const TmdbLinking = () => {
                             {tmdbShowOrMovieQuery.data.Title}
                           </div>
 
-                          <div className="ml-2 shrink-0">
+                          <div className="mx-1 shrink-0">
                             <Icon path={mdiOpenInNew} size={1} />
                           </div>
                         </a>
                         <div className="grow" />
-                        <div className="shrink-0">
-                          {showSettings
-                            ? (
-                              <>
-                                <TmdbShowSettingsModal
-                                  show={toggledSettingsModal}
-                                  showId={tmdbId}
-                                  onClose={toggleShowSettingsModal}
-                                />
-                                <Button onClick={toggleShowSettingsModal} tooltip="Open Settings">
-                                  <Icon className="text-panel-icon-action" path={mdiCogOutline} size={1} />
-                                </Button>
-                              </>
-                            )
-                            : null}
-                        </div>
+                        {showSettings
+                          ? (
+                            <>
+                              <TmdbShowSettingsModal
+                                show={toggledSettingsModal}
+                                showId={tmdbId}
+                                onClose={toggleShowSettingsModal}
+                              />
+                              <Button
+                                className="text-panel-icon-action"
+                                onClick={toggleShowSettingsModal}
+                                tooltip="Open Settings"
+                              >
+                                <Icon path={mdiCogOutline} size={1} />
+                              </Button>
+                            </>
+                          )
+                          : null}
                       </div>
                       {isNewLink && (
                         <Button
-                          className="text-panel-text-primary"
+                          className="ml-1 text-panel-text-primary"
                           onClick={handleNewLinkEdit}
                           tooltip="Edit Link"
                         >

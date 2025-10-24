@@ -591,8 +591,12 @@ const LinkFilesTab = () => {
           ])}
           key={`${link.FileID}-${link.EpisodeID}-${idx}-static`}
           onClick={() => updateSelectedLink(idx)}
+          data-tooltip-id="tooltip"
+          data-tooltip-content={path}
         >
-          {path}
+          <div className="line-clamp-1">
+            {path}
+          </div>
         </div>
       );
     });
@@ -613,9 +617,13 @@ const LinkFilesTab = () => {
           key={`${link.FileID}-${link.EpisodeID}-${idx}`}
           data-file-id={link.FileID}
           onClick={() => updateSelectedLink(idx)}
+          data-tooltip-id="tooltip"
+          data-tooltip-content={path}
         >
-          {path}
-          {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
+          <div className="line-clamp-1">
+            {path}
+            {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
+          </div>
         </div>,
       );
       if (episodes.length > 0) {
@@ -702,19 +710,32 @@ const LinkFilesTab = () => {
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeriesLoaded && (
-              <div className="flex rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-                AniDB |&nbsp;
+              <div className="flex items-center rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
+                <div className="shrink-0">
+                  AniDB |&nbsp;
+                </div>
                 <a
                   className="flex cursor-pointer font-semibold text-panel-text-primary"
                   href={`https://anidb.net/anime/${selectedSeries.ID}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-tooltip-id="tooltip"
+                  data-tooltip-content={selectedSeries.Title}
                 >
-                  {selectedSeries.ID}
-                  &nbsp;-&nbsp;
-                  {selectedSeries.Title}
-                  <Icon path={mdiOpenInNew} size={1} className="ml-3" />
+                  <div className="shrink-0">
+                    {selectedSeries.ID}
+                    &nbsp;-&nbsp;
+                  </div>
+
+                  <div className="line-clamp-1">
+                    {selectedSeries.Title}
+                  </div>
+
+                  <div className="mx-1 shrink-0">
+                    <Icon path={mdiOpenInNew} size={1} />
+                  </div>
                 </a>
+                <div className="grow" />
                 <Button
                   onClick={refreshSelectedSeries}
                   className="ml-auto text-panel-text-primary"
@@ -725,7 +746,7 @@ const LinkFilesTab = () => {
                 </Button>
                 <Button
                   onClick={editSelectedSeries}
-                  className="ml-2 text-panel-text-primary"
+                  className="ml-1 text-panel-text-primary"
                   tooltip="Edit Link"
                   disabled={isLinking}
                 >
