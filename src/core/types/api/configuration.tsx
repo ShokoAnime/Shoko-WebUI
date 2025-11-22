@@ -5,6 +5,7 @@ export type ConfigurationInfoType = {
   Name: string;
   Description: string | null;
   IsHidden: boolean;
+  IsBase: boolean;
   HasCustomNewFactory: boolean;
   HasCustomValidation: boolean;
   HasCustomActions: boolean;

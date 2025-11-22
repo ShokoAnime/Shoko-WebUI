@@ -8,9 +8,9 @@ import type { ConfigurationActionResultType } from '@/core/react-query/configura
 
 export const useSaveConfigurationActionMutation = (configId: string) =>
   useMutation({
-    mutationKey: ['configuration', configId, 'object'],
+    mutationKey: ['configuration', 'object', configId, 'object'],
     mutationFn: (config: any) => axios.put<any, void>(`/Configuration/${configId}`, config),
-    onSuccess: () => invalidateQueries(['configuration', configId]),
+    onSuccess: () => invalidateQueries(['configuration', 'object', configId]),
   });
 
 export const usePerformConfigurationActionMutation = (configId: string) =>
@@ -27,5 +27,5 @@ export const usePerformConfigurationActionMutation = (configId: string) =>
       axios.post<any, ConfigurationActionResultType>(`/Configuration/${configId}/PerformAction`, config, {
         params: { path, actionName, actionType },
       }),
-    onSuccess: data => data.Refresh && invalidateQueries(['configuration', configId]),
+    onSuccess: data => data.Refresh && invalidateQueries(['configuration', 'object', configId]),
   });
