@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-continue */
+
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
@@ -202,7 +204,6 @@ function LinkFilesTab() {
 
   const onEditUpdateReleases = useEventCallback((releases: Record<number, ReleaseInfoType>) => {
     const links = cloneDeep(state.links);
-    // eslint-disable-next-line no-nested-ternary
     const entries = Object.entries(releases).map(([id, release]) => [Number(id), release] as const).filter(([id]) =>
       !Number.isNaN(id)
     );
@@ -265,19 +266,6 @@ function LinkFilesTab() {
           Created: new Date().toISOString(),
           Updated: new Date().toISOString(),
         };
-        const anidbProviderIndex = releaseProviders.findIndex(provider =>
-          provider.Name === 'AniDB' && provider.Plugin.Name === 'Shoko Core'
-        );
-        if (anidbProviderIndex !== -1) {
-          const anidbProviderId = releaseProviders[anidbProviderIndex].ID;
-          releaseProviders.splice(anidbProviderIndex, 1);
-          if (releaseProviderOrder.includes(anidbProviderId)) {
-            releaseProviderOrder.splice(releaseProviderOrder.indexOf(anidbProviderId), 0, anidbProviderId);
-          }
-          if (enabledReleaseProviders.includes(anidbProviderId)) {
-            enabledReleaseProviders.splice(enabledReleaseProviders.indexOf(anidbProviderId), 0, anidbProviderId);
-          }
-        }
         const providers = releaseProviders
           .sort((providerA, providerB) => {
             const idA = providerA.ID;

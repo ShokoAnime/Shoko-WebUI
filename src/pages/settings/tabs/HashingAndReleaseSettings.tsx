@@ -58,20 +58,6 @@ function HashingAndReleaseSettings() {
       const webuiProviders = settingsQuery.data?.WebUI_Settings.linking.enabledReleaseProviders ?? [];
       const webuiProviderOrder = settingsQuery.data?.WebUI_Settings.linking.releaseProviderOrder ?? [];
 
-      const anidbProviderIndex = releaseProviders.findIndex(provider =>
-        provider.Name === 'AniDB' && provider.Plugin.Name === 'Shoko Core'
-      );
-      if (anidbProviderIndex !== -1) {
-        const anidbProviderId = releaseProviders[anidbProviderIndex].ID;
-        releaseProviders.splice(anidbProviderIndex, 1);
-        if (webuiProviderOrder.includes(anidbProviderId)) {
-          webuiProviderOrder.splice(webuiProviderOrder.indexOf(anidbProviderId), 0, anidbProviderId);
-        }
-        if (webuiProviders.includes(anidbProviderId)) {
-          webuiProviders.splice(webuiProviders.indexOf(anidbProviderId), 0, anidbProviderId);
-        }
-      }
-
       return releaseProviders
         .sort((providerA, providerB) => {
           const idA = providerA.ID;
@@ -223,13 +209,6 @@ function HashingAndReleaseSettings() {
   const updateWebuiReleaseInfoProviders = useEventCallback(
     async (providers: ReleaseProviderInfoType[]): Promise<void> => {
       const settings = cloneDeep(settingsQuery.data);
-      const anidbProviderIndex = providers.findIndex(provider =>
-        provider.Name === 'AniDB' && provider.Plugin.Name === 'Shoko Core'
-      );
-      if (anidbProviderIndex !== -1) {
-        providers.splice(anidbProviderIndex, 1);
-      }
-
       const { enabledReleaseProviders, releaseProviderOrder } = settings.WebUI_Settings.linking;
       enabledReleaseProviders.length = 0;
       releaseProviderOrder.length = 0;
