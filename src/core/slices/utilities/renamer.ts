@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { FileType } from '@/core/types/api/file';
-import type { RenamerResultType } from '@/core/types/api/renamer';
+import type { RelocationResultType } from '@/core/types/api/renamer';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
   files: FileType[];
-  renameResults: Record<number, RenamerResultType>;
+  renameResults: Record<number, RelocationResultType>;
 };
 
 const renamerSlice = createSlice({
@@ -28,16 +28,16 @@ const renamerSlice = createSlice({
     removeFiles(sliceState, action: PayloadAction<number[]>) {
       sliceState.files = sliceState.files.filter(file => !action.payload.includes(file.ID));
     },
-    updateFiles(sliceState, action: PayloadAction<RenamerResultType[]>) {
+    updateFiles(sliceState, action: PayloadAction<RelocationResultType[]>) {
       action.payload.forEach((result) => {
         const file = sliceState.files.find(item => item.ID === result.FileID);
-        if (!file) return;
+        if (!file || !result.IsSuccess) return;
         if (result.RelativePath) file.Locations[0].RelativePath = result.RelativePath;
         if (result.AbsolutePath) file.Locations[0].AbsolutePath = result.AbsolutePath;
         if (result.ManagedFolderID) file.Locations[0].ManagedFolderID = result.ManagedFolderID;
       });
     },
-    addRenameResults(sliceState, action: PayloadAction<Record<number, RenamerResultType>>) {
+    addRenameResults(sliceState, action: PayloadAction<Record<number, RelocationResultType>>) {
       sliceState.renameResults = {
         ...sliceState.renameResults,
         ...action.payload,

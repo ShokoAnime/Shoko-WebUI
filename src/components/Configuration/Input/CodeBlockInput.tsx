@@ -4,8 +4,10 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { resolveReference } from '@/core/schema';
+import { resolveReference, useReference } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
+import useVisibility from '@/components/Configuration/hooks/useVisibility';
+import useBadges from '@/components/Configuration/hooks/useBadges';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 import type { CodeEditorConfigurationUiDefinitionType } from '@/core/react-query/configuration/types';
@@ -16,6 +18,17 @@ const RenamerEditor = lazy(
 );
 
 function CodeBlockInput(props: AnySchemaProps): React.JSX.Element | null {
+  const { schema } = props;
+  const resolvedSchema = useReference(props.rootSchema, schema);
+  const visibility = useVisibility(
+    resolvedSchema,
+    props.parentConfig,
+    props.advancedMode,
+    props.loadedEnvironmentVariables,
+  );
+  const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);
+  const isDisabled = visibility === 'disabled';
+  const isReadOnly = visibility === 'read-only';
   const { uiDefinition } = useMemo(() => {
     const resolvedSchema = resolveReference(props.rootSchema, props.schema);
     return {
@@ -61,26 +74,38 @@ function CodeBlockInput(props: AnySchemaProps): React.JSX.Element | null {
 
   return (
     <div>
-      <div>
-        {props.schema.title}
-      </div>
       <div
-        className={cx('w-full flex overflow-hidden rounded-md border border-panel-border', size, 'bg-panel-background')}
+        className={cx(
+          'flex justify-between transition-opacity flex-col',
+          isDisabled && 'opacity-65',
+        )}
       >
-        <Suspense
-          fallback={
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} spin size={3} />
-            </div>
-          }
+        <span className="flex gap-x-1.5">
+          {props.schema.title}
+          {isReadOnly && <span className="self-center text-xs opacity-65">(Read-Only)</span>}
+          {badges}
+        </span>
+        <div
+          className={cx('w-full flex overflow-hidden rounded-md border border-panel-border', size, 'bg-panel-background')}
         >
-          <RenamerEditor
-            className="overflow-hidden rounded-md"
-            language={uiDefinition.codeLanguage.toLowerCase()}
-            defaultValue={defaultValue}
-            onChange={handleChange}
-          />
-        </Suspense>
+          <Suspense
+            fallback={
+              <div className="flex grow items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} spin size={3} />
+              </div>
+            }
+          >
+            <RenamerEditor
+              className="overflow-hidden rounded-md"
+              options={{
+                scrollBeyondLastLine: false,
+              }}
+              language={uiDefinition.codeLanguage.toLowerCase()}
+              defaultValue={defaultValue}
+              onChange={handleChange}
+            />
+          </Suspense>
+        </div>
       </div>
       <div className="mt-1 text-sm text-panel-text opacity-65">{props.schema.description}</div>
     </div>

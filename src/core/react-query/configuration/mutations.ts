@@ -6,7 +6,7 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { ConfigurationActionResultType } from '@/core/react-query/configuration/types';
 
-export const useSaveConfigurationActionMutation = (configId: string) =>
+export const useSaveConfigurationMutation = (configId: string) =>
   useMutation({
     mutationKey: ['configuration', 'object', configId, 'object'],
     mutationFn: (config: any) => axios.put<any, void>(`/Configuration/${configId}`, config),

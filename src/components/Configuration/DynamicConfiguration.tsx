@@ -3,7 +3,7 @@ import { mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { isEqual } from 'lodash';
 
-import { useSaveConfigurationActionMutation } from '@/core/react-query/configuration/mutations';
+import { useSaveConfigurationMutation } from '@/core/react-query/configuration/mutations';
 import { useConfigurationJsonSchemaQuery } from '@/core/react-query/configuration/queries';
 
 import ControlledConfigurationWithSchema from '@/components/Configuration/ControlledConfigurationWithSchema';
@@ -18,7 +18,7 @@ type DynamicConfigurationProps = {
 function DynamicConfiguration(props: DynamicConfigurationProps): React.JSX.Element {
   const { configGuid, onSave, setTitle } = props;
   const schemaQuery = useConfigurationJsonSchemaQuery(configGuid!, configGuid != null);
-  const { mutate: saveRemote } = useSaveConfigurationActionMutation(configGuid!);
+  const { mutate: saveRemote } = useSaveConfigurationMutation(configGuid!);
   const { config, info, schema } = schemaQuery.data ?? {};
   const [configState, setConfigState] = useState(config);
   const refSchema = useRef<JSONSchema4WithUiDefinition | undefined>(schema);

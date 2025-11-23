@@ -1,80 +1,80 @@
 import { useMutation } from '@tanstack/react-query';
-import { applyPatch } from 'fast-json-patch';
 
 import { axios } from '@/core/axios';
-import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { updateApiErrors, updateResults } from '@/core/react-query/renamer/helpers';
 
 import type {
-  RenamerConfigResponseType,
-  RenamerPatchRequestType,
-  RenamerPreviewRequestType,
-  RenamerRelocateRequestType,
+  CreateRelocationPipeRequestType,
+  ModifyRelocationPipeRequestType,
+  PreviewRelocateFilesRequestType,
+  RelocateFilesRequestType,
+  RelocationSettingsRequestType,
 } from '@/core/react-query/renamer/types';
-import type { RenamerConfigType, RenamerResultType } from '@/core/types/api/renamer';
+import type { RelocationPipeType, RelocationResultType } from '@/core/types/api/renamer';
 
-export const useRenamerPreviewMutation = () =>
-  useMutation<RenamerResultType[], unknown, RenamerPreviewRequestType>({
-    mutationFn: ({ move, rename, ...body }) => axios.post('Renamer/Preview', body, { params: { move, rename } }),
+export const useRelocationSettingsMutation = () =>
+  useMutation<void, unknown, RelocationSettingsRequestType>({
+    mutationKey: ['relocation', 'settings'],
+    mutationFn: settings => axios.put('Relocation/Settings', settings),
+    onSuccess: () => invalidateQueries(['relocation', 'summary']),
+  });
+
+export const usePreviewFilesMutation = () =>
+  useMutation<RelocationResultType[], unknown, PreviewRelocateFilesRequestType>({
+    mutationFn: ({ move, rename, ...body }) => axios.post('Relocation/Preview', body, { params: { move, rename } }),
     onSuccess: updateResults,
     onError: updateApiErrors,
   });
 
-export const useRenamerRelocateMutation = () =>
-  useMutation<RenamerResultType[], unknown, RenamerRelocateRequestType>({
+export const useRelocateFilesWithPipeMutation = () =>
+  useMutation<RelocationResultType[], unknown, RelocateFilesRequestType>({
     mutationFn: (
-      { FileIDs, configName, deleteEmptyDirectories, move, rename },
+      { fileIDs, pipeId, deleteEmptyDirectories, move, rename },
     ) =>
-      axios.post(`Renamer/Config/${encodeURIComponent(configName)}/Relocate`, FileIDs, {
+      axios.post<unknown, RelocationResultType[]>(`Relocation/Pipe/${pipeId}/Relocate`, fileIDs, {
         params: { deleteEmptyDirectories, move, rename },
-      }),
-    onSuccess: updateResults,
-    onError: updateApiErrors,
+      })
+        .catch((err) => fileIDs.map<RelocationResultType>((fileId) =>
+            typeof err === 'object' && err && err instanceof Error
+              ? ({
+                IsSuccess: false,
+                IsPreview: undefined,
+                FileID: fileId,
+                ErrorMessage: 'Web UI Error; ' + err.message,
+              })
+              : ({
+                IsSuccess: false,
+                IsPreview: undefined,
+                FileID: fileId,
+                ErrorMessage: 'Web UI Error; An unknown error occurred.',
+              }),
+          ),
+        ),
   });
 
-export const useRenamerDeleteConfigMutation = () =>
+export const useDeleteRelocationPipeMutation = () =>
   useMutation({
-    mutationFn: (configName: string) => axios.delete(`Renamer/Config/${encodeURIComponent(configName)}`),
-    onSuccess: () => invalidateQueries(['renamer']),
+    mutationFn: (pipeId: string) => axios.delete(`Relocation/Pipe/${pipeId}`),
+    onSuccess: () => invalidateQueries(['relocation', 'pipe']),
   });
 
-export const useRenamerSaveConfigMutation = () =>
+export const useSaveRelocationPipeMutation = () =>
+  useMutation<RelocationPipeType, unknown, ModifyRelocationPipeRequestType>({
+    mutationFn: ({ pipeId, ...pipe }: ModifyRelocationPipeRequestType) =>
+      axios.put(`Relocation/Pipe/${pipeId}`, pipe),
+    onSuccess: () => invalidateQueries(['relocation', 'pipe']),
+  });
+
+export const useSaveRelocationPipeConfigurationMutation = (pipeId: string) =>
   useMutation({
-    mutationFn: (config: RenamerConfigResponseType) =>
-      axios.put(`Renamer/Config/${encodeURIComponent(config.Name)}`, config),
-    onSuccess: () => invalidateQueries(['renamer']),
+    mutationKey: ['relocation', 'pipe', pipeId, 'configuration'],
+    mutationFn: (config: any) => axios.put<any, void>(`Relocation/Pipe/${pipeId}/Configuration`, config),
+    onSuccess: () => invalidateQueries(['relocation', 'pipe', pipeId]),
   });
 
-export const useRenamerPatchConfigMutation = () =>
-  useMutation<RenamerConfigType, unknown, RenamerPatchRequestType>({
-    mutationFn: ({ configName, operations }) =>
-      axios.patch(`Renamer/Config/${encodeURIComponent(configName)}`, operations),
-    onMutate: ({ configName, operations }) => {
-      const data = queryClient.getQueryData<RenamerConfigType[]>(['renamer', 'config'])?.slice();
-      if (!data) return;
-
-      const configIndex = data.findIndex(config => config.Name === configName);
-      data[configIndex] = applyPatch(data[configIndex], operations).newDocument;
-
-      // Side effects are not triggered if it's not set to [] first
-      // There is someting wrong with how tanstack query's structural sharing works
-      queryClient.setQueryData(['renamer', 'config'], []);
-      queryClient.setQueryData(['renamer', 'config'], data);
-    },
-    onSuccess: () => {
-      invalidateQueries(['renamer']);
-      invalidateQueries(['settings']);
-    },
-  });
-
-export const useRenamerNewConfigMutation = () =>
-  useMutation<unknown, unknown, RenamerConfigResponseType>({
-    mutationFn: config => axios.post('Renamer/Config', config),
-    onMutate: (config) => {
-      queryClient.setQueryData(
-        ['renamer', 'config'],
-        (data: RenamerConfigType[]) => [...data, config],
-      );
-    },
-    onSuccess: () => invalidateQueries(['renamer']),
+export const useCreateRelocationPipeMutation = () =>
+  useMutation<RelocationPipeType, unknown, CreateRelocationPipeRequestType>({
+    mutationFn: config => axios.post('Relocation/Pipe', config),
+    onSuccess: () => invalidateQueries(['relocation', 'pipe']),
   });

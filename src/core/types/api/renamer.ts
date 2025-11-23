@@ -1,68 +1,42 @@
-export type RenamerType = {
-  RenamerID: string;
-  Version?: string;
+import type { ConfigurationInfoType } from "./configuration";
+import type { PluginInfoType } from "./plugin";
+
+export type RelocationProviderInfoType = {
+  ID: string;
+  Version: string;
   Name: string;
-  Description: string;
-  Enabled: boolean;
-  DefaultSettings?: RenamerConfigSettingsType[];
-  Settings?: Record<string, RenamerSettingsType>;
+  Description: string | null;
+  SupportsUnrecognized: boolean;
+  SupportsIncompleteMetadata: boolean;
+  SupportsMoving: boolean;
+  SupportsRenaming: boolean;
+  Configuration: ConfigurationInfoType | null;
+  Plugin: PluginInfoType;
 };
 
-export type RenamerSettingsType = {
+export type RelocationPipeType = {
+  ID: string;
+  ProviderID: string;
   Name: string;
-  Type: string;
-  Description?: string;
-  Language?: CodeLanguageType;
-  SettingType: SettingTypeType;
-  MinimumValue?: number;
-  MaximumValue?: number;
+  IsDefault: boolean;
+  IsUsable: boolean;
+  HasConfiguration: boolean;
+  Provider: RelocationProviderInfoType | null;
 };
 
-type CodeLanguageType =
-  | 'PlainText'
-  | 'CSharp'
-  | 'Java'
-  | 'JavaScript'
-  | 'TypeScript'
-  | 'Lua'
-  | 'Python'
-  | 'Ini'
-  | 'Json'
-  | 'Yaml'
-  | 'Xml';
-
-type SettingTypeType =
-  | 'Auto'
-  | 'Code'
-  | 'Text'
-  | 'LargeText'
-  | 'Integer'
-  | 'Decimal'
-  | 'Boolean';
-
-export type RenamerConfigSettingsType = {
-  Name: string;
-  Value: string | number | boolean;
-};
-
-export type RenamerConfigBaseType = {
-  RenamerID: string;
-  Name: string;
-};
-
-export type RenamerConfigType = RenamerConfigBaseType & {
-  Settings?: Record<string, RenamerConfigSettingsType>;
-};
-
-export type RenamerResultType = {
+export type RelocationResultType = {
   FileID: number;
-  FileLocationID?: number;
-  ConfigName?: string;
-  ManagedFolderID?: number;
-  IsSuccess: boolean;
-  IsRelocated?: boolean;
-  IsPreview?: boolean;
-  ErrorMessage?: string;
-  RelativePath?: string;
-  AbsolutePath?: string;
+  FileLocationID: number | undefined;
+  IsSuccess: true;
+  IsPreview: true | undefined;
+  PipeName?: string;
+  IsRelocated: boolean;
+  ManagedFolderID: number;
+  RelativePath: string;
+  AbsolutePath: string;
+} | {
+  FileID: number;
+  IsSuccess: false;
+  IsPreview: true | undefined;
+  ErrorMessage: string;
 };

@@ -355,7 +355,7 @@ function TopNav() {
               icon={mdiFileDocumentEditOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/renamer"
-              text="File Rename"
+              text="Rename/Move Files"
             />
           </div>
         </AnimateHeight>

@@ -8,6 +8,7 @@ type Props = {
   children: React.ReactNode;
   options?: React.ReactNode;
   className?: string;
+  optionsClassName?: string;
   isFetching?: boolean;
   editMode?: boolean;
   fullHeight?: boolean;
@@ -22,6 +23,7 @@ const ShokoPanel = (
     children,
     className,
     contentClassName,
+    optionsClassName,
     disableOverflow = false,
     editMode,
     fullHeight = true,
@@ -45,7 +47,7 @@ const ShokoPanel = (
     <div className="flex flex-wrap items-center justify-between">
       <span className="flex text-xl font-semibold">{title}</span>
       <div
-        className="flex"
+        className={cx('flex', optionsClassName)}
         onMouseDown={event => event.stopPropagation()}
         onTouchStart={event => event.stopPropagation()}
       >

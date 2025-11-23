@@ -27,6 +27,7 @@ export type ControlledConfigurationWithSchemaProps = {
   hasChanged: boolean;
   configGuid: string;
   setTitle?: boolean;
+  baseConfig?: boolean;
   save: UseMutateFunction<void, Error, any, unknown>;
   setConfig: (config: unknown) => void;
   onSave?: () => void;
@@ -76,7 +77,7 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
           props.setConfig(newConfig);
         }
         if (data.ShowSaveMessage) {
-          toast.success(`Successfully saved configuration for "${props.schema.title}"`);
+          if (!props.baseConfig) toast.success(`Successfully saved configuration for "${props.schema.title}"`);
           if (props.onSave) props.onSave();
         }
         for (const { Message: message } of data.Messages) {
@@ -125,7 +126,7 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
             props.setConfig(newerConfig);
           }
           if (data.ShowSaveMessage) {
-            toast.success(`Successfully saved configuration for "${props.schema.title}"`);
+            if (!props.baseConfig) toast.success(`Successfully saved configuration for "${props.schema.title}"`);
             if (props.onSave) props.onSave();
           }
           for (const { Message: message } of data.Messages) {
@@ -189,7 +190,7 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
   const defaultSave = useEventCallback(() => {
     if (!props.hasChanged) return;
 
-    if (props.info.HasReactiveActions) {
+    if (!props.baseConfig && props.info.HasReactiveActions) {
       performReactiveAction(props.config, [], 'Saved');
     } else {
       props.save(props.config, {
@@ -197,7 +198,7 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
           toast.error(`Failed to save: ${error.message}`);
         },
         onSuccess() {
-          toast.success(`Successfully saved configuration for "${props.schema.title}"`);
+          if (!props.baseConfig) toast.success(`Successfully saved configuration for "${props.schema.title}"`);
           if (props.onSave) props.onSave();
         },
       });
@@ -213,12 +214,14 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
       return;
     }
 
+    // Don't show changed toast for base configurations.
+    if (props.baseConfig) return;
     toastId.current = toast.info(
       `Unsaved Changes for "${props.schema.title}"`,
       'Please save before leaving this page.',
       { autoClose: false, position: 'top-right' },
     );
-  }, [debouncedUnsavedChanges, props.schema.title]);
+  }, [debouncedUnsavedChanges, props.schema.title, props.baseConfig]);
 
   useEffect(() => () => {
     if (toastId.current) toast.dismiss(toastId.current);
@@ -242,7 +245,7 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
 
   return (
     <>
-      {props.setTitle && (
+      {!props.baseConfig && props.setTitle && (
         <>
           <title>{`Settings > Plugin > ${props.schema.title} | Shoko`}</title>
           <div className="flex flex-col gap-y-1">

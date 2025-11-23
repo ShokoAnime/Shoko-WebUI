@@ -1,35 +1,42 @@
-import type {
-  RenamerConfigBaseType,
-  RenamerConfigSettingsType,
-  RenamerSettingsType,
-  RenamerType,
-} from '@/core/types/api/renamer';
-import type { Operation } from 'fast-json-patch';
 
-export type RenamerResponseType = RenamerType & {
-  Settings?: RenamerSettingsType[];
+export type RelocationSummaryResponseType = {
+  RenameOnImport: boolean;
+  MoveOnImport: boolean;
+  AllowRelocationInsideDestinationOnImport: boolean;
+  ProviderCount: number;
 };
 
-export type RenamerConfigResponseType = RenamerConfigBaseType & {
-  Settings?: RenamerConfigSettingsType[];
+export type RelocationSettingsRequestType = {
+  RenameOnImport?: boolean;
+  MoveOnImport?: boolean;
+  AllowRelocationInsideDestinationOnImport?: boolean;
 };
 
-export type RenamerRelocateBaseRequestType = {
+export type BaseRelocateFilesRequestType = {
+  fileIDs: number[];
   move?: boolean;
   rename?: boolean;
-  FileIDs: number[];
 };
 
-export type RenamerPreviewRequestType = RenamerRelocateBaseRequestType & {
-  Config: RenamerConfigResponseType;
+export type CreateRelocationPipeRequestType = {
+  providerId: string;
+  name: string;
+  isDefault?: boolean;
+  configuration?: unknown;
 };
 
-export type RenamerRelocateRequestType = RenamerRelocateBaseRequestType & {
-  configName: string;
+export type ModifyRelocationPipeRequestType = {
+  pipeId: string;
+  name?: string;
+  isDefault?: boolean;
+};
+
+export type PreviewRelocateFilesRequestType = BaseRelocateFilesRequestType & {
+  providerId: string;
+  configuration: unknown;
+};
+
+export type RelocateFilesRequestType = BaseRelocateFilesRequestType & {
+  pipeId: string;
   deleteEmptyDirectories?: boolean;
-};
-
-export type RenamerPatchRequestType = {
-  configName: string;
-  operations: Operation[];
 };
