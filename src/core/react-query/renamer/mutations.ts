@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import { updateApiErrors, updateResults } from '@/core/react-query/renamer/helpers';
+import { updateApiErrors, updateErrorResults, updatePreviewResults } from '@/core/react-query/renamer/helpers';
 
 import type {
   CreateRelocationPipeRequestType,
@@ -23,7 +23,7 @@ export const useRelocationSettingsMutation = () =>
 export const usePreviewFilesMutation = () =>
   useMutation<RelocationResultType[], unknown, PreviewRelocateFilesRequestType>({
     mutationFn: ({ move, rename, ...body }) => axios.post('Relocation/Preview', body, { params: { move, rename } }),
-    onSuccess: updateResults,
+    onSuccess: updatePreviewResults,
     onError: updateApiErrors,
   });
 
@@ -51,6 +51,7 @@ export const useRelocateFilesWithPipeMutation = () =>
               }),
           ),
         ),
+      onSuccess: updateErrorResults,
   });
 
 export const useDeleteRelocationPipeMutation = () =>

@@ -4,7 +4,7 @@ import store from '@/core/store';
 import type { BaseRelocateFilesRequestType } from '@/core/react-query/renamer/types';
 import type { RelocationResultType } from '@/core/types/api/renamer';
 
-export const updateResults = (response: RelocationResultType[]) => {
+export const updatePreviewResults = (response: RelocationResultType[]) => {
   const mappedResults = response.reduce(
     (result, preview) => (
       {
@@ -15,11 +15,20 @@ export const updateResults = (response: RelocationResultType[]) => {
     {} as Record<number, RelocationResultType>,
   );
   store.dispatch(addRenameResults(mappedResults));
+};
 
-  // Check if called from preview or relocate endpoint
-  // If one of them is a preview, then all are previews
-  // It is not possible to have mixed previews and final results
-  if (!response[0].IsPreview) store.dispatch(updateFiles(response));
+export const updateErrorResults = (response: RelocationResultType[]) => {
+  const mappedResults = response.filter(r => !r.IsSuccess).reduce(
+    (result, preview) => (
+      {
+        ...result,
+        [preview.FileID]: preview,
+      }
+    ),
+    {} as Record<number, RelocationResultType>,
+  );
+  store.dispatch(addRenameResults(mappedResults));
+  store.dispatch(updateFiles(response));
 };
 
 export const updateApiErrors = (err: Error, args: BaseRelocateFilesRequestType) => {
