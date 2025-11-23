@@ -1,4 +1,3 @@
-
 export type RelocationSummaryResponseType = {
   RenameOnImport: boolean;
   MoveOnImport: boolean;

@@ -1,14 +1,25 @@
 import React, { useMemo, useState } from 'react';
-import { mdiCrownCircleOutline, mdiDeleteCircleOutline, mdiPencilCircleOutline, mdiPlusCircleMultipleOutline, mdiPlusCircleOutline } from "@mdi/js";
-import Icon from "@mdi/react";
+import {
+  mdiCrownCircleOutline,
+  mdiDeleteCircleOutline,
+  mdiPencilCircleOutline,
+  mdiPlusCircleMultipleOutline,
+  mdiPlusCircleOutline,
+} from '@mdi/js';
+import Icon from '@mdi/react';
 import cx from 'classnames';
 
-import { axios } from '@/core/axios';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useCreateRelocationPipeMutation, useDeleteRelocationPipeMutation, useSaveRelocationPipeMutation } from '@/core/react-query/renamer/mutations';
+import toast from '@/components/Toast';
+import { axios } from '@/core/axios';
+import {
+  useCreateRelocationPipeMutation,
+  useDeleteRelocationPipeMutation,
+  useSaveRelocationPipeMutation,
+} from '@/core/react-query/renamer/mutations';
 import { useRelocationPipesQuery, useRelocationProvidersQuery } from '@/core/react-query/renamer/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -25,9 +36,9 @@ const ConfigModal = (props: Props) => {
   const { changeSelectedPipe, onClose, pipe: inUsePipe, show } = props;
   const providers = useRelocationProvidersQuery(show).data;
   const pipes = useRelocationPipesQuery(show).data;
-  const { mutateAsync: deleteConfig } = useDeleteRelocationPipeMutation();
-  const { mutateAsync: createConfig } = useCreateRelocationPipeMutation();
-  const { mutateAsync: updatePipe } = useSaveRelocationPipeMutation();
+  const { mutate: deleteConfig } = useDeleteRelocationPipeMutation();
+  const { mutate: createConfig } = useCreateRelocationPipeMutation();
+  const { mutate: updatePipe } = useSaveRelocationPipeMutation();
   const [selectedProviderId, setSelectedProviderId] = useState('');
   const [selectedPipeId, setSelectedPipeId] = useState<string | null>(null);
   const selectedPipe = useMemo(() => pipes?.find(pipe => pipe.ID === selectedPipeId) ?? null, [
@@ -101,18 +112,24 @@ const ConfigModal = (props: Props) => {
     }
   });
 
-  const handleCopy = useEventCallback(async () => {
+  const handleCopy = useEventCallback(() => {
     if (!selectedPipe) return;
-    const config = await axios.get<unknown, unknown>(`Relocation/Pipe/${selectedPipe.ID}/Configuration`)
-      .catch(() => null);
-    createConfig({ providerId: selectedPipe.ProviderID, name: selectedPipe.Name, configuration: config }, {
-      onSuccess: (pipe) => {
-        setMode(null);
-        setSelectedPipeId(pipe.ID);
-        setSelectedProviderId(pipe.ProviderID);
-        setPipeName(pipe.Name);
-      },
-    });
+    axios.get<unknown, unknown>(`Relocation/Pipe/${selectedPipe.ID}/Configuration`)
+      .catch(() => null)
+      .then(config =>
+        createConfig({ providerId: selectedPipe.ProviderID, name: selectedPipe.Name, configuration: config }, {
+          onSuccess: (pipe) => {
+            setMode(null);
+            setSelectedPipeId(pipe.ID);
+            setSelectedProviderId(pipe.ProviderID);
+            setPipeName(pipe.Name);
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error('Failed to copy config!', error.message);
+          },
+        })
+      ).catch(() => undefined);
   });
 
   const handleDelete = useEventCallback(() => {
@@ -127,6 +144,10 @@ const ConfigModal = (props: Props) => {
         setSelectedProviderId('');
         setPipeName('');
       },
+      onError: (error) => {
+        console.error(error);
+        toast.error('Failed to delete config!', error.message);
+      },
     });
   });
 
@@ -138,6 +159,10 @@ const ConfigModal = (props: Props) => {
         setSelectedProviderId(pipe.ProviderID);
         setPipeName(pipe.Name);
       },
+      onError: (error) => {
+        console.error(error);
+        toast.error('Failed to update config!', error.message);
+      },
     });
   });
 
@@ -148,6 +173,10 @@ const ConfigModal = (props: Props) => {
         setSelectedPipeId(pipe.ID);
         setSelectedProviderId(pipe.ProviderID);
         setPipeName(pipe.Name);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error('Failed to create config!', error.message);
       },
     });
   });
@@ -165,7 +194,7 @@ const ConfigModal = (props: Props) => {
 
   const handleCreateModeToggle = useEventCallback(() => {
     const provider = defaultPipeId
-      ? pipes!.find(provider => provider.ID === defaultPipeId)!.ProviderID
+      ? pipes!.find(pipe => pipe.ID === defaultPipeId)!.ProviderID
       : providers?.[0]?.ID ?? '';
     setMode('create');
     setSelectedPipeId(null);
@@ -201,21 +230,14 @@ const ConfigModal = (props: Props) => {
       );
     }
     if (selectedPipe) {
-      return (
-        <Button key="cancel" onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
-      );
+      return <Button key="cancel" onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>;
     }
-    return (
-      <Button key="close" onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Close</Button>
-    );
+    return <Button key="close" onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Close</Button>;
   }, [
-    defaultPipeId,
     canCreate,
     changed,
-    handleSetDefault,
     handleCancel,
     handleCreate,
-    handleDelete,
     handleSave,
     mode,
     selectedPipe,
@@ -236,16 +258,32 @@ const ConfigModal = (props: Props) => {
             Configurations
           </div>
           <div className="flex gap-x-2">
-            <Button onClick={handleDelete} disabled={!!mode || !selectedPipe || selectedPipe.ID === defaultPipeId} tooltip={!mode && selectedPipe && !selectedPipe.IsDefault ? 'Delete Config' : ''}>
+            <Button
+              onClick={handleDelete}
+              disabled={!!mode || !selectedPipe || selectedPipe.ID === defaultPipeId}
+              tooltip={!mode && selectedPipe && !selectedPipe.IsDefault ? 'Delete Config' : ''}
+            >
               <Icon className="text-panel-icon-danger" path={mdiDeleteCircleOutline} size={1} />
             </Button>
-            <Button onClick={handleSetDefault} disabled={!!mode || !selectedPipe || selectedPipe.ID === defaultPipeId} tooltip={!mode && selectedPipe && !selectedPipe.IsDefault ? 'Set As Default Config' : ''}>
+            <Button
+              onClick={handleSetDefault}
+              disabled={!!mode || !selectedPipe || selectedPipe.ID === defaultPipeId}
+              tooltip={!mode && selectedPipe && !selectedPipe.IsDefault ? 'Set As Default Config' : ''}
+            >
               <Icon className="text-panel-icon-action" path={mdiCrownCircleOutline} size={1} />
             </Button>
-            <Button onClick={handleEditModeToggle} disabled={!!mode || !selectedPipe} tooltip={!mode && selectedPipe ? 'Rename Config' : ''}>
+            <Button
+              onClick={handleEditModeToggle}
+              disabled={!!mode || !selectedPipe}
+              tooltip={!mode && selectedPipe ? 'Rename Config' : ''}
+            >
               <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
             </Button>
-            <Button onClick={handleCopy} disabled={!!mode || !selectedPipe} tooltip={!mode && selectedPipe ? 'Copy Config' : ''}>
+            <Button
+              onClick={handleCopy}
+              disabled={!!mode || !selectedPipe}
+              tooltip={!mode && selectedPipe ? 'Copy Config' : ''}
+            >
               <Icon className="text-panel-icon-action" path={mdiPlusCircleMultipleOutline} size={1} />
             </Button>
             <Button onClick={handleCreateModeToggle} disabled={!!mode} tooltip={!mode ? 'Create New Config' : ''}>
@@ -268,7 +306,7 @@ const ConfigModal = (props: Props) => {
                 selectedPipe?.ID === pipe.ID && 'text-panel-text-important',
               )}
             >
-              <span className="text-start flex flex-row items-center gap-1">
+              <span className="flex flex-row items-center gap-1 text-start">
                 {pipe.Name}
                 {pipe.IsDefault && <Icon path={mdiCrownCircleOutline} size={0.75} />}
               </span>
@@ -292,10 +330,8 @@ const ConfigModal = (props: Props) => {
           onChange={event => setSelectedProviderId(event.target.value)}
           disabled={mode !== 'create'}
         >
-          {(mode !== 'create' || providers?.length === 0) && (
-            <option key="" value="">
-            </option>
-          )}
+          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+          {(mode !== 'create' || providers?.length === 0) && <option key="" value="" />}
           {providers?.map(provider => (
             <option key={provider.ID} value={provider.ID}>
               {`${provider.Name} - ${provider.Version}`}

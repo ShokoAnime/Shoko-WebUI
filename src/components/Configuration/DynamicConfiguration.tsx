@@ -3,11 +3,11 @@ import { mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { isEqual } from 'lodash';
 
+import ControlledConfigurationWithSchema from '@/components/Configuration/ControlledConfigurationWithSchema';
 import { useSaveConfigurationMutation } from '@/core/react-query/configuration/mutations';
 import { useConfigurationJsonSchemaQuery } from '@/core/react-query/configuration/queries';
 
-import ControlledConfigurationWithSchema from '@/components/Configuration/ControlledConfigurationWithSchema';
-import { JSONSchema4WithUiDefinition } from "@/core/react-query/configuration/types";
+import type { JSONSchema4WithUiDefinition } from '@/core/react-query/configuration/types';
 
 type DynamicConfigurationProps = {
   configGuid: string | undefined | null;

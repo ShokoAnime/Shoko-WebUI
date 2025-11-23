@@ -12,13 +12,13 @@ import { assertIsNullable, pathToString } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
 import useNavigate from '@/hooks/useNavigateVoid';
 
-import type { UseMutateFunction } from "@tanstack/react-query";
 import type {
   JSONSchema4WithUiDefinition,
   SectionsConfigurationUiDefinitionType,
 } from '@/core/react-query/configuration/types';
 import type { RootState } from '@/core/store';
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
+import type { UseMutateFunction } from '@tanstack/react-query';
 
 export type ControlledConfigurationWithSchemaProps = {
   schema: JSONSchema4WithUiDefinition;
@@ -28,7 +28,7 @@ export type ControlledConfigurationWithSchemaProps = {
   configGuid: string;
   setTitle?: boolean;
   baseConfig?: boolean;
-  save: UseMutateFunction<void, Error, any, unknown>;
+  save: UseMutateFunction<void, Error, unknown, unknown>;
   setConfig: (config: unknown) => void;
   onSave?: () => void;
 };
@@ -240,7 +240,8 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
   }, [props.info.HasReactiveActions, props.configGuid]);
 
   const hideButtons =
-    (props.schema['x-uiDefinition'] as Partial<SectionsConfigurationUiDefinitionType> | undefined)?.actions?.hideSaveAction
+    (props.schema['x-uiDefinition'] as Partial<SectionsConfigurationUiDefinitionType> | undefined)?.actions
+      ?.hideSaveAction
       ?? false;
 
   return (

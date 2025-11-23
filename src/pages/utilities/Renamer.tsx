@@ -20,6 +20,7 @@ import cx from 'classnames';
 import { chunk, find, isEqual } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
+import ControlledConfigurationWithSchema from '@/components/Configuration/ControlledConfigurationWithSchema';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Select from '@/components/Input/Select';
@@ -35,18 +36,21 @@ import {
   useRelocateFilesWithPipeMutation,
   useSaveRelocationPipeConfigurationMutation,
 } from '@/core/react-query/renamer/mutations';
-import { useRelocationPipeConfigurationJsonSchemaQuery, useRelocationPipesQuery, useRelocationSummaryQuery } from '@/core/react-query/renamer/queries';
+import {
+  useRelocationPipeConfigurationJsonSchemaQuery,
+  useRelocationPipesQuery,
+  useRelocationSummaryQuery,
+} from '@/core/react-query/renamer/queries';
 import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
 import useEventCallback from '@/hooks/useEventCallback';
 import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
-import ControlledConfigurationWithSchema from "@/components/Configuration/ControlledConfigurationWithSchema";
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
+import type { JSONSchema4WithUiDefinition } from '@/core/react-query/configuration/types';
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 import type { RelocationPipeType, RelocationResultType } from '@/core/types/api/renamer';
-import type { JSONSchema4WithUiDefinition } from "@/core/react-query/configuration/types";
 
 const getFileColumn = (managedFolders: ManagedFolderType[]) => ({
   id: 'filename',
@@ -212,6 +216,116 @@ const getStatusColumn = (
   },
 } as UtilityHeaderType<FileType>);
 
+type PanelOptionsProps = {
+  successCount: number;
+  errorCount: number;
+  addedFiles: number;
+  selectedRows: number;
+  isRenaming: boolean;
+  selectedPipe: RelocationPipeType | null;
+  changeSelectedPipe: (pipeId: string | undefined) => void;
+  toggleSettings: () => void;
+  toggleConfigModal: () => void;
+};
+
+const PanelOptions = React.memo((props: PanelOptionsProps) => {
+  const {
+    addedFiles,
+    changeSelectedPipe,
+    errorCount,
+    isRenaming,
+    selectedPipe,
+    selectedRows,
+    successCount,
+    toggleConfigModal,
+    toggleSettings,
+  } = props;
+  const relocationPipesQuery = useRelocationPipesQuery();
+  return (
+    <>
+      <div className="text-lg font-semibold">
+        {((successCount + errorCount) > 0 || isRenaming) && (
+          <>
+            <span>
+              <span className="text-panel-text-important">
+                {successCount}
+              </span>
+              &nbsp;Successful
+            </span>
+            <span>&nbsp;|&nbsp;</span>
+            <span>
+              <span className="text-panel-text-danger">
+                {errorCount}
+              </span>
+              &nbsp;Failure
+            </span>
+            <span>&nbsp;|&nbsp;</span>
+          </>
+        )}
+        <span>
+          <span className="text-panel-text-important">
+            {addedFiles}
+            &nbsp;
+          </span>
+          {addedFiles === 1 ? 'File' : 'Files'}
+        </span>
+        {selectedRows > 0 && (
+          <>
+            <span>&nbsp;|&nbsp;</span>
+            <span>
+              <span className="text-panel-text-important">
+                {selectedRows}
+                &nbsp;
+              </span>
+              Selected
+            </span>
+          </>
+        )}
+      </div>
+      <Button
+        buttonType="secondary"
+        buttonSize="normal"
+        tooltip={selectedPipe?.Provider?.Configuration ? 'Modify Renamer Settings' : ''}
+        className="flex h-13 items-center"
+        onClick={toggleSettings}
+        disabled={!relocationPipesQuery.isSuccess || !selectedPipe?.Provider?.Configuration}
+      >
+        <Icon path={mdiCogOutline} size={1} />
+      </Button>
+      <Button
+        buttonType="secondary"
+        buttonSize="normal"
+        tooltip="Manage Renamer Configurations"
+        className="flex h-13 items-center"
+        onClick={toggleConfigModal}
+        disabled={!relocationPipesQuery.isSuccess}
+      >
+        <Icon path={mdiPencil} size={1} />
+      </Button>
+      <Select
+        id="selected-relocation-pipe"
+        className="w-96"
+        value={selectedPipe?.ID ?? ''}
+        onChange={event => changeSelectedPipe(event.target.value)}
+      >
+        {relocationPipesQuery.data?.map(pipe => (
+          <option key={pipe.ID} value={pipe.ID}>
+            {pipe.Provider
+              ? `${pipe.Name} (${pipe.Provider.Name} - ${pipe.Provider.Version})`
+              : `${pipe.Name} (<Unknown>)`}
+          </option>
+        ))}
+
+        {!relocationPipesQuery.data?.length && (
+          <option key="na" value="na">
+            No relocation pipes found!
+          </option>
+        )}
+      </Select>
+    </>
+  );
+});
+
 const Renamer = () => {
   const dispatch = useDispatch();
 
@@ -219,7 +333,7 @@ const Renamer = () => {
   const managedFoldersQuery = useManagedFoldersQuery();
   const relocationPipesQuery = useRelocationPipesQuery();
 
-  const { isPending: relocatePending, mutate: relocateFiles } = useRelocateFilesWithPipeMutation();
+  const { isPending: relocatePending, mutateAsync: relocateFiles } = useRelocateFilesWithPipeMutation();
   const { isPending: previewPending, mutateAsync: previewFiles } = usePreviewFilesMutation();
 
   const addedFiles = useSelector((state: RootState) => state.utilities.renamer.files);
@@ -227,10 +341,11 @@ const Renamer = () => {
 
   const [isRenaming, setIsRenaming] = useState(false);
   const [selectedPipe, setSelectedPipe] = useState<RelocationPipeType | null>(null);
-  const [{ successCount, errorCount }, setCounts] = useState({ successCount: 0, errorCount: 0 });
+  const [{ errorCount, successCount }, setCounts] = useState({ successCount: 0, errorCount: 0 });
 
-  const { config: pipeConfig, info: pipeInfo, schema: pipeSchema } = useRelocationPipeConfigurationJsonSchemaQuery(selectedPipe?.ID).data ?? {};
-  const { mutate: savePipeConfig } = useSaveRelocationPipeConfigurationMutation(selectedPipe?.ID!);
+  const { config: pipeConfig, info: pipeInfo, schema: pipeSchema } =
+    useRelocationPipeConfigurationJsonSchemaQuery(selectedPipe?.ID).data ?? {};
+  const { mutate: savePipeConfig } = useSaveRelocationPipeConfigurationMutation(selectedPipe?.ID);
   const [config, setConfig] = useState(pipeConfig);
   const refSchema = useRef<JSONSchema4WithUiDefinition | undefined>(pipeSchema);
   const configEdited = useMemo(() => !isEqual(pipeConfig, config), [pipeConfig, config]);
@@ -295,13 +410,15 @@ const Renamer = () => {
 
     if (!relocationPipesQuery.isSuccess || !relocationPipesQuery.data[0]) return;
     const tempConfig = relocationPipesQuery.data.find(
-      config => config.ID === pipeId,
+      pipe => pipe.ID === pipeId,
     ) ?? relocationPipesQuery.data[0];
     if (!tempConfig) return;
     setSelectedPipe(tempConfig);
   });
 
-  const processFiles = useEventCallback(async () => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  const processFiles = useEventCallback(async (): void => {
     if (!selectedPipe) return;
     setIsRenaming(true);
     const filesToProcess = selectedRows.length > 0 ? selectedRows : addedFiles;
@@ -311,27 +428,28 @@ const Renamer = () => {
       let success = 0;
       let errors = 0;
       // Do them 100 at a time as to not overload the server while also keeping the UI responsive.
+      // eslint-disable-next-line no-labels
       mainLoop: for (const files of chunk(filesToProcess, 100)) {
-        const results = await new Promise<RelocationResultType[]>((resolve, reject) => relocateFiles({
+        // eslint-disable-next-line no-await-in-loop
+        const results = await relocateFiles({
           pipeId: selectedPipe.ID,
           move: moveFiles,
           rename: renameFiles,
           deleteEmptyDirectories: true,
           fileIDs: files.map(file => file.ID),
-        }, {
-          onSuccess: (data) => resolve(data),
-          onError: () => reject(),
-        }));
+        });
         for (const result of results) {
           if (result.IsSuccess) {
             success += 1;
             continue;
           }
           errors += 1;
-          toast.error("Failed to relocate file!", result.ErrorMessage);
+          console.error(result.ErrorMessage);
+          toast.error(`Failed to relocate file! (File=${result.FileID})`, result.ErrorMessage);
           if (errors > 10) {
             setCounts({ successCount: success, errorCount: errors });
-            toast.info(`Finished processing ${filesToProcess.length} files!`,
+            toast.info(
+              `Finished processing ${filesToProcess.length} files!`,
               <span>
                 <span className="text-panel-text-important">
                   {success}
@@ -341,15 +459,17 @@ const Renamer = () => {
                   {errors}
                 </span>
                 &nbsp;failed.
-              </span>
+              </span>,
             );
+            // eslint-disable-next-line no-labels
             break mainLoop;
           }
         }
         setCounts({ successCount: success, errorCount: errors });
       }
       setCounts({ successCount: success, errorCount: errors });
-      toast.info('Finished processing!',
+      toast.info(
+        'Finished processing!',
         <span>
           <span className="text-panel-text-important">
             {success}
@@ -359,22 +479,26 @@ const Renamer = () => {
             {errors}
           </span>
           &nbsp;failed.
-        </span>
+        </span>,
       );
-    }
-    catch (e) {
-      toast.error(`Failed to rename files: ${e.message}`);
-    }
-    finally {
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        toast.error('Failed to rename files!', error.message);
+      } else {
+        toast.error('Failed to rename files!', 'An unknown error occurred.');
+      }
+    } finally {
       setIsRenaming(false);
     }
   });
 
   useEffect(() => {
     if (!relocationPipesQuery.isSuccess) return;
-    const pipe = relocationPipesQuery.data.find(pipe => pipe.IsDefault) ?? relocationPipesQuery.data[0];
+    const pipe = relocationPipesQuery.data.find(pip => pip.IsDefault) ?? relocationPipesQuery.data[0];
     if (!pipe) return;
     setSelectedPipe(pipe);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relocationPipesQuery.isSuccess]);
 
   useEffect(() => {
@@ -383,7 +507,8 @@ const Renamer = () => {
     setMoveFiles(settingsQuery.data.MoveOnImport);
     // In the case where move on import is not selected, we will assume the user wants to rename files when
     // they open this page. Otherwise, why are they here? In most cases, it would be for renaming.
-    setRenameFiles(settings.MoveOnImport ? settings.RenameOnImport : true,);
+    setRenameFiles(settings.MoveOnImport ? settings.RenameOnImport : true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settingsQuery.isSuccess]);
 
   useEffect(() => {
@@ -427,87 +552,23 @@ const Renamer = () => {
     <>
       <title>Rename/Move Files | Shoko</title>
       <div className="flex grow flex-col gap-y-3">
-        <ShokoPanel title="Rename/Move Files" optionsClassName="gap-x-3 items-center" options={<>
-          <div className="text-lg font-semibold">
-            {((successCount + errorCount) > 0 || isRenaming) && (
-              <>
-                <span>
-                  <span className="text-panel-text-important">
-                    {successCount}
-                  </span>
-                  &nbsp;Successful
-                </span>
-                <span>&nbsp;|&nbsp;</span>
-                <span>
-                  <span className="text-panel-text-danger">
-                    {errorCount}
-                  </span>
-                  &nbsp;Failure
-                </span>
-                <span>&nbsp;|&nbsp;</span>
-              </>
-            )}
-            <span>
-              <span className="text-panel-text-important">
-                {addedFiles.length}
-                &nbsp;
-              </span>
-              {addedFiles.length === 1 ? 'File' : 'Files'}
-            </span>
-            {selectedRows.length > 0 && (
-              <>
-                <span>&nbsp;|&nbsp;</span>
-                <span>
-                  <span className="text-panel-text-important">
-                    {selectedRows.length}
-                    &nbsp;
-                  </span>
-                  Selected
-                </span>
-              </>
-            )}
-          </div>
-          <Button
-            buttonType="secondary"
-            buttonSize="normal"
-            tooltip={selectedPipe?.Provider?.Configuration ? 'Modify Renamer Settings' : ''}
-            className="flex h-13 items-center"
-            onClick={toggleSettings}
-            disabled={!relocationPipesQuery.isSuccess || !selectedPipe?.Provider?.Configuration}
-          >
-            <Icon path={mdiCogOutline} size={1} />
-          </Button>
-          <Button
-            buttonType="secondary"
-            buttonSize="normal"
-            tooltip="Manage Renamer Configurations"
-            className="flex h-13 items-center"
-            onClick={toggleConfigModal}
-            disabled={!relocationPipesQuery.isSuccess}
-          >
-            <Icon path={mdiPencil} size={1} />
-          </Button>
-          <Select
-            id="selected-relocation-pipe"
-            className="w-[24rem]"
-            value={selectedPipe?.ID ?? ''}
-            onChange={event => changeSelectedPipe(event.target.value)}
-          >
-            {relocationPipesQuery.data?.map(pipe => (
-              <option key={pipe.ID} value={pipe.ID}>
-                {pipe.Provider
-                  ? `${pipe.Name} (${pipe.Provider.Name} - ${pipe.Provider.Version})`
-                  : `${pipe.Name} (<Unknown>)`}
-              </option>
-            ))}
-
-            {!relocationPipesQuery.data?.length && (
-              <option key="na" value="na">
-                No relocation pipes found!
-              </option>
-            )}
-          </Select>
-        </>}>
+        <ShokoPanel
+          title="Rename/Move Files"
+          optionsClassName="gap-x-3 items-center"
+          options={
+            <PanelOptions
+              successCount={successCount}
+              errorCount={errorCount}
+              addedFiles={addedFiles.length}
+              selectedRows={selectedRows.length}
+              changeSelectedPipe={changeSelectedPipe}
+              isRenaming={isRenaming}
+              selectedPipe={selectedPipe}
+              toggleSettings={toggleSettings}
+              toggleConfigModal={toggleConfigModal}
+            />
+          }
+        >
           <div className="flex items-center gap-x-3">
             <div
               className={cx(
@@ -578,9 +639,13 @@ const Renamer = () => {
         <AnimateHeight height={showSettings && selectedPipe?.Provider?.Configuration ? 'auto' : 0}>
           <div className={cx('my-3 flex', (relocatePending || isRenaming) && 'opacity-65 pointer-events-none')}>
             {relocationPipesQuery.isSuccess && (
-              <>
-                <ShokoPanel title="Configuration" className="w-full max-h-[64rem]" contentClassName="flex flex-col gap-y-6  overflow-y-auto p-6">
-                  {pipeSchema && pipeInfo && refSchema.current === pipeSchema && pipeConfig && config ? (
+              <ShokoPanel
+                title="Configuration"
+                className="max-h-[64rem] w-full"
+                contentClassName="flex flex-col gap-y-6  overflow-y-auto p-6"
+              >
+                {pipeSchema && pipeInfo && refSchema.current === pipeSchema && pipeConfig && config
+                  ? (
                     <ControlledConfigurationWithSchema
                       config={config}
                       configGuid={pipeInfo.ID}
@@ -591,9 +656,9 @@ const Renamer = () => {
                       baseConfig
                       setConfig={setConfig}
                     />
-                  ) : null}
-                </ShokoPanel>
-              </>
+                  )
+                  : null}
+              </ShokoPanel>
             )}
           </div>
         </AnimateHeight>

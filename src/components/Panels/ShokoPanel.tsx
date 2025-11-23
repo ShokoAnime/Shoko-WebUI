@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode;
   options?: React.ReactNode;
   className?: string;
-  optionsClassName?: string;
+  optionsClassName?: string | boolean;
   isFetching?: boolean;
   editMode?: boolean;
   fullHeight?: boolean;
@@ -23,12 +23,12 @@ const ShokoPanel = (
     children,
     className,
     contentClassName,
-    optionsClassName,
     disableOverflow = false,
     editMode,
     fullHeight = true,
     isFetching,
     options,
+    optionsClassName,
     sticky,
     title,
     transparent = false,

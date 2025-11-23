@@ -18,7 +18,7 @@ export const updatePreviewResults = (response: RelocationResultType[]) => {
 };
 
 export const updateErrorResults = (response: RelocationResultType[]) => {
-  const mappedResults = response.filter(r => !r.IsSuccess).reduce(
+  const mappedResults = response.filter(result => !result.IsSuccess).reduce(
     (result, preview) => (
       {
         ...result,
@@ -40,7 +40,7 @@ export const updateApiErrors = (err: Error, args: BaseRelocateFilesRequestType) 
           IsSuccess: false,
           IsPreview: undefined,
           FileID: fileId,
-          ErrorMessage: 'Web UI Error; ' + err.message,
+          ErrorMessage: `Web UI Error; ${err.message}`,
         } as RelocationResultType,
       }
     ),

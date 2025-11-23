@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import queryClient from "@/core/react-query/queryClient";
+import queryClient from '@/core/react-query/queryClient';
 
 import type {
   ConfigurationWithSchemaResultType,

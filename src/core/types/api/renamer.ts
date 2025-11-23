@@ -1,5 +1,5 @@
-import type { ConfigurationInfoType } from "./configuration";
-import type { PluginInfoType } from "./plugin";
+import type { ConfigurationInfoType } from './configuration';
+import type { PluginInfoType } from './plugin';
 
 export type RelocationProviderInfoType = {
   ID: string;

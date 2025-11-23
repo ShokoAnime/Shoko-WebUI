@@ -4,10 +4,10 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { resolveReference, useReference } from '@/core/schema';
-import useEventCallback from '@/hooks/useEventCallback';
-import useVisibility from '@/components/Configuration/hooks/useVisibility';
 import useBadges from '@/components/Configuration/hooks/useBadges';
+import useVisibility from '@/components/Configuration/hooks/useVisibility';
+import { useReference } from '@/core/schema';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 import type { CodeEditorConfigurationUiDefinitionType } from '@/core/react-query/configuration/types';
@@ -29,12 +29,7 @@ function CodeBlockInput(props: AnySchemaProps): React.JSX.Element | null {
   const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);
   const isDisabled = visibility === 'disabled';
   const isReadOnly = visibility === 'read-only';
-  const { uiDefinition } = useMemo(() => {
-    const resolvedSchema = resolveReference(props.rootSchema, props.schema);
-    return {
-      uiDefinition: resolvedSchema['x-uiDefinition'] as CodeEditorConfigurationUiDefinitionType,
-    };
-  }, [props.rootSchema, props.schema]);
+  const uiDefinition = resolvedSchema['x-uiDefinition'] as CodeEditorConfigurationUiDefinitionType;
   const size = useMemo(() => {
     if (uiDefinition.elementSize === 'full') {
       return 'h-192';
@@ -86,7 +81,11 @@ function CodeBlockInput(props: AnySchemaProps): React.JSX.Element | null {
           {badges}
         </span>
         <div
-          className={cx('w-full flex overflow-hidden rounded-md border border-panel-border', size, 'bg-panel-background')}
+          className={cx(
+            'w-full flex overflow-hidden rounded-md border border-panel-border',
+            size,
+            'bg-panel-background',
+          )}
         >
           <Suspense
             fallback={

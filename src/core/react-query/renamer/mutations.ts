@@ -30,28 +30,28 @@ export const usePreviewFilesMutation = () =>
 export const useRelocateFilesWithPipeMutation = () =>
   useMutation<RelocationResultType[], unknown, RelocateFilesRequestType>({
     mutationFn: (
-      { fileIDs, pipeId, deleteEmptyDirectories, move, rename },
+      { deleteEmptyDirectories, fileIDs, move, pipeId, rename },
     ) =>
       axios.post<unknown, RelocationResultType[]>(`Relocation/Pipe/${pipeId}/Relocate`, fileIDs, {
         params: { deleteEmptyDirectories, move, rename },
       })
-        .catch((err) => fileIDs.map<RelocationResultType>((fileId) =>
-            typeof err === 'object' && err && err instanceof Error
-              ? ({
-                IsSuccess: false,
-                IsPreview: undefined,
-                FileID: fileId,
-                ErrorMessage: 'Web UI Error; ' + err.message,
-              })
-              : ({
-                IsSuccess: false,
-                IsPreview: undefined,
-                FileID: fileId,
-                ErrorMessage: 'Web UI Error; An unknown error occurred.',
-              }),
-          ),
+        .catch(err =>
+          fileIDs.map<RelocationResultType>(fileId => (typeof err === 'object' && err && err instanceof Error
+            ? ({
+              IsSuccess: false,
+              IsPreview: undefined,
+              FileID: fileId,
+              ErrorMessage: `Web UI Error; ${err.message}`,
+            })
+            : ({
+              IsSuccess: false,
+              IsPreview: undefined,
+              FileID: fileId,
+              ErrorMessage: 'Web UI Error; An unknown error occurred.',
+            }))
+          )
         ),
-      onSuccess: updateErrorResults,
+    onSuccess: updateErrorResults,
   });
 
 export const useDeleteRelocationPipeMutation = () =>
@@ -61,21 +61,22 @@ export const useDeleteRelocationPipeMutation = () =>
   });
 
 export const useSaveRelocationPipeMutation = () =>
-  useMutation<RelocationPipeType, unknown, ModifyRelocationPipeRequestType>({
-    mutationFn: ({ pipeId, ...pipe }: ModifyRelocationPipeRequestType) =>
-      axios.put(`Relocation/Pipe/${pipeId}`, pipe),
+  useMutation<RelocationPipeType, Error, ModifyRelocationPipeRequestType>({
+    mutationFn: ({ pipeId, ...pipe }: ModifyRelocationPipeRequestType) => axios.put(`Relocation/Pipe/${pipeId}`, pipe),
     onSuccess: () => invalidateQueries(['relocation', 'pipe']),
   });
 
-export const useSaveRelocationPipeConfigurationMutation = (pipeId: string) =>
-  useMutation({
+export const useSaveRelocationPipeConfigurationMutation = (pipeId?: string) =>
+  useMutation<unknown, Error, void>({
     mutationKey: ['relocation', 'pipe', pipeId, 'configuration'],
-    mutationFn: (config: any) => axios.put<any, void>(`Relocation/Pipe/${pipeId}/Configuration`, config),
+    mutationFn: (
+      config: unknown,
+    ) => (pipeId ? axios.put<unknown, void>(`Relocation/Pipe/${pipeId}/Configuration`, config) : Promise.resolve()),
     onSuccess: () => invalidateQueries(['relocation', 'pipe', pipeId]),
   });
 
 export const useCreateRelocationPipeMutation = () =>
-  useMutation<RelocationPipeType, unknown, CreateRelocationPipeRequestType>({
+  useMutation<RelocationPipeType, Error, CreateRelocationPipeRequestType>({
     mutationFn: config => axios.post('Relocation/Pipe', config),
     onSuccess: () => invalidateQueries(['relocation', 'pipe']),
   });

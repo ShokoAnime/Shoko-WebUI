@@ -435,7 +435,10 @@ function LinkFilesTab() {
               edited = true;
               editedData.FileSize = link.release.FileSize;
             }
-            if (editedData.OriginalFilename == null && link.release.OriginalFilename != null && link.release.OriginalFilename !== '') {
+            if (
+              editedData.OriginalFilename == null && link.release.OriginalFilename != null
+              && link.release.OriginalFilename !== ''
+            ) {
               edited = true;
               editedData.OriginalFilename = link.release.OriginalFilename;
             }
@@ -451,7 +454,7 @@ function LinkFilesTab() {
               edited = true;
               editedData.IsCreditless = link.release.IsCreditless;
             }
-            if (edited && editedData.ProviderName !== "User" && !/\+User\b/.test(editedData.ProviderName)) {
+            if (edited && editedData.ProviderName !== 'User' && !/\+User\b/.test(editedData.ProviderName)) {
               editedData.ProviderName += '+User';
             }
             link.release = editedData;

@@ -3,9 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import queryClient from '@/core/react-query/queryClient';
 
-import type { ConfigurationWithSchemaResultType, JSONSchema4WithUiDefinition } from '@/core/react-query/configuration/types';
+import type {
+  ConfigurationWithSchemaResultType,
+  JSONSchema4WithUiDefinition,
+} from '@/core/react-query/configuration/types';
 import type { RelocationSummaryResponseType } from '@/core/react-query/renamer/types';
-import type { RelocationProviderInfoType, RelocationPipeType } from '@/core/types/api/renamer';
+import type { RelocationPipeType, RelocationProviderInfoType } from '@/core/types/api/renamer';
 
 export const useRelocationSummaryQuery = (enabled = true) =>
   useQuery<RelocationSummaryResponseType>({
@@ -26,14 +29,17 @@ export const useRelocationPipesQuery = (enabled = true) =>
     queryKey: ['relocation', 'pipe', 'all'],
     queryFn: async () => {
       const [pipes, providers] = await Promise.all([
-        axios.get<unknown, Array<Omit<RelocationPipeType, 'Provider'>>>('Relocation/Pipe'),
+        axios.get<unknown, Omit<RelocationPipeType, 'Provider'>[]>('Relocation/Pipe'),
         queryClient.ensureQueryData({
           queryKey: ['relocation', 'all'],
           queryFn: () => axios.get<unknown, RelocationProviderInfoType[]>('Relocation/Provider'),
         })
-          .then((providers) => Object.fromEntries(providers.map((provider) => [provider.ID, provider]))),
+          .then(response => Object.fromEntries(response.map(provider => [provider.ID, provider]))),
       ]);
-      const pipesWithProviders = pipes.map((pipe): RelocationPipeType => ({ ...pipe, Provider: providers[pipe.ProviderID] || null }));
+      const pipesWithProviders = pipes.map((pipe): RelocationPipeType => ({
+        ...pipe,
+        Provider: providers[pipe.ProviderID] || null,
+      }));
       for (const pipe of pipesWithProviders) {
         queryClient.setQueryData(['relocation', 'pipe', pipe.ID], pipe.Provider);
       }
@@ -49,9 +55,10 @@ export const useRelocationPipeQuery = (pipeID: string, enabled = true) =>
       const [pipe, Provider] = await Promise.all([
         axios.get<unknown, Omit<RelocationPipeType, 'Provider'>>(`Relocation/Pipe/${pipeID}`),
         queryClient.ensureQueryData({
-          queryKey: ['relocation', 'all'],
-          queryFn: () => axios.get<unknown, RelocationProviderInfoType>(`Relocation/Pipe/${pipeID}/Provider`)
-            .catch(() => null),
+          queryKey: ['relocation', 'pipe', pipeID, 'provider'],
+          queryFn: () =>
+            axios.get<unknown, RelocationProviderInfoType>(`Relocation/Pipe/${pipeID}/Provider`)
+              .catch(() => null),
         }),
       ]);
       return { ...pipe, Provider };
