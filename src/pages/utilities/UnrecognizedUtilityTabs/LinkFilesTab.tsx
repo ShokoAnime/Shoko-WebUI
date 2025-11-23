@@ -421,7 +421,40 @@ function LinkFilesTab() {
       autoLinkPreview({ fileId: link.file.ID, providerIDs: enabledReleaseProviders }, {
         onSettled(data, error) {
           if (!error && data) {
-            link.release = data;
+            let edited = false;
+            const editedData = cloneDeep(data);
+            if (editedData.Source === ReleaseSource.Unknown && link.release.Source !== ReleaseSource.Unknown) {
+              edited = true;
+              editedData.Source = link.release.Source;
+            }
+            if (editedData.Version < 1) {
+              edited = true;
+              editedData.Version = 1;
+            }
+            if (editedData.FileSize === null && link.release.FileSize !== null) {
+              edited = true;
+              editedData.FileSize = link.release.FileSize;
+            }
+            if (editedData.OriginalFilename == null && link.release.OriginalFilename != null && link.release.OriginalFilename !== '') {
+              edited = true;
+              editedData.OriginalFilename = link.release.OriginalFilename;
+            }
+            if (editedData.IsChaptered === null && link.release.IsChaptered !== null) {
+              edited = true;
+              editedData.IsChaptered = link.release.IsChaptered;
+            }
+            if (editedData.IsCensored === null && link.release.IsCensored !== null) {
+              edited = true;
+              editedData.IsCensored = link.release.IsCensored;
+            }
+            if (editedData.IsCreditless === null && link.release.IsCreditless !== null) {
+              edited = true;
+              editedData.IsCreditless = link.release.IsCreditless;
+            }
+            if (edited && editedData.ProviderName !== "User" && !/\+User\b/.test(editedData.ProviderName)) {
+              editedData.ProviderName += '+User';
+            }
+            link.release = editedData;
           }
 
           setLoading((prev) => {
