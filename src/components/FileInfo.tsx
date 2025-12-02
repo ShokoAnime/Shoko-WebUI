@@ -3,7 +3,7 @@ import { mdiClipboardOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
 
-import { copyToClipboard } from '@/core/util';
+import { copyToClipboard, dayjs } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMediaInfo from '@/hooks/useMediaInfo';
@@ -18,6 +18,11 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
   });
+
+  let importedTime;
+  if (typeof file.Imported === 'string' && file.Imported.length > 18) {
+    importedTime = dayjs(file.Imported);
+  }
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -52,6 +57,15 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
             <div className="min-w-[9.375rem] font-semibold">Chapters</div>
             {mediaInfo.Chapters ? 'Yes' : 'No'}
           </div>
+          {dayjs.isDayjs(importedTime)
+            && (
+              <div className="flex">
+                <div className="min-w-[9.375rem] font-semibold">Imported</div>
+                {importedTime.format('YYYY-MM-DD')}
+                &nbsp;|&nbsp;
+                {importedTime.format('HH:mm')}
+              </div>
+            )}
           {compact && (
             <div className="flex">
               <div className="min-w-[9.375rem] font-semibold">CRC</div>
