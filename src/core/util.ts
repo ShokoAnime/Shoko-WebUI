@@ -2,6 +2,7 @@ import copy from 'copy-to-clipboard';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import calendar from 'dayjs/plugin/calendar';
+import customParseFormatPlugin from 'dayjs/plugin/customParseFormat';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
@@ -16,6 +17,7 @@ import type { AxiosError } from 'axios';
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
 dayjs.extend(durationPlugin);
+dayjs.extend(customParseFormatPlugin);
 
 export { default as dayjs } from 'dayjs';
 

@@ -19,10 +19,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
   });
 
-  let importedTime;
-  if (typeof file.Imported === 'string' && file.Imported.length > 18) {
-    importedTime = dayjs(file.Imported);
-  }
+  const importedTime = dayjs(file.Imported, 'YYYY-MM-DDTHH:mm:ss[Z]', true);
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -57,7 +54,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
             <div className="min-w-[9.375rem] font-semibold">Chapters</div>
             {mediaInfo.Chapters ? 'Yes' : 'No'}
           </div>
-          {dayjs.isDayjs(importedTime)
+          {importedTime.isValid()
             && (
               <div className="flex">
                 <div className="min-w-[9.375rem] font-semibold">Imported</div>
