@@ -19,6 +19,8 @@ const colorClass = {
 const isColorClass = (type: string): type is keyof typeof colorClass => type in colorClass;
 
 const ToastComponent = (props: Props) => {
+  'use no memo';
+
   const { closeToast, data, toastProps } = props;
   const color = isColorClass(toastProps.type) ? toastProps?.type : 'info';
 
