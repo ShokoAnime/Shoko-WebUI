@@ -13,7 +13,7 @@ const useEditGroupCallback = (item: CollectionGroupType | SeriesType) => {
   return useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    dispatch(setGroupId(item.IDs.ParentGroup ?? item.IDs.TopLevelGroup));
+    if (item) dispatch(setGroupId(item.IDs.ParentGroup ?? item.IDs.TopLevelGroup));
   });
 };
 
