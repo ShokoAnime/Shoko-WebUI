@@ -110,7 +110,7 @@ const ReleaseManagement = () => {
       });
     }
 
-    Promise.all(operations)
+    Promise.all(operations.filter(operation => !!operation))
       .then(() => toast.success('Successful!'))
       .catch(() => toast.error('One or more operations failed!'))
       .finally(() => {

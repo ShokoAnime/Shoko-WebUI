@@ -60,18 +60,20 @@ const GeneralSettings = () => {
     const file = event.target.files?.[0];
     if (!file) return;
     uploadTheme({ file }, {
-      async onSuccess(data) {
-        await themesQuery.refetch();
+      onSuccess(data) {
+        themesQuery.refetch()
+          .then(() => {
+            themeUpdateCounter += 1;
+            // URL cannot be built without a base, so we use localhost
+            const path = new URL(themePathHref.value, 'http://localhost');
+            path.searchParams.set('updateCount', themeUpdateCounter.toString());
+            // Remove base from URL and set value
+            themePathHref.value = `${path.pathname}${path.search}`;
 
-        themeUpdateCounter += 1;
-        // URL cannot be built without a base, so we use localhost
-        const path = new URL(themePathHref.value, 'http://localhost');
-        path.searchParams.set('updateCount', themeUpdateCounter.toString());
-        // Remove base from URL and set value
-        themePathHref.value = `${path.pathname}${path.search}`;
-
-        updateSetting('WebUI_Settings', 'theme', `theme-${data.ID}`);
-        toast.info(`Successfully uploaded theme "${data.Name}"`);
+            updateSetting('WebUI_Settings', 'theme', `theme-${data.ID}`);
+            toast.info(`Successfully uploaded theme "${data.Name}"`);
+          })
+          .catch(console.error);
       },
     });
   });
