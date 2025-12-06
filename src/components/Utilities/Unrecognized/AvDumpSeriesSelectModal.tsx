@@ -20,7 +20,7 @@ import type { RootState } from '@/core/store';
 type Props = {
   show: boolean;
   onClose: (refresh?: boolean) => void;
-  getLinks: () => { fileIds: number[], links: string[] };
+  ed2kLinksAndFileIds: { fileIds: number[], links: string[] };
 };
 
 const Title = ({ count, step, stepCount }: { count: number, step: number, stepCount: number }) => (
@@ -54,7 +54,7 @@ const StepDescription = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-const AvDumpSeriesSelectModal = ({ getLinks, onClose, show }: Props) => {
+const AvDumpSeriesSelectModal = ({ ed2kLinksAndFileIds, onClose, show }: Props) => {
   const { mutateAsync: rescanFile } = useRescanFileMutation();
   const [clickedLink, setClickedLink] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -69,13 +69,13 @@ const AvDumpSeriesSelectModal = ({ getLinks, onClose, show }: Props) => {
 
   const { ed2kLinks, fileIds, links } = useMemo(() => {
     if (!show) return { ed2kLinks: '', links: [], fileIds: [] };
-    const { fileIds: tempFileIds, links: tempLinks } = getLinks();
+    const { fileIds: tempFileIds, links: tempLinks } = ed2kLinksAndFileIds;
     let tempEd2kLinks = '';
     forEach(tempLinks, (link) => {
       tempEd2kLinks += `${link}\n`;
     });
     return { ed2kLinks: tempEd2kLinks, links: tempLinks, fileIds: tempFileIds };
-  }, [getLinks, show]);
+  }, [ed2kLinksAndFileIds, show]);
   const commonSeries = useMemo(
     () => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))),
     [links],
