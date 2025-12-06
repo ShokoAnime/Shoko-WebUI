@@ -11,7 +11,6 @@ import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries'
 import { resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 
@@ -56,15 +55,15 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
     setGroupsToDelete(new Set());
   }, [setGroupsToDelete, show]);
 
-  const handleCheckboxChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const index = toNumber(event.target.id.split('-')[1]);
     setGroupsToDelete((state) => {
       if (event.target.checked) state.add(index);
       else state.delete(index);
     });
-  });
+  };
 
-  const handleConfirm = useEventCallback(() => {
+  const handleConfirm = () => {
     if (type === ReleaseManagementItemType.MultipleReleases) {
       const fileIds = map(
         [...groupsToDelete],
@@ -112,7 +111,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
         onError: () => toast.error('Duplicate files could not be deleted!'),
       },
     );
-  });
+  };
 
   return (
     <ModalPanel show={show} onRequestClose={onClose} header="Quick Select" size="sm">

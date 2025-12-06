@@ -8,7 +8,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery, useSupportedLanguagesQuery } from '@/core/react-query/settings/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   type: 'Series' | 'Episode' | 'Description' | null;
@@ -38,7 +37,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
 
   const [languages, setLanguages] = useState([] as string[]);
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     let preferenceType = 'SeriesTitleLanguageOrder';
     if (type === 'Episode') {
       preferenceType = 'EpisodeTitleLanguageOrder';
@@ -57,7 +56,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
     }, {
       onSuccess: onClose,
     });
-  });
+  };
 
   useEffect(() => {
     if (type !== null) setLanguages(LanguagePreference);

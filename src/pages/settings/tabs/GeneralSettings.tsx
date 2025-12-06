@@ -12,7 +12,6 @@ import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { uiVersion } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
@@ -38,7 +37,7 @@ const GeneralSettings = () => {
   const themesQuery = useWebuiThemesQuery();
   const { isPending: isUploading, mutate: uploadTheme } = useWebuiUploadThemeMutation();
 
-  const onOpenFileDialog = useEventCallback((event: React.SyntheticEvent) => {
+  const onOpenFileDialog = (event: React.SyntheticEvent) => {
     if (isUploading) {
       return;
     }
@@ -48,9 +47,9 @@ const GeneralSettings = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
-  });
+  };
 
-  const onFileChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isUploading) {
       return;
     }
@@ -76,7 +75,7 @@ const GeneralSettings = () => {
           .catch(console.error);
       },
     });
-  });
+  };
 
   const currentTheme = useMemo(() => (
     themesQuery.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)

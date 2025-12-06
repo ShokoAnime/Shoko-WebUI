@@ -4,8 +4,6 @@ import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 
-import useEventCallback from '@/hooks/useEventCallback';
-
 type Props = {
   buttonTypes?: 'primary' | 'secondary' | 'danger';
   className?: string;
@@ -36,9 +34,9 @@ const DropdownButton = (props: Props) => {
   } = props;
 
   const [open, setOpen] = useState(false);
-  const onClick = useEventCallback(() => {
+  const onClick = () => {
     setOpen(prev => !prev);
-  });
+  };
   const [containerRef, containerBounds] = useMeasure();
   const [menuRef, menuBounds] = useMeasure();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

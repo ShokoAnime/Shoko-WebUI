@@ -2,8 +2,6 @@ import { useEffect, useMemo } from 'react';
 import { toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
-import useEventCallback from '@/hooks/useEventCallback';
-
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
@@ -27,12 +25,12 @@ const useRowSelection = <T extends EpisodeType | FileType | SeriesType>(items: T
     [rowSelection, items],
   );
 
-  const handleRowSelect = useEventCallback((id: number, select: boolean) => {
+  const handleRowSelect = (id: number, select: boolean) => {
     setRowSelection((draftState) => {
       draftState[id] = select;
       return draftState;
     });
-  });
+  };
 
   useEffect(() => {
     if (items.length === 0) setRowSelection({});

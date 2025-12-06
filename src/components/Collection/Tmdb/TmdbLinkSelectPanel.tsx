@@ -13,7 +13,6 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTmdbRefreshMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/tmdb/queries';
 import { SeriesTypeEnum } from '@/core/types/api/series';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { TmdbSearchResultType } from '@/core/types/api/tmdb';
 
@@ -24,9 +23,9 @@ type SearchResultRowProps = {
 };
 
 const SearchResultRow = React.memo(({ linkType, result, selectLink }: SearchResultRowProps) => {
-  const handleClick = useEventCallback(() => {
+  const handleClick = () => {
     selectLink(result.ID);
-  });
+  };
 
   return (
     <div className="flex items-center gap-x-4">
@@ -87,9 +86,9 @@ const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTyp
     [autoSearchQuery.isLoading, refreshPending, searchQuery.isLoading],
   );
 
-  const selectLink = useEventCallback((tmdbId: number) => {
+  const selectLink = (tmdbId: number) => {
     setSelectedId(tmdbId);
-  });
+  };
 
   useEffect(() => {
     if (selectedId === 0) return;

@@ -31,7 +31,6 @@ import {
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
-import useEventCallback from '@/hooks/useEventCallback';
 import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 import type { ReleaseManagementOptionsType } from '@/components/Utilities/constants';
@@ -60,13 +59,13 @@ const ReleaseManagement = () => {
     onlyFinishedSeries: searchParams.get('onlyFinishedSeries') === 'true',
   }), [searchParams]);
 
-  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParams((currentParams) => {
       const newParams = new URLSearchParams(currentParams);
       newParams.set(event.target.id, String(event.target.checked));
       return newParams;
     });
-  });
+  };
 
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedSeries, setSelectedSeries] = useState(0);
@@ -87,7 +86,7 @@ const ReleaseManagement = () => {
   const { mutateAsync: deleteFileLocation } = useDeleteFileLocationMutation();
   const { mutateAsync: hideEpisode } = useHideEpisodeMutation();
 
-  const confirmChanges = useEventCallback(() => {
+  const confirmChanges = () => {
     setOperationsPending(true);
 
     let operations: (Promise<AxiosResponse<unknown, unknown>> | null)[];
@@ -118,9 +117,9 @@ const ReleaseManagement = () => {
         resetQueries(['release-management']);
         setSelectedEpisode(undefined);
       });
-  });
+  };
 
-  const hideEpisodes = useEventCallback(() => {
+  const hideEpisodes = () => {
     setOperationsPending(true);
 
     const operations = map(selectedEpisodes, episode => hideEpisode({ episodeId: episode.IDs.ID, hidden: true }));
@@ -133,7 +132,7 @@ const ReleaseManagement = () => {
         resetQueries(['release-management']);
         setSelectedEpisodes([]);
       });
-  });
+  };
 
   const isDuplicatesQuickSelectSupported = useIsFeatureSupported(FeatureType.DuplicatesQuickSelect);
 

@@ -19,7 +19,6 @@ import Button from '@/components/Input/Button';
 import { useHideEpisodeMutation, useWatchEpisodeMutation } from '@/core/react-query/episode/mutations';
 import { useEpisodeFilesQuery } from '@/core/react-query/episode/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
@@ -102,12 +101,10 @@ const EpisodeSummary = React.memo(
     const { isPending: markWatchedPending, mutate: markWatched } = useWatchEpisodeMutation(seriesId, page, nextUp);
     const { isPending: markHiddenPending, mutate: markHidden } = useHideEpisodeMutation(seriesId, nextUp);
 
-    const handleMarkWatched = useEventCallback(
-      () => markWatched({ episodeId, watched: markWatchedPending ? !episode.Watched : episode.Watched === null }),
-    );
-    const handleMarkHidden = useEventCallback(
-      () => markHidden({ episodeId, hidden: markHiddenPending ? episode.IsHidden : !episode.IsHidden }),
-    );
+    const handleMarkWatched = () =>
+      markWatched({ episodeId, watched: markWatchedPending ? !episode.Watched : episode.Watched === null });
+    const handleMarkHidden = () =>
+      markHidden({ episodeId, hidden: markHiddenPending ? episode.IsHidden : !episode.IsHidden });
 
     return (
       <>

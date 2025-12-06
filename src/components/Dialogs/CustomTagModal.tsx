@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
@@ -16,7 +16,6 @@ import {
   useUpdateUserTagMutation,
 } from '@/core/react-query/tag/mutations';
 import { useUserTagsQuery } from '@/core/react-query/tag/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 export type Props = {
   seriesId: number;
@@ -52,17 +51,17 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
   if (mode === 'edit') subHeader = 'Edit Tags';
   if (mode === 'create') subHeader = 'Create Tag';
 
-  const handleTagNameChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTagNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (lockedControls) return;
     setTagName(event.target.value);
-  });
+  };
 
-  const handleTagDescChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTagDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (lockedControls) return;
     setTagDescription(event.target.value);
-  });
+  };
 
-  const handleTagClick = useEventCallback((event: React.MouseEvent<HTMLElement>) => {
+  const handleTagClick = (event: React.MouseEvent<HTMLElement>) => {
     if (lockedTag) return;
 
     const selectedTagId1 = parseInt(event.currentTarget.dataset.tagId ?? '0', 10);
@@ -77,18 +76,18 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
       setTagName(selectedTag1?.Name ?? '');
       setTagDescription(selectedTag1?.Description ?? '');
     }
-  });
+  };
 
-  const handleClose = useEventCallback(() => {
+  const handleClose = () => {
     setMode(null);
     setSelectedTagId(null);
     setTagName('');
     setTagDescription('');
     invalidateQueries(['series', seriesId, 'tags']);
     onClose();
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = useCallback(() => {
     if (mode === 'create') {
       setMode(null);
       setSelectedTagId(null);
@@ -110,9 +109,9 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
       invalidateQueries(['series', seriesId, 'tags']);
       onClose();
     }
-  });
+  }, [mode, onClose, selectedTag, seriesId]);
 
-  const handleDelete = useEventCallback(() => {
+  const handleDelete = useCallback(() => {
     if (!selectedTag) return;
     deleteTagMutation(selectedTag.ID, {
       onSuccess: () => {
@@ -122,14 +121,14 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
         setTagDescription('');
       },
     });
-  });
+  }, [deleteTagMutation, selectedTag]);
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = useCallback(() => {
     if (!selectedTag) return;
     updateTagMutation({ tagId: selectedTag.ID, name: tagName, description: tagDesc });
-  });
+  }, [selectedTag, tagDesc, tagName, updateTagMutation]);
 
-  const handleCreate = useEventCallback(() => {
+  const handleCreate = useCallback(() => {
     createUserTagMutation({ name: tagName, description: tagDesc || null }, {
       onSuccess: (tag) => {
         setMode(null);
@@ -139,30 +138,30 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
         removeUserTagMutation({ seriesId, tagId: tag.ID });
       },
     });
-  });
+  }, [createUserTagMutation, removeUserTagMutation, seriesId, tagDesc, tagName]);
 
-  const handleAdd = useEventCallback(() => {
+  const handleAdd = useCallback(() => {
     if (!selectedTag) return;
     addUserTagMutation({ seriesId, tagId: selectedTag.ID });
-  });
+  }, [addUserTagMutation, selectedTag, seriesId]);
 
-  const handleRemove = useEventCallback(() => {
+  const handleRemove = useCallback(() => {
     if (!selectedTag) return;
     removeUserTagMutation({ seriesId, tagId: selectedTag.ID });
-  });
+  }, [removeUserTagMutation, selectedTag, seriesId]);
 
-  const handleEditModeToggle = useEventCallback(() => {
+  const handleEditModeToggle = () => {
     setMode('edit');
     setTagName(selectedTag?.Name ?? '');
     setTagDescription(selectedTag?.Description ?? '');
-  });
+  };
 
-  const handleCreateModeToggle = useEventCallback(() => {
+  const handleCreateModeToggle = () => {
     setMode('create');
     setSelectedTagId(null);
     setTagName('');
     setTagDescription('');
-  });
+  };
 
   const buttons = useMemo(() => {
     if (mode === 'create') {

@@ -32,7 +32,6 @@ import {
   useTmdbShowOrMovieQuery,
 } from '@/core/react-query/tmdb/queries';
 import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -125,11 +124,11 @@ const TmdbLinking = () => {
     setLinkOverrides,
   ] = useImmer<Record<number, number[]>>({});
 
-  const estimateSize = useEventCallback((index: number) => {
+  const estimateSize = (index: number) => {
     const episode = episodes[index];
     if (!episode) return 60; // 60px is the minimum height of a loaded row.
     return 60 * (linkOverrides[episode.IDs.AniDB]?.length || 1);
-  });
+  };
 
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
@@ -199,7 +198,7 @@ const TmdbLinking = () => {
   const { mutateAsync: deleteLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Show');
   const { mutateAsync: createAutoLinks } = useTmdbAddAutoXrefsMutation(seriesId);
 
-  const createEpisodeLinks = useEventCallback(async () => {
+  const createEpisodeLinks = async () => {
     setCreateInProgress(true);
     try {
       // If we're not giving the server any clues about which series to link
@@ -252,9 +251,9 @@ const TmdbLinking = () => {
       toast.error('Failed to save links!');
     }
     setCreateInProgress(false);
-  });
+  };
 
-  const createMovieLinks = useEventCallback(async () => {
+  const createMovieLinks = async () => {
     setCreateInProgress(true);
     try {
       const linkGroups = reduce(
@@ -287,16 +286,16 @@ const TmdbLinking = () => {
       toast.error('Failed to save links!');
     }
     setCreateInProgress(false);
-  });
+  };
 
-  const handleCreateLink = useEventCallback(() => {
+  const handleCreateLink = () => {
     if (type === 'Movie') {
       createMovieLinks().catch(console.error);
       return;
     }
 
     createEpisodeLinks().catch(console.error);
-  });
+  };
 
   const disableCreateLink = useMemo(() => {
     if (type === 'Movie') {
@@ -308,10 +307,10 @@ const TmdbLinking = () => {
     return Object.keys(linkOverrides).length === 0;
   }, [isNewLink, linkOverrides, type]);
 
-  const handleNewLinkEdit = useEventCallback(() => {
+  const handleNewLinkEdit = () => {
     setSearchParams({});
     setLinkOverrides({});
-  });
+  };
 
   return (
     <div className="flex grow flex-col gap-y-6">

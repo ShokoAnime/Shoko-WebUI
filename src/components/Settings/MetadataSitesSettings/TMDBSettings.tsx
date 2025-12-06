@@ -2,7 +2,6 @@ import React from 'react';
 import { produce } from 'immer';
 
 import Checkbox from '@/components/Input/Checkbox';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SettingsContextType } from '@/core/types/context';
 
@@ -18,18 +17,18 @@ const TMDBSettings = React.memo((props: Props) => {
 
   const { includeRestricted } = newSettings.WebUI_Settings.collection.tmdb;
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = useEventCallback((event) => {
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const propId = event.target.id.replace('TMDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     updateSetting('TMDB', propId, value);
-  });
+  };
 
-  const handleIncludeRestrictedChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIncludeRestrictedChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.checked;
     setNewSettings(produce(newSettings, (draftState) => {
       draftState.WebUI_Settings.collection.tmdb.includeRestricted = value;
     }));
-  });
+  };
 
   return (
     <>

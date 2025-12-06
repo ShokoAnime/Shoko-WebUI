@@ -12,7 +12,6 @@ import {
 } from '@/core/react-query/dashboard/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 import SeriesDetails from '@/pages/dashboard/components/SeriesDetails';
 
@@ -50,13 +49,13 @@ const RecentlyImported = () => {
     setViewMode(recentlyImportedView);
   }, [recentlyImportedView]);
 
-  const handleTabChange = useEventCallback((newTab: 'episodes' | 'series') => {
+  const handleTabChange = (newTab: 'episodes' | 'series') => {
     setViewMode(newTab);
     const newSettings = produce(settings, (draftState) => {
       draftState.WebUI_Settings.dashboard.recentlyImportedView = newTab;
     });
     patchSettings({ newSettings });
-  });
+  };
 
   return (
     <ShokoPanel

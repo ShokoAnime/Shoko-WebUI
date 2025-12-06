@@ -17,7 +17,6 @@ import {
   useSeriesNextUpQuery,
   useSimilarAnimeQuery,
 } from '@/core/react-query/series/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
@@ -43,9 +42,9 @@ const SeriesOverview = () => {
   ];
   const [currentTab, setCurrentTab] = useState<string>(tabStates[0].value);
 
-  const handleTabStateChange = useEventCallback((newState: string) => {
+  const handleTabStateChange = (newState: string) => {
     setCurrentTab(newState);
-  });
+  };
 
   const relatedAnime = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);

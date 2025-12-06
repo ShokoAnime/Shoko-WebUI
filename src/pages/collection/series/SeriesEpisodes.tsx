@@ -15,7 +15,6 @@ import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/querie
 import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
@@ -51,7 +50,7 @@ const SeriesEpisodes = () => {
     search: debouncedSearch,
   } as FilterOptionsType), [debouncedSearch, searchParams]);
 
-  const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id: eventType, value } = event.target;
 
     if (eventType === 'search') {
@@ -64,7 +63,7 @@ const SeriesEpisodes = () => {
       newParams.set(eventType, value);
       return newParams;
     });
-  });
+  };
 
   useEffect(() => {
     setSearchParams((currentParams) => {
@@ -79,13 +78,13 @@ const SeriesEpisodes = () => {
     });
   }, [debouncedSearch, setSearchParams]);
 
-  const onSelectionChange = useEventCallback((episodeId: number) => {
+  const onSelectionChange = (episodeId: number) => {
     setSelectedEpisodes((prevState) => {
       const selectionList = new Set(prevState);
       if (!selectionList.delete(episodeId)) selectionList.add(episodeId);
       return selectionList;
     });
-  });
+  };
 
   useEffect(() => {
     setSelectedEpisodes(new Set());
@@ -147,12 +146,12 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const markFilteredWatched = useEventCallback(() => watchEpisode({ value: true, ...filterOptions }));
-  const markFilteredUnwatched = useEventCallback(() => watchEpisode({ value: false, ...filterOptions }));
+  const markFilteredWatched = () => watchEpisode({ value: true, ...filterOptions });
+  const markFilteredUnwatched = () => watchEpisode({ value: false, ...filterOptions });
 
-  const resetSelection = useEventCallback(() => setSelectedEpisodes(new Set()));
+  const resetSelection = () => setSelectedEpisodes(new Set());
 
-  const openOptionsModal = useEventCallback(() => setShowOptionsModal(true));
+  const openOptionsModal = () => setShowOptionsModal(true);
 
   return (
     <>

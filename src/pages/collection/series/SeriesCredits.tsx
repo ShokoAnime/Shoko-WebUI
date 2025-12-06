@@ -6,7 +6,6 @@ import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffV
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { SeriesCast } from '@/core/types/api/series';
@@ -29,9 +28,9 @@ const SeriesCredits = () => {
     series.IDs.ID,
   );
 
-  const refreshAniDb = useEventCallback(() => {
+  const refreshAniDb = () => {
     refreshAniDbMutation({ force: true });
-  });
+  };
 
   const [mode, setMode] = useState<CreditsModeType>(modeStates[0].value);
 
@@ -39,26 +38,26 @@ const SeriesCredits = () => {
 
   const [roleFilter, setRoleFilter] = useState<Set<string>>(new Set());
 
-  const handleModeChange = useEventCallback((newMode: CreditsModeType) => {
+  const handleModeChange = (newMode: CreditsModeType) => {
     setMode(() => {
       setSearch('');
       setRoleFilter(new Set());
       return newMode;
     });
-  });
+  };
 
-  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id: description } = event.target;
     setRoleFilter((prevState) => {
       const newState = new Set(prevState);
       if (!newState.delete(description)) newState.add(description);
       return newState;
     });
-  });
+  };
 
-  const handleSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-  });
+  };
 
   const cast = useSeriesCastQuery(series.IDs.ID).data;
   const castByType = useMemo(() => ({

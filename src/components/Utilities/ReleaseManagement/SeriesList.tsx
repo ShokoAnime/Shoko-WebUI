@@ -12,7 +12,6 @@ import {
 } from '@/core/react-query/release-management/queries';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
@@ -193,10 +192,10 @@ const SeriesList = (
     setSelectedEpisodes(selectedRows);
   }, [selectedRows, setSelectedEpisodes]);
 
-  const handleEpisodeSelect = useEventCallback((episodeId: number, select: boolean) => {
+  const handleEpisodeSelect = (episodeId: number, select: boolean) => {
     if (type === ReleaseManagementItemType.MissingEpisodes) handleRowSelect(episodeId, select);
     else setSelectedEpisode(episodes.find(episode => episode.IDs.ID === episodeId)!);
-  });
+  };
 
   useEffect(() => {
     setSelectedSeriesId(selectedSeries);

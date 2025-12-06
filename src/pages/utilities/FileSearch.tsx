@@ -44,7 +44,6 @@ import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { copyToClipboard } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -74,23 +73,21 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const showDeleteConfirmation = useEventCallback(() => {
+  const showDeleteConfirmation = () => {
     setShowConfirmModal(true);
-  });
+  };
 
-  const cancelDelete = useEventCallback(() => {
+  const cancelDelete = () => {
     setShowConfirmModal(false);
-  });
+  };
 
-  const removeFileFromSelection = useEventCallback(
-    (fileId: number) =>
-      setSelectedRows((draftState) => {
-        draftState[fileId] = false;
-        return draftState;
-      }),
-  );
+  const removeFileFromSelection = (fileId: number) =>
+    setSelectedRows((draftState) => {
+      draftState[fileId] = false;
+      return draftState;
+    });
 
-  const handleDelete = useEventCallback(() => {
+  const handleDelete = () => {
     deleteFiles(
       {
         fileIds: selectedRows.map(row => row.ID),
@@ -102,9 +99,9 @@ const Menu = (
       },
     );
     setSelectedRows([]);
-  });
+  };
 
-  const rehashFiles = useEventCallback(() => {
+  const rehashFiles = () => {
     setSelectedRows([]);
     let failedFiles = 0;
 
@@ -116,9 +113,9 @@ const Menu = (
     });
 
     if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
-  });
+  };
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = () => {
     setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (file) => {
@@ -129,12 +126,12 @@ const Menu = (
     });
 
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-  });
+  };
 
-  const handleRename = useEventCallback(() => {
+  const handleRename = () => {
     dispatch(addFiles(selectedRows));
     navigate('/webui/utilities/renamer');
-  });
+  };
 
   return (
     <div className="box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -175,10 +172,10 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
   const ed2kHash = useMemo(() => getEd2kLink(file), [file]);
 
-  const copyEd2kLink = useEventCallback((event: React.MouseEvent) => {
+  const copyEd2kLink = (event: React.MouseEvent) => {
     event.stopPropagation();
     copyToClipboard(ed2kHash, 'ED2K Hash').catch(console.error);
-  });
+  };
 
   return (
     <>
@@ -357,19 +354,19 @@ const FileSearch = () => {
 
   const [viewIndex, setViewIndex] = useState(0);
 
-  const onNextView = useEventCallback(() => {
+  const onNextView = () => {
     setViewIndex((prev) => {
       if (prev + 1 >= selectedRows.length) return 0;
       return prev + 1;
     });
-  });
+  };
 
-  const onPrevView = useEventCallback(() => {
+  const onPrevView = () => {
     setViewIndex((prev) => {
       if (prev - 1 < 0) return selectedRows.length - 1;
       return prev - 1;
     });
-  });
+  };
 
   const fileSearchSelectedRows = useMemo(() => reverse(selectedRows), [selectedRows]);
   const selectedId = useMemo(() => fileSearchSelectedRows[viewIndex]?.ID, [fileSearchSelectedRows, viewIndex]);

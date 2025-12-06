@@ -7,7 +7,6 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
 import Footer from './Footer';
@@ -24,9 +23,9 @@ const TabButton = React.memo((
     title: string;
   },
 ) => {
-  const handleClick = useEventCallback(() => {
+  const handleClick = () => {
     setActiveTab(tabKey);
-  });
+  };
 
   return (
     <Button
@@ -60,11 +59,11 @@ const MetadataSources = () => {
   const [activeTab, setActiveTab] = useState('anidb');
   const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     saveSettings()
       .then(() => dispatch(setFirstRunSaved('metadata-sources')))
       .catch(console.error);
-  });
+  };
 
   return (
     <>

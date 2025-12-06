@@ -11,7 +11,6 @@ import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
@@ -60,17 +59,17 @@ const SeriesImages = () => {
     setSelectedImage(old => ((old === item) ? null : item));
   };
 
-  const handleSetPreferredImage = useEventCallback(() => {
+  const handleSetPreferredImage = () => {
     if (!selectedImage) return;
     changeImage(selectedImage, {
       onSuccess: () => setSelectedImage(null),
     });
-  });
+  };
 
-  const handleTabChange = useEventCallback((newType: ImageTabType) => {
+  const handleTabChange = (newType: ImageTabType) => {
     setSelectedImage(null);
     navigate(`../images/${newType.toLowerCase()}`);
-  });
+  };
 
   return (
     <>

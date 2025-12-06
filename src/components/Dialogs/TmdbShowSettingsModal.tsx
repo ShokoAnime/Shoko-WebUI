@@ -8,7 +8,6 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSetPreferredTmdbShowOrderingMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbShowOrderingQuery } from '@/core/react-query/tmdb/queries';
 import { AlternateOrderingTypeEnum } from '@/core/react-query/tmdb/types';
-import useEventCallback from '@/hooks/useEventCallback';
 
 export type Props = {
   onClose: () => void;
@@ -53,14 +52,14 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
 
   const canSave = setOrderingStatus !== 'pending' && selectedOrdering != null && !selectedOrdering.InUse;
 
-  const handleClose = useEventCallback(() => {
+  const handleClose = () => {
     setSelectedOrderingId('');
     invalidateQueries(['series', 'tmdb', 'show']);
     invalidateQueries(['series', 'tmdb', 'episode', 'bulk']);
     onClose();
-  });
+  };
 
-  const handleOrderingClick = useEventCallback((event: React.MouseEvent<HTMLElement>) => {
+  const handleOrderingClick = (event: React.MouseEvent<HTMLElement>) => {
     const { orderingId } = event.currentTarget.dataset;
     if (!orderingId) return;
 
@@ -72,9 +71,9 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
     } else {
       setSelectedOrderingId(orderingId);
     }
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     if (!selectedOrderingId) return;
     setOrdering(selectedOrderingId, {
       onSuccess: () => {
@@ -84,7 +83,7 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
         toast.error('Failed to update ordering!');
       },
     });
-  });
+  };
 
   useEffect(() => {
     if (selectedOrdering?.InUse ?? false) {

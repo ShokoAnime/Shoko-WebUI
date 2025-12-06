@@ -6,7 +6,6 @@ import { Icon } from '@mdi/react';
 import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
 import { removeFilterCriteria, selectFilterMatch } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -45,17 +44,17 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  const openModal = useEventCallback(() => {
+  const openModal = () => {
     setShowModal(true);
-  });
+  };
 
-  const closeModal = useEventCallback(() => {
+  const closeModal = () => {
     setShowModal(false);
-  });
+  };
 
-  const removeCriteria = useEventCallback(() => {
+  const removeCriteria = () => {
     dispatch(removeFilterCriteria(criteria));
-  });
+  };
 
   useEffect(() => {
     if (parameterExists) return;

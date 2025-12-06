@@ -9,7 +9,6 @@ import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeSelect from '@/components/Collection/Tmdb/EpisodeSelect';
 import MatchRating from '@/components/Collection/Tmdb/MatchRating';
 import { useTmdbBulkEpisodesQuery } from '@/core/react-query/tmdb/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
@@ -67,7 +66,7 @@ const EpisodeRow = React.memo((props: Props) => {
     [tmdbEpisode, tmdbEpisodesPending, xref, xrefs],
   );
 
-  const editExtraEpisodeLink = useEventCallback(() => {
+  const editExtraEpisodeLink = () => {
     const episodeId = episode.IDs.AniDB;
     setLinkOverrides((draftState) => {
       if (!draftState[episodeId]) {
@@ -93,9 +92,9 @@ const EpisodeRow = React.memo((props: Props) => {
         delete draftState[episodeId];
       }
     });
-  });
+  };
 
-  const overrideLink = useEventCallback((newTmdbId?: number) => {
+  const overrideLink = (newTmdbId?: number) => {
     const episodeId = episode.IDs.AniDB;
     setLinkOverrides((draftState) => {
       if (!draftState[episodeId]) {
@@ -114,7 +113,7 @@ const EpisodeRow = React.memo((props: Props) => {
 
       draftState[episodeId][offset] = newTmdbId;
     });
-  });
+  };
 
   const matchRating = useMemo(() => {
     if (isPending) return undefined;

@@ -31,7 +31,6 @@ import {
 } from '@/core/react-query/series/queries';
 import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
@@ -140,7 +139,7 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = () => {
     const promises = selectedFileIds.map(fileId => rescanFile(fileId));
 
     Promise
@@ -151,11 +150,11 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
         if (failedCount !== selectedFileIds.length) toast.success(`Rescanning ${selectedFileIds.length} files!`);
       })
       .catch(console.error);
-  });
+  };
 
-  const handleRefresh = useEventCallback(() => {
+  const handleRefresh = () => {
     resetQueries(['series']);
-  });
+  };
 
   return (
     <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -205,7 +204,7 @@ const ManuallyLinkedTab = () => {
 
   const { mutateAsync: unlinkFile } = useDeleteFileLinkMutation();
 
-  const unlinkFiles = useEventCallback(() => {
+  const unlinkFiles = () => {
     const promises = selectedFileIds.map(fileId => unlinkFile(toNumber(fileId)));
 
     setUnlinkingInProgress(true);
@@ -220,7 +219,7 @@ const ManuallyLinkedTab = () => {
         setUnlinkingInProgress(false);
       })
       .catch(console.error);
-  });
+  };
 
   // Reset series selection if query data changes
   useEffect(() => {

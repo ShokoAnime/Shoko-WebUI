@@ -3,7 +3,6 @@ import { produce } from 'immer';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const ImportSettings = () => {
@@ -22,15 +21,16 @@ const ImportSettings = () => {
     RenameOnImport,
   } = newSettings.Plugins.Renamer;
 
-  const handleRenamerSettingChange = useEventCallback(
-    (type: 'MoveOnImport' | 'RenameOnImport' | 'AllowRelocationInsideDestinationOnImport', value: boolean) => {
-      const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
-        ...settings,
-        [type]: value,
-      }));
-      updateSetting('Plugins', 'Renamer', renamerSettings);
-    },
-  );
+  const handleRenamerSettingChange = (
+    type: 'MoveOnImport' | 'RenameOnImport' | 'AllowRelocationInsideDestinationOnImport',
+    value: boolean,
+  ) => {
+    const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
+      ...settings,
+      [type]: value,
+    }));
+    updateSetting('Plugins', 'Renamer', renamerSettings);
+  };
 
   return (
     <>

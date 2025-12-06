@@ -11,7 +11,6 @@ import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useAniDBTagsQuery, useUserTagsQuery } from '@/core/react-query/tag/queries';
 import { selectFilterTags, setFilterTag } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
 import type { TagType } from '@/core/types/api/tags';
@@ -118,17 +117,17 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
     }
   };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setUnsavedValues([]);
     if (selectedValues.length === 0) removeCriteria();
     onClose();
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     dispatch(setFilterTag({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
     setUnsavedValues([]);
     onClose();
-  });
+  };
 
   const selectTag = (name: string, isExcluded: boolean) => () => {
     const tag = { Name: name, isExcluded };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
@@ -8,7 +8,6 @@ import NameTab from '@/components/Collection/Group/EditGroupTabs/NameTab';
 import SeriesTab from '@/components/Collection/Group/EditGroupTabs/SeriesTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { setGroupId } from '@/core/slices/modals/editGroup';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
@@ -39,10 +38,10 @@ const EditGroupModal = () => {
 
   const groupId = useSelector((state: RootState) => state.modals.editGroup.groupId);
 
-  const onClose = useEventCallback(() => {
+  const onClose = useCallback(() => {
     if (groupId === -1) return;
     dispatch(setGroupId(-1));
-  });
+  }, [dispatch, groupId]);
 
   useEffect(() => onClose, [onClose]);
 

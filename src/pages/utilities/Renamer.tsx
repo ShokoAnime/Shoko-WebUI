@@ -42,7 +42,6 @@ import { useRenamerByConfigQuery, useRenamerConfigsQuery, useRenamersQuery } fro
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
-import useEventCallback from '@/hooks/useEventCallback';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -338,7 +337,7 @@ const Renamer = () => {
     ],
   );
 
-  const fetchPreviewPage = useEventCallback(async (index: number) => {
+  const fetchPreviewPage = async (index: number) => {
     if (!newConfig || !renamer) return;
     const pageSize = 20;
     const pageNumber = Math.floor(index / pageSize);
@@ -364,9 +363,9 @@ const Renamer = () => {
         },
       },
     );
-  });
+  };
 
-  const changeSelectedConfig = useEventCallback((configName: string) => {
+  const changeSelectedConfig = (configName: string) => {
     if (configName === '') {
       setSelectedConfig({ RenamerID: '', Name: '' });
       return;
@@ -381,7 +380,7 @@ const Renamer = () => {
 
     setSelectedConfig(tempConfig);
     setNewConfig(tempConfig.Settings);
-  });
+  };
 
   // Handle the below 3 hooks with care. These are used for auto-updating previews on changes.
   // We combine them here because there is a delay in when the name changes and the config changes
@@ -406,7 +405,7 @@ const Renamer = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedConfig, dispatch]);
 
-  const handleSaveConfig = useEventCallback(() => {
+  const handleSaveConfig = () => {
     if (!newConfig || !renamer) return;
     saveConfig(
       {
@@ -421,18 +420,18 @@ const Renamer = () => {
         onError: () => toast.error(`"${selectedConfig.Name}" could not be saved!`),
       },
     );
-  });
+  };
 
-  const handleDeleteConfig = useEventCallback(() => {
+  const handleDeleteConfig = () => {
     if (!renamer) return;
     deleteConfig(selectedConfig.Name, {
       onSuccess: () => toast.success(`"${selectedConfig.Name}" deleted successfully!`),
       onError: () => toast.error(`"${selectedConfig.Name}" could not be deleted!`),
     });
     changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
-  });
+  };
 
-  const handleSetAsDefault = useEventCallback(() => {
+  const handleSetAsDefault = () => {
     const newSettings = produce(settings, (draftState) => {
       draftState.Plugins.Renamer.DefaultRenamer = selectedConfig.Name;
     });
@@ -442,12 +441,12 @@ const Renamer = () => {
       },
       onError: error => toast.error('', error.message),
     });
-  });
+  };
 
-  const openConfigModal = useEventCallback((rename: boolean) => {
+  const openConfigModal = (rename: boolean) => {
     setConfigModelRename(rename);
     toggleConfigModal();
-  });
+  };
 
   useEffect(() => {
     dispatch(clearRenameResults());
@@ -488,7 +487,7 @@ const Renamer = () => {
     [renamer],
   );
 
-  const handleRename = useEventCallback(() => {
+  const handleRename = () => {
     // Split the files into chunks of 1000 to avoid API errors
     chunk(addedFiles, 1000).forEach((files) => {
       relocateFiles({
@@ -499,7 +498,7 @@ const Renamer = () => {
         FileIDs: files.map(file => file.ID),
       });
     });
-  });
+  };
 
   const [renameDisabled, renameDisabledReason] = useMemo(() => {
     if (relocatePending) return [true, 'Renaming in progress...'];

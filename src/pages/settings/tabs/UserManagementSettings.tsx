@@ -20,7 +20,6 @@ import {
   usePutUserMutation,
 } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UserType } from '@/core/types/api/user';
 
@@ -93,7 +92,7 @@ const UserManagementSettings = () => {
     }
   }, [newPassword]);
 
-  const handlePasswordChange = useEventCallback(() => {
+  const handlePasswordChange = () => {
     if (!selectedUser) return;
     changePassword({
       Password: newPassword,
@@ -110,13 +109,13 @@ const UserManagementSettings = () => {
         } else toast.success('Password changed successfully!');
       },
     });
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setNewPassword('');
     setLogoutOthers(false);
     setSelectedUser(find(usersQuery.data, user => user.ID === selectedUser?.ID));
-  });
+  };
 
   const openAvatarModal = (event: React.ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0];
@@ -134,7 +133,7 @@ const UserManagementSettings = () => {
     });
   };
 
-  const removeAvatar = useEventCallback(() => changeAvatar(''));
+  const removeAvatar = () => changeAvatar('');
 
   const deleteSelectedUser = (user: UserType) => {
     if (currentUserQuery.data?.ID === user.ID) {

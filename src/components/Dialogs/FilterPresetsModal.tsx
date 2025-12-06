@@ -11,7 +11,6 @@ import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
 
@@ -38,10 +37,10 @@ const TabButton = (
 const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => {
   const dispatch = useDispatch();
 
-  const handleClose = useEventCallback(() => {
+  const handleClose = () => {
     dispatch(resetFilter());
     onClose();
-  });
+  };
 
   return (
     <div

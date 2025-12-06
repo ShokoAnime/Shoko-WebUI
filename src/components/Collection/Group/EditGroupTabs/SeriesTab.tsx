@@ -7,7 +7,6 @@ import cx from 'classnames';
 import { useCreateGroupMutation, usePatchGroupMutation } from '@/core/react-query/group/mutations';
 import { useGroupQuery, useGroupSeriesQuery } from '@/core/react-query/group/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   groupId: number;
@@ -35,16 +34,16 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
   const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
   const { mutate: setGroupMainSeriesMutation } = usePatchGroupMutation();
 
-  const moveSeriesToNewGroup = useEventCallback((seriesId: number) => {
+  const moveSeriesToNewGroup = (seriesId: number) => {
     moveToNewGroupMutation(seriesId, {
       onSuccess: () => {
         invalidateQueries(['group', groupId]);
         invalidateQueries(['group-series', groupId]);
       },
     });
-  });
+  };
 
-  const setMainSeries = useEventCallback((seriesId: number) => {
+  const setMainSeries = (seriesId: number) => {
     if (groupData!.IDs.MainSeries !== seriesId) {
       setGroupMainSeriesMutation({
         groupId,
@@ -57,7 +56,7 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
         },
       });
     }
-  });
+  };
 
   return (
     <div className="flex h-full flex-col">

@@ -7,7 +7,6 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
@@ -17,12 +16,12 @@ const Item = (
 ) => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
-  const handleMissingFilter = useEventCallback((filterName: string) => {
+  const handleMissingFilter = (filterName: string) => {
     dispatch(resetFilter());
     addFilterCriteriaToStore(filterName).then(() => {
       navigate('/webui/collection/filter/live');
     }).catch(console.error);
-  });
+  };
 
   return (
     <div className="flex">

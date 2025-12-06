@@ -16,7 +16,6 @@ import toast from '@/components/Toast';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { copyToClipboard, processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
@@ -93,18 +92,18 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     } as const;
   }, [file, dumpSession, truck]);
 
-  const handleDump = useEventCallback((event: React.MouseEvent) => {
+  const handleDump = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
       avdumpFiles({ FileIDs: [fileId], Priority: true })
         .catch((error: AxiosError) => toast.error('AVDump failed!', processError(error)));
     }
-  });
+  };
 
-  const handleCopy = useEventCallback((event: React.MouseEvent) => {
+  const handleCopy = (event: React.MouseEvent) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
-  });
+  };
 
   return (
     <div className="ml-4 flex">

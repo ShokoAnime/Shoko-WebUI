@@ -5,7 +5,6 @@ import prettyBytes from 'pretty-bytes';
 
 import { copyToClipboard, dayjs } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
-import useEventCallback from '@/hooks/useEventCallback';
 import useMediaInfo from '@/hooks/useMediaInfo';
 
 import type { FileType } from '@/core/types/api/file';
@@ -14,10 +13,10 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
 
   const hash = useMemo(() => getEd2kLink(file), [file]);
-  const handleCopy = useEventCallback((event: React.MouseEvent) => {
+  const handleCopy = (event: React.MouseEvent) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
-  });
+  };
 
   const importedTime = dayjs(file.Imported, 'YYYY-MM-DDTHH:mm:ss[Z]', true);
 

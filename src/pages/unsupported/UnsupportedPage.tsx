@@ -7,7 +7,6 @@ import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { minimumSupportedServerVersion } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 
 const UnsupportedPage = () => {
   const dispatch = useDispatch();
@@ -15,15 +14,15 @@ const UnsupportedPage = () => {
 
   const versionQuery = useVersionQuery();
 
-  const handleLogout = useEventCallback(() => {
+  const handleLogout = () => {
     dispatch({ type: Events.AUTH_LOGOUT });
-  });
+  };
 
-  const handleWebUiUpdate = useEventCallback(() => {
+  const handleWebUiUpdate = () => {
     updateWebui('Stable', {
       onSuccess: () => handleLogout(),
     });
-  });
+  };
 
   return (
     <>
