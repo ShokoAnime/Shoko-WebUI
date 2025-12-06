@@ -343,12 +343,8 @@ const UnrecognizedTab = () => {
     }
   });
 
-  const getED2KLinks = useEventCallback(() => ({
-    fileIds: selectedRows.map(file => file.ID),
-    links: selectedRows.map(
-      file => getEd2kLink(file),
-    ).toSorted(),
-  }));
+  const fileIds = selectedRows.map(file => file.ID);
+  const links = selectedRows.map(file => getEd2kLink(file)).toSorted();
 
   const [tabContainerRef, bounds] = useMeasure();
   const isOverlay = bounds.width <= 1365 && bounds.width >= 1206 && selectedRows.length !== 0;
@@ -453,7 +449,8 @@ const UnrecognizedTab = () => {
           if (refresh) setRowSelection({});
           setSeriesSelectModal(false);
         }}
-        getLinks={getED2KLinks}
+        fileIds={fileIds}
+        links={links}
       />
     </>
   );
