@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -68,15 +68,11 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
   const ed2kLinks = links.join('\n');
-
-  const commonSeries = useMemo(
-    () => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))),
-    [links],
-  );
+  const commonSeries = findMostCommonShowName(links.map(link => detectShow(link.split('|')[2])));
 
   useEffect(() => {
     setSearchText(commonSeries);
-  }, [commonSeries]);
+  }, [commonSeries, show]);
 
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
