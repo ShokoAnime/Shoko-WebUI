@@ -343,10 +343,8 @@ const UnrecognizedTab = () => {
     }
   });
 
-  const ed2kLinksAndFileIds = {
-    fileIds: selectedRows.map(file => file.ID),
-    links: selectedRows.map(file => getEd2kLink(file)).toSorted(),
-  };
+  const fileIds = selectedRows.map(file => file.ID);
+  const links = selectedRows.map(file => getEd2kLink(file)).toSorted();
 
   const [tabContainerRef, bounds] = useMeasure();
   const isOverlay = bounds.width <= 1365 && bounds.width >= 1206 && selectedRows.length !== 0;
@@ -451,7 +449,8 @@ const UnrecognizedTab = () => {
           if (refresh) setRowSelection({});
           setSeriesSelectModal(false);
         }}
-        ed2kLinksAndFileIds={ed2kLinksAndFileIds}
+        fileIds={fileIds}
+        links={links}
       />
     </>
   );
