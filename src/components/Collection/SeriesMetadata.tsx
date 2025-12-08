@@ -5,7 +5,6 @@ import { Icon } from '@mdi/react';
 import Button from '@/components/Input/Button';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteTmdbLinkMutation } from '@/core/react-query/tmdb/mutations';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
@@ -37,16 +36,16 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
   const canEditLink = useMemo(() => site === 'TMDB', [site]);
   const canRemoveLink = useMemo(() => site === 'TMDB', [site]);
 
-  const addLink = useEventCallback(() => {
+  const addLink = () => {
     navigate('../tmdb-linking');
-  });
+  };
 
-  const editLink = useEventCallback(() => {
+  const editLink = () => {
     if (!id || !type) return;
     navigate(`../tmdb-linking?type=${type}&id=${id}`);
-  });
+  };
 
-  const removeLink = useEventCallback(() => {
+  const removeLink = () => {
     if (!id) return;
     switch (site) {
       case 'TMDB':
@@ -57,7 +56,7 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
       default:
         break;
     }
-  });
+  };
 
   return (
     <div className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3">

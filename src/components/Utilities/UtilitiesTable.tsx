@@ -7,7 +7,6 @@ import cx from 'classnames';
 import { debounce } from 'lodash';
 
 import { criteriaMap } from '@/components/Utilities/constants';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { RootState } from '@/core/store';
@@ -51,9 +50,9 @@ const Row = (
     selected,
     virtualRow,
   } = props;
-  const handleClick = useEventCallback((event: React.MouseEvent) => {
+  const handleClick = (event: React.MouseEvent) => {
     handleRowSelect(event, virtualRow);
-  });
+  };
 
   return (
     <div
@@ -190,7 +189,7 @@ const UtilitiesTable = (props: Props) => {
   );
 
   const lastRowSelected = useRef<VirtualItem | null>(null);
-  const handleSelect = useEventCallback((event: React.MouseEvent, virtualRow: VirtualItem) => {
+  const handleSelect = (event: React.MouseEvent, virtualRow: VirtualItem) => {
     if (!rowSelection || !handleRowSelect) return;
     try {
       if (setSelectedRows && event.shiftKey) {
@@ -215,7 +214,7 @@ const UtilitiesTable = (props: Props) => {
     } catch (error) {
       console.error(error);
     }
-  });
+  };
 
   return (
     <div className="flex w-full grow flex-col overflow-y-auto pr-4" ref={parentRef}>

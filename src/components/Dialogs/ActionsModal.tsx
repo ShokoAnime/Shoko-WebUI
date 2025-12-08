@@ -7,7 +7,6 @@ import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
-import useEventCallback from '@/hooks/useEventCallback';
 
 const actions = {
   import: {
@@ -100,7 +99,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
 
-  const handleAction = useEventCallback(() => {
+  const handleAction = () => {
     if (actionKey === 'plex-force-unlink') {
       invalidatePlexToken(undefined, {
         onSuccess: () => toast.success('Plex token invalidated!'),
@@ -110,7 +109,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
     runAction(functionName, {
       onSuccess: () => toast.success(`Running action "${name}"`),
     });
-  });
+  };
 
   return (
     <div

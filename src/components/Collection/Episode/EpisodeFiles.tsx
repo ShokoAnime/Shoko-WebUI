@@ -23,7 +23,6 @@ import {
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { copyToClipboard } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FileType } from '@/core/types/api/file';
 
@@ -46,7 +45,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
     [selectedFileToDelete],
   );
 
-  const handleDelete = useEventCallback(() => {
+  const handleDelete = () => {
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
       onSuccess: () => {
@@ -55,12 +54,12 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
       },
       onError: error => toast.error(`Failed to delete file! ${error.message}`),
     });
-  });
+  };
 
-  const closeDeleteModal = useEventCallback(() => {
+  const closeDeleteModal = () => {
     setSelectedFileToDelete(null);
     setShowDeleteModal(false);
-  });
+  };
 
   const handleAddToMyList = (id: number) =>
     addFileToMyList(id, {

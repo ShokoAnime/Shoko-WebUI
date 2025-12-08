@@ -7,7 +7,6 @@ import { find, toInteger } from 'lodash';
 
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import Input from './Input';
 
@@ -82,9 +81,7 @@ const SelectEpisodeList = React.memo((
     setSelected(find(options, ['value', value]) ?? {} as Option);
   }, [value, options]);
 
-  const handleEpFilter = useEventCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => setEpFilter(toInteger(event.target.value)),
-  );
+  const handleEpFilter = (event: React.ChangeEvent<HTMLInputElement>) => setEpFilter(toInteger(event.target.value));
 
   const selectOption = (selectedOption: Option) => {
     setSelected(selectedOption);

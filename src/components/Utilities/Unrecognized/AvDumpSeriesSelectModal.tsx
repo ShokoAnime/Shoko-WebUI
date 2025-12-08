@@ -13,7 +13,6 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
@@ -92,7 +91,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
       });
   };
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = () => {
     onClose(true);
 
     const promises = fileIds.map(fileId => rescanFile(toNumber(fileId)));
@@ -105,7 +104,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
         if (failedCount !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
       })
       .catch(console.error);
-  });
+  };
 
   useLayoutEffect(() => () => {
     if (show) return;

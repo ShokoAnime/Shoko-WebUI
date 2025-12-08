@@ -3,8 +3,6 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { findKey } from 'lodash';
 
-import useEventCallback from '@/hooks/useEventCallback';
-
 import type { RenamerConfigSettingsType, RenamerSettingsType } from '@/core/types/api/renamer';
 import type { Updater } from 'use-immer';
 
@@ -24,12 +22,12 @@ const RenamerScript = ({ newConfig, setNewConfig, settingsModel }: Props) => {
     setting => setting.SettingType === 'Code',
   );
 
-  const updateScript = useEventCallback((value?: string) => {
+  const updateScript = (value?: string) => {
     setNewConfig((draftState) => {
       if (!settingName) return;
       draftState[settingName].Value = value ?? '';
     });
-  });
+  };
 
   if (!settingName) {
     return (

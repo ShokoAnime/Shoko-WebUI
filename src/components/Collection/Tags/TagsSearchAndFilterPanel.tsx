@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -6,7 +6,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { TagType } from '@/core/types/api/tags';
 
@@ -22,9 +21,9 @@ type Props = {
 const TagsSearchAndFilterPanel = React.memo(
   ({ handleInputChange, search, seriesId, showSpoilers, sort, tagSourceFilter, toggleSort }: Props) => {
     const { isPending: anidbRefreshPending, mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(seriesId);
-    const refreshAnidbCallback = useEventCallback(() => {
+    const refreshAnidbCallback = useCallback(() => {
       refreshAnidb({ force: true });
-    });
+    }, [refreshAnidb]);
 
     const searchInput = useMemo(() => (
       <Input

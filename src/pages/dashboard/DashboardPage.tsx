@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
@@ -12,7 +12,6 @@ import { initialSettings } from '@/core/react-query/settings/helpers';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
-import useEventCallback from '@/hooks/useEventCallback';
 import WelcomeModal from '@/pages/dashboard/components/WelcomeModal';
 
 import CollectionStats from './panels/CollectionStats';
@@ -40,8 +39,8 @@ const renderResizeHandle = () => (
 const Toast = React.memo((
   { cancelLayoutChange, saveLayout }: { cancelLayoutChange: () => void, saveLayout: (reset?: boolean) => void },
 ) => {
-  const resetLayout = useEventCallback(() => saveLayout(true));
-  const saveNewLayout = useEventCallback(() => saveLayout());
+  const resetLayout = () => saveLayout(true);
+  const saveNewLayout = () => saveLayout();
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -88,13 +87,13 @@ const DashboardPage = () => {
     if (settingsQuery.isSuccess) setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
   }, [settings, settingsQuery.isSuccess]);
 
-  const cancelLayoutChange = useEventCallback(() => {
+  const cancelLayoutChange = useCallback(() => {
     setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
     dispatch(setLayoutEditMode(false));
     toast.dismiss('layoutEditMode');
-  });
+  }, [dispatch, settings.WebUI_Settings.layout.dashboard]);
 
-  const saveLayout = useEventCallback((reset = false) => {
+  const saveLayout = useCallback((reset = false) => {
     const newSettings = produce(settings, (draftState) => {
       draftState.WebUI_Settings.layout.dashboard = reset
         ? initialSettings.WebUI_Settings.layout.dashboard
@@ -108,7 +107,7 @@ const DashboardPage = () => {
       },
       onError: error => toast.error('', error.message),
     });
-  });
+  }, [currentLayout, dispatch, patchSettings, settings]);
 
   const location = useLocation();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);

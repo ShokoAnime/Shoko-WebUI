@@ -7,7 +7,6 @@ import Button from '@/components/Input/Button';
 import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type RouteError = {
@@ -27,20 +26,20 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
 
-  const handleLogout = useEventCallback(() => {
+  const handleLogout = () => {
     dispatch({ type: Events.AUTH_LOGOUT });
     if (resetError) resetError();
-  });
+  };
 
-  const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {
+  const handleWebUiUpdate = (channel: 'Stable' | 'Dev') => {
     setUpdateChannel(channel);
     updateWebui(channel, {
       onSuccess: () => handleLogout(),
     });
-  });
+  };
 
-  const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Stable'));
-  const handleDevWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Dev'));
+  const handleStableWebUiUpdate = () => handleWebUiUpdate('Stable');
+  const handleDevWebUiUpdate = () => handleWebUiUpdate('Dev');
 
   console.error(error, routeError);
 

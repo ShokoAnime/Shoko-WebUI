@@ -9,7 +9,6 @@ import TransitionDiv from '@/components/TransitionDiv';
 import { useDashboardCalendarQuery } from '@/core/react-query/dashboard/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 
 import type { RootState } from '@/core/store';
@@ -32,13 +31,13 @@ const UpcomingAnime = () => {
   const calendarQuery = useDashboardCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
   const calendarAllQuery = useDashboardCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });
 
-  const handleTabChange = useEventCallback((newTab: TabType) => {
+  const handleTabChange = (newTab: TabType) => {
     setCurrentTab(newTab);
     const newSettings = produce(settings, (draftState) => {
       draftState.WebUI_Settings.dashboard.upcomingAnimeView = newTab;
     });
     patchSettings({ newSettings });
-  });
+  };
 
   return (
     <ShokoPanel

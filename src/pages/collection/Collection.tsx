@@ -24,7 +24,6 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { buildFilter } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -94,7 +93,7 @@ const Collection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [groupSearch, setGroupSearch] = useState(searchParams.get('q') ?? '');
   const [seriesSearch, setSeriesSearch] = useState(searchParams.get('qs') ?? '');
-  const setSearch = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const setSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
 
     if (!query.trim()) {
@@ -111,7 +110,7 @@ const Collection = () => {
       setSearchParams({ q: query }, { replace: true });
       setGroupSearch(query);
     }
-  });
+  };
   const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
 
@@ -131,14 +130,14 @@ const Collection = () => {
   const [showFilterSidebar, toggleFilterSidebar, setShowFilterSidebar] = useToggle();
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
-  const handleFilterSidebarToggle = useEventCallback(() => {
+  const handleFilterSidebarToggle = () => {
     if (!filterId) {
       dispatch(resetFilter());
       navigate('filter/live');
       return;
     }
     toggleFilterSidebar();
-  });
+  };
 
   useEffect(() => {
     if (filterId === 'live') setShowFilterSidebar(true);
@@ -215,7 +214,7 @@ const Collection = () => {
     viewSetting === 'list' && lastPageIds.length > 0,
   ).data;
 
-  const toggleMode = useEventCallback(() => {
+  const toggleMode = () => {
     if (isFetching) return;
 
     const newMode = mode === 'list' ? 'poster' : 'list';
@@ -229,7 +228,7 @@ const Collection = () => {
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
     patchSettings({ newSettings });
-  });
+  };
 
   return (
     <>

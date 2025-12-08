@@ -24,7 +24,6 @@ import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
@@ -73,9 +72,9 @@ const Series = () => {
     ];
   }, [series]);
 
-  const onClickHandler = useEventCallback(() => {
+  const onClickHandler = () => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
-  });
+  };
 
   const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomBackdrop);

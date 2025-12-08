@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useMeasure from 'react-use-measure';
 import {
@@ -46,7 +46,6 @@ import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -79,23 +78,21 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const showDeleteConfirmation = useEventCallback(() => {
+  const showDeleteConfirmation = useCallback(() => {
     setShowConfirmModal(true);
-  });
+  }, []);
 
-  const cancelDelete = useEventCallback(() => {
+  const cancelDelete = () => {
     setShowConfirmModal(false);
-  });
+  };
 
-  const removeFileFromSelection = useEventCallback(
-    (fileId: number) =>
-      setSelectedRows((draftState) => {
-        draftState[fileId] = false;
-        return draftState;
-      }),
-  );
+  const removeFileFromSelection = (fileId: number) =>
+    setSelectedRows((draftState) => {
+      draftState[fileId] = false;
+      return draftState;
+    });
 
-  const handleDelete = useEventCallback(() => {
+  const handleDelete = () => {
     deleteFiles(
       {
         fileIds: selectedRows.map(row => row.ID),
@@ -107,9 +104,9 @@ const Menu = (
       },
     );
     setSelectedRows([]);
-  });
+  };
 
-  const ignoreFiles = useEventCallback(() => {
+  const ignoreFiles = useCallback(() => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: true }),
     );
@@ -123,9 +120,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [ignoreFile, selectedRows, setSelectedRows]);
 
-  const rehashFiles = useEventCallback(() => {
+  const rehashFiles = useCallback(() => {
     const promises = selectedRows.map(row => rehashFile(row.ID));
 
     Promise
@@ -137,9 +134,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [rehashFile, selectedRows, setSelectedRows]);
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = useCallback(() => {
     const promises = selectedRows.map(row => rescanFile(row.ID));
 
     Promise
@@ -151,12 +148,12 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [rescanFile, selectedRows, setSelectedRows]);
 
-  const handleRename = useEventCallback(() => {
+  const handleRename = useCallback(() => {
     dispatch(addFiles(selectedRows));
     navigate('/webui/utilities/renamer');
-  });
+  }, [dispatch, navigate, selectedRows]);
 
   const renderSelectedRowActions = useMemo(() => (
     <>
@@ -324,7 +321,7 @@ const UnrecognizedTab = () => {
   );
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
-  const handleAvdumpClick = useEventCallback(() => {
+  const handleAvdumpClick = () => {
     if (isAvdumpFinished && !dumpInProgress) {
       setSeriesSelectModal(true);
     }
@@ -341,7 +338,7 @@ const UnrecognizedTab = () => {
       })
         .catch((error: AxiosError) => toast.error('AVDump failed!', processError(error)));
     }
-  });
+  };
 
   const fileIds = selectedRows.map(file => file.ID);
   const links = selectedRows.map(file => getEd2kLink(file)).toSorted();

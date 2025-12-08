@@ -23,7 +23,6 @@ import {
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const PlexLinkButton = () => {
@@ -36,7 +35,7 @@ const PlexLinkButton = () => {
   const { isPending: isInvalidateTokenPending, mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const handleLogin = useEventCallback(() => {
+  const handleLogin = () => {
     window.open(loginUrlQuery?.data, '_blank');
     setPlexPollingInterval(1000);
     toast.info('Checking Plex login status!', '', {
@@ -45,9 +44,9 @@ const PlexLinkButton = () => {
       closeOnClick: false,
       toastId: 'plex-status',
     });
-  });
+  };
 
-  const invalidateToken = useEventCallback(() => {
+  const invalidateToken = () => {
     invalidatePlexToken(undefined, {
       onSuccess: () => {
         // Cleanup libraries and server from settings because server won't do so.
@@ -64,11 +63,11 @@ const PlexLinkButton = () => {
         });
       },
     });
-  });
+  };
 
-  const fetchLoginUrl = useEventCallback(() => {
+  const fetchLoginUrl = () => {
     loginUrlQuery.refetch().catch(console.error);
-  });
+  };
 
   useEffect(() => {
     if (isAuthenticated.data) {
@@ -135,7 +134,7 @@ const PlexSettings = () => {
     else setServerId('');
   }, [plexSettings.Server]);
 
-  const handleServerChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleServerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     // Optimistic update
     setServerId(event.target.value);
 
@@ -144,9 +143,9 @@ const PlexSettings = () => {
       onSuccess: () => invalidateQueries(['settings']),
       onError: () => setServerId(plexSettings.Server),
     });
-  });
+  };
 
-  const handleLibraryChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLibraryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const key = toNumber(event.target.id);
 
     const newLibraries = plexSettings.Libraries.slice();
@@ -156,7 +155,7 @@ const PlexSettings = () => {
     changeLibraries(newLibraries, {
       onSuccess: () => invalidateQueries(['settings']),
     });
-  });
+  };
 
   return (
     <div className="flex flex-col gap-y-6">

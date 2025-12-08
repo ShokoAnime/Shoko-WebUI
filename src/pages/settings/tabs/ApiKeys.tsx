@@ -9,14 +9,13 @@ import toast from '@/components/Toast';
 import { useCreateApiToken, useDeleteApiToken } from '@/core/react-query/auth/mutations';
 import { useApiKeyQuery } from '@/core/react-query/auth/queries';
 import { copyToClipboard } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AuthToken } from '@/core/types/api/authToken';
 
 const UserApiTokens = ({ token }: { token: AuthToken }) => {
   const { isPending, mutate: deleteToken } = useDeleteApiToken();
 
-  const onDeleteClick = useEventCallback(() => {
+  const onDeleteClick = () => {
     deleteToken(token.Device, {
       onSuccess: (() => {
         toast.success('API Key Deleted', `API Key ${token.Device} has been deleted!`, {
@@ -24,7 +23,7 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
         });
       }),
     });
-  });
+  };
 
   return (
     <div className="flex flex-row items-center justify-between">
@@ -41,9 +40,9 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
 const ApiKeys = () => {
   const [deviceName, setDeviceName] = useState('');
 
-  const onDeviceNameChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDeviceName(event.target.value);
-  });
+  };
 
   const {
     data: createdToken,
@@ -52,7 +51,7 @@ const ApiKeys = () => {
     mutate: createApiToken,
   } = useCreateApiToken();
 
-  const handleCopyToClipboard = useEventCallback(() => {
+  const handleCopyToClipboard = () => {
     if (!isTokenGenerated) return;
     copyToClipboard(createdToken)
       .then(
@@ -70,9 +69,9 @@ const ApiKeys = () => {
         console.error(error);
         toast.error('API Key copy failed!');
       });
-  });
+  };
 
-  const handleTokenGeneration = useEventCallback(() => {
+  const handleTokenGeneration = () => {
     createApiToken(deviceName, {
       onSuccess: () => {
         toast.success('API Key has been generated!', undefined, {
@@ -85,7 +84,7 @@ const ApiKeys = () => {
         });
       },
     });
-  });
+  };
 
   const { data: tokens } = useApiKeyQuery();
 

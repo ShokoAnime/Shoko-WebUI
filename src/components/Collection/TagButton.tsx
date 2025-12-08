@@ -7,7 +7,6 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
@@ -19,13 +18,13 @@ type Props = {
 const TagButton = React.memo(({ tagType, text, type }: Props) => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
-  const handleClick = useEventCallback(() => {
+  const handleClick = () => {
     dispatch(resetFilter());
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
       navigate('/webui/collection/filter/live');
     }).catch(console.error);
-  });
+  };
 
   return (
     <Button

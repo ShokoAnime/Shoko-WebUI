@@ -7,7 +7,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
@@ -33,24 +32,24 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     poster: posterSettings,
   } = newSettings.WebUI_Settings.collection;
 
-  const handleSettingChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSettingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const [type, key] = event.target.id.split('-') as [type: 'poster' | 'list' | 'image', key: string];
     const tempSettings = produce(newSettings, (draftState) => {
       draftState.WebUI_Settings.collection[type][key] = event.target.checked;
     });
     setNewSettings(tempSettings);
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setNewSettings(settings);
     onClose();
-  });
+  };
 
   return (
     <ModalPanel

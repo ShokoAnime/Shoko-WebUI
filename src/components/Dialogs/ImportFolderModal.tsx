@@ -16,7 +16,6 @@ import {
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import { setStatus } from '@/core/slices/modals/importFolder';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import BrowseFolderModal from './BrowseFolderModal';
 
@@ -61,18 +60,18 @@ const ImportFolderModal = () => {
   };
 
   const handleBrowse = () => dispatch(setBrowseStatus(true));
-  const handleClose = useEventCallback(() => dispatch(setStatus(false)));
+  const handleClose = () => dispatch(setStatus(false));
 
-  const handleDelete = useEventCallback(() => {
+  const handleDelete = () => {
     deleteFolder({ folderId: ID }, {
       onSuccess: () => {
         toast.success('Import folder deleted!');
         dispatch(setStatus(false));
       },
     });
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     if (edit) {
       updateFolder(importFolder, {
         onSuccess: () => {
@@ -88,7 +87,7 @@ const ImportFolderModal = () => {
         },
       });
     }
-  });
+  };
 
   const onFolderSelect = (Path: string) => setImportFolder({ ...importFolder, Path });
   const isLoading = isCreatePending || isDeletePending || isUpdatePending;

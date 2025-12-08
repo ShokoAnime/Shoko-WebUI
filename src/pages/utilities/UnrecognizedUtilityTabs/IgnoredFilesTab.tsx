@@ -17,7 +17,6 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
@@ -38,7 +37,7 @@ const Menu = (
 
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
 
-  const restoreFiles = useEventCallback(() => {
+  const restoreFiles = () => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: false }),
     );
@@ -52,7 +51,7 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  };
 
   return (
     <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 ">
