@@ -47,6 +47,7 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FileType } from '@/core/types/api/file';
@@ -396,7 +397,7 @@ const LinkFilesTab = () => {
     });
   };
 
-  const autoFill = useCallback(() => {
+  const autoFill = useEventCallback(() => {
     if (!episodes.length) return;
     let hasChanged = false;
     let skipped = false;
@@ -463,7 +464,7 @@ const LinkFilesTab = () => {
         toast.success('Auto matching applied.', 'Be sure to verify before saving!');
       }
     }
-  }, [episodes, orderedLinks, setLinks, showDataMap]);
+  });
 
   const makeLinks = useCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
