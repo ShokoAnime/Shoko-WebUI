@@ -1,5 +1,5 @@
 // This is the least maintainable file in the entire codebase
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
   mdiLink,
@@ -47,7 +47,6 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FileType } from '@/core/types/api/file';
@@ -397,12 +396,12 @@ const LinkFilesTab = () => {
     });
   };
 
-  const autoFill = useEventCallback(() => {
-    if (!episodes.length) return;
+  const autoFill = useEffectEvent(() => {
     let hasChanged = false;
     let skipped = false;
     const newLinks: ManualLink[] = [];
     let specials = 0;
+
     forEach(groupBy(orderedLinks, 'FileID'), (link) => {
       const { FileID } = link[0];
       const { details } = showDataMap.get(FileID)!;
@@ -453,18 +452,25 @@ const LinkFilesTab = () => {
         newLinks.push(...link);
       }
     });
+
     if (hasChanged) {
       setLinks(newLinks);
       if (skipped) {
         toast.warning(
           'Auto matching applied',
-          'Some matches could not be filled it. Be sure to vefify the ones that were, and fill in the rest!',
+          'Some matches could not be filled it. Be sure to verify the ones that were, and fill in the rest!',
         );
       } else {
         toast.success('Auto matching applied.', 'Be sure to verify before saving!');
       }
     }
   });
+
+  useEffect(() => {
+    if (selectedSeries.ID && episodes.length) {
+      autoFill();
+    }
+  }, [selectedSeries.ID, episodes.length]);
 
   const makeLinks = useCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
@@ -561,12 +567,6 @@ const LinkFilesTab = () => {
       navigate('/webui/Utilities/Unrecognized', { replace: true });
     }
   }, [links, navigate]);
-
-  useEffect(() => {
-    if (selectedSeries.ID && episodes.length) {
-      autoFill();
-    }
-  }, [selectedSeries.ID, episodes.length, autoFill]);
 
   useEffect(() => {
     const seriesId = selectedSeries?.ShokoID;
