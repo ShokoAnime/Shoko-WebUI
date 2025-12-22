@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useEffectEvent, useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -382,6 +382,8 @@ const Renamer = () => {
     setNewConfig(tempConfig.Settings);
   };
 
+  const changeSelectedConfigEvent = useEffectEvent((configName: string) => changeSelectedConfig(configName));
+
   // Handle the below 3 hooks with care. These are used for auto-updating previews on changes.
   // We combine them here because there is a delay in when the name changes and the config changes
   // Effect should only be triggered once even if both values change
@@ -455,12 +457,12 @@ const Renamer = () => {
   useEffect(() => {
     if (!renamerConfigsQuery.isSuccess) return;
 
-    if (selectedConfig.Name) changeSelectedConfig(selectedConfig.Name);
-    else changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
+    if (selectedConfig.Name) changeSelectedConfigEvent(selectedConfig.Name);
+    else changeSelectedConfigEvent(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
     // This shouldn't run when `selectedConfig.Name` changes.
     // We are resetting `selectedConfig` when new data arrives so that it is up-to-date for `configEdited` flag
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [changeSelectedConfig, renamerConfigsQuery.data, renamerConfigsQuery.isSuccess, settings]);
+  }, [renamerConfigsQuery.data, renamerConfigsQuery.isSuccess, settings]);
 
   const {
     handleRowSelect,
