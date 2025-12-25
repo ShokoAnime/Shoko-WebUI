@@ -3,6 +3,7 @@ import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import useAutoFocusRef from '@/hooks/useAutoFocusRef';
 import useBodyVisibleContext from '@/hooks/useBodyVisibleContext';
 
 type EndIcon = {
@@ -24,6 +25,7 @@ type Props = {
   className?: string;
   inputClassName?: string;
   autoFocus?: boolean;
+  autoFocusHook?: boolean;
   disabled?: boolean;
   center?: boolean;
   endIcons?: EndIcon[];
@@ -43,6 +45,7 @@ type TooltipAttributes = {
 const Input = React.memo((props: Props) => {
   const {
     autoFocus = false,
+    autoFocusHook = false,
     center,
     className,
     disabled,
@@ -65,6 +68,7 @@ const Input = React.memo((props: Props) => {
 
   const bodyVisible = useBodyVisibleContext();
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputRefHook = useAutoFocusRef(autoFocusHook, bodyVisible);
   const [isShow, setIsShow] = React.useState(false);
 
   useLayoutEffect(() => {
@@ -138,7 +142,7 @@ const Input = React.memo((props: Props) => {
             onKeyUp={onKeyUp}
             onKeyDown={onKeyDown}
             disabled={disabled}
-            ref={inputRef}
+            ref={autoFocusHook ? inputRefHook : inputRef}
           />
           {endIcons?.length && (
             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
