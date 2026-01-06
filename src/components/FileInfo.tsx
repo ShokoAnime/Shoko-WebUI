@@ -56,7 +56,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
           <div className="flex">
             <div className="min-w-37.5 font-semibold">Imported At</div>
             {importedTime.isValid()
-              ? importedTime.format('YYYY-MM-DD | HH:mm')
+              ? importedTime.format('MMMM Do, YYYY | HH:mm')
               : 'N/A'}
           </div>
           {compact && (
