@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
@@ -128,6 +129,7 @@ const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
 ];
 
 const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Updater<Record<number, boolean>> }) => {
+  const { t } = useTranslation('links');
   const { selectedFileIds, setSelectedRows } = props;
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
@@ -139,8 +141,10 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
       .allSettled(promises)
       .then((result) => {
         const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Rescan failed for ${failedCount} files!`);
-        if (failedCount !== selectedFileIds.length) toast.success(`Rescanning ${selectedFileIds.length} files!`);
+        if (failedCount) toast.error(t('manuallyLinkedTab.toast.rescanFailed', { count: failedCount }));
+        if (failedCount !== selectedFileIds.length) {
+          toast.success(t('manuallyLinkedTab.toast.rescanning', { count: selectedFileIds.length }));
+        }
       })
       .catch(console.error);
   });
@@ -151,13 +155,17 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
 
   return (
     <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
-      <MenuButton onClick={handleRefresh} icon={mdiRefresh} name="Refresh" />
+      <MenuButton onClick={handleRefresh} icon={mdiRefresh} name={t('manuallyLinkedTab.actions.refresh')} />
       <TransitionDiv className="ml-4 flex grow gap-x-4" show={selectedFileIds.length !== 0}>
-        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton
+          onClick={rescanFiles}
+          icon={mdiDatabaseSearchOutline}
+          name={t('manuallyLinkedTab.actions.rescan')}
+        />
         <MenuButton
           onClick={() => setSelectedRows({})}
           icon={mdiCloseCircleOutline}
-          name="Cancel Selection"
+          name={t('manuallyLinkedTab.actions.cancelSelection')}
           highlight
         />
       </TransitionDiv>
@@ -166,6 +174,7 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
 });
 
 const ManuallyLinkedTab = () => {
+  const { t } = useTranslation('links');
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
@@ -206,8 +215,10 @@ const ManuallyLinkedTab = () => {
       .allSettled(promises)
       .then((result) => {
         const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Error unlinking ${failedCount} files!`);
-        if (failedCount !== selectedFileIds.length) toast.success(`${selectedFileIds.length} files unlinked!`);
+        if (failedCount) toast.error(t('manuallyLinkedTab.toast.unlinkFailed', { count: failedCount }));
+        if (failedCount !== selectedFileIds.length) {
+          toast.success(t('manuallyLinkedTab.toast.unlinked', { count: selectedFileIds.length }));
+        }
         resetQueries(['series']);
         setUnlinkingInProgress(false);
       })
@@ -221,7 +232,10 @@ const ManuallyLinkedTab = () => {
 
   return (
     <>
-      <title>Manually Linked Files | Shoko</title>
+      <title>
+        {t('manuallyLinkedTab.manuallyLinked.title')}
+        | Shoko
+      </title>
       <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
         <ShokoPanel
           title={<Title />}
@@ -237,7 +251,7 @@ const ManuallyLinkedTab = () => {
           <div className="flex items-center gap-x-3">
             <Input
               type="text"
-              placeholder="Search..."
+              placeholder={t('manuallyLinkedTab.common.search')}
               startIcon={mdiMagnify}
               id="search"
               value={search}
@@ -254,7 +268,7 @@ const ManuallyLinkedTab = () => {
                 loading={unlinkingInProgress}
               >
                 <Icon path={mdiLinkOff} size={1} />
-                Unlink
+                {t('manuallyLinkedTab.actions.unlink')}
               </Button>
             </TransitionDiv>
           </div>

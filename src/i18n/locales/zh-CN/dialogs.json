@@ -1,0 +1,52 @@
+{
+  "dialogs": {
+    "common": {
+      "cancel": "取消",
+      "save": "保存",
+      "discard": "丢弃",
+      "delete": "删除"
+    },
+    "languagesModal": {
+      "seriesLanguages": "系列语言",
+      "episodeLanguages": "剧集语言",
+      "descriptionLanguages": "描述语言"
+    },
+    "importFolderModal": {
+      "addHeader": "添加新导入文件夹",
+      "editHeader": "编辑导入文件夹",
+      "nameLabel": "名称",
+      "locationLabel": "位置",
+      "dropTypeLabel": "投放类型",
+      "watchLabel": "监视新文件",
+      "namePlaceholder": "文件夹名称",
+      "locationPlaceholder": "位置",
+      "dropNone": "无",
+      "dropSource": "来源",
+      "dropDestination": "目的地",
+      "dropBoth": "两者",
+      "watchNo": "否",
+      "watchYes": "是",
+      "toastAdded": "导入文件夹已添加！",
+      "toastEdited": "导入文件夹已编辑！",
+      "toastDeleted": "导入文件夹已删除！"
+    },
+    "filterPresetsModal": {
+      "header": "过滤预设",
+      "filtersTab": "过滤器",
+      "searchPlaceholder": "搜索...",
+      "noResults": "对 “<0>{{search}}</0>” 的搜索没有返回结果。"
+    },
+    "browseFolderModal": {
+      "header": "选择导入文件夹",
+      "selectButton": "选择"
+    },
+    "deleteFilesModal": {
+      "deleteConfirmation": "删除确认",
+      "filesCount": "{{count}} 个文件",
+      "confirm1": "请确认是否删除以下文件。此操作具有破坏性，无法撤销。",
+      "confirm2": "如果误添加了文件，请点击文件名右侧的图标将其移除。",
+      "deleteButton": "删除文件",
+      "missingPath": "<文件路径缺失（ID: {{id}}）>"
+    }
+  }
+}

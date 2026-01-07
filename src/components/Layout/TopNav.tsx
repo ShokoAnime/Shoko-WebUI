@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useLocation } from 'react-router';
 import {
@@ -71,6 +72,7 @@ const QueueCount = () => {
 };
 
 function TopNav() {
+  const { t } = useTranslation('topNav');
   const dispatch = useDispatch();
 
   const navigate = useNavigateVoid();
@@ -155,10 +157,10 @@ function TopNav() {
   };
 
   const webuiUpdateStatus = useMemo(() => {
-    if (isUpdateWebuiPending) return 'Updating WebUI...';
-    if (checkWebuiUpdate.isFetching) return 'Checking for WebUI update';
-    return 'WebUI Update Available';
-  }, [isUpdateWebuiPending, checkWebuiUpdate.isFetching]);
+    if (isUpdateWebuiPending) return t('webui.updating');
+    if (checkWebuiUpdate.isFetching) return t('webui.checking');
+    return t('webui.available');
+  }, [isUpdateWebuiPending, checkWebuiUpdate.isFetching, t]);
 
   return (
     <>
@@ -189,7 +191,7 @@ function TopNav() {
                 cx({ 'text-topnav-text-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
               onClick={closeModalsAndSubmenus}
               data-tooltip-id="tooltip"
-              data-tooltip-content="Settings"
+              data-tooltip-content={t('tooltip.settings')}
               data-tooltip-place="bottom"
             >
               <Icon
@@ -200,7 +202,7 @@ function TopNav() {
             </NavLink>
             <Button
               onClick={handleLogout}
-              tooltip="Log out"
+              tooltip={t('tooltip.logout')}
               tooltipPlace="bottom"
             >
               <Icon
@@ -218,18 +220,18 @@ function TopNav() {
                 icon={mdiViewDashboardOutline}
                 onClick={closeModalsAndSubmenus}
                 path="dashboard"
-                text="Dashboard"
+                text={t('menu.dashboard')}
               />
 
               <LinkMenuItem
                 icon={mdiLayersTripleOutline}
                 onClick={closeModalsAndSubmenus}
                 path="collection"
-                text="Collection"
+                text={t('menu.collection')}
               />
               <MenuItem
                 id="utilities"
-                text="Utilities"
+                text={t('menu.utilities')}
                 icon={mdiTools}
                 onClick={() => {
                   closeModalsAndSubmenus(undefined, 'utilities');
@@ -241,11 +243,11 @@ function TopNav() {
                 onClick={closeModalsAndSubmenus}
                 icon={mdiTextBoxOutline}
                 path="log"
-                text="Log"
+                text={t('menu.log')}
               />
               <MenuItem
                 id="actions"
-                text="Actions"
+                text={t('menu.actions')}
                 icon={mdiFormatListBulletedSquare}
                 onClick={() => {
                   closeModalsAndSubmenus();
@@ -258,7 +260,7 @@ function TopNav() {
               {pathname === '/webui/dashboard' && (
                 <MenuItem
                   id="dashboard-settings"
-                  text="Dashboard Settings"
+                  text={t('menu.dashboardSettings')}
                   icon={mdiViewDashboardEditOutline}
                   onClick={() => {
                     closeModalsAndSubmenus();
@@ -309,15 +311,23 @@ function TopNav() {
                         className="text-topnav-icon-warning"
                       />
                     )}
-                  No Internet Connection
+                  {t('network.noInternet')}
                 </Button>
               )}
               <AniDBBanDetectionItem type="HTTP" banStatus={banStatus.http} />
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
               <div className="flex items-center gap-x-5">
-                <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} name="Discord" />
-                <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} name="Docs" />
-                <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} name="GitHub" />
+                <ExternalLinkMenuItem
+                  url="https://discord.gg/vpeHDsg"
+                  icon={siDiscord.path}
+                  name={t('links.discord')}
+                />
+                <ExternalLinkMenuItem
+                  url="https://docs.shokoanime.com"
+                  icon={mdiHelpCircleOutline}
+                  name={t('links.docs')}
+                />
+                <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} name={t('links.github')} />
               </div>
             </div>
           </div>
@@ -331,31 +341,31 @@ function TopNav() {
               icon={mdiFileQuestionOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/unrecognized"
-              text="Unrecognized Files"
+              text={t('utilities.unrecognizedFiles')}
             />
             <LinkMenuItem
               icon={mdiFileDocumentMultipleOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/release-management"
-              text="Release Management"
+              text={t('utilities.releaseManagement')}
             />
             <LinkMenuItem
               icon={mdiFileDocumentAlertOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/series-without-files"
-              text="Series Without Files"
+              text={t('utilities.seriesWithoutFiles')}
             />
             <LinkMenuItem
               icon={mdiFileSearchOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/file-search"
-              text="File Search"
+              text={t('utilities.fileSearch')}
             />
             <LinkMenuItem
               icon={mdiFileDocumentEditOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/renamer"
-              text="File Rename"
+              text={t('utilities.fileRename')}
             />
           </div>
         </AnimateHeight>

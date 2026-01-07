@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import cx from 'classnames';
@@ -19,6 +20,7 @@ type SeriesInfoProps = {
 };
 
 const SeriesInfo = ({ series }: SeriesInfoProps) => {
+  const { i18n, t } = useTranslation('series');
   const { seriesId } = useParams();
 
   const dispatch = useDispatch();
@@ -30,27 +32,31 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
   const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
   const airDate = useMemo(() => {
+    const isChinese = i18n.language.startsWith('zh');
+    const dateFormat = isChinese ? 'YYYY.MM.DD' : 'MMM DD, YYYY';
     if (!startDate) {
-      return 'Unknown';
+      return t('overview.details.unknown');
     }
+    const formatted = startDate.format(dateFormat);
     if (endDate) {
-      if (startDate.format('MMM DD, YYYY') === endDate.format('MMM DD, YYYY')) {
-        return startDate.format('MMM DD, YYYY');
+      const formattedEnd = endDate.format(dateFormat);
+      if (formatted === formattedEnd) {
+        return formatted;
       }
-      return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
+      return t('overview.details.airdate_range', { start: formatted, end: formattedEnd });
     }
-    return `${startDate.format('MMM DD, YYYY')} - Ongoing`;
-  }, [startDate, endDate]);
+    return t('overview.details.airdate_ongoing', { start: formatted });
+  }, [i18n.language, startDate, endDate, t]);
 
   const status = useMemo(() => {
     if (!startDate) {
-      return 'Unknown';
+      return t('overview.details.unknown');
     }
     if (!endDate || endDate.isAfter(dayjs())) {
-      return 'Currently Airing';
+      return t('overview.details.currently_airing');
     }
-    return 'Finished';
-  }, [startDate, endDate]);
+    return t('overview.details.finished');
+  }, [startDate, endDate, t]);
 
   const handleSeasonFilter = useEventCallback(() => {
     if (!overview.FirstAirSeason) return;
@@ -68,28 +74,28 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     <>
       <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Type</div>
+          <div className="font-semibold">{t('overview.details.type')}</div>
           <div className="truncate">
             &nbsp;
             {series?.AniDB?.Type}
           </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Source</div>
+          <div className="font-semibold">{t('overview.details.source')}</div>
           <div className="truncate">
             &nbsp;
             {overview.SourceMaterial}
           </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Airdate</div>
+          <div className="font-semibold">{t('overview.details.airdate')}</div>
           <div className="truncate">
             &nbsp;
             {airDate}
           </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Status</div>
+          <div className="font-semibold">{t('overview.details.status')}</div>
           {/* TODO: Check if there are more status types */}
           <div className="truncate">
             &nbsp;
@@ -99,33 +105,26 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
       </div>
       <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Episodes</div>
+          <div className="font-semibold">{t('overview.details.episodes')}</div>
           <div className="truncate">
-            &nbsp;
-            {series?.Sizes.Total.Episodes}
-            &nbsp;
-            {series?.Sizes.Total.Episodes > 1
-              ? 'Episodes'
-              : 'Episode'}
+            {t('overview.episode_count', { count: series?.Sizes.Total.Episodes ?? 0 })}
             <span className="mx-1">|</span>
-            {series?.Sizes.Total.Specials}
-            &nbsp;
-            {series?.Sizes.Total.Specials > 1
-              ? 'Specials'
-              : 'Special'}
+            {t('overview.special_count', { count: series?.Sizes.Total.Specials ?? 0 })}
           </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Length</div>
+          <div className="font-semibold">{t('overview.details.length')}</div>
           <div className="truncate">
             &nbsp;
             {overview.RuntimeLength
-              ? `${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Mins/Episode`
-              : '--'}
+              ? t('overview.details.mins_per_episode', {
+                minutes: Math.round(dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()),
+              })
+              : t('overview.details.not_available')}
           </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Season</div>
+          <div className="font-semibold">{t('overview.details.season')}</div>
           <div
             className={cx(
               'truncate',
@@ -134,16 +133,16 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
             onClick={handleSeasonFilter}
           >
             &nbsp;
-            {overview?.FirstAirSeason ?? '--'}
+            {overview?.FirstAirSeason ?? t('overview.details.not_available')}
           </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Studio</div>
+          <div className="font-semibold">{t('overview.details.studio')}</div>
           <div className="truncate">
             &nbsp;
             {overview?.Studios?.[0]
               ? overview?.Studios?.[0].Name
-              : 'Studio Not Listed'}
+              : t('overview.details.studio_not_listed')}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router';
 import { mdiLoading, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -16,8 +17,9 @@ import type { TagType } from '@/core/types/api/tags';
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
 const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand: (tag: TagType) => void }) => {
+  const { t } = useTranslation('series');
   const emitTag = useEventCallback(() => onTagExpand(tag));
-  const tagDescription = tag.Description?.trim() ? tag.Description : 'Tag Description Not Available.';
+  const tagDescription = tag.Description?.trim() ? tag.Description : t('tags.descriptionNotAvailable');
 
   return (
     <div
@@ -34,7 +36,7 @@ const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
             size={1}
             className={tag.Source === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action'}
             data-tooltip-id="tooltip"
-            data-tooltip-content={`${tag.Source} Tag`}
+            data-tooltip-content={t('tags.sourceTag', { source: tag.Source })}
           />
         </div>
       </div>
@@ -47,6 +49,7 @@ const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
 });
 
 const SeriesTags = () => {
+  const { t } = useTranslation('series');
   const { series } = useOutletContext<SeriesContextType>();
 
   const [selectedTag, setSelectedTag] = useState<TagType>();
@@ -97,30 +100,33 @@ const SeriesTags = () => {
     [debouncedSearch, showSpoilers, sort, tagSourceFilter, tagsQueryData],
   );
 
+  const totalCount = isSuccess ? tagsQueryData?.length ?? '-' : '-';
+  const filteredCount = filteredTags?.length ?? totalCount;
+  const hasFilter = debouncedSearch !== '' || tagSourceFilter.size > 0 || showSpoilers;
+
   const header = useMemo(
     () => (
       <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-5">
         <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
-          <span>Tags</span>
+          <span>{t('tags.title')}</span>
           <span className="hidden px-2 2xl:inline">|</span>
           <span>
-            {(debouncedSearch !== '' || tagSourceFilter.size > 0 || showSpoilers) && (
-              <>
-                <span className="pr-2 text-panel-text-important">
-                  {filteredTags?.length}
-                </span>
-                of&nbsp;
-              </>
-            )}
-            <span className="pr-2 text-panel-text-important">
-              {isSuccess ? tagsQueryData.length : '-'}
-            </span>
-            Tags Listed
+            {hasFilter
+              ? (
+                <>
+                  <span className="text-panel-text-important">{filteredCount}</span>
+                  {t('tags.filteredSeparator')}
+                  <span className="text-panel-text-important">{totalCount}</span>
+                </>
+              )
+              : <span className="text-panel-text-important">{totalCount}</span>}
+            &nbsp;
+            {t('tags.unit')}
           </span>
         </div>
       </div>
     ),
-    [debouncedSearch, filteredTags?.length, isSuccess, showSpoilers, tagSourceFilter.size, tagsQueryData?.length],
+    [t, hasFilter, filteredCount, totalCount],
   );
 
   const onTagSelection = useEventCallback((tag: TagType) => {
@@ -131,7 +137,7 @@ const SeriesTags = () => {
 
   return (
     <>
-      <title>{`${series.Name} > Tags | Shoko`}</title>
+      <title>{t('pageTitle.tags', { name: series.Name })}</title>
       <div className="flex w-full gap-x-6">
         <TagsSearchAndFilterPanel
           seriesId={series.IDs.ID}

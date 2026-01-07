@@ -1,0 +1,337 @@
+{
+  "breadcrumb": {
+    "collection": "收藏"
+  },
+  "tabs": {
+    "overview": "概览",
+    "episodes": "剧集",
+    "credits": "演职员",
+    "images": "图片",
+    "tags": "标签",
+    "files": "文件",
+    "editSeries": "编辑系列"
+  },
+  "pageTitle": {
+    "overview": "{{name}} > 概览 | Shoko",
+    "episodes": "{{name}} > 剧集 | Shoko",
+    "credits": "{{name}} > 演职员 | Shoko",
+    "images": "{{name}} > 图片 | Shoko",
+    "tags": "{{name}} > 标签 | Shoko",
+    "files": "{{name}} > 文件 | Shoko"
+  },
+  "overview": {
+    "metadataSites": "元数据站点",
+    "seriesLinks": "系列链接",
+    "episodeOnDeck": "下一集",
+    "allWatched": "所有可用剧集已观看",
+    "relatedAnime": "相关动画",
+    "similarAnime": "相似动画",
+    "topActors": "前 20 位声优",
+    "details": {
+      "type": "类型",
+      "source": "来源",
+      "airdate": "播出日期",
+      "status": "状态",
+      "episodes": "剧集",
+      "length": "时长",
+      "season": "季度",
+      "studio": "制作公司",
+      "unknown": "未知",
+      "airdate_range": "{{start}} - {{end}}",
+      "airdate_ongoing": "{{start}} - 连载中",
+      "currently_airing": "播出中",
+      "finished": "已完结",
+      "mins_per_episode": "{{minutes}} 分钟/集",
+      "not_available": "--",
+      "studio_not_listed": "未列出制作公司"
+    },
+    "stats": {
+      "file_count": "文件数量",
+      "watched": "已观看",
+      "missing": "缺失",
+      "none_nice_work": "没有，干得漂亮！",
+      "series_rating": "系列评分",
+      "temporary": "(临时)"
+    },
+    "episode_count": "{{count}} 集",
+    "special_count": "{{count}} 个特别篇"
+  },
+  "tags": {
+    "title": "标签",
+    "unit": "个标签",
+    "filteredSeparator": " / ",
+    "descriptionNotAvailable": "标签描述不可用。",
+    "sourceTag": "{{source}} 标签"
+  },
+  "images": {
+    "title": "图片",
+    "preferred": "首选",
+    "setPreferred": "设为首选{{type}}",
+    "selectedInfo": "选中信息",
+    "headerUnit": "张{{type}}",
+    "tabs": {
+      "posters": "海报",
+      "backdrops": "背景图",
+      "logos": "logo"
+    },
+    "preferredSingular": {
+      "posters": "海报",
+      "backdrops": "背景图",
+      "logos": "标志"
+    },
+    "info": {
+      "filename": "文件名",
+      "location": "位置",
+      "source": "来源",
+      "size": "尺寸"
+    }
+  },
+  "files": {
+    "tabs": {
+      "series": "系列文件",
+      "missing": "缺失文件"
+    },
+    "header": "{{modeLabel}} | {{count}} {{entry}}",
+    "entry_one": "项",
+    "entry_other": "项",
+    "fileInfo": {
+      "title": "文件详情",
+      "hashesTitle": "文件哈希值",
+      "fileName": "文件名",
+      "location": "路径",
+      "size": "大小",
+      "group": "发布组",
+      "video": "视频",
+      "audio": "音频",
+      "chapters": "章节",
+      "yes": "有",
+      "no": "无",
+      "crc": "CRC32",
+      "ed2k": "ED2K",
+      "sha1": "SHA1",
+      "md5": "MD5",
+      "copiedMessage": "ED2K 链接"
+    }
+  },
+  "episodes": {
+    "title": "剧集",
+    "header": "{{count}} 项条目",
+    "headerWithSelection": "{{count}} 项条目 | {{selected}} 项已选中",
+    "cancelSelection": "取消选择",
+    "options": "选项",
+    "headerBase": " 项条目",
+    "headerSelectedBase": " 项已选中",
+    "headerSeparator": " | "
+  },
+  "credits": {
+    "title": "演职员",
+    "unit": "位{{type}}",
+    "filteredSeparator": " / ",
+    "modes": {
+      "character": "角色",
+      "staff": "工作人员"
+    },
+    "placeholderCharacter": "角色或声优姓名...",
+    "placeholderStaff": "工作人员姓名..."
+  },
+  "edit": {
+    "modal": {
+      "title": "编辑系列"
+    },
+    "tabs": {
+      "name": "名称",
+      "group": "分组",
+      "updateActions": "更新操作",
+      "fileActions": "文件操作",
+      "deleteActions": "删除操作"
+    }
+  },
+  "group": {
+    "nameLabel": "名称",
+    "editTooltip": "编辑分组名称",
+    "renameTooltip": "重命名分组",
+    "searchPlaceholder": "搜索分组...",
+    "moveToLabel": "移动到分组",
+    "createNewTooltip": "创建并移动到新分组",
+    "noResults": "无结果！",
+    "error": "出错，请刷新！",
+    "moveToExistingTooltip": "移动到现有分组"
+  },
+  "name": {
+    "nameLabel": "名称",
+    "editTooltip": "编辑名称",
+    "saveTooltip": "保存名称",
+    "loadError": "无法加载系列数据！"
+  },
+  "actions": {
+    "update": {
+      "anidb": {
+        "name": "更新 AniDB 信息",
+        "description": "从 AniDB 获取最新系列信息。"
+      },
+      "anidbForce": {
+        "name": "强制更新 AniDB 信息",
+        "description": "强制从 AniDB 完整更新，跳过常规检查。"
+      },
+      "anidbCache": {
+        "name": "更新 AniDB 信息 - 本地缓存",
+        "description": "使用本地 XML 缓存更新 AniDB 数据。"
+      },
+      "tmdbAuto": {
+        "name": "自动搜索 TMDB 匹配",
+        "description": "自动搜索 TMDB 匹配项。"
+      },
+      "tmdb": {
+        "name": "更新 TMDB 信息",
+        "description": "从 TMDB 获取最新系列信息。"
+      },
+      "tmdbImagesForce": {
+        "name": "强制更新 TMDB 图片",
+        "description": "强制重新下载 TMDB 所有图片。"
+      },
+      "trakt": {
+        "name": "更新 Trakt 节目信息",
+        "description": "从 Trakt 获取最新节目信息。"
+      },
+      "traktSync": {
+        "name": "同步 Trakt 状态",
+        "description": "同步 Shoko 与 Trakt 的剧集观看状态。"
+      }
+    },
+    "file": {
+      "rescan": {
+        "name": "重新扫描文件",
+        "description": "重新扫描该系列的所有文件。"
+      },
+      "rehash": {
+        "name": "重新计算哈希",
+        "description": "重新计算该系列所有文件的哈希值。"
+      }
+    },
+    "delete": {
+      "keepFiles": {
+        "name": "删除系列 - 保留文件",
+        "description": "从 Shoko 删除系列记录，但保留实际文件"
+      },
+      "removeFiles": {
+        "name": "删除系列 - 删除文件",
+        "description": "从 Shoko 删除系列并删除实际文件"
+      },
+      "complete": {
+        "name": "彻底删除系列",
+        "description": "移除所有与该系列相关的记录。谨慎使用，可能导致封禁"
+      }
+    }
+  },
+  "toast": {
+    "delete": {
+      "keep": "系列已删除！",
+      "remove": "系列及文件已删除！",
+      "complete": "系列已彻底删除！"
+    }
+  },
+  "panels": {
+    "searchAndFilter": "搜索与筛选",
+    "tags": {
+      "searchLabel": "标签搜索",
+      "searchPlaceholder": "搜索...",
+      "tagSourceTitle": "标签来源",
+      "tagSources": {
+        "anidb": "AniDB",
+        "user": "用户"
+      },
+      "displayTitle": "显示",
+      "showSpoilers": "显示剧透标签",
+      "quickActions": "快速操作",
+      "changeSortPrefix": "更改排序 | ",
+      "sortWeight": "标签权重",
+      "sortAlphabetical": "字母顺序",
+      "forceRefresh": "强制刷新：AniDB"
+    },
+    "credits": {
+      "nameTitle": "名称",
+      "rolesTitle": "角色",
+      "quickActions": "快速操作",
+      "forceRefresh": "强制刷新：AniDB",
+      "warning": "警告！可能包含剧透"
+    },
+    "episodes": {
+      "searchLabel": "剧集搜索",
+      "searchPlaceholder": "搜索...",
+      "typeLabel": "类型",
+      "type": {
+        "all": "全部",
+        "episodes": "正片",
+        "specials": "特别篇",
+        "others": "其他",
+        "credits": "片头片尾",
+        "misc": "杂项"
+      },
+      "statusLabel": "剧集状态",
+      "status": {
+        "all": "所有剧集",
+        "available": "可用剧集",
+        "missing": "缺失剧集"
+      },
+      "watchedLabel": "观看状态",
+      "watched": {
+        "all": "全部",
+        "watched": "已观看",
+        "unwatched": "未观看"
+      },
+      "hiddenLabel": "隐藏状态",
+      "hidden": {
+        "all": "显示所有条目",
+        "hide": "隐藏已隐藏条目",
+        "only": "仅显示隐藏条目"
+      },
+      "airLabel": "播出状态",
+      "air": {
+        "all": "全部",
+        "unaired": "未播出",
+        "aired": "已播出"
+      },
+      "warningUnaired": "本系列有未播出剧集",
+      "warningMissing": "本系列有缺失剧集"
+    }
+  },
+  "watchModal": {
+    "title": "观看选项",
+    "tabs": {
+      "filtered_episodes": "筛选剧集",
+      "selected_episodes": "选中剧集"
+    },
+    "actions": {
+      "markWatched": "标记为已观看",
+      "markWatchedDesc": "将筛选的剧集标记为已观看。",
+      "markUnwatched": "标记为未观看",
+      "markUnwatchedDesc": "将筛选的剧集标记为未观看。"
+    },
+    "notImplemented": "尚未实现！"
+  },
+  "episodeFiles": {
+    "noFiles": "未找到文件！",
+    "forceUpdateInfo": "强制更新信息",
+    "addToMyList": "添加到 MyList",
+    "markVariation": "标记为变体",
+    "unmarkVariation": "取消变体标记",
+    "copyShokoId": "复制 Shoko ID",
+    "unknownGroup": "未知",
+    "variationLabel": "变体",
+    "deleteFile": "删除文件",
+    "shokoFileId": "Shoko 文件 ID",
+    "toast": {
+      "deleted": "文件已删除！",
+      "deleteFailed": "删除文件失败！{{message}}",
+      "addedToMyList": "已将文件添加到 MyList！",
+      "addFailed": "添加到 MyList 失败！{{message}}",
+      "rescanning": "正在重新扫描文件！",
+      "rescanFailed": "重新扫描文件失败！{{message}}",
+      "markedVariation": "已将文件标记为变体！",
+      "unmarkedVariation": "已取消文件变体标记！",
+      "variationActionFailed": "{{action}}文件为变体失败！{{message}}",
+      "actionMark": "标记",
+      "actionUnmark": "取消标记"
+    }
+  }
+}

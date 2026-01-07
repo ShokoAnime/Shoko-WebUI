@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router';
 
 import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
@@ -17,12 +18,12 @@ const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
 const getUniqueRoles = (castList: SeriesCast[]) => [...new Set(castList.map(cast => cast.RoleDetails))];
 
-const modeStates: { label?: string, value: CreditsModeType }[] = [
-  { label: 'Characters', value: 'Character' },
-  { value: 'Staff' },
-];
-
 const SeriesCredits = () => {
+  const { t } = useTranslation('series');
+  const modeStates: { label?: string, value: CreditsModeType }[] = [
+    { label: t('credits.modes.character'), value: 'Character' },
+    { label: t('credits.modes.staff'), value: 'Staff' },
+  ];
   const { series } = useOutletContext<SeriesContextType>();
 
   const { isPending: pendingRefreshAniDb, mutate: refreshAniDbMutation } = useRefreshSeriesAniDBInfoMutation(
@@ -71,25 +72,36 @@ const SeriesCredits = () => {
     Staff: getUniqueRoles(castByType.Staff),
   }), [castByType]);
 
-  const filteredCast = useMemo(() => (castByType[mode].filter(item => (
-    (search === ''
-      || !!([item?.Character?.Name, item?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
-    && !roleFilter.has(item?.RoleDetails)
-  )).sort((castA, castB) => {
-    const nameA = castA[mode]?.Name ?? '';
-    const nameB = castB[mode]?.Name ?? '';
-    if (nameA > nameB) return 1;
-    if (nameA < nameB) return -1;
-    return 0;
-  })), [castByType, mode, search, roleFilter]);
+  const filteredCast = useMemo(() => {
+    const list = castByType[mode] ?? [];
+    return list
+      .filter(item => (
+        (
+          search === ''
+          || ([item?.Character?.Name, item?.Staff?.Name].some(name => cleanString(name).match(cleanString(search))))
+        ) && !roleFilter.has(item?.RoleDetails)
+      ))
+      .sort((castA, castB) => {
+        const nameA = castA[mode]?.Name ?? '';
+        const nameB = castB[mode]?.Name ?? '';
+        if (nameA > nameB) return 1;
+        if (nameA < nameB) return -1;
+        return 0;
+      });
+  }, [castByType, mode, search, roleFilter]);
+
+  const hasFilter = search !== '' || roleFilter.size > 0;
+  const totalCount = castByType[mode]?.length ?? 0;
+  const filteredCount = filteredCast.length;
+  const modeLabelKey = `credits.modes.${mode.toLowerCase()}`;
 
   return (
     <>
-      <title>{`${series.Name} > Credits | Shoko`}</title>
+      <title>{t('pageTitle.credits', { name: series.Name })}</title>
       <div className="flex w-full gap-x-6">
         <div className="flex flex-col gap-y-6">
           <CreditsSearchAndFilterPanel
-            inputPlaceholder={mode === 'Character' ? 'Character or Actor\'s Name...' : 'Staff Name...'}
+            inputPlaceholder={mode === 'Character' ? t('credits.placeholderCharacter') : t('credits.placeholderStaff')}
             search={search}
             roleFilter={roleFilter}
             uniqueRoles={uniqueRoles[mode]}
@@ -103,21 +115,19 @@ const SeriesCredits = () => {
         <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
           <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="text-xl font-semibold">
-              Credits |&nbsp;
-              {(search !== '' || roleFilter.size > 0) && (
-                <>
-                  <span className="text-panel-text-important">
-                    {filteredCast.length}
-                  </span>
-                  &nbsp;of&nbsp;
-                </>
-              )}
-              <span className="text-panel-text-important">
-                {castByType[mode].length ?? 0}
-              </span>
+              {t('credits.title')}
+              &nbsp;|&nbsp;
+              {hasFilter
+                ? (
+                  <>
+                    <span className="text-panel-text-important">{filteredCount}</span>
+                    {t('credits.filteredSeparator')}
+                    <span className="text-panel-text-important">{totalCount}</span>
+                  </>
+                )
+                : <span className="text-panel-text-important">{totalCount}</span>}
               &nbsp;
-              {mode === 'Character' ? 'Characters' : mode}
-              &nbsp;Listed
+              {t('credits.unit', { type: t(modeLabelKey) })}
             </div>
             <MultiStateButton activeState={mode} states={modeStates} onStateChange={handleModeChange} />
           </div>

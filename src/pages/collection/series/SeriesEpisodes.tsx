@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOutletContext, useSearchParams } from 'react-router';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -32,6 +33,7 @@ type FilterOptionsType = {
 };
 
 const SeriesEpisodes = () => {
+  const { t } = useTranslation('series');
   const { series } = useOutletContext<SeriesContextType>();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -135,7 +137,7 @@ const SeriesEpisodes = () => {
 
   return (
     <>
-      <title>{`${series.Name} > Episodes | Shoko`}</title>
+      <title>{t('pageTitle.episodes', { name: series.Name })}</title>
       <div className="flex w-full gap-x-6">
         <EpisodeSearchAndFilterPanel
           onFilterChange={onFilterChange}
@@ -151,34 +153,32 @@ const SeriesEpisodes = () => {
         <div className="flex grow flex-col gap-y-4">
           <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
-              <span>Episodes</span>
+              {t('episodes.title')}
               <span className="hidden px-2 2xl:inline">|</span>
-              <span>
-                <span className="pr-2 text-panel-text-important">
-                  {isSuccess ? episodeCount : '-'}
-                </span>
-                Entries Listed
-                {selectedEpisodes.size > 0 && (
-                  <>
-                    &nbsp;|&nbsp;
-                    <span className="text-panel-text-important">
-                      {selectedEpisodes.size}
-                    </span>
-                    &nbsp;Entries Selected
-                  </>
-                )}
+              <span className="pr-2 text-panel-text-important">
+                {isSuccess ? episodeCount : '-'}
               </span>
+              {t('episodes.headerBase')}
+              {selectedEpisodes.size > 0 && (
+                <>
+                  {t('episodes.headerSeparator')}
+                  <span className="text-panel-text-important">
+                    {selectedEpisodes.size}
+                  </span>
+                  {t('episodes.headerSelectedBase')}
+                </>
+              )}
             </div>
             <div className="flex flex-row gap-x-2">
               {selectedEpisodes.size > 0 && (
                 <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={resetSelection}>
                   <Icon path={mdiCloseCircleOutline} size={1} />
-                  Cancel Selection
+                  {t('episodes.cancelSelection')}
                 </Button>
               )}
               <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
                 <Icon path={mdiEyeOutline} size={1} />
-                Options
+                {t('episodes.options')}
               </Button>
             </div>
           </div>

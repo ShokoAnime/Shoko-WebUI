@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiLoading, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, remove } from 'lodash';
@@ -25,6 +26,7 @@ const getLanguageOrderName = (type: 'Series' | 'Episode' | 'Description') => {
 };
 
 const CollectionSettings = () => {
+  const { t } = useTranslation('settings');
   const { newSettings, setNewSettings } = useSettingsContext();
   const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | 'Description' | null>(null);
 
@@ -152,10 +154,9 @@ const CollectionSettings = () => {
     <>
       <title>Settings &gt; Collection | Shoko</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Collection</div>
+        <div className="text-xl font-semibold">{t('collection.title')}</div>
         <div>
-          Set your preferred language for the series and episodes in your collection, and determine how Shoko groups
-          related series within your collection.
+          {t('collection.description')}
         </div>
       </div>
 
@@ -163,14 +164,14 @@ const CollectionSettings = () => {
 
       {/* Language Settings */}
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Language Options</div>
+        <div className="flex items-center font-semibold">{t('collection.language.title')}</div>
         {languagesQuery.isPending
           && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
         {Object.keys(languageDescription).length > 0 && (
           <>
             <div className="flex flex-col gap-y-1">
               <Checkbox
-                label="Also Use Synonyms"
+                label={t('collection.language.useSynonyms')}
                 id="LanguageUseSynonyms"
                 isChecked={Language.UseSynonyms}
                 onChange={event =>
@@ -181,8 +182,8 @@ const CollectionSettings = () => {
                 justify
               />
               <div className="mt-2 flex justify-between">
-                Series Title (Drag to Reorder)
-                <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
+                {t('collection.seriesLanguage')}
+                <Button onClick={() => setShowLanguagesModal('Series')} tooltip={t('collection.addLanguage')}>
                   <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
                 </Button>
               </div>
@@ -196,7 +197,10 @@ const CollectionSettings = () => {
                           item: (
                             <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
                               {languageDescription[language]}
-                              <Button onClick={() => removeLanguage(language, 'Series')} tooltip="Remove">
+                              <Button
+                                onClick={() => removeLanguage(language, 'Series')}
+                                tooltip={t('collection.removeTooltip')}
+                              >
                                 <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
                               </Button>
                             </div>
@@ -205,11 +209,11 @@ const CollectionSettings = () => {
                       ))}
                     </DnDList>
                   )
-                  : <div>Title preference not set. Fallback to main title.</div>}
+                  : <div>{t('collection.seriesEmpty')}</div>}
               </div>
               <div className="mt-2 flex justify-between">
-                Episode Title (Drag to Reorder)
-                <Button onClick={() => setShowLanguagesModal('Episode')} tooltip="Add Language">
+                {t('collection.episodeLanguage')}
+                <Button onClick={() => setShowLanguagesModal('Episode')} tooltip={t('collection.addLanguage')}>
                   <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
                 </Button>
               </div>
@@ -221,7 +225,10 @@ const CollectionSettings = () => {
                       item: (
                         <div className="mt-2 flex items-center justify-between group-first:mt-0">
                           {languageDescription[language]}
-                          <Button onClick={() => removeLanguage(language, 'Episode')} tooltip="Remove">
+                          <Button
+                            onClick={() => removeLanguage(language, 'Episode')}
+                            tooltip={t('collection.removeTooltip')}
+                          >
                             <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
                           </Button>
                         </div>
@@ -231,8 +238,8 @@ const CollectionSettings = () => {
                 </DnDList>
               </div>
               <div className="mt-2 flex justify-between">
-                Descriptions (Drag to Reorder)
-                <Button onClick={() => setShowLanguagesModal('Description')} tooltip="Add Language">
+                {t('collection.descriptionLanguage')}
+                <Button onClick={() => setShowLanguagesModal('Description')} tooltip={t('collection.addLanguage')}>
                   <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
                 </Button>
               </div>
@@ -244,7 +251,10 @@ const CollectionSettings = () => {
                       item: (
                         <div className="mt-2 flex items-center justify-between group-first:mt-0">
                           {languageDescription[language]}
-                          <Button onClick={() => removeLanguage(language, 'Description')} tooltip="Remove">
+                          <Button
+                            onClick={() => removeLanguage(language, 'Description')}
+                            tooltip={t('collection.removeTooltip')}
+                          >
                             <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
                           </Button>
                         </div>
@@ -263,29 +273,29 @@ const CollectionSettings = () => {
 
       {/*   Relation Settings */}
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Relation Options</div>
+        <div className="flex items-center font-semibold">{t('collection.relation.title')}</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
-            label="Auto Group Series"
+            label={t('collection.relation.autoGroupSeries')}
             id="auto-group-series"
             isChecked={AutoGroupSeries}
             onChange={event => setNewSettings({ ...newSettings, AutoGroupSeries: event.target.checked })}
           />
           <Checkbox
             justify
-            label="Determine Main Series Using Relation Weighing"
+            label={t('collection.relation.useScoreAlgorithm')}
             id="auto-group-using-score"
             isChecked={AutoGroupSeriesUseScoreAlgorithm}
             onChange={event =>
               setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })}
           />
-          Exclude following relations
+          {t('collection.relation.excludeRelations')}
           <div className="mt-2 flex flex-col gap-y-1.5 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             {keys(exclusionMapping).map((item: keyof typeof exclusionMapping) => (
               <Checkbox
                 justify
-                label={exclusionMapping[item].name}
+                label={t(`collection.relation.${item}`)}
                 id={item}
                 isChecked={AutoGroupSeriesRelationExclusions.includes(exclusionMapping[item].id)}
                 onChange={handleExclusionChange}

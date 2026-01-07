@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link, NavLink, Outlet, useOutletContext, useParams } from 'react-router';
 import useMeasure from 'react-use-measure';
@@ -32,26 +33,30 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
 type SeriesTabProps = (props: { icon: string, text: string, to: string }) => React.ReactNode;
-const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) =>
-      cx(
-        'flex items-center gap-x-3 transition-colors hover:text-panel-text-primary',
-        isActive && 'text-panel-text-primary',
-      )}
-    replace
-  >
-    <Icon path={icon} size={1} />
-    {text}
-  </NavLink>
-);
+const SeriesTab: SeriesTabProps = ({ icon, text, to }) => {
+  const { t } = useTranslation('series');
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        cx(
+          'flex items-center gap-x-3 transition-colors hover:text-panel-text-primary',
+          isActive && 'text-panel-text-primary',
+        )}
+      replace
+    >
+      <Icon path={icon} size={1} />
+      {t(`tabs.${text.toLowerCase()}`)}
+    </NavLink>
+  );
+};
 
 const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
 
 const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
 
 const Series = () => {
+  const { t } = useTranslation('series');
   const navigate = useNavigateVoid();
   const { seriesId } = useParams();
 
@@ -113,7 +118,7 @@ const Series = () => {
       <div className="my-6 flex flex-col items-center gap-y-3">
         <div className="flex flex-row items-center gap-x-4">
           <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
-            Collection
+            {t('breadcrumb.collection')}
           </Link>
           <Icon className="flex-none text-panel-icon" path={mdiChevronRight} size={1} />
           {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
@@ -148,7 +153,7 @@ const Series = () => {
         <div>
           <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={onClickHandler}>
             <Icon path={mdiPencilCircleOutline} size={1} />
-            Edit Series
+            {t('tabs.editSeries')}
           </Button>
         </div>
       </div>

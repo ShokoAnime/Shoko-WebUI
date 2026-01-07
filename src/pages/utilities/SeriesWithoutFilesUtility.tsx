@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import {
   mdiCloseCircleOutline,
@@ -85,6 +86,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
 ];
 
 const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Record<number, boolean>> }) => {
+  const { t } = useTranslation('utilities');
   const { selectedRows, setSelectedRows } = props;
 
   const [showAddSeriesModal, toggleAddSeriesModal] = useToggle(false);
@@ -116,7 +118,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
               invalidateQueries(['series', 'without-files']);
             }}
             icon={mdiRefresh}
-            name="Refresh"
+            name={t('seriesWithoutFiles.refresh')}
           />
         </TransitionDiv>
         <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
@@ -136,7 +138,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
         onClick={toggleAddSeriesModal}
       >
         <Icon path={mdiPlusCircleOutline} size={1} />
-        Add Series
+        {t('seriesWithoutFiles.addSeries')}
       </Button>
       <AddSeriesModal show={showAddSeriesModal} onClose={toggleAddSeriesModal} />
     </>
@@ -144,6 +146,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
 };
 
 function SeriesWithoutFilesUtility() {
+  const { t } = useTranslation('utilities');
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
@@ -159,17 +162,20 @@ function SeriesWithoutFilesUtility() {
 
   return (
     <>
-      <title>Series Without Files | Shoko</title>
+      <title>
+        {t('seriesWithoutFiles.pageTitle')}
+        | Shoko
+      </title>
       <div className="flex grow flex-col gap-y-6">
         <div>
           <ShokoPanel
-            title="Series Without Files"
+            title={t('seriesWithoutFiles.pageTitle')}
             options={<ItemCount count={seriesCount} selected={selectedRows?.length} suffix="Series" />}
           >
             <div className="flex items-center gap-x-3">
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('seriesWithoutFiles.searchPlaceholder')}
                 startIcon={mdiMagnify}
                 id="search"
                 value={search}
@@ -189,7 +195,9 @@ function SeriesWithoutFilesUtility() {
           )}
 
           {!seriesQuery.isPending && seriesCount === 0 && (
-            <div className="flex grow items-center justify-center font-semibold">No series without files!</div>
+            <div className="flex grow items-center justify-center font-semibold">
+              {t('seriesWithoutFiles.noSeries')}
+            </div>
           )}
 
           {seriesQuery.isSuccess && seriesCount > 0 && (

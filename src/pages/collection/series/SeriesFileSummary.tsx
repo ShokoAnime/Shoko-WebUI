@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -13,40 +14,46 @@ import type { SeriesContextType } from '@/components/Collection/constants';
 import type { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
 
 type ModeType = 'Series' | 'Missing';
-const tabStates: { label: string, value: ModeType }[] = [
-  { label: 'Series Files', value: 'Series' },
-  { label: 'Missing Files', value: 'Missing' },
-];
+// const tabStates: { label: string, value: ModeType }[] = [
+//   { label: 'Series Files', value: 'Series' },
+//   { label: 'Missing Files', value: 'Missing' },
+// ];
 
 type FileSelectionHeaderProps = {
   mode: ModeType;
   setMode: (mode: ModeType) => void;
   fileSummary?: WebuiSeriesFileSummaryType;
 };
-const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
-  <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-    <div className="flex gap-x-2 text-xl font-semibold">
-      {mode}
-      &nbsp;Files |
-      {mode === 'Series'
-        ? (
-          <>
-            <span className="text-panel-text-important">{fileSummary?.Groups.length ?? 0}</span>
-            {fileSummary?.Groups?.length === 1 ? 'Entry' : 'Entries'}
-          </>
-        )
-        : (
-          <>
-            <span className="text-panel-text-important">{fileSummary?.MissingEpisodes.length ?? 0}</span>
-            {fileSummary?.MissingEpisodes?.length === 1 ? 'Entry' : 'Entries'}
-          </>
-        )}
+const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => {
+  const { t } = useTranslation('series');
+  const tabStates: { label: string, value: ModeType }[] = [
+    { label: t('files.tabs.series'), value: 'Series' },
+    { label: t('files.tabs.missing'), value: 'Missing' },
+  ];
+  const modeLabel = t(`files.tabs.${mode.toLowerCase()}`);
+  const count = mode === 'Series'
+    ? fileSummary?.Groups.length ?? 0
+    : fileSummary?.MissingEpisodes.length ?? 0;
+  const entryLabel = count === 1
+    ? t('files.entry_one')
+    : t('files.entry_other');
+
+  return (
+    <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+      <div className="flex gap-x-2 text-xl font-semibold">
+        {modeLabel}
+        &nbsp;|&nbsp;
+        <span className="text-panel-text-important">{count}</span>
+        &nbsp;
+        {entryLabel}
+      </div>
+      <MultiStateButton activeState={mode} states={tabStates} onStateChange={setMode} />
     </div>
-    <MultiStateButton activeState={mode} states={tabStates} onStateChange={setMode} />
-  </div>
-));
+  );
+});
 
 const SeriesFileSummary = () => {
+  const { t } = useTranslation('series');
   const { series } = useOutletContext<SeriesContextType>();
 
   const [mode, setMode] = useState<ModeType>('Series');
@@ -58,7 +65,7 @@ const SeriesFileSummary = () => {
 
   return (
     <>
-      <title>{`${series.Name} > Files | Shoko`}</title>
+      <title>{t('pageTitle.files', { name: series.Name })}</title>
       <div className="flex w-full gap-x-6">
         <div className="flex flex-col gap-y-6">
           <FileOverview overview={fileSummary?.Overview} />

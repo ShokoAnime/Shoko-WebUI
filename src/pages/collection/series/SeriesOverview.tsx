@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOutletContext } from 'react-router';
 import { mdiEarth, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -27,6 +28,7 @@ import type { SeriesCast } from '@/core/types/api/series';
 const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv'] as const;
 
 const SeriesOverview = () => {
+  const { t } = useTranslation('series');
   const { series } = useOutletContext<SeriesContextType>();
 
   const nextUpEpisodeQuery = useSeriesNextUpQuery(series.IDs.ID, {
@@ -38,8 +40,8 @@ const SeriesOverview = () => {
   const similarAnimeQuery = useSimilarAnimeQuery(series.IDs.ID);
 
   const tabStates = [
-    { label: 'Metadata Sites', value: 'metadata' },
-    { label: 'Series Links', value: 'links' },
+    { label: t('overview.metadataSites'), value: 'metadata' },
+    { label: t('overview.seriesLinks'), value: 'links' },
   ];
   const [currentTab, setCurrentTab] = useState<string>(tabStates[0].value);
 
@@ -59,11 +61,11 @@ const SeriesOverview = () => {
 
   return (
     <>
-      <title>{`${series.Name} > Overview | Shoko`}</title>
+      <title>{t('pageTitle.overview', { name: series.Name })}</title>
       <div className="flex gap-x-6">
         <div className="flex w-full gap-x-6">
           <ShokoPanel
-            title="Metadata Sites"
+            title={t('overview.metadataSites')}
             className="flex w-full max-w-[37.5rem]"
             transparent
             disableOverflow
@@ -146,7 +148,7 @@ const SeriesOverview = () => {
             )}
           </ShokoPanel>
           <ShokoPanel
-            title="Episode On Deck"
+            title={t('overview.episodeOnDeck')}
             className="flex w-full grow overflow-visible"
             transparent
             isFetching={nextUpEpisodeQuery.isFetching}
@@ -155,7 +157,7 @@ const SeriesOverview = () => {
               ? <EpisodeSummary seriesId={series.IDs.ID} episode={nextUpEpisodeQuery.data} nextUp />
               : (
                 <div className="flex grow items-center justify-center font-semibold">
-                  All available episodes have already been watched
+                  {t('overview.allWatched')}
                 </div>
               )}
           </ShokoPanel>
@@ -164,7 +166,7 @@ const SeriesOverview = () => {
 
       {relatedAnime.length > 0 && (
         <ShokoPanel
-          title="Related Anime"
+          title={t('overview.relatedAnime')}
           className="w-full"
           transparent
           contentClassName={cx('!flex-row gap-x-6', relatedAnime.length > 7 && 'pb-4')}
@@ -185,7 +187,7 @@ const SeriesOverview = () => {
 
       {similarAnime.length > 0 && (
         <ShokoPanel
-          title="Similar Anime"
+          title={t('overview.similarAnime')}
           className="w-full"
           transparent
           contentClassName={cx('!flex-row gap-x-6', similarAnime.length > 7 && 'pb-4')}
@@ -204,7 +206,7 @@ const SeriesOverview = () => {
         </ShokoPanel>
       )}
 
-      <ShokoPanel title="Top 20 Actors" className="w-full" transparent>
+      <ShokoPanel title={t('overview.topActors')} className="w-full" transparent>
         <div className="z-10 flex w-full gap-x-6">
           {cast?.filter(credit => credit.RoleName === 'Actor' && credit.Character).slice(0, 20).map(seiyuu => (
             <div

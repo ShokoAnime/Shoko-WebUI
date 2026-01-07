@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOutletContext, useParams, useSearchParams } from 'react-router';
 import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -39,6 +40,7 @@ import type { TmdbEpisodeXrefMappingRequestType } from '@/core/react-query/tmdb/
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 const TmdbLinking = () => {
+  const { t } = useTranslation('links');
   const seriesId = toNumber(useParams().seriesId);
 
   const navigate = useNavigateVoid();
@@ -235,16 +237,14 @@ const TmdbLinking = () => {
       resetQueries(['series', seriesId]);
       setLinkOverrides({});
       if (isNewLink) {
-        toast.success(
-          'Series has been linked and TMDB related tasks for data and images have been added to the queue!',
-        );
+        toast.success(t('tmdbLinking.seriesLinked'));
       } else {
-        toast.success('Episode links have been updated!');
+        toast.success(t('tmdbLinking.episodeLinksUpdated'));
       }
       // Note: The tmdb linking page's parent is the collection page, so we need to navigate from the collection page to the series page, even though we use the series id on the tmdb linking page too.
       navigate(`../series/${seriesId}`);
     } catch (error) {
-      toast.error('Failed to save links!');
+      toast.error(t('tmdbLinking.saveLinksFailed'));
     }
     setCreateInProgress(false);
   });
@@ -274,7 +274,7 @@ const TmdbLinking = () => {
 
       resetQueries(['series', seriesId]);
       setLinkOverrides({});
-      toast.success('Links saved!');
+      toast.success(t('tmdbLinking.linksSaved'));
       // Note: The tmdb linking page's parent is the collection page, so we need to navigate from the collection page to the series page, even though we use the series id on the tmdb linking page too.
       navigate(`../series/${seriesId}`);
     } catch (error) {
@@ -396,7 +396,7 @@ const TmdbLinking = () => {
                         <Button
                           className="text-panel-text-primary"
                           onClick={handleNewLinkEdit}
-                          tooltip="Edit Link"
+                          tooltip={t('tmdbLinking.editLink')}
                         >
                           <Icon path={mdiPencilCircleOutline} size={1} />
                         </Button>

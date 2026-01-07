@@ -1,0 +1,379 @@
+{
+  "page": {
+    "title": "Settings",
+    "menu": {
+      "general": "General",
+      "import": "Import",
+      "anidb": "AniDB",
+      "metadata-sites": "Metadata Sites",
+      "collection": "Collection",
+      "integrations": "Integrations",
+      "user-management": "User Management",
+      "api-keys": "API Keys"
+    },
+    "unsaved": {
+      "title": "Unsaved Changes",
+      "message": "Please save before leaving this page."
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "httpError": {
+      "title": "HTTP 服务器地址无效",
+      "message": "地址格式必须如下：{scheme}://{address}:{port}",
+      "scheme": "协议：http 或 https",
+      "port": "端口：可选",
+      "example": "例如：http://api.anidb.net:9001"
+    }
+  },
+
+  "general": {
+    "title": "General",
+    "description": "Here you can find settings for version details, theme customization, notification management, and log configurations.",
+    "version": {
+      "title": "Version Information",
+      "refresh": "Refresh",
+      "checkUpdate": "Check for WebUI Update",
+      "serverVersion": "Server Version",
+      "serverChannel": "Server Channel",
+      "webuiVersion": "Web UI Version",
+      "webuiChannel": "Web UI Channel",
+      "channel": {
+        "stable": "Stable",
+        "dev": "Dev"
+      }
+    },
+    "theme": {
+      "title": "Theme Options",
+      "upload": "Upload Theme",
+      "uploadTooltip": "Upload or install a new Theme",
+      "uploadSuccess": "Successfully uploaded theme \"{name}\"",
+      "theme": "Theme",
+      "description": "Description",
+      "version": "Version",
+      "author": "Author",
+      "defaultDescription": "The default theme.",
+      "defaultAuthor": "Shoko Staff"
+    },
+    "notifications": {
+      "title": "Notification Options",
+      "enable": "Enable",
+      "position": "Notification Position",
+      "bottomRight": "Bottom Right",
+      "topRight": "Top Right"
+    },
+    "logs": {
+      "title": "Log Options",
+      "enable": "Enable",
+      "compress": "Compress Logs",
+      "delete": "Delete Older Logs",
+      "deleteFrequency": "Delete Frequency",
+      "never": "Never",
+      "daily": "Daily",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "trace": "Trace Logs"
+    }
+  },
+
+  "frequency": {
+    "never": "Never",
+    "6hours": "Every 6 Hours",
+    "12hours": "Every 12 Hours",
+    "24hours": "Every 24 Hours",
+    "week": "Once a Week",
+    "month": "Once a Month"
+  },
+
+  "import": {
+    "title": "Import",
+    "description": "Configure how Shoko imports files into your collection, specifying file types and enabling options for renaming and moving them as needed.",
+    "options": "Import Options",
+    "importOnStart": "Import on start",
+    "renameOnImport": "Rename on import",
+    "moveOnImport": "Move on import",
+    "allowRelocation": "Allow relocation inside destination on import",
+    "deleteDuplicates": "Delete duplicates on import",
+    "setFileWatched": "Set file as watched if episode is watched",
+    "videoExtensions": "Video Extensions"
+  },
+
+  "anidb": {
+    "title": "AniDB",
+    "description": "Configure the information Shoko retrieves from AniDB for the series in your collection, and set your preferences for MyList options and the general updating of AniDB data.",
+    "login": {
+      "title": "Login Options",
+      "test": "Test",
+      "username": "Username",
+      "password": "Password",
+      "success": "AniDB Login Successful!",
+      "error": "Incorrect Username/Password!"
+    },
+    "avdumpKey": "AVDump Key",
+    "serverUrl": "HTTP Server URL",
+    "clientPort": "Client Port",
+    "udpPort": "UDP Server Port",
+    "maxRelationDepth": "Max Relation Depth",
+    "maxRelationDepthError": "Max Relation Depth may only be between 0 and 5",
+    "download": {
+      "title": "Download Options",
+
+      "characters": "Download Characters",
+      "creators": "Download Creators",
+      "related": "Download Related Anime",
+
+      "characterImages": "Character Images",
+      "creatorImages": "Creator Images",
+      "releaseGroups": "Release Groups",
+      "alwaysDownloadRelatedAnime": "Always Download Related Anime",
+      "relatedDepth": "Related Depth"
+    },
+    "mylist": {
+      "title": "MyList Options",
+      "addFiles": "Add Files",
+      "readWatched": "Read Watched",
+      "readUnwatched": "Read Unwatched",
+      "setWatched": "Set Watched",
+      "setUnwatched": "Set Unwatched",
+      "storageState": "Storage State",
+      "storageOptions": {
+        "0": "Unknown",
+        "1": "HDD",
+        "2": "Disk",
+        "3": "Deleted",
+        "4": "Remote"
+      },
+      "deleteType": "Delete Action",
+      "deleteOptions": {
+        "0": "Delete File (AniDB)",
+        "1": "Delete File (Local)",
+        "2": "Mark Deleted",
+        "3": "Mark External (CD/DVD)",
+        "4": "Mark Unknown",
+        "5": "DVD/BD"
+      }
+    },
+    "update": {
+      "title": "Update Options",
+      "calendar": "Calendar",
+      "animeInfo": "Anime Information",
+      "missingFiles": "Files With Missing Info",
+      "notifications": "Notifications",
+      "handleMovedFiles": "Handle Moved Files"
+    }
+  },
+
+  "metadataSites": {
+    "title": "Metadata Sites",
+    "description": "Customize the information and images that Shoko downloads for the series in your collection",
+    "tmdb": "TMDB Options",
+    "tmdbDownload": "TMDB Download Options"
+  },
+
+  "tmdb": {
+    "autoLink": "Auto Link",
+    "autoLinkRestricted": "Auto Link Restricted",
+    "includeRestricted": "Include Restricted in Search",
+    "downloadCrewAndCast": "Download Crew And Cast",
+    "downloadCollections": "Download Movie Collections",
+    "downloadAlternateOrdering": "Download Alternate Ordering",
+    "downloadBackdrops": "Download Backdrops",
+    "maxBackdrops": "Max Backdrops",
+    "downloadPosters": "Download Posters",
+    "maxPosters": "Max Posters",
+    "downloadLogos": "Download Logos",
+    "maxLogos": "Max Logos",
+    "downloadThumbnails": "Download Episode Thumbnails",
+    "maxThumbnails": "Max Episode Thumbnails",
+    "downloadStaffImages": "Download Staff Images",
+    "maxStaffImages": "Max Staff Images",
+    "downloadStudioImages": "Download Studio Images"
+  },
+
+  "integrations": {
+    "title": "Integrations",
+    "description": "Customize the integrations that Shoko uses to scrobble your media"
+  },
+
+  "trakt": {
+    "title": "Trakt Options",
+    "getCode": "Get Code",
+    "requesting": "Requesting...",
+    "activate": "Click here to activate",
+    "tokenValidUntil": "Token valid until",
+    "autoLink": "Auto Link",
+    "updateData": "Automatically Update Data",
+    "syncFrequency": "Sync Frequency",
+    "unlink": "Unlink",
+    "codeLabel": "Trakt Code",
+    "activationInstructions": "Click on the code to copy it. You have approximately 10 minutes to visit the URL provided and enter the code. SAVE YOUR SETTINGS after activation is complete.",
+    "enabled": "Enabled"
+  },
+
+  "plex": {
+    "title": "Plex Options",
+    "server": "Server",
+    "selectPlaceholder": "--Select Server--",
+    "libraries": "Available Libraries",
+    "noLibraries": "No libraries found!",
+    "unlink": "Unlink"
+  },
+
+  "collection": {
+    "title": "Collection",
+    "description": "Set your preferred language for the series and episodes in your collection, and determine how Shoko groups related series within your collection.",
+    "language": {
+      "title": "Language Options",
+      "useSynonyms": "Also Use Synonyms"
+    },
+    "seriesLanguage": "Series Title Language Order (Drag to Reorder)",
+    "episodeLanguage": "Episode Title Language Order (Drag to Reorder)",
+    "descriptionLanguage": "Descriptions (Drag to Reorder)",
+    "addLanguage": "Add Language",
+    "removeTooltip": "Remove",
+    "seriesEmpty": "Title preference not set. Fallback to main title.",
+    "relation": {
+      "title": "Relation Options",
+      "autoGroupSeries": "Auto Group Series",
+      "useScoreAlgorithm": "Determine Main Series Using Relation Weighing",
+      "excludeRelations": "Exclude following relations",
+      "dissimilarTitles": "Dissimilar Titles",
+      "prequel": "Prequel",
+      "sequel": "Sequel",
+      "ova": "OVA",
+      "movie": "Movie",
+      "sameSetting": "Same Setting",
+      "altSetting": "Alternative Setting",
+      "altVersion": "Alternative Version",
+      "parentStory": "Parent Story",
+      "sideStory": "Side Story",
+      "character": "Character",
+      "spinOff": "Spin-off",
+      "summary": "Summary",
+      "fullStory": "Full Story",
+      "other": "Other"
+    }
+  },
+
+  "userManagement": {
+    "availableTags": "Available Tags",
+    "searchPlaceholder": "Search...",
+    "selectedTags": "Selected Tags",
+    "noTags": "No Restricted Tags!",
+    "unknownTag": "Unknown",
+
+    "description": "Configure Shoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is restricted from viewing.",
+    "currentUsers": "Current Users",
+    "userOptions": "User Options",
+    "pickAvatar": "Pick Avatar",
+    "removeAvatar": "Remove Avatar",
+    "displayName": "Display Name",
+    "administrator": "Administrator",
+    "anidbUser": "AniDB User",
+    "traktUser": "Trakt User",
+    "plexUsers": "Plex Users",
+    "password": "Password",
+    "changePassword": "Change",
+    "newPassword": "New Password",
+    "logoutAllSessions": "Logout all sessions",
+    "tagRestrictions": "Tag Restrictions",
+
+    "toasts": {
+      "passwordFieldChanged": "Password field changed!",
+      "passwordFieldChangedMessage": "Click on the \"Change\" button to save your new password",
+      "passwordChangedSuccess": "Password changed successfully!",
+      "logoutWarning": "You will be logged out in 5 seconds!",
+      "deleteSelfTitle": "Woah there buddy!",
+      "deleteSelfMessage": "You just tried to delete yourself from the matrix. That's not the way to go about doing it."
+    }
+  },
+
+  "apiKeys": {
+    "title": "API Keys",
+    "description": "Below are all the API keys utilized by Shoko and other programs/plugins. You can create new ones or remove existing ones as needed.",
+    "generate": {
+      "title": "Generate API Key",
+      "placeholder": "Type a name for your new API key",
+      "button": "Generate"
+    },
+    "issued": "Issued API Keys",
+    "delete": "Delete",
+    "generated": "API Key has been generated!",
+    "copyWarning": {
+      "title": "Copy Your API Key!",
+      "message": "You won't be able to copy this key anymore once you leave this page!"
+    },
+    "copied": "API Key has been copied to clipboard!",
+    "copyFailed": "API Key copy failed!",
+    "deleteSuccess": {
+      "title": "API Key Deleted",
+      "message": "API Key {device} has been deleted!"
+    }
+  },
+
+  "avatar": {
+    "title": "Avatar",
+    "apply": "Apply",
+    "loadError": "Image load failed!"
+  },
+
+  "dashboardSettings": {
+    "title": "Display Settings",
+    "enableEditMode": "Enable Edit Mode",
+    "availableWidgets": "Available Widgets",
+    "displayOptions": "Display Options",
+    "hideQueueProcessor": "Hide Queue Processor",
+    "hideUnrecognizedFiles": "Hide Unrecognized Files",
+    "hideRecentlyImported": "Hide Recently Imported",
+    "hideCollectionStatistics": "Hide Collection Statistics",
+    "hideMediaType": "Hide Media Type",
+    "hideImportFolders": "Hide Import Folders",
+    "hideShokoNews": "Hide Shoko News",
+    "hideNextUp": "Hide Next Up",
+    "hideContinueWatching": "Hide Continue Watching",
+    "hideUpcomingAnime": "Hide Upcoming Anime",
+    "hideRecommendedAnime": "Hide Recommended Anime",
+    "combineContinueWatching": "Combine Continue Watching & Next Up",
+    "hideR18Content": "Hide R18 Content",
+    "shokoNewsPosts": "Shoko News Posts",
+    "recentlyImportedEpisodes": "Recently Imported Episodes",
+    "recentlyImportedSeries": "Recently Imported Series"
+  },
+
+  "displaySettingsModal": {
+    "title": "Display Settings",
+
+    "poster": {
+      "title": "Poster View Options",
+      "totalEpisodes": "Total Episodes",
+      "groupIndicator": "Group Indicator",
+      "unwatchedCount": "Unwatched Episode Count"
+    },
+
+    "list": {
+      "title": "List View Options",
+      "itemType": "Item Type",
+      "groupIndicator": "Group Indicator",
+      "topTags": "Top Tags",
+      "customTags": "Custom Tags"
+    },
+
+    "image": {
+      "title": "Image Options",
+      "randomPoster": "Random Posters on Load",
+      "randomBackdrop": "Random Backdrop on Load",
+      "thumbnailFallback": "Show Backdrop if Thumbnail is Missing"
+    },
+
+    "anidb": {
+      "title": "AniDB Options",
+      "filterDescription": "Filter AniDB Descriptions"
+    },
+
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save"
+    }
+  }
+}

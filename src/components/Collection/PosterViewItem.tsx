@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { mdiCheckboxMarkedCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -21,6 +22,7 @@ type Props = {
 };
 
 const PosterViewItem = ({ isSeries = false, item }: Props) => {
+  const { t } = useTranslation('poster');
   const settings = useSettingsQuery().data;
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 
@@ -63,7 +65,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             <Button
               className="pointer-events-auto h-fit"
               onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
-              tooltip={(isSeries || item.Size === 1) ? 'Edit Series' : 'Edit Group'}
+              tooltip={(isSeries || item.Size === 1) ? t('editSeries') : t('editGroup')}
             >
               <Icon path={mdiPencilCircleOutline} size="2rem" />
             </Button>
@@ -71,7 +73,8 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
           {showGroupIndicator && !isSeries && groupCount > 1 && (
             <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
               {groupCount}
-              &nbsp;Series
+              &nbsp;
+              {t('groupSeriesUnit')}
             </div>
           )}
         </BackgroundImagePlaceholderDiv>
@@ -90,10 +93,11 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         {showEpisodeCount && (
           <p
             className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
-            title={`${episodeCount.toString()} Episodes`}
+            title={`${episodeCount} ${t('episodesUnit', { count: episodeCount })}`}
           >
             {episodeCount}
-            &nbsp;Episodes
+            &nbsp;
+            {t('episodesUnit', { count: episodeCount })}
           </p>
         )}
       </div>

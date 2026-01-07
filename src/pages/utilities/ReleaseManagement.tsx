@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';
 import {
   mdiCloseCircleOutline,
@@ -37,16 +38,20 @@ import type { ReleaseManagementOptionsType } from '@/components/Utilities/consta
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { AxiosResponse } from 'axios';
 
-const titleMap = {
-  [ReleaseManagementItemType.MultipleReleases]: 'Multiple Releases',
-  [ReleaseManagementItemType.DuplicateFiles]: 'Duplicate Files',
-  [ReleaseManagementItemType.MissingEpisodes]: 'Missing Episodes',
-} as const;
-
 const ReleaseManagement = () => {
+  const { t } = useTranslation('utilities');
   const { itemType } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const pageTitle = useMemo(() => {
+    if (itemType === 'duplicates') {
+      return t('releaseManagement.pageTitles.duplicateFiles');
+    }
+    if (itemType === 'missing-episodes') {
+      return t('releaseManagement.pageTitles.missingEpisodes');
+    }
+    return t('releaseManagement.pageTitles.multipleReleases'); // 默认 multiples
+  }, [itemType, t]);
   const type = useMemo(() => {
     if (itemType === 'duplicates') return ReleaseManagementItemType.DuplicateFiles;
     if (itemType === 'missing-episodes') return ReleaseManagementItemType.MissingEpisodes;
@@ -136,7 +141,7 @@ const ReleaseManagement = () => {
 
   return (
     <>
-      <title>{`${titleMap[type]} | Shoko`}</title>
+      <title>{`${pageTitle} | Shoko`}</title>
       <div className="flex grow flex-col gap-y-6 overflow-y-auto">
         <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} suffix="Series" />}>
           <div className="flex items-center gap-x-3">
@@ -149,7 +154,7 @@ const ReleaseManagement = () => {
               <MenuButton
                 onClick={() => invalidateQueries(['release-management', 'series'])}
                 icon={mdiRefresh}
-                name="Refresh"
+                name={t('releaseManagement.refresh')}
               />
 
               {type === ReleaseManagementItemType.MultipleReleases && (
@@ -157,7 +162,7 @@ const ReleaseManagement = () => {
                   id="ignoreVariations"
                   isChecked={filterOptions.ignoreVariations}
                   onChange={handleFilterChange}
-                  label="Ignore Variations"
+                  label={t('releaseManagement.filters.ignoreVariations')}
                   labelRight
                 />
               )}
@@ -167,7 +172,7 @@ const ReleaseManagement = () => {
                   id="onlyCollecting"
                   isChecked={filterOptions.onlyCollecting}
                   onChange={handleFilterChange}
-                  label="Only Collecting"
+                  label={t('releaseManagement.filters.onlyCollecting')}
                   labelRight
                 />
               )}
@@ -176,7 +181,7 @@ const ReleaseManagement = () => {
                 id="onlyFinishedSeries"
                 isChecked={filterOptions.onlyFinishedSeries}
                 onChange={handleFilterChange}
-                label="Only Finished Series"
+                label={t('releaseManagement.filters.onlyFinishedSeries')}
                 labelRight
               />
             </div>
@@ -201,7 +206,7 @@ const ReleaseManagement = () => {
                 onClick={toggleShowQuickSelectModal}
               >
                 <Icon path={mdiSelectMultiple} size={0.8333} />
-                Quick Select
+                {t('releaseManagement.quickSelect.title')}
               </Button>
             )}
 
@@ -213,7 +218,7 @@ const ReleaseManagement = () => {
                 loading={operationsPending}
               >
                 <Icon path={mdiEyeOffOutline} size={0.8333} />
-                Hide
+                {t('common.actions.hide')}
               </Button>
             )}
 
@@ -225,7 +230,7 @@ const ReleaseManagement = () => {
                   onClick={() => setSelectedEpisode(undefined)}
                 >
                   <Icon path={mdiCloseCircleOutline} size={0.8333} />
-                  Cancel
+                  {t('releaseManagement.quickSelect.cancel')}
                 </Button>
                 <Button
                   buttonType="primary"
@@ -234,7 +239,7 @@ const ReleaseManagement = () => {
                   loading={operationsPending}
                 >
                   <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
-                  Confirm
+                  {t('releaseManagement.quickSelect.confirm')}
                 </Button>
               </div>
             )}

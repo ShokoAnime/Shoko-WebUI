@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import {
@@ -60,6 +61,7 @@ const Menu = (
     setSelectedRows: Updater<Record<number, boolean>>;
   },
 ) => {
+  const { t } = useTranslation('utilities');
   const {
     selectedRows,
     setSelectedRows,
@@ -145,18 +147,23 @@ const Menu = (
             invalidateQueries(['files']);
           }}
           icon={mdiRefresh}
-          name="Refresh"
+          name={t('common.actions.refresh')}
         />
       </div>
       <div className={cx('grow gap-x-4', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
-        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
-        <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
-        <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
+        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name={t('common.actions.rescan')} />
+        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name={t('common.actions.rehash')} />
+        <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name={t('common.actions.rename')} />
+        <MenuButton
+          onClick={showDeleteConfirmation}
+          icon={mdiMinusCircleOutline}
+          name={t('common.actions.delete')}
+          highlight
+        />
         <MenuButton
           onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}
-          name="Cancel Selection"
+          name={t('common.actions.cancelSelection')}
           highlight
         />
       </div>
@@ -172,6 +179,7 @@ const Menu = (
 };
 
 const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
+  const { t } = useTranslation('utilities');
   const mediaInfo = useMediaInfo(file);
   const ed2kHash = useMemo(() => getEd2kLink(file), [file]);
 
@@ -184,35 +192,35 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
     <>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
-          <span className="font-semibold">Location</span>
+          <span className="font-semibold">{t('fileDetails.location')}</span>
         </div>
-        <span className="break-all">{mediaInfo.Location ?? 'N/A'}</span>
+        <span className="break-all">{mediaInfo.Location ?? t('common.na')}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
-          <span className="font-semibold">Size</span>
+          <span className="font-semibold">{t('fileDetails.size')}</span>
         </div>
-        <span className="break-all">{prettyBytes(mediaInfo.Size, { binary: true }) ?? 'N/A'}</span>
+        <span className="break-all">{prettyBytes(mediaInfo.Size, { binary: true }) ?? t('common.na')}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
-          <span className="font-semibold">Video</span>
+          <span className="font-semibold">{t('fileDetails.video')}</span>
         </div>
         <span className="break-all">
-          {mediaInfo.VideoInfo.length !== 0 ? mediaInfo.VideoInfo.join(' | ') : 'N/A'}
+          {mediaInfo.VideoInfo.length !== 0 ? mediaInfo.VideoInfo.join(' | ') : t('common.na')}
         </span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
-          <span className="font-semibold">Audio</span>
+          <span className="font-semibold">{t('fileDetails.audio')}</span>
         </div>
         <span className="break-all">
-          {mediaInfo.AudioInfo.length !== 0 ? mediaInfo.AudioInfo.join(' | ') : 'N/A'}
+          {mediaInfo.AudioInfo.length !== 0 ? mediaInfo.AudioInfo.join(' | ') : t('common.na')}
         </span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex break-after-all justify-between capitalize">
-          <span className="font-semibold">ED2K</span>
+          <span className="font-semibold">{t('fileDetails.ed2k')}</span>
         </div>
         <div className="flex break-after-all justify-between">
           <span className="break-all">{mediaInfo.Hashes.ED2K ?? ''}</span>
@@ -223,13 +231,13 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
-          <span className="font-semibold">CRC</span>
+          <span className="font-semibold">{t('fileDetails.crc')}</span>
         </div>
         <span className="break-all">{mediaInfo.Hashes.CRC32 ?? ''}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
-          <span className="font-semibold">SHA1</span>
+          <span className="font-semibold">{t('fileDetails.sha1')}</span>
         </div>
         <span className="break-all">{mediaInfo.Hashes.SHA1 ?? ''}</span>
       </div>
@@ -238,6 +246,7 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
 });
 
 const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
+  const { t } = useTranslation('utilities');
   const { data: file, isPending: fileQueryIsPending } = useFileQuery(
     fileId,
     {
@@ -279,7 +288,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
   if (!file) {
     return (
       <div className="text-panel-text-danger">
-        Error fetching file data!
+        {t('fileDetails.errorFetching')}
       </div>
     );
   }
@@ -288,12 +297,12 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between">
-          <span className="font-semibold">File Name</span>
+          <span className="font-semibold">{t('fileDetails.fileName')}</span>
           {file.AniDB?.ID && (
             <a href={`https://anidb.net/file/${file.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                 <div className="metadata-link-icon AniDB" />
-                AniDB File
+                {t('fileDetails.anidbFile')}
                 <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </div>
             </a>
@@ -305,11 +314,11 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
       {seriesInfo && (
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
-            <span className="font-semibold">Series Name</span>
+            <span className="font-semibold">{t('fileDetails.seriesName')}</span>
             <Link to={`/webui/collection/series/${seriesId}`}>
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                 <ShokoIcon className="size-6" />
-                Shoko
+                {t('fileDetails.shoko')}
                 <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </div>
             </Link>
@@ -321,7 +330,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
       {episodeInfo && (
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between capitalize">
-            <span className="font-semibold">Episode Name</span>
+            <span className="font-semibold">{t('fileDetails.episodeName')}</span>
           </div>
           <span className="break-all">{episodeInfo.Title}</span>
         </div>
@@ -333,6 +342,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
 });
 
 const FileSearch = () => {
+  const { t } = useTranslation('utilities');
   const {
     debouncedSearch,
     search,
@@ -376,13 +386,19 @@ const FileSearch = () => {
 
   return (
     <>
-      <title>File Search | Shoko</title>
+      <title>
+        {t('fileSearch.pageTitle')}
+        | Shoko
+      </title>
       <div className="flex grow flex-col gap-y-6">
-        <ShokoPanel title="File Search" options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
+        <ShokoPanel
+          title={t('fileSearch.title')}
+          options={<ItemCount count={fileCount} selected={selectedRows?.length} />}
+        >
           <div className="flex items-center gap-x-3">
             <Input
               type="text"
-              placeholder="Search..."
+              placeholder={t('fileSearch.searchPlaceholder')}
               startIcon={mdiMagnify}
               id="search"
               onChange={setSearch}
@@ -404,7 +420,7 @@ const FileSearch = () => {
             )}
 
             {!filesQuery.isPending && fileCount === 0 && (
-              <div className="flex grow items-center justify-center font-semibold">No search results!</div>
+              <div className="flex grow items-center justify-center font-semibold">{t('fileSearch.noResults')}</div>
             )}
 
             {filesQuery.isSuccess && fileCount > 0 && (
@@ -426,10 +442,10 @@ const FileSearch = () => {
             {selectedRows?.length > 0 && (
               <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
                 <div className="flex w-full grow flex-col gap-y-6 overflow-y-auto pr-4">
-                  <FilesSummary title="Selected Summary" items={selectedRows} />
+                  <FilesSummary title={t('fileSearch.selectedSummary')} items={selectedRows} />
                   <div className="flex w-full text-xl font-semibold">
                     <div className="flex w-full justify-between">
-                      <span className="grow">Selected File</span>
+                      <span className="grow">{t('fileDetails.selectedFile')}</span>
                       <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>
                         <Button buttonType="secondary" onClick={onPrevView}>
                           <Icon className="text-panel-icon-action" path={mdiChevronLeft} size={1} />
@@ -446,7 +462,9 @@ const FileSearch = () => {
             )}
             {!selectedRows?.length && (
               <div className="flex size-full flex-col rounded-lg border border-panel-border bg-panel-background p-6">
-                <div className="flex grow items-center justify-center font-semibold">Select File To Populate</div>
+                <div className="flex grow items-center justify-center font-semibold">
+                  {t('fileSearch.selectFileToPopulate')}
+                </div>
               </div>
             )}
           </div>

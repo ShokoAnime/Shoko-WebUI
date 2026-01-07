@@ -1,0 +1,34 @@
+{
+  "tooltip": {
+    "settings": "设置",
+    "logout": "登出"
+  },
+  "menu": {
+    "dashboard": "仪表盘",
+    "collection": "收藏",
+    "utilities": "工具",
+    "log": "日志",
+    "actions": "操作",
+    "dashboardSettings": "仪表盘设置"
+  },
+  "webui": {
+    "updating": "正在更新 WebUI...",
+    "checking": "正在检查 WebUI 更新",
+    "available": "有可用的 WebUI 更新"
+  },
+  "network": {
+    "noInternet": "无网络连接"
+  },
+  "utilities": {
+    "unrecognizedFiles": "未识别文件",
+    "releaseManagement": "版本管理",
+    "seriesWithoutFiles": "缺少文件的系列",
+    "fileSearch": "文件搜索",
+    "fileRename": "文件重命名"
+  },
+  "links": {
+    "discord": "Discord",
+    "docs": "文档",
+    "github": "GitHub"
+  }
+}

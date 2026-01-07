@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline, mdiFolderPlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -14,16 +15,20 @@ import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
 import type { RootState } from '@/core/store';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 
-const Options = ({ onClick }: { onClick: () => void }) => (
-  <Button
-    onClick={onClick}
-    tooltip="Add Folder"
-  >
-    <Icon className="text-panel-icon-action" path={mdiFolderPlusOutline} size={1} />
-  </Button>
-);
+const Options = ({ onClick }: { onClick: () => void }) => {
+  const { t } = useTranslation('panels');
+  return (
+    <Button
+      onClick={onClick}
+      tooltip={t('importFolders.tooltip.addFolder')}
+    >
+      <Icon className="text-panel-icon-action" path={mdiFolderPlusOutline} size={1} />
+    </Button>
+  );
+};
 
 function ImportFolders() {
+  const { t } = useTranslation('panels');
   const dispatch = useDispatch();
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -34,7 +39,8 @@ function ImportFolders() {
 
   const rescanFolder = (ID: number, name: string) => {
     rescanImportFolder(ID, {
-      onSuccess: () => toast.success('Scan Import Folder Success', `Import Folder ${name} queued for scanning.`),
+      onSuccess: () =>
+        toast.success(t('importFolders.toast.scanSuccess'), t('importFolders.toast.queued', { folderName: name })),
     });
   };
   const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
@@ -61,7 +67,11 @@ function ImportFolders() {
         <div className="mb-3 flex items-center justify-between">
           <span className="font-semibold">{folder.Name}</span>
           <div className="flex">
-            <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder" className="mr-2">
+            <Button
+              onClick={() => rescanFolder(folder.ID, folder.Name)}
+              tooltip={t('importFolders.tooltip.rescanFolder')}
+              className="mr-2"
+            >
               <Icon
                 className="text-panel-icon-action"
                 path={mdiDatabaseSearchOutline}
@@ -71,7 +81,10 @@ function ImportFolders() {
                 rotate={180}
               />
             </Button>
-            <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
+            <Button
+              onClick={() => openImportFolderModalEdit(folder.ID)}
+              tooltip={t('importFolders.tooltip.editFolder')}
+            >
               <Icon
                 className="text-panel-icon-action"
                 path={mdiDatabaseEditOutline}
@@ -84,15 +97,15 @@ function ImportFolders() {
           </div>
         </div>
         <div className="mb-1 flex">
-          <div className="grow">Location</div>
+          <div className="grow">{t('importFolders.field.location')}</div>
           <div title={folder.Path} className="line-clamp-1 pl-2">{folder.Path}</div>
         </div>
         <div className="mb-1 flex">
-          <div className="grow">Type</div>
+          <div className="grow">{t('importFolders.field.type')}</div>
           <div>{flags !== '' ? flags : 'None'}</div>
         </div>
         <div className="flex">
-          <div className="grow">Size</div>
+          <div className="grow">{t('importFolders.field.size')}</div>
           <div>
             {prettyBytes(folder.FileSize ?? 0, { binary: true })}
             &nbsp;(
@@ -106,14 +119,14 @@ function ImportFolders() {
 
   return (
     <ShokoPanel
-      title="Import Folders"
+      title={t('importFolders.panel.title')}
       options={<Options onClick={() => setImportFolderModalStatus(true)} />}
       isFetching={importFolderQuery.isPending}
       editMode={layoutEditMode}
       contentClassName={importFolders.length > 2 && ('pr-4')}
     >
       {importFolders.length === 0
-        ? <div className="mt-4 flex justify-center font-semibold" key="no-folders">No Import Folders Added!</div>
+        ? <div className="mt-4 flex justify-center font-semibold" key="no-folders">{t('importFolders.noFolders')}</div>
         : importFolders.map(importFolder => renderFolder(importFolder))}
     </ShokoPanel>
   );

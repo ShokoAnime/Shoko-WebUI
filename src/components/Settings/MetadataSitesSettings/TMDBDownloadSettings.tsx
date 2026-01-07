@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import cx from 'classnames';
 
 import Checkbox from '@/components/Input/Checkbox';
@@ -10,6 +11,7 @@ import type { SettingsContextType } from '@/core/types/context';
 type Props = Omit<SettingsContextType, 'setNewSettings'>;
 
 const TMDBDownloadSettings = React.memo((props: Props) => {
+  const { t } = useTranslation('settings');
   const { newSettings, updateSetting } = props;
 
   const {
@@ -39,28 +41,28 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
     <>
       <Checkbox
         justify
-        label="Download Crew And Cast"
+        label={t('tmdb.downloadCrewAndCast')}
         id="TMDB_AutoDownloadCrewAndCast"
         isChecked={AutoDownloadCrewAndCast}
         onChange={handleInputChange}
       />
       <Checkbox
         justify
-        label="Download Movie Collections"
+        label={t('tmdb.downloadCollections')}
         id="TMDB_AutoDownloadCollections"
         isChecked={AutoDownloadCollections}
         onChange={handleInputChange}
       />
       <Checkbox
         justify
-        label="Download Alternate Ordering"
+        label={t('tmdb.downloadAlternateOrdering')}
         id="TMDB_AutoDownloadAlternateOrdering"
         isChecked={AutoDownloadAlternateOrdering}
         onChange={handleInputChange}
       />
       <Checkbox
         justify
-        label="Download Backdrops"
+        label={t('tmdb.downloadBackdrops')}
         id="TMDB_AutoDownloadBackdrops"
         isChecked={AutoDownloadBackdrops}
         onChange={handleInputChange}
@@ -71,7 +73,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
           !AutoDownloadBackdrops && 'pointer-events-none opacity-65',
         )}
       >
-        Max Backdrops
+        {t('tmdb.maxBackdrops')}
         <InputSmall
           id="TMDB_MaxAutoBackdrops"
           value={MaxAutoBackdrops}
@@ -82,7 +84,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       </div>
       <Checkbox
         justify
-        label="Download Posters"
+        label={t('tmdb.downloadPosters')}
         id="TMDB_AutoDownloadPosters"
         isChecked={AutoDownloadPosters}
         onChange={handleInputChange}
@@ -93,7 +95,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
           !AutoDownloadPosters && 'pointer-events-none opacity-65',
         )}
       >
-        Max Posters
+        {t('tmdb.maxPosters')}
         <InputSmall
           id="TMDB_MaxAutoPosters"
           value={MaxAutoPosters}
@@ -104,7 +106,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       </div>
       <Checkbox
         justify
-        label="Download Logos"
+        label={t('tmdb.downloadLogos')}
         id="TMDB_AutoDownloadLogos"
         isChecked={AutoDownloadLogos}
         onChange={handleInputChange}
@@ -115,7 +117,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
           !AutoDownloadLogos && 'pointer-events-none opacity-65',
         )}
       >
-        Max Logos
+        {t('tmdb.maxLogos')}
         <InputSmall
           id="TMDB_MaxAutoLogos"
           value={MaxAutoLogos}
@@ -126,7 +128,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       </div>
       <Checkbox
         justify
-        label="Download Episode Thumbnails"
+        label={t('tmdb.downloadThumbnails')}
         id="TMDB_AutoDownloadThumbnails"
         isChecked={AutoDownloadThumbnails}
         onChange={handleInputChange}
@@ -137,7 +139,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
           !AutoDownloadThumbnails && 'pointer-events-none opacity-65',
         )}
       >
-        Max Episode Thumbnails
+        {t('tmdb.maxThumbnails')}
         <InputSmall
           id="TMDB_MaxAutoThumbnails"
           value={MaxAutoThumbnails}
@@ -148,7 +150,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       </div>
       <Checkbox
         justify
-        label="Download Staff Images"
+        label={t('tmdb.downloadStaffImages')}
         id="TMDB_AutoDownloadStaffImages"
         isChecked={AutoDownloadStaffImages}
         onChange={handleInputChange}
@@ -159,7 +161,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
           !AutoDownloadStaffImages && 'pointer-events-none opacity-65',
         )}
       >
-        Max Staff Images
+        {t('tmdb.maxStaffImages')}
         <InputSmall
           id="TMDB_MaxAutoStaffImages"
           value={MaxAutoStaffImages}
@@ -170,7 +172,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       </div>
       <Checkbox
         justify
-        label="Download Studio Images"
+        label={t('tmdb.downloadStudioImages')}
         id="TMDB_AutoDownloadStudioImages"
         isChecked={AutoDownloadStudioImages}
         onChange={handleInputChange}

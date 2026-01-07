@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   mdiAlertCircleOutline,
@@ -223,6 +224,7 @@ type MenuProps = {
 };
 
 const Menu = React.memo((props: MenuProps) => {
+  const { t } = useTranslation('utilities');
   const { disable, moveFiles, renameFiles, selectedRows, toggleMoveFiles, toggleRenameFiles } = props;
 
   const dispatch = useDispatch();
@@ -237,31 +239,31 @@ const Menu = React.memo((props: MenuProps) => {
       <MenuButton
         onClick={() => dispatch(clearRenameResults())}
         icon={mdiRefresh}
-        name="Refresh"
+        name={t('common.actions.refresh')}
       />
       <MenuButton
         onClick={() => dispatch(removeFiles(selectedRows.map(row => row.ID)))}
         icon={mdiMinusCircleOutline}
-        name="Remove"
+        name={t('common.actions.remove')}
         disabled={!disable && selectedRows.length === 0}
       />
       <MenuButton
         onClick={() => dispatch(clearFiles())}
         icon={mdiMinusCircleMultipleOutline}
-        name="Remove All"
+        name={t('common.actions.removeAll')}
       />
       <Checkbox
         id="move-files"
         isChecked={moveFiles}
         onChange={toggleMoveFiles}
-        label="Move Files"
+        label={t('renamer.moveFiles')}
         labelRight
       />
       <Checkbox
         id="rename-files"
         isChecked={renameFiles}
         onChange={toggleRenameFiles}
-        label="Rename Files"
+        label={t('renamer.renameFiles')}
         labelRight
       />
     </div>
@@ -293,6 +295,7 @@ const ConfigOption = React.memo(({ config }: { config: RenamerConfigType }) => {
 });
 
 const Renamer = () => {
+  const { t } = useTranslation('utilities');
   const dispatch = useDispatch();
   const addedFiles = useSelector((state: RootState) => state.utilities.renamer.files);
   const renameResults = useSelector((state: RootState) => state.utilities.renamer.renameResults);
@@ -500,7 +503,7 @@ const Renamer = () => {
     <>
       <title>File Renamer | Shoko</title>
       <div className="flex grow flex-col gap-y-3">
-        <ShokoPanel title="File Rename">
+        <ShokoPanel title={t('renamer.panelTitle')}>
           <div className="flex items-center gap-x-3">
             <Menu
               selectedRows={selectedRows}
@@ -527,7 +530,7 @@ const Renamer = () => {
                 onClick={toggleAddFilesModal}
                 disabled={relocatePending}
               >
-                Add Files
+                {t('renamer.addFiles.title')}
               </Button>
               <Button
                 buttonType="primary"
@@ -539,7 +542,7 @@ const Renamer = () => {
                 tooltip={renameDisabledReason}
               >
                 <Icon path={mdiFileDocumentEditOutline} size={1} />
-                Rename Files
+                {t('renamer.renameFilesButton')}
               </Button>
             </div>
             <AddFilesModal show={showAddFilesModal} onClose={toggleAddFilesModal} />
@@ -551,9 +554,13 @@ const Renamer = () => {
             {renamerConfigsQuery.isSuccess && (
               <>
                 <div className="flex w-1/3 flex-col gap-y-6">
-                  <ShokoPanel title="Renamer Selection" contentClassName="gap-y-5" fullHeight={!renamerSettingsExist}>
+                  <ShokoPanel
+                    title={t('renamer.renamerSelection')}
+                    contentClassName="gap-y-5"
+                    fullHeight={!renamerSettingsExist}
+                  >
                     <Select
-                      label="Config"
+                      label={t('renamer.configLabel')}
                       id="renamer-config"
                       value={selectedConfig.Name}
                       onChange={event => changeSelectedConfig(event.target.value)}
@@ -580,7 +587,7 @@ const Renamer = () => {
                           ? 'Already set as default!'
                           : ''}
                       >
-                        Set as default
+                        {t('renamer.setAsDefault')}
                       </Button>
                       <Button
                         onClick={handleDeleteConfig}
@@ -592,21 +599,21 @@ const Renamer = () => {
                           ? 'Cannot delete default config!'
                           : ''}
                       >
-                        Delete
+                        {t('common.actions.delete')}
                       </Button>
                       <Button
                         onClick={() => openConfigModal(true)}
                         buttonType="secondary"
                         buttonSize="normal"
                       >
-                        Rename
+                        {t('renamer.configRename')}
                       </Button>
                       <Button
                         onClick={() => openConfigModal(false)}
                         buttonType="secondary"
                         buttonSize="normal"
                       >
-                        New
+                        {t('renamer.configNew')}
                       </Button>
                       <Button
                         onClick={handleSaveConfig}
@@ -616,7 +623,7 @@ const Renamer = () => {
                         disabled={savePending || !renamer?.DefaultSettings}
                         tooltip={!renamer?.DefaultSettings ? 'Renamer does not have any settings to save.' : ''}
                       >
-                        Save
+                        {t('renamer.configSave')}
                       </Button>
                       <ConfigModal
                         show={showConfigModal}
@@ -629,7 +636,7 @@ const Renamer = () => {
                   </ShokoPanel>
 
                   {renamerSettingsExist && (
-                    <ShokoPanel title="Selected Renamer Config">
+                    <ShokoPanel title={t('renamer.selectedRenamerConfig')}>
                       {/* TODO: Maybe a todo... The transition div for checkbox is buggy when AnimateHeight is used. */}
                       {/* It doesn't appear before a click event when height is changed. Adding showSetting force re-renders it. */}
                       {newConfig && renamer?.Settings && showSettings && (
@@ -643,7 +650,7 @@ const Renamer = () => {
                   )}
                 </div>
 
-                <ShokoPanel title="Selected Renamer Script" className="w-2/3" disableOverflow>
+                <ShokoPanel title={t('renamer.selectedRenamerScript')} className="w-2/3" disableOverflow>
                   {newConfig && renamer?.Settings && (
                     <RenamerScript
                       newConfig={newConfig}
@@ -657,9 +664,9 @@ const Renamer = () => {
           </div>
         </AnimateHeight>
 
-        <ShokoPanel title="Renamer Preview" className="min-h-[40rem] grow">
+        <ShokoPanel title={t('renamer.renamerPreview')} className="min-h-[40rem] grow">
           {addedFiles.length === 0 && (
-            <div className="flex grow items-center justify-center font-semibold">No files selected!</div>
+            <div className="flex grow items-center justify-center font-semibold">{t('renamer.noFilesSelected')}</div>
           )}
 
           {addedFiles.length > 0 && (

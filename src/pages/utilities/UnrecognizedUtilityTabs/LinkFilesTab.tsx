@@ -1,5 +1,6 @@
 // This is the least maintainable file in the entire codebase
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import {
   mdiLink,
@@ -152,6 +153,7 @@ const AnimeSelectPanel = (
     placeholder: string;
   },
 ) => {
+  const { t } = useTranslation('links');
   const [searchText, setSearchText] = useState(placeholder);
   const [debouncedSearch] = useDebounceValue(searchText, 200);
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
@@ -179,7 +181,7 @@ const AnimeSelectPanel = (
         type="text"
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
-        placeholder="Enter Series Name or AniDB ID..."
+        placeholder={t('linkFilesTab.searchPlaceholder')}
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
@@ -191,6 +193,7 @@ const AnimeSelectPanel = (
 };
 
 function LinkFilesTab() {
+  const { t } = useTranslation('links');
   const navigate = useNavigateVoid();
   const { selectedRows } = (useLocation().state ?? { selectedRows: [] }) as { selectedRows: FileType[] };
   const [{ createdNewSeries, isLinking, isLinkingRunning }, setLoading] = useState({
@@ -325,7 +328,7 @@ function LinkFilesTab() {
       const seriesData = await getSeriesAniDBData(series.ID);
       setSelectedSeries(seriesData);
     } catch (_) {
-      toast.error('Failed to get series data!');
+      toast.error(t('linkFilesTab.getSeriesFailed'));
     }
 
     setSeriesUpdating(false);
@@ -359,7 +362,7 @@ function LinkFilesTab() {
         const seriesData = await getSeriesAniDBData(selectedSeries.ID);
         setSelectedSeries(seriesData);
       } catch (_) {
-        toast.error('Failed to add series! Unable to create shoko series entry.');
+        toast.error(t('linkFilesTab.addSeriesFailed'));
         setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       }
     }
@@ -367,14 +370,14 @@ function LinkFilesTab() {
 
   const rangeFill = (rangeStart: string, epType: string) => {
     if (toInteger(rangeStart) <= 0) {
-      toast.error('Value is not a positive integer.');
+      toast.error(t('linkFilesTab.invalidPositiveInt'));
       return;
     }
 
     const items = filter(episodeOptions, ['type', epType]);
     const idx = findIndex(items, ['number', toInteger(rangeStart)]);
     if (idx === -1) {
-      toast.error('Unable to find starting episode.');
+      toast.error(t('linkFilesTab.startEpisodeNotFound'));
       return;
     }
     const filtered = items.slice(idx);
@@ -445,11 +448,11 @@ function LinkFilesTab() {
       setLinks(newLinks);
       if (skipped) {
         toast.warning(
-          'Auto matching applied',
-          'Some matches could not be filled it. Be sure to vefify the ones that were, and fill in the rest!',
+          t('linkFilesTab.autoMatchApplied'),
+          t('linkFilesTab.autoMatchSkipped'),
         );
       } else {
-        toast.success('Auto matching applied.', 'Be sure to verify before saving!');
+        toast.success(t('linkFilesTab.autoMatchSuccess'), t('linkFilesTab.autoMatchVerify'));
       }
     }
   });
@@ -466,7 +469,7 @@ function LinkFilesTab() {
         deleteSeries({ seriesId, deleteFiles: false });
       }
       setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
-      toast.error('Linking aborted!', 'Unable to fetch shoko episodes!');
+      toast.error(t('linkFilesTab.linkingAborted'), t('linkFilesTab.fetchEpisodesFailed'));
       return;
     }
 
@@ -487,14 +490,14 @@ function LinkFilesTab() {
         deleteSeries({ seriesId, deleteFiles: false });
       }
       setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
-      toast.error('Linking aborted!', 'Unable create many-to-many relations. Try again or contact support.');
+      toast.error(t('linkFilesTab.linkingAborted'), t('linkFilesTab.manyToManyFailed'));
       return;
     }
 
     forEach(none, ({ FileID }) => {
       if (FileID === 0) return;
       const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-      toast.warning('Episode linking skipped!', `Path: ${path}`);
+      toast.warning(t('linkFilesTab.episodeLinkSkipped'), t('linkFilesTab.pathTemplate', { path }));
     });
 
     await Promise
@@ -504,8 +507,10 @@ function LinkFilesTab() {
       ))
       .then((results) => {
         const counts = countBy(results, 'status');
-        if (counts.fulfilled > 0) toast.success(`Scheduled a 1:1 linking for ${counts.fulfilled} files!`);
-        if (counts.rejected > 0) toast.error(`Failed 1:1 linking for ${counts.rejected} files!`);
+        if (counts.fulfilled > 0) {
+          toast.success(t('linkFilesTab.oneToOneLinkingScheduled', { count: counts.fulfilled }));
+        }
+        if (counts.rejected > 0) toast.error(t('linkFilesTab.oneToOneLinkingFailed', { count: counts.rejected }));
       });
 
     await Promise
@@ -515,8 +520,10 @@ function LinkFilesTab() {
       ))
       .then((results) => {
         const counts = countBy(results, 'status');
-        if (counts.fulfilled > 0) toast.success(`Scheduled a 1:N linking for ${counts.fulfilled} files!`);
-        if (counts.rejected > 0) toast.error(`Failed 1:N linking for ${counts.rejected} files!`);
+        if (counts.fulfilled > 0) {
+          toast.success(t('linkFilesTab.oneToManyLinkingScheduled', { count: counts.fulfilled }));
+        }
+        if (counts.rejected > 0) toast.error(t('linkFilesTab.oneToManyLinkingFailed', { count: counts.rejected }));
       });
 
     await Promise
@@ -526,8 +533,10 @@ function LinkFilesTab() {
       ))
       .then((results) => {
         const counts = countBy(results, 'status');
-        if (counts.fulfilled > 0) toast.success(`Scheduled an N:1 linking for ${counts.fulfilled} files!`);
-        if (counts.rejected > 0) toast.error(`Failed N:1 linking for ${counts.rejected} files!`);
+        if (counts.fulfilled > 0) {
+          toast.success(t('linkFilesTab.manyToOneLinkingScheduled', { count: counts.fulfilled }));
+        }
+        if (counts.rejected > 0) toast.error(t('linkFilesTab.manyToOneLinkingFailed', { count: counts.rejected }));
       });
 
     setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
@@ -619,7 +628,7 @@ function LinkFilesTab() {
       } else if (idx === 0) {
         result.push(
           <div className="flex items-center justify-center" key="no-episodes">
-            No episodes exist!
+            {t('linkFilesTab.noEpisodes')}
           </div>,
         );
       }
@@ -637,13 +646,13 @@ function LinkFilesTab() {
                   <MenuButton
                     onClick={duplicateLink}
                     icon={mdiPlusCircleMultipleOutline}
-                    name="Duplicate Entry"
+                    name={t('linkFilesTab.duplicateEntry')}
                     disabled={isLinking || selectedLink === -1 || !selectedSeries.ID}
                   />
                   <MenuButton
                     onClick={removeLink}
                     icon={mdiMinusCircleOutline}
-                    name="Remove Entry"
+                    name={t('linkFilesTab.removeEntry')}
                     disabled={isLinking || selectedLink === -1}
                   />
                 </div>
@@ -655,10 +664,10 @@ function LinkFilesTab() {
                   className="px-4 py-3"
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
                 >
-                  Range Fill
+                  {t('linkFilesTab.rangeFill')}
                 </Button>
                 <Button onClick={cancelChanges} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>
-                  Cancel
+                  {t('linkFilesTab.cancel')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -669,7 +678,7 @@ function LinkFilesTab() {
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
                   loading={isLinking}
                 >
-                  Save
+                  {t('linkFilesTab.save')}
                 </Button>
               </div>
             </div>
@@ -684,7 +693,7 @@ function LinkFilesTab() {
             )}
           >
             <div className="flex justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-              Selected Files
+              {t('linkFilesTab.selectedFiles')}
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeriesLoaded && (

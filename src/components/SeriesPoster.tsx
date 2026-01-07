@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import cx from 'classnames';
 
@@ -20,6 +21,7 @@ type Props = {
 const baseClassName = 'w-56 flex flex-col shrink-0';
 
 const SeriesPoster = React.memo((props: Props) => {
+  const { t } = useTranslation('poster');
   const {
     anidbEpisodeId,
     anidbSeriesId,
@@ -48,7 +50,7 @@ const SeriesPoster = React.memo((props: Props) => {
         {isAnidb && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
             <div className="metadata-link-icon AniDB" />
-            View on AniDB
+            {t('viewOnAnidb')}
           </div>
         )}
 
@@ -56,7 +58,7 @@ const SeriesPoster = React.memo((props: Props) => {
 
         {inCollection && (
           <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-            In Collection
+            {t('inCollection')}
           </div>
         )}
       </BackgroundImagePlaceholderDiv>

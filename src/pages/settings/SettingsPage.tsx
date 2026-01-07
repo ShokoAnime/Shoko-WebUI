@@ -1,5 +1,6 @@
 /* global globalThis */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
@@ -31,6 +32,7 @@ const items = [
 ];
 
 function SettingsPage() {
+  const { t } = useTranslation('settings');
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
@@ -66,11 +68,11 @@ function SettingsPage() {
     }
 
     toastId.current = toast.info(
-      'Unsaved Changes',
-      'Please save before leaving this page.',
+      t('page.unsaved.title'),
+      t('page.unsaved.message'),
       { autoClose: false, position: 'top-right' },
     );
-  }, [debouncedUnsavedChanges]);
+  }, [debouncedUnsavedChanges, t]);
 
   useEffect(() => () => {
     if (toastId.current) toast.dismiss(toastId.current);
@@ -121,16 +123,16 @@ function SettingsPage() {
   const validateAndPatchSettings = useEventCallback(() => {
     if (!isHttpServerUrlValid()) {
       toast.error(
-        'Invalid HTTP Server URL',
+        t('page.httpError.title'),
         <div className="flex flex-col gap-y-4">
-          {'It must be in the following format: {scheme}://{address}:{port}'}
+          {t('page.httpError.message')}
           <div>
-            Scheme: `http` or `https`
+            {t('page.httpError.scheme')}
             <br />
-            Port: optional
+            {t('page.httpError.port')}
             <br />
           </div>
-          <span>eg., http://api.anidb.net:9001</span>
+          <span>{t('page.httpError.example')}</span>
         </div>,
       );
 
@@ -151,7 +153,7 @@ function SettingsPage() {
     <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
       <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
         <div className="sticky top-6">
-          <div className="mb-8 text-center text-xl opacity-100">Settings</div>
+          <div className="mb-8 text-center text-xl opacity-100">{t('page.title')}</div>
           <div className="flex flex-col items-center gap-y-2">
             {items.map(item => (
               <NavLink
@@ -161,7 +163,7 @@ function SettingsPage() {
                   : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
                 key={item.path}
               >
-                {item.name}
+                {t(`page.menu.${item.path}`)}
               </NavLink>
             ))}
           </div>
@@ -186,7 +188,7 @@ function SettingsPage() {
                     buttonType="secondary"
                     buttonSize="normal"
                   >
-                    Cancel
+                    {t('page.actions.cancel')}
                   </Button>
                   <Button
                     onClick={validateAndPatchSettings}
@@ -195,7 +197,7 @@ function SettingsPage() {
                     loading={settingsPatchPending}
                     disabled={!unsavedChanges}
                   >
-                    Save
+                    {t('page.actions.save')}
                   </Button>
                 </div>
               )}

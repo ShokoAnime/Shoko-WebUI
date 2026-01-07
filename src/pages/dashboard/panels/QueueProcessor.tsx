@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { mdiCloseCircleOutline, mdiLoading, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -19,6 +20,7 @@ import type { QueueItemType } from '@/core/signalr/types';
 import type { RootState } from '@/core/store';
 
 const Options = () => {
+  const { t } = useTranslation('panels');
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
 
   const { mutate: clearQueue } = useQueueClearMutation();
@@ -33,16 +35,16 @@ const Options = () => {
     <div className="flex gap-x-2">
       {queue.Running
         ? (
-          <Button onClick={handlePause} tooltip="Pause All">
+          <Button onClick={handlePause} tooltip={t('queueProcessor.pauseAll')}>
             <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
           </Button>
         )
         : (
-          <Button onClick={handleResume} tooltip="Resume All">
+          <Button onClick={handleResume} tooltip={t('queueProcessor.resumeAll')}>
             <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
           </Button>
         )}
-      <Button onClick={handleClear} tooltip="Clear All">
+      <Button onClick={handleClear} tooltip={t('queueProcessor.clearAll')}>
         <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
       </Button>
     </div>
@@ -50,25 +52,29 @@ const Options = () => {
 };
 
 const Title = () => {
+  const { t } = useTranslation('panels');
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
 
   return (
     <div className="flex items-center">
-      Queue Processor |&nbsp;
+      {t('queueProcessor.panelTitle')}
+      |&nbsp;
       <div>
         <span className="text-panel-text-important">{queue.ThreadCount}</span>
-        &nbsp;Workers
+        &nbsp;
+        {t('queueProcessor.workers')}
       </div>
       &nbsp;|&nbsp;
       <div>
         <span className="text-panel-text-important">{queue.TotalCount}</span>
-        &nbsp;Tasks
+        &nbsp;
+        {t('queueProcessor.tasks')}
       </div>
       {!queue.Running && (
         <>
           &nbsp;|&nbsp;
           <div className="text-panel-text-important">
-            Paused
+            {t('queueProcessor.paused')}
           </div>
         </>
       )}
@@ -90,11 +96,12 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
 );
 
 const QueueItems = () => { // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
+  const { t } = useTranslation('panels');
   const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
 
   return queueItemsQuery.data && queueItemsQuery.data?.Total > 0
     ? queueItemsQuery.data.List.map(item => <QueueItem item={item} key={item.Key} />)
-    : <div className="flex grow items-center justify-center pb-14 font-semibold">Queue is empty!</div>;
+    : <div className="flex grow items-center justify-center pb-14 font-semibold">{t('queueProcessor.queueEmpty')}</div>;
 };
 
 function QueueProcessor() {

@@ -1,0 +1,347 @@
+{
+  "breadcrumb": {
+    "collection": "Collection"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "episodes": "Episodes",
+    "credits": "Credits",
+    "images": "Images",
+    "tags": "Tags",
+    "files": "Files",
+    "editSeries": "Edit Series"
+  },
+  "pageTitle": {
+    "overview": "{{name}} > Overview | Shoko",
+    "episodes": "{{name}} > Episodes | Shoko",
+    "credits": "{{name}} > Credits | Shoko",
+    "images": "{{name}} > Images | Shoko",
+    "tags": "{{name}} > Tags | Shoko",
+    "files": "{{name}} > Files | Shoko"
+  },
+  "overview": {
+    "metadataSites": "Metadata Sites",
+    "seriesLinks": "Series Links",
+    "episodeOnDeck": "Episode On Deck",
+    "allWatched": "All available episodes have already been watched",
+    "relatedAnime": "Related Anime",
+    "similarAnime": "Similar Anime",
+    "topActors": "Top 20 Actors",
+    "details": {
+      "type": "Type",
+      "source": "Source",
+      "airdate": "Airdate",
+      "status": "Status",
+      "episodes": "Episodes",
+      "length": "Length",
+      "season": "Season",
+      "studio": "Studio",
+      "unknown": "Unknown",
+      "airdate_range": "{{start}} - {{end}}",
+      "airdate_ongoing": "{{start}} - Ongoing",
+      "currently_airing": "Currently Airing",
+      "finished": "Finished",
+      "mins_per_episode": "{{minutes}} Mins/Episode",
+      "not_available": "--",
+      "studio_not_listed": "Studio Not Listed"
+    },
+    "stats": {
+      "file_count": "File Count",
+      "watched": "Watched",
+      "missing": "Missing",
+      "none_nice_work": "None, Nice Work!",
+      "series_rating": "Series Rating",
+      "temporary": "(Temp)"
+    },
+    "episode_count": {
+      "one": "{{count}} Episode",
+      "other": "{{count}} Episodes"
+    },
+    "special_count": {
+      "one": "{{count}} Special",
+      "other": "{{count}} Specials"
+    }
+  },
+  "tags": {
+    "title": "Tags",
+    "unit": "Tags Listed",
+    "filteredSeparator": " of ",
+    "descriptionNotAvailable": "Tag Description Not Available.",
+    "sourceTag": "{{source}} Tag"
+  },
+  "images": {
+    "title": "Images",
+    "preferred": "Preferred",
+    "setPreferred": "Set As Preferred {{type}}",
+    "selectedInfo": "Selected Info",
+    "headerUnit": "{{type}} Listed",
+    "tabs": {
+      "posters": "Posters",
+      "backdrops": "Backdrops",
+      "logos": "Logos"
+    },
+    "preferredSingular": {
+      "posters": "Poster",
+      "backdrops": "Backdrop",
+      "logos": "Logo"
+    },
+    "info": {
+      "filename": "Filename",
+      "location": "Location",
+      "source": "Source",
+      "size": "Size"
+    }
+  },
+  "files": {
+    "tabs": {
+      "series": "Series Files",
+      "missing": "Missing Files"
+    },
+    "header": "{{modeLabel}} | {{count}} {{entry}}",
+    "entry_one": "Entry",
+    "entry_other": "Entries",
+    "fileInfo": {
+      "title": "File Details",
+      "hashesTitle": "File Hashes",
+      "fileName": "File Name",
+      "location": "Location",
+      "size": "Size",
+      "group": "Group",
+      "video": "Video",
+      "audio": "Audio",
+      "chapters": "Chapters",
+      "yes": "Yes",
+      "no": "No",
+      "crc": "CRC",
+      "ed2k": "ED2K",
+      "sha1": "SHA1",
+      "md5": "MD5",
+      "copiedMessage": "ED2K link"
+    }
+  },
+  "episodes": {
+    "title": "Episodes",
+    "header": "{{count}} Entries Listed",
+    "headerWithSelection": "{{count}} Entries Listed | {{selected}} Entries Selected",
+    "cancelSelection": "Cancel Selection",
+    "options": "Options",
+    "headerBase": " Entries Listed",
+    "headerSelectedBase": " Entries Selected",
+    "headerSeparator": " | "
+  },
+  "credits": {
+    "pageTitle": {
+      "credits": "{{name}} > Credits | Shoko"
+    },
+    "credits": {
+      "title": "Credits",
+      "unit": "{{type}} Listed",
+      "filteredSeparator": " of ",
+      "modes": {
+        "character": "Characters",
+        "staff": "Staff"
+      },
+      "placeholderCharacter": "Character or Actor's Name...",
+      "placeholderStaff": "Staff Name..."
+    }
+  },
+  "edit": {
+    "modal": {
+      "title": "Edit Series"
+    },
+    "tabs": {
+      "name": "Name",
+      "group": "Group",
+      "updateActions": "Update Actions",
+      "fileActions": "File Actions",
+      "deleteActions": "Delete Actions"
+    }
+  },
+  "group": {
+    "nameLabel": "Name",
+    "editTooltip": "Edit group name",
+    "renameTooltip": "Rename group",
+    "searchPlaceholder": "Group Search...",
+    "moveToLabel": "Move to group",
+    "createNewTooltip": "Create and move to new group",
+    "noResults": "No Results!",
+    "error": "Error, please refresh!",
+    "moveToExistingTooltip": "Move to existing group"
+  },
+  "name": {
+    "nameLabel": "Name",
+    "editTooltip": "Edit name",
+    "saveTooltip": "Save name",
+    "loadError": "Series data could not be loaded!"
+  },
+  "actions": {
+    "update": {
+      "anidb": {
+        "name": "Update AniDB Info",
+        "description": "Gets the latest series information from the AniDB database."
+      },
+      "anidbForce": {
+        "name": "Update AniDB Info - Force",
+        "description": "Forces a complete update from AniDB, bypassing usual checks."
+      },
+      "anidbCache": {
+        "name": "Update AniDB Info - XML Cache",
+        "description": "Updates AniDB data using information from local XML cache."
+      },
+      "tmdbAuto": {
+        "name": "Auto-Search TMDB Match",
+        "description": "Automatically searches for a TMDB match."
+      },
+      "tmdb": {
+        "name": "Update TMDB Info",
+        "description": "Gets the latest series information from TMDB."
+      },
+      "tmdbImagesForce": {
+        "name": "Update TMDB Images - Force",
+        "description": "Forces a complete redownload of images from TMDB."
+      },
+      "trakt": {
+        "name": "Update Trakt Show Info",
+        "description": "Gets the latest show information from Trakt."
+      },
+      "traktSync": {
+        "name": "Sync Trakt Status",
+        "description": "Syncs episode status between Shoko and Trakt."
+      }
+    },
+    "file": {
+      "rescan": {
+        "name": "Rescan Files",
+        "description": "Rescans every file associated with the series."
+      },
+      "rehash": {
+        "name": "Rehash Files",
+        "description": "Rehashes every file associated with the series."
+      }
+    },
+    "delete": {
+      "keepFiles": {
+        "name": "Delete Series - Keep Files",
+        "description": "Deletes the series from Shoko but does not delete the files"
+      },
+      "removeFiles": {
+        "name": "Delete Series - Remove Files",
+        "description": "Deletes the series from Shoko along with the files"
+      },
+      "complete": {
+        "name": "Delete Series - Complete",
+        "description": "Removes all records relating to the series. Use with caution, as you may get banned if it's abused"
+      }
+    }
+  },
+  "toast": {
+    "delete": {
+      "keep": "Series deleted!",
+      "remove": "Series and files deleted!",
+      "complete": "Series deleted completely!"
+    }
+  },
+  "panels": {
+    "tags": {
+      "searchLabel": "标签搜索",
+      "searchPlaceholder": "搜索...",
+      "tagSourceTitle": "标签来源",
+      "tagSources": {
+        "anidb": "AniDB",
+        "user": "用户"
+      },
+      "displayTitle": "显示",
+      "showSpoilers": "显示剧透标签",
+      "quickActions": "快速操作",
+      "changeSortPrefix": "更改排序 | ",
+      "sortWeight": "标签权重",
+      "sortAlphabetical": "字母顺序",
+      "forceRefresh": "强制刷新：AniDB"
+    },
+    "credits": {
+      "nameTitle": "名称",
+      "rolesTitle": "角色",
+      "quickActions": "快速操作",
+      "forceRefresh": "强制刷新：AniDB",
+      "warning": "警告！可能包含剧透"
+    },
+    "episodes": {
+      "searchLabel": "剧集搜索",
+      "searchPlaceholder": "搜索...",
+      "typeLabel": "类型",
+      "type": {
+        "all": "全部",
+        "episodes": "正片",
+        "specials": "特别篇",
+        "others": "其他",
+        "credits": "片头片尾",
+        "misc": "杂项"
+      },
+      "statusLabel": "剧集状态",
+      "status": {
+        "all": "所有剧集",
+        "available": "可用剧集",
+        "missing": "缺失剧集"
+      },
+      "watchedLabel": "观看状态",
+      "watched": {
+        "all": "全部",
+        "watched": "已观看",
+        "unwatched": "未观看"
+      },
+      "hiddenLabel": "隐藏状态",
+      "hidden": {
+        "all": "显示所有条目",
+        "hide": "隐藏已隐藏条目",
+        "only": "仅显示隐藏条目"
+      },
+      "airLabel": "播出状态",
+      "air": {
+        "all": "全部",
+        "unaired": "未播出",
+        "aired": "已播出"
+      },
+      "warningUnaired": "本系列有未播出剧集",
+      "warningMissing": "本系列有缺失剧集"
+    }
+  },
+  "watchModal": {
+    "title": "Watch Options",
+    "tabs": {
+      "filtered_episodes": "Filtered Episodes",
+      "selected_episodes": "Selected Episodes"
+    },
+    "actions": {
+      "markWatched": "Mark as watched",
+      "markWatchedDesc": "Mark the filtered episodes as watched.",
+      "markUnwatched": "Mark as unwatched",
+      "markUnwatchedDesc": "Mark the filtered episodes as unwatched."
+    },
+    "notImplemented": "Not yet implemented!"
+  },
+  "episodeFiles": {
+    "noFiles": "No files found!",
+    "forceUpdateInfo": "Force Update Info",
+    "addToMyList": "Add to MyList",
+    "markVariation": "Mark as Variation",
+    "unmarkVariation": "Unmark as Variation",
+    "copyShokoId": "Copy ShokoID",
+    "unknownGroup": "Unknown",
+    "variationLabel": "Variation",
+    "deleteFile": "Delete File",
+    "shokoFileId": "Shoko File ID",
+    "toast": {
+      "deleted": "Deleted file!",
+      "deleteFailed": "Failed to delete file! {{message}}",
+      "addedToMyList": "Added file to MyList!",
+      "addFailed": "Failed to add file to MyList! {{message}}",
+      "rescanning": "Rescanning file!",
+      "rescanFailed": "Rescan failed for file! {{message}}",
+      "markedVariation": "Marked file as variation!",
+      "unmarkedVariation": "Unmarked file as variation!",
+      "variationActionFailed": "{{action}} file as variation failed! {{message}}",
+      "actionMark": "Marking",
+      "actionUnmark": "Unmarking"
+    }
+  }
+}

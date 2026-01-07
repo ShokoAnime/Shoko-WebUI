@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { produce } from 'immer';
@@ -20,6 +21,7 @@ type Props = {
 
 const Title = React.memo(({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation('settings');
 
   const handleEdit = useEventCallback(() => {
     dispatch(setLayoutEditMode(true));
@@ -28,13 +30,13 @@ const Title = React.memo(({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className="flex items-center justify-between text-xl font-semibold">
-      Display Settings
+      {t('dashboardSettings.title')}
       <Button
         onClick={handleEdit}
         buttonType="primary"
         buttonSize="normal"
       >
-        Enable Edit Mode
+        {t('dashboardSettings.enableEditMode')}
       </Button>
     </div>
   );
@@ -42,6 +44,7 @@ const Title = React.memo(({ onClose }: { onClose: () => void }) => {
 
 const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation('settings');
 
   const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
@@ -118,7 +121,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               key="widgets"
               onClick={() => setActiveTab('widgets')}
             >
-              Available Widgets
+              {t('dashboardSettings.availableWidgets')}
             </div>
             <div
               className={cx(
@@ -129,7 +132,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               key="options"
               onClick={() => setActiveTab('options')}
             >
-              Display Options
+              {t('dashboardSettings.displayOptions')}
             </div>
           </div>
         </div>
@@ -140,56 +143,56 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               <div className="flex flex-col gap-y-2 ">
                 <Checkbox
                   justify
-                  label="Hide Queue Processor"
+                  label={t('dashboardSettings.hideQueueProcessor')}
                   id="hideQueueProcessor"
                   isChecked={hideQueueProcessor}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Unrecognized Files"
+                  label={t('dashboardSettings.hideUnrecognizedFiles')}
                   id="hideUnrecognizedFiles"
                   isChecked={hideUnrecognizedFiles}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Recently Imported"
+                  label={t('dashboardSettings.hideRecentlyImported')}
                   id="hideRecentlyImported"
                   isChecked={hideRecentlyImported}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Collection Statistics"
+                  label={t('dashboardSettings.hideCollectionStatistics')}
                   id="hideCollectionStats"
                   isChecked={hideCollectionStats}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Media Type"
+                  label={t('dashboardSettings.hideMediaType')}
                   id="hideMediaType"
                   isChecked={hideMediaType}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Import Folders"
+                  label={t('dashboardSettings.hideImportFolders')}
                   id="hideImportFolders"
                   isChecked={hideImportFolders}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Shoko News"
+                  label={t('dashboardSettings.hideShokoNews')}
                   id="hideShokoNews"
                   isChecked={hideShokoNews}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Next Up"
+                  label={t('dashboardSettings.hideNextUp')}
                   id="hideNextUp"
                   isChecked={hideNextUp}
                   onChange={handleUpdate}
@@ -197,7 +200,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 {!combineContinueWatching && (
                   <Checkbox
                     justify
-                    label="Hide Continue Watching"
+                    label={t('dashboardSettings.hideContinueWatching')}
                     id="hideContinueWatching"
                     isChecked={hideContinueWatching}
                     onChange={handleUpdate}
@@ -205,14 +208,14 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 )}
                 <Checkbox
                   justify
-                  label="Hide Upcoming Anime"
+                  label={t('dashboardSettings.hideUpcomingAnime')}
                   id="hideUpcomingAnime"
                   isChecked={hideUpcomingAnime}
                   onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
-                  label="Hide Recommended Anime"
+                  label={t('dashboardSettings.hideRecommendedAnime')}
                   id="hideRecommendedAnime"
                   isChecked={hideRecommendedAnime}
                   onChange={handleUpdate}
@@ -225,20 +228,20 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
             <div className="flex flex-col gap-y-2">
               <Checkbox
                 justify
-                label="Combine Continue Watching & Next Up"
+                label={t('dashboardSettings.combineContinueWatching')}
                 id="combineContinueWatching"
                 isChecked={combineContinueWatching}
                 onChange={handleUpdate}
               />
               <Checkbox
                 justify
-                label="Hide R18 Content"
+                label={t('dashboardSettings.hideR18Content')}
                 id="hideR18Content"
                 isChecked={hideR18Content}
                 onChange={handleUpdate}
               />
               <div className="flex items-center justify-between">
-                Shoko News Posts
+                {t('dashboardSettings.shokoNewsPosts')}
                 <InputSmall
                   id="shokoNewsPostsCount"
                   type="number"
@@ -248,7 +251,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 />
               </div>
               <div className="flex items-center justify-between">
-                Recently Imported Episodes
+                {t('dashboardSettings.recentlyImportedEpisodes')}
                 <InputSmall
                   id="recentlyImportedEpisodesCount"
                   type="number"
@@ -258,7 +261,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 />
               </div>
               <div className="flex items-center justify-between">
-                Recently Imported Series
+                {t('dashboardSettings.recentlyImportedSeries')}
                 <InputSmall
                   id="recentlyImportedSeriesCount"
                   type="number"
@@ -272,13 +275,13 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
         </div>
       </div>
       <div className="flex justify-end gap-x-3 rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6 font-semibold">
-        <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">Cancel</Button>
+        <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">{t('page.actions.cancel')}</Button>
         <Button
           onClick={handleSave}
           buttonType="primary"
           buttonSize="normal"
         >
-          Save
+          {t('page.actions.save')}
         </Button>
       </div>
     </ModalPanel>

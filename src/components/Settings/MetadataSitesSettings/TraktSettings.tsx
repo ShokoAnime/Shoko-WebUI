@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import cx from 'classnames';
 import { toNumber } from 'lodash';
 
@@ -16,6 +17,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const TraktSettings = () => {
+  const { t } = useTranslation('settings');
   const { newSettings, updateSetting } = useSettingsContext();
   const { TraktTv } = newSettings;
 
@@ -27,7 +29,7 @@ const TraktSettings = () => {
     traktQuery.refetch().then(
       () => {
         toast.info(
-          'Click on the code to copy it. You have approximately 10 minutes to visit the URL provided and enter the code. SAVE YOUR SETTINGS after activation is complete.',
+          t('trakt.activationInstructions'),
           undefined,
           { autoClose: 600000, toastId: 'trakt-code', position: 'top-right' },
         );
@@ -70,21 +72,21 @@ const TraktSettings = () => {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex items-center justify-between font-semibold">
-        Trakt Options
+        {t('trakt.title')}
         {TraktTv.TokenExpirationDate !== '' && (
           <Button
             onClick={handleTraktClear}
             className="px-4 py-1"
             buttonType="danger"
           >
-            Unlink
+            {t('trakt.unlink')}
           </Button>
         )}
       </div>
       <div className="flex flex-col gap-y-1">
         <Checkbox
           justify
-          label="Enabled"
+          label={t('trakt.enabled')}
           id="Enabled"
           isChecked={TraktTv.Enabled}
           onChange={handleInputChange}
@@ -97,7 +99,8 @@ const TraktSettings = () => {
             )}
           >
             <Button className="flex cursor-pointer" onClick={handleCopy}>
-              Trakt Code:
+              {t('trakt.codeLabel')}
+              :
               <span className="ml-1 font-bold">{traktQuery.data?.usercode}</span>
             </Button>
             <a
@@ -106,7 +109,7 @@ const TraktSettings = () => {
               target="_blank"
               className="text-panel-text-important hover:underline"
             >
-              Click here to activate
+              {t('trakt.activate')}
             </a>
           </div>
         )}
@@ -117,58 +120,58 @@ const TraktSettings = () => {
               !TraktTv.Enabled && 'pointer-events-none opacity-65',
             )}
           >
-            Trakt Code
+            {t('trakt.codeLabel')}
             <Button
               onClick={handleGetCode}
               buttonType="primary"
               buttonSize="small"
               className="py-1.5 text-xs"
             >
-              {traktQuery.isFetching ? 'Requesting...' : 'Get Code'}
+              {traktQuery.isFetching ? t('trakt.requesting') : t('trakt.getCode')}
             </Button>
           </div>
         )}
         {TraktTv.TokenExpirationDate !== '' && (
           <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-65', 'flex flex-col gap-y-1')}>
             <div className="flex h-8 items-center justify-between">
-              <span>Token valid until</span>
+              <span>{t('trakt.tokenValidUntil')}</span>
               {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
             </div>
             <Checkbox
               justify
-              label="Auto Link"
+              label={t('trakt.autoLink')}
               id="AutoLink"
               isChecked={TraktTv.AutoLink}
               onChange={handleInputChange}
             />
             <div className="flex items-center justify-between">
-              <span>Automatically Update Data</span>
+              <span>{t('trakt.updateData')}</span>
               <SelectSmall
                 id="UpdateFrequency"
                 value={TraktTv.UpdateFrequency}
                 onChange={handleInputChange}
               >
-                <option value={1}>Never</option>
-                <option value={2}>Every 6 Hours</option>
-                <option value={3}>Every 12 Hours</option>
-                <option value={4}>Every 24 Hours</option>
-                <option value={5}>Once a Week</option>
-                <option value={6}>Once a Month</option>
+                <option value={1}>{t('frequency.never')}</option>
+                <option value={2}>{t('frequency.6hours')}</option>
+                <option value={3}>{t('frequency.12hours')}</option>
+                <option value={4}>{t('frequency.24hours')}</option>
+                <option value={5}>{t('frequency.week')}</option>
+                <option value={6}>{t('frequency.month')}</option>
               </SelectSmall>
             </div>
             <div className="flex items-center justify-between">
-              <span>Sync Frequency</span>
+              <span>{t('trakt.syncFrequency')}</span>
               <SelectSmall
                 id="SyncFrequency"
                 value={TraktTv.SyncFrequency}
                 onChange={handleInputChange}
               >
-                <option value={1}>Never</option>
-                <option value={2}>Every 6 Hours</option>
-                <option value={3}>Every 12 Hours</option>
-                <option value={4}>Every 24 Hours</option>
-                <option value={5}>Once a Week</option>
-                <option value={6}>Once a Month</option>
+                <option value={1}>{t('frequency.never')}</option>
+                <option value={2}>{t('frequency.6hours')}</option>
+                <option value={3}>{t('frequency.12hours')}</option>
+                <option value={4}>{t('frequency.24hours')}</option>
+                <option value={5}>{t('frequency.week')}</option>
+                <option value={6}>{t('frequency.month')}</option>
               </SelectSmall>
             </div>
           </div>

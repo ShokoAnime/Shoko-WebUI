@@ -1,0 +1,55 @@
+{
+  "dialogs": {
+    "common": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "discard": "Discard",
+      "delete": "Delete"
+    },
+    "languagesModal": {
+      "seriesLanguages": "Series Languages",
+      "episodeLanguages": "Episode Languages",
+      "descriptionLanguages": "Description Languages"
+    },
+    "importFolderModal": {
+      "addHeader": "Add New Import Folder",
+      "editHeader": "Edit Import Folder",
+      "nameLabel": "Name",
+      "locationLabel": "Location",
+      "dropTypeLabel": "Drop Type",
+      "watchLabel": "Watch For New Files",
+      "namePlaceholder": "Folder name",
+      "locationPlaceholder": "Location",
+      "dropNone": "None",
+      "dropSource": "Source",
+      "dropDestination": "Destination",
+      "dropBoth": "Both",
+      "watchNo": "No",
+      "watchYes": "Yes",
+      "toastAdded": "Import folder added!",
+      "toastEdited": "Import folder edited!",
+      "toastDeleted": "Import folder deleted!"
+    },
+    "filterPresetsModal": {
+      "header": "Filter Presets",
+      "filtersTab": "Filters",
+      "searchPlaceholder": "Search...",
+      "noResults": "Your search for <0>{{search}}</0> returned zero results."
+    },
+    "browseFolderModal": {
+      "header": "Select Import Folder",
+      "selectButton": "Select"
+    },
+    "deleteFilesModal": {
+      "deleteConfirmation": "Delete Confirmation",
+      "filesCount": {
+        "one": "{{count}} File",
+        "other": "{{count}} Files"
+      },
+      "confirm1": "Please confirm you would like to delete the following files. This is a destructive process and cannot be undone.",
+      "confirm2": "If you’ve added a file by mistake, click the icon to the right of the filename to remove it.",
+      "deleteButton": "Delete Files",
+      "missingPath": "<missing file path for {{id}}>"
+    }
+  }
+}

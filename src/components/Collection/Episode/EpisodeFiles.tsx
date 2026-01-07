@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   mdiClipboardOutline,
   mdiDatabaseSearchOutline,
@@ -35,6 +36,7 @@ type Props = {
 };
 
 const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Props) => {
+  const { t } = useTranslation('series');
   const { isPending: isAddMyListPending, mutate: addFileToMyList } = useAddFileToMyListMutation();
   const { mutate: deleteFile } = useDeleteFileMutation(seriesId, episodeId);
   const { mutate: markFileAsVariation } = useMarkVariationMutation();
@@ -50,10 +52,10 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
       onSuccess: () => {
-        toast.success('Deleted file!');
+        toast.success(t('episodeFiles.toast.deleted'));
         invalidateQueries(['episode', 'files', episodeId]);
       },
-      onError: error => toast.error(`Failed to delete file! ${error.message}`),
+      onError: error => toast.error(t('episodeFiles.toast.deleteFailed', { message: error.message })),
     });
   });
 
@@ -64,29 +66,41 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
 
   const handleAddToMyList = (id: number) =>
     addFileToMyList(id, {
-      onSuccess: () => toast.success('Added file to MyList!'),
-      onError: error => toast.error(`Failed to add file to MyList! ${error.message}`),
+      onSuccess: () => toast.success(t('episodeFiles.toast.addedToMyList')),
+      onError: error => toast.error(t('episodeFiles.toast.addFailed', { message: error.message })),
     });
 
   const handleRescan = (id: number) =>
     rescanFile(id, {
-      onSuccess: () => toast.success('Rescanning file!'),
-      onError: error => toast.error(`Rescan failed for file! ${error.message}`),
+      onSuccess: () => toast.success(t('episodeFiles.toast.rescanning')),
+      onError: error => toast.error(t('episodeFiles.toast.rescanFailed', { message: error.message })),
     });
 
   const handleMarkVariation = (fileId: number, variation: boolean) =>
     markFileAsVariation({ fileId, variation }, {
-      onSuccess: () => toast.success(`${variation ? 'Marked' : 'Unmarked'} file as variation!`),
+      onSuccess: () =>
+        toast.success(
+          variation
+            ? t('episodeFiles.toast.markedVariation')
+            : t('episodeFiles.toast.unmarkedVariation'),
+        ),
       onError: error =>
-        toast.error(`${variation ? 'Marking' : 'Unmarking'} file as variation failed! ${error.message}`),
+        toast.error(
+          t('episodeFiles.toast.variationActionFailed', {
+            action: variation ? t('episodeFiles.toast.actionMark') : t('episodeFiles.toast.actionUnmark'),
+            message: error.message,
+          }),
+        ),
     });
 
   const handleCopyToClipboard = (id: string) => {
-    copyToClipboard(id, 'Shoko File ID').catch(console.error);
+    copyToClipboard(id, t('episodeFiles.shokoFileId')).catch(console.error);
   };
 
   if (!episodeFiles.length || episodeFiles.length < 1) {
-    return <div className="flex grow items-center justify-center p-6 pt-4 font-semibold">No files found!</div>;
+    return (
+      <div className="flex grow items-center justify-center p-6 pt-4 font-semibold">{t('episodeFiles.noFiles')}</div>
+    );
   }
 
   return (
@@ -104,7 +118,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                   onClick={() => handleRescan(file.ID)}
                 >
                   <Icon className="hidden text-panel-icon-action lg:inline" path={mdiDatabaseSearchOutline} size={1} />
-                  Force Update Info
+                  {t('episodeFiles.forceUpdateInfo')}
                 </div>
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
@@ -116,7 +130,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                     spin={isAddMyListPending}
                     size={1}
                   />
-                  Add to MyList
+                  {t('episodeFiles.addToMyList')}
                 </div>
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
@@ -127,8 +141,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                     path={mdiFileDocumentMultipleOutline}
                     size={1}
                   />
-                  {file.IsVariation ? 'Unmark' : 'Mark'}
-                  &nbsp;as Variation
+                  {t(file.IsVariation ? 'episodeFiles.unmarkVariation' : 'episodeFiles.markVariation')}
                 </div>
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
@@ -139,7 +152,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                     path={mdiClipboardOutline}
                     size={1}
                   />
-                  Copy ShokoID
+                  {t('episodeFiles.copyShokoId')}
                 </div>
                 {file.AniDB && (
                   <a href={`https://anidb.net/file/${file.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
@@ -158,14 +171,18 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                   >
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
-                      {ReleaseGroupName ?? 'Unknown'}
+                      {ReleaseGroupName ?? t('episodeFiles.unknownGroup')}
                       &nbsp;(AniDB)
                       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                     </div>
                   </a>
                 )}
 
-                {file.IsVariation && <span className="ml-auto font-semibold text-panel-text-important">Variation</span>}
+                {file.IsVariation && (
+                  <span className="ml-auto font-semibold text-panel-text-important">
+                    {t('episodeFiles.variationLabel')}
+                  </span>
+                )}
               </div>
               <div className="flex text-center">
                 <Button
@@ -177,7 +194,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                   }}
                 >
                   <Icon path={mdiTrashCanOutline} size={1} />
-                  <span className="hidden lg:inline">Delete File</span>
+                  <span className="hidden lg:inline">{t('episodeFiles.deleteFile')}</span>
                 </Button>
               </div>
             </div>

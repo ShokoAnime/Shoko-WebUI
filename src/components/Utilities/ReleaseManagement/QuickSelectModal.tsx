@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { map, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -18,6 +19,7 @@ type Props = {
 };
 
 const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
+  const { t } = useTranslation('utilities');
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
@@ -60,16 +62,32 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
       {
         onSuccess: () => {
           resetQueries(['release-management']);
-          toast.success(`${fileIds.length} ${fileIds.length === 1 ? 'file' : 'files'} deleted!`);
+          toast.success(t('releaseManagement.quickSelect.filesDeleted', { count: fileIds.length }));
           onClose();
         },
-        onError: () => toast.error('Files could not be deleted!'),
+        onError: () => toast.error(t('releaseManagement.quickSelect.deleteError')),
       },
     );
   });
 
+  const getAudioText = (languages: string[] | undefined) => {
+    if (!languages || languages.length === 0) return t('releaseManagement.quickSelect.noAudio');
+    const joined = languages.join(', ');
+    return languages.length > 1
+      ? t('releaseManagement.quickSelect.multiAudio', { languages: joined })
+      : t('releaseManagement.quickSelect.singleAudio', { languages: joined });
+  };
+
+  const getSubtitleText = (languages: string[] | undefined) => {
+    if (!languages || languages.length === 0) return t('releaseManagement.quickSelect.noSubs');
+    const joined = languages.join(', ');
+    return languages.length > 1
+      ? t('releaseManagement.quickSelect.multiSubs', { languages: joined })
+      : t('releaseManagement.quickSelect.singleSubs', { languages: joined });
+  };
+
   return (
-    <ModalPanel show={show} onRequestClose={onClose} header="Quick Select" size="sm">
+    <ModalPanel show={show} onRequestClose={onClose} header={t('releaseManagement.quickSelect.title')} size="sm">
       {fileSummaryQuery.isSuccess && (
         map(
           fileSummary?.Groups,
@@ -77,10 +95,11 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
             <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
               <div className="flex flex-col gap-y-1">
                 <div className="font-semibold">
-                  {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
+                  {group.GroupName === 'None' ? t('releaseManagement.quickSelect.manualLink') : group.GroupName}
                   &nbsp;-&nbsp;
                   {group.Episodes?.length}
-                  &nbsp;Episodes
+                  &nbsp;
+                  {t('releaseManagement.quickSelect.episodes')}
                   {group.RangeByType.Normal && (
                     <>
                       &nbsp;(
@@ -89,10 +108,11 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                     </>
                   )}
                   &nbsp;-&nbsp;
-                  {`v${group.FileVersion}`}
+                  {t('releaseManagement.quickSelect.version', { version: group.FileVersion })}
                 </div>
                 <div className="flex flex-wrap text-sm opacity-65">
-                  Import Folder:&nbsp;
+                  {t('releaseManagement.quickSelect.importFolder')}
+                  &nbsp;
                   {group.ImportFolder}
                 </div>
                 <div className="flex flex-wrap text-sm opacity-65">
@@ -104,37 +124,19 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                   {group.AudioLanguages && (
                     <>
                       &nbsp;|&nbsp;
-                      <div>
-                        {group.AudioLanguages.length === 0 ? 'No Audio' : (
-                          <>
-                            {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
-                            Audio (
-                            {group.AudioLanguages.join(', ')}
-                            )
-                          </>
-                        )}
-                      </div>
+                      <div>{getAudioText(group.AudioLanguages)}</div>
                     </>
                   )}
                   {group.SubtitleLanguages && (
                     <>
                       &nbsp;|&nbsp;
-                      <div>
-                        {group.SubtitleLanguages.length === 0 ? 'No Subs' : (
-                          <>
-                            {group.SubtitleLanguages.length > 1 ? 'Multi ' : 'Single '}
-                            Subs (
-                            {group.SubtitleLanguages.join(', ')}
-                            )
-                          </>
-                        )}
-                      </div>
+                      <div>{getSubtitleText(group.SubtitleLanguages)}</div>
                     </>
                   )}
                   {group.VideoHasChapters && (
                     <>
                       &nbsp;|&nbsp;
-                      <div>Chaptered</div>
+                      <div>{t('releaseManagement.quickSelect.chaptered')}</div>
                     </>
                   )}
                 </div>
@@ -143,7 +145,7 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                 id={`checkbox-${index}`}
                 isChecked={groupsToDelete.has(index)}
                 onChange={handleCheckboxChange}
-                label="Delete"
+                label={t('releaseManagement.quickSelect.deleteLabel')}
               />
             </div>
           ),
@@ -151,14 +153,16 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
       )}
 
       <div className="mt-4 flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">
+          {t('releaseManagement.quickSelect.cancel')}
+        </Button>
         <Button
           onClick={handleConfirm}
           buttonType="primary"
           className="px-6 py-2"
           loading={isDeleting}
         >
-          Confirm
+          {t('releaseManagement.quickSelect.confirm')}
         </Button>
       </div>
     </ModalPanel>

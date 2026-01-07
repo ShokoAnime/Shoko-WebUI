@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
+import { useTranslation } from 'react-i18next';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -119,6 +120,7 @@ const PlexLinkButton = () => {
 };
 
 const PlexSettings = () => {
+  const { t } = useTranslation('settings');
   const { newSettings } = useSettingsContext();
   const { Plex: plexSettings } = newSettings;
 
@@ -161,25 +163,25 @@ const PlexSettings = () => {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex justify-between">
-        <div className="flex items-center font-semibold">Plex Options</div>
+        <div className="flex items-center font-semibold">{t('plex.title')}</div>
         <PlexLinkButton />
       </div>
       <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-65')}>
         <SelectSmall
-          label="Server"
+          label={t('plex.server')}
           id="server"
           value={serverId}
           onChange={handleServerChange}
           isFetching={isAuthenticated && serversQuery.isPending}
         >
-          <option value="" disabled>--Select Server--</option>
+          <option value="" disabled>{t('plex.selectPlaceholder')}</option>
           {map(
             serversQuery.data,
             server => <option value={server.ClientIdentifier} key={server.ClientIdentifier}>{server.Name}</option>,
           )}
         </SelectSmall>
         <AnimateHeight height={isAuthenticated && serversQuery.isSuccess && !!serverId ? 'auto' : 0}>
-          <div className="mb-2">Available Libraries</div>
+          <div className="mb-2">{t('plex.libraries')}</div>
           <div className="relative flex min-h-10 flex-col gap-y-2 rounded-lg bg-panel-input px-4 py-2">
             {(librariesQuery.isPending || changeLibraryPending) && (
               <div className="absolute inset-0 flex items-center justify-center text-panel-text-primary">
@@ -189,7 +191,7 @@ const PlexSettings = () => {
 
             {(librariesQuery.isError || librariesQuery.data?.length === 0) && (
               <div className="flex justify-center">
-                No libraries found!
+                {t('plex.noLibraries')}
               </div>
             )}
 

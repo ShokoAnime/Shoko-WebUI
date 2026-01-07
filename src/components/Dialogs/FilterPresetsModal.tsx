@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import { mdiLoading, mdiMagnify } from '@mdi/js';
@@ -61,6 +62,7 @@ const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => vo
 const SidePanel = (
   props: { activeFilter: number, activeTab: string, filterId: number, onClose: () => void, title: string },
 ) => {
+  const { t } = useTranslation('dialogs');
   const { activeFilter, activeTab, filterId, onClose, title } = props;
 
   const subFiltersQuery = useSubFiltersQuery(filterId, activeFilter === filterId);
@@ -107,7 +109,7 @@ const SidePanel = (
         <>
           <Input
             type="text"
-            placeholder="Search..."
+            placeholder={t('dialogs.filterPresetsModal.searchPlaceholder')}
             startIcon={mdiMagnify}
             id="search"
             value={search}
@@ -117,9 +119,11 @@ const SidePanel = (
           <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
             {filteredList.length === 0 && (
               <div className="flex grow items-center justify-center">
-                Your search for&nbsp;
-                <span className="font-semibold text-panel-text-important">{search}</span>
-                &nbsp;returned zero results.
+                <Trans
+                  i18nKey="dialogs.filterPresetsModal.noResults"
+                  values={{ search }}
+                  components={[<span className="font-semibold text-panel-text-important" key="0" />]}
+                />
               </div>
             )}
 
@@ -147,6 +151,7 @@ const SidePanel = (
 };
 
 function FilterPresetsModal({ onClose, show }: Props) {
+  const { t } = useTranslation('dialogs');
   const filtersQuery = useFiltersQuery(show);
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
@@ -163,11 +168,16 @@ function FilterPresetsModal({ onClose, show }: Props) {
       show={show}
       size="md"
       onRequestClose={onClose}
-      header="Filter Presets"
+      header={t('dialogs.filterPresetsModal.header')}
     >
       <div className="flex">
         <div className="flex min-h-96 min-w-32 flex-col gap-y-4 border-r-2 border-panel-border">
-          <TabButton activeTab={activeTab} filterId={0} onTabChange={onTabChange} title="Filters" />
+          <TabButton
+            activeTab={activeTab}
+            filterId={0}
+            onTabChange={onTabChange}
+            title={t('dialogs.filterPresetsModal.filtersTab')}
+          />
           {filters.filter(item => item.IsDirectory)
             .map(item => (
               <TabButton

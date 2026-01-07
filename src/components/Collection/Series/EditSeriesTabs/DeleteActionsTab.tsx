@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import toast from '@/components/Toast';
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const DeleteActionsTab = ({ seriesId }: Props) => {
+  const { t } = useTranslation('series');
   const navigate = useNavigateVoid();
 
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
@@ -19,34 +21,34 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
   return (
     <div className="flex grow flex-col gap-y-4 overflow-y-auto">
       <Action
-        name="Delete Series - Keep Files"
-        description="Deletes the series from Shoko but does not delete the files"
+        name={t('actions.delete.keepFiles.name')}
+        description={t('actions.delete.keepFiles.description')}
         onClick={() =>
           deleteSeries({ seriesId, deleteFiles: false }, {
             onSuccess: () => {
-              toast.success('Series deleted!');
+              toast.success(t('toast.delete.keep'));
               navigateToCollection();
             },
           })}
       />
       <Action
-        name="Delete Series - Remove Files"
-        description="Deletes the series from Shoko along with the files"
+        name={t('actions.delete.removeFiles.name')}
+        description={t('actions.delete.removeFiles.description')}
         onClick={() =>
           deleteSeries({ seriesId, deleteFiles: true }, {
             onSuccess: () => {
-              toast.success('Series and files deleted!');
+              toast.success(t('toast.delete.remove'));
               navigateToCollection();
             },
           })}
       />
       <Action
-        name="Delete Series - Complete"
-        description="Removes all records relating to the series. Use with caution, as you may get banned if it's abused"
+        name={t('actions.delete.complete.name')}
+        description={t('actions.delete.complete.description')}
         onClick={() =>
           deleteSeries({ seriesId, deleteFiles: true, completelyRemove: true }, {
             onSuccess: () => {
-              toast.success('Series deleted completely!');
+              toast.success(t('toast.delete.complete'));
               navigateToCollection();
             },
           })}

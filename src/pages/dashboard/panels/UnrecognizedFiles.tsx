@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -10,8 +11,9 @@ import { dayjs } from '@/core/util';
 import type { RootState } from '@/core/store';
 
 const FileItem = ({ file }: { file: FileType }) => {
+  const { t } = useTranslation('panels');
   const createdTime = dayjs(file.Created);
-  const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
+  const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? t('unrecognizedFiles.missingPath');
   return (
     <div
       key={file.ID}
@@ -37,6 +39,7 @@ const FileItem = ({ file }: { file: FileType }) => {
 };
 
 function UnrecognizedFiles() {
+  const { t } = useTranslation('panels');
   const filesQuery = useFilesInfiniteQuery({
     pageSize: 20,
     include_only: ['Unrecognized'],
@@ -61,14 +64,14 @@ function UnrecognizedFiles() {
     <ShokoPanel
       title={
         <div className="flex w-full flex-row justify-between">
-          <div>Unrecognized Files</div>
+          <div>{t('unrecognizedFiles.title')}</div>
         </div>
       }
       options={
         <div className="text-xl font-semibold">
           <span className="text-panel-text-important">{fileCount}</span>
           &nbsp;
-          <span>{fileCount === 1 ? 'File' : 'Files'}</span>
+          <span>{t('unrecognizedFiles.file', { count: fileCount })}</span>
         </div>
       }
       isFetching={filesQuery.isPending}
@@ -77,7 +80,7 @@ function UnrecognizedFiles() {
       {files.map(file => <FileItem file={file} key={file.ID} />)}
       {fileCount === 0 && (
         <div className="flex grow items-center justify-center pb-14 font-semibold" key="no-files">
-          No unrecognized files. Good job!
+          {t('unrecognizedFiles.empty')}
         </div>
       )}
     </ShokoPanel>

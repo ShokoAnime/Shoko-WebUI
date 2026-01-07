@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { produce } from 'immer';
 
 import Checkbox from '@/components/Input/Checkbox';
@@ -9,6 +10,7 @@ import type { SettingsContextType } from '@/core/types/context';
 type Props = SettingsContextType;
 
 const TMDBSettings = React.memo((props: Props) => {
+  const { t } = useTranslation('settings');
   const { newSettings, setNewSettings, updateSetting } = props;
 
   const {
@@ -35,21 +37,21 @@ const TMDBSettings = React.memo((props: Props) => {
     <>
       <Checkbox
         justify
-        label="Auto Link"
+        label={t('tmdb.autoLink')}
         id="TMDB_AutoLink"
         isChecked={AutoLink}
         onChange={handleInputChange}
       />
       <Checkbox
         justify
-        label="Auto Link Restricted"
+        label={t('tmdb.autoLinkRestricted')}
         id="TMDB_AutoLinkRestricted"
         isChecked={AutoLinkRestricted}
         onChange={handleInputChange}
       />
       <Checkbox
         justify
-        label="Include Restricted in Search"
+        label={t('tmdb.includeRestricted')}
         id="include-restricted-tmdb"
         isChecked={includeRestricted}
         onChange={handleIncludeRestrictedChange}

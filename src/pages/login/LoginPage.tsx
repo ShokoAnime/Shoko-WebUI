@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -27,6 +28,7 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 import type { RootState } from '@/core/store';
 
 function LoginPage() {
+  const { t } = useTranslation('login');
   const navigate = useNavigateVoid();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -127,7 +129,7 @@ function LoginPage() {
           <div className="flex w-full max-w-[50rem] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
             <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
             <div className="font-semibold text-panel-text-danger">
-              Invalid Username or Password. Try again.
+              {t('error.invalidCredentials')}
             </div>
           </div>
         )}
@@ -149,10 +151,12 @@ function LoginPage() {
               {serverStatusQuery.data?.State === 1 && (
                 <div className="flex flex-col items-center justify-center gap-y-2">
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
-                  <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
+                  <div className="mt-2 text-xl font-semibold">{t('server.starting')}</div>
                   <div className="text-lg">
-                    <span className="font-semibold">Status:</span>
-                    {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
+                    <span className="font-semibold">
+                      {t('server.statusLabel')}
+                    </span>
+                    {serverStatusQuery.data?.StartupMessage ?? t('common.unknown')}
                   </div>
                 </div>
               )}
@@ -162,22 +166,22 @@ function LoginPage() {
                     autoFocus
                     id="username"
                     value={username}
-                    label="Username"
+                    label={t('form.username')}
                     type="text"
-                    placeholder="Username"
+                    placeholder={t('form.username')}
                     onChange={event => setUsername(event.target.value)}
                   />
                   <Input
                     id="password"
                     value={password}
-                    label="Password"
+                    label={t('form.password')}
                     type="password"
-                    placeholder="Password"
+                    placeholder={t('form.password')}
                     onChange={event => setPassword(event.target.value)}
                   />
                   <Checkbox
                     id="rememberUser"
-                    label="Remember Me"
+                    label={t('form.rememberMe')}
                     isChecked={rememberUser}
                     onChange={event => setRememberUser(event.target.checked)}
                     className="font-semibold"
@@ -191,34 +195,41 @@ function LoginPage() {
                     loading={isLoginPending}
                     disabled={versionQuery.isFetching || username === ''}
                   >
-                    Login
+                    {t('form.login')}
                   </Button>
                 </form>
               )}
               {serverStatusQuery.data?.State === 3 && (
                 <div className="flex max-h-80 flex-col items-center justify-center gap-y-2 pb-2">
                   <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
-                  <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
+                  <div className="mt-2 text-xl font-semibold">
+                    {t('server.failed')}
+                  </div>
                   Check the error message below
                   <div className="overflow-y-auto break-all text-lg font-semibold">
-                    {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
+                    {serverStatusQuery.data?.StartupMessage ?? t('common.unknown')}
                   </div>
                 </div>
               )}
               {serverStatusQuery.data?.State === 4 && (
                 <div className="flex flex-col gap-y-6">
                   <div className="flex flex-col gap-y-4">
-                    <div>Welcome, and thank you for installing Shoko!</div>
+                    <div>{t('firstrun.welcome')}</div>
                     <div>
-                      Before Shoko can begin organizing your anime collection, you&apos;ll need to go through the
-                      <span className="font-semibold text-panel-text-important">&nbsp;First Time Setup&nbsp;</span>
-                      process. This step lets you tailor Shoko according to your preferences, and is designed to be
-                      quick and straightforward, requiring only a few minutes of your time.
+                      {t('firstrun.description.before')}
+                      <span className="font-semibold text-panel-text-important">
+                        &nbsp;
+                        {t('firstrun.description.highlight')}
+                        &nbsp;
+                      </span>
+                      {t('firstrun.description.after')}
                     </div>
                     <div>
-                      Click&nbsp;
-                      <span className="font-semibold text-panel-text-important">Continue</span>
-                      &nbsp;below to proceed.
+                      {t('firstrun.continueHint.before')}
+                      <span className="font-semibold text-panel-text-important">
+                        {t('common.continue')}
+                      </span>
+                      {t('firstrun.continueHint.after')}
                     </div>
                   </div>
                   <Button
@@ -226,7 +237,7 @@ function LoginPage() {
                     buttonType="primary"
                     className="py-2 font-semibold"
                   >
-                    Continue
+                    {t('common.continue')}
                   </Button>
                 </div>
               )}
@@ -243,9 +254,9 @@ function LoginPage() {
               >
                 {/* eslint-disable-next-line no-nested-ternary */}
                 {imageMetadataQuery.isError
-                  ? 'One Piece'
+                  ? t('series.default')
                   : imageMetadataQuery.data?.Series === undefined
-                  ? 'Series Not Found'
+                  ? t('series.notFound')
                   : (
                     <>
                       <span className="truncate" title={seriesName}>{seriesName}</span>
