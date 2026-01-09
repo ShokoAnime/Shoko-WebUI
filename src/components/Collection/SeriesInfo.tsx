@@ -105,7 +105,10 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
       </div>
       <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">{t('overview.details.episodes')}</div>
+          <div className="font-semibold">
+            {t('overview.details.episodes')}
+            &nbsp;
+          </div>
           <div className="truncate">
             {t('overview.episode_count', { count: series?.Sizes.Total.Episodes ?? 0 })}
             <span className="mx-1">|</span>

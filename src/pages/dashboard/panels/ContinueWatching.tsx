@@ -20,15 +20,15 @@ const ContinueWatching = () => {
 
   return (
     <ShokoPanel
-      title={t('recommendedAnime.title')}
+      title={t('continueWatching.title')}
       isFetching={continueWatchingQuery.isPending}
       editMode={layoutEditMode}
       contentClassName="!flex-row gap-x-6"
     >
       {(!continueWatchingQuery.data || continueWatchingQuery.data.length === 0) && (
         <div className="flex size-full flex-col justify-center gap-y-2 pb-10 text-center">
-          <div>{t('recommendedAnime.emptyTitle')}</div>
-          <div>{t('recommendedAnime.emptyDescription')}</div>
+          <div>{t('continueWatching.emptyTitle')}</div>
+          <div>{t('continueWatching.emptyDescription')}</div>
         </div>
       )}
 

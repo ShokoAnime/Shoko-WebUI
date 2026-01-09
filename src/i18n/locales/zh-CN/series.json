@@ -53,8 +53,8 @@
       "series_rating": "系列评分",
       "temporary": "(临时)"
     },
-    "episode_count": "{{count}} 集",
-    "special_count": "{{count}} 个特别篇"
+    "episode_count_other": "{{count}} 集",
+    "special_count_other": "{{count}} 个特别篇"
   },
   "tags": {
     "title": "标签",
@@ -67,7 +67,7 @@
     "title": "图片",
     "preferred": "首选",
     "setPreferred": "设为首选{{type}}",
-    "selectedInfo": "选中信息",
+    "selectedInfo": "选中图片信息",
     "headerUnit": "张{{type}}",
     "tabs": {
       "posters": "海报",

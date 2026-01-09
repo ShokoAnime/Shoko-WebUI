@@ -53,14 +53,10 @@
       "series_rating": "Series Rating",
       "temporary": "(Temp)"
     },
-    "episode_count": {
-      "one": "{{count}} Episode",
-      "other": "{{count}} Episodes"
-    },
-    "special_count": {
-      "one": "{{count}} Special",
-      "other": "{{count}} Specials"
-    }
+    "episode_count_one": "{{count}} Episode",
+    "episode_count_other": "{{count}} Episodes",
+    "special_count_one": "{{count}} Special",
+    "special_count_other": "{{count}} Specials"
   },
   "tags": {
     "title": "Tags",
@@ -73,7 +69,7 @@
     "title": "Images",
     "preferred": "Preferred",
     "setPreferred": "Set As Preferred {{type}}",
-    "selectedInfo": "Selected Info",
+    "selectedInfo": "Selected Image Info",
     "headerUnit": "{{type}} Listed",
     "tabs": {
       "posters": "Posters",
@@ -130,20 +126,15 @@
     "headerSeparator": " | "
   },
   "credits": {
-    "pageTitle": {
-      "credits": "{{name}} > Credits | Shoko"
+    "title": "Credits",
+    "unit": "{{type}} Listed",
+    "filteredSeparator": " of ",
+    "modes": {
+      "character": "Characters",
+      "staff": "Staff"
     },
-    "credits": {
-      "title": "Credits",
-      "unit": "{{type}} Listed",
-      "filteredSeparator": " of ",
-      "modes": {
-        "character": "Characters",
-        "staff": "Staff"
-      },
-      "placeholderCharacter": "Character or Actor's Name...",
-      "placeholderStaff": "Staff Name..."
-    }
+    "placeholderCharacter": "Character or Actor's Name...",
+    "placeholderStaff": "Staff Name..."
   },
   "edit": {
     "modal": {
@@ -242,67 +233,68 @@
     }
   },
   "panels": {
+    "searchAndFilter": "Search & Filter",
     "tags": {
-      "searchLabel": "标签搜索",
-      "searchPlaceholder": "搜索...",
-      "tagSourceTitle": "标签来源",
+      "searchLabel": "Tag Search",
+      "searchPlaceholder": "Search...",
+      "tagSourceTitle": "Tag Source",
       "tagSources": {
         "anidb": "AniDB",
-        "user": "用户"
+        "user": "User"
       },
-      "displayTitle": "显示",
-      "showSpoilers": "显示剧透标签",
-      "quickActions": "快速操作",
-      "changeSortPrefix": "更改排序 | ",
-      "sortWeight": "标签权重",
-      "sortAlphabetical": "字母顺序",
-      "forceRefresh": "强制刷新：AniDB"
+      "displayTitle": "Display",
+      "showSpoilers": "Show Spoiler Tags",
+      "quickActions": "Quick Actions",
+      "changeSortPrefix": "Change Sort | ",
+      "sortWeight": "Tag Weight",
+      "sortAlphabetical": "A-Z",
+      "forceRefresh": "Force refresh: AniDB"
     },
     "credits": {
-      "nameTitle": "名称",
-      "rolesTitle": "角色",
-      "quickActions": "快速操作",
-      "forceRefresh": "强制刷新：AniDB",
-      "warning": "警告！可能包含剧透"
+      "nameTitle": "Name",
+      "rolesTitle": "Roles",
+      "quickActions": "Quick Actions",
+      "forceRefresh": "Force refresh: AniDB",
+      "warning": "Warning! Possible Spoilers"
     },
     "episodes": {
-      "searchLabel": "剧集搜索",
-      "searchPlaceholder": "搜索...",
-      "typeLabel": "类型",
+      "searchLabel": "Episode Search",
+      "searchPlaceholder": "Search...",
+      "typeLabel": "Type",
       "type": {
-        "all": "全部",
-        "episodes": "正片",
-        "specials": "特别篇",
-        "others": "其他",
-        "credits": "片头片尾",
-        "misc": "杂项"
+        "all": "All",
+        "episodes": "Episodes",
+        "specials": "Specials",
+        "others": "Others",
+        "credits": "Credits",
+        "misc": "Misc."
       },
-      "statusLabel": "剧集状态",
+      "statusLabel": "Episode Status",
       "status": {
-        "all": "所有剧集",
-        "available": "可用剧集",
-        "missing": "缺失剧集"
+        "all": "All Episodes",
+        "available": "Available Episodes",
+        "missing": "Missing Episodes"
       },
-      "watchedLabel": "观看状态",
+      "watchedLabel": "Watched State",
       "watched": {
-        "all": "全部",
-        "watched": "已观看",
-        "unwatched": "未观看"
+        "all": "All",
+        "watched": "Watched",
+        "unwatched": "Unwatched"
       },
-      "hiddenLabel": "隐藏状态",
+      "hiddenLabel": "Hidden Status",
       "hidden": {
-        "all": "显示所有条目",
-        "hide": "隐藏已隐藏条目",
-        "only": "仅显示隐藏条目"
+        "all": "Show All Entries",
+        "hide": "Hide Hidden Entries",
+        "only": "Show Only Hidden Entries"
       },
-      "airLabel": "播出状态",
+      "airLabel": "Air Status",
       "air": {
-        "all": "全部",
-        "unaired": "未播出",
-        "aired": "已播出"
+        "all": "All",
+        "unaired": "Unaired",
+        "aired": "Aired"
       },
-      "warningUnaired": "本系列有未播出剧集",
-      "warningMissing": "本系列有缺失剧集"
+      "warningUnaired": "Series has Unaired Episodes",
+      "warningMissing": "Series has Missing Episodes"
     }
   },
   "watchModal": {

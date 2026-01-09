@@ -14,10 +14,6 @@ import type { SeriesContextType } from '@/components/Collection/constants';
 import type { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
 
 type ModeType = 'Series' | 'Missing';
-// const tabStates: { label: string, value: ModeType }[] = [
-//   { label: 'Series Files', value: 'Series' },
-//   { label: 'Missing Files', value: 'Missing' },
-// ];
 
 type FileSelectionHeaderProps = {
   mode: ModeType;
@@ -42,9 +38,8 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
     <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
       <div className="flex gap-x-2 text-xl font-semibold">
         {modeLabel}
-        &nbsp;|&nbsp;
+        &nbsp;|
         <span className="text-panel-text-important">{count}</span>
-        &nbsp;
         {entryLabel}
       </div>
       <MultiStateButton activeState={mode} states={tabStates} onStateChange={setMode} />

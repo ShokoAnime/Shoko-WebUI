@@ -24,11 +24,11 @@
     "airingDate": "播出日期"
   },
   "episodeType": {
-    "normal": "剧集",
-    "special": "特别篇",
-    "credit": "片尾",
-    "trailer": "预告片",
-    "parody": "恶搞",
-    "other": "其他"
+    "normal_other": "剧集",
+    "special_other": "特别篇",
+    "credit_other": "片尾",
+    "trailer_other": "预告片",
+    "parody_other": "恶搞",
+    "other_other": "其他"
   }
 }

@@ -13,28 +13,29 @@ type FileTypeSummaryProps = {
 };
 const FileTypeSummary = ({ sources, type }: FileTypeSummaryProps) => {
   const { t } = useTranslation('files');
-  const typeCount = sources.reduce((prev, curr) => (prev + curr.Count), 0);
+  const typeCount = sources.reduce((prev, curr) => prev + curr.Count, 0);
+  // 如果该类型文件总数为 0，直接不渲染（避免显示空总结）
+  if (typeCount === 0) return null;
 
   const typeKey = type === EpisodeTypeEnum.Normal ? 'normal' : type.toLowerCase();
-  const formattedType = t(`episodeType.${typeKey}`, {
-    count: typeCount || 2,
-    defaultValue: type === EpisodeTypeEnum.Normal ? 'Episodes' : `${type}s`,
-  });
-  // const typeCount = sources.reduce((prev, curr) => (prev + curr.Count), 0);
-  const sourceMap = sources.map(({ Count, Type }) => (`${Type} (${Count})`));
+
+  // 正确使用 i18next plural：传入真实 count，无 defaultValue，无 hack
+  const formattedType = t(`episodeType.${typeKey}`, { count: typeCount });
+
+  const sourceMap = sources.map(({ Count, Type }) => `${Type} (${Count})`);
+
   return (
     <div className="flex flex-col gap-y-1">
       <span className="font-bold">
         {formattedType}
-        s&nbsp;
-        {sourceMap.length > 1
-          && (
-            <span className="opacity-65">
-              (
-              {typeCount}
-              )
-            </span>
-          )}
+        &nbsp;
+        {sourceMap.length > 1 && (
+          <span className="opacity-65">
+            (
+            {typeCount}
+            )
+          </span>
+        )}
       </span>
       <span className="font-normal">
         {sourceMap.map((source, index) => (

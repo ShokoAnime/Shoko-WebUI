@@ -58,7 +58,7 @@ const Title = () => {
   return (
     <div className="flex items-center">
       {t('queueProcessor.panelTitle')}
-      |&nbsp;
+      &nbsp;|&nbsp;
       <div>
         <span className="text-panel-text-important">{queue.ThreadCount}</span>
         &nbsp;

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { forEach, map, omit } from 'lodash';
+import { map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
@@ -39,7 +39,6 @@ const Header = ({ ranges }: HeaderProps) => {
           key={key}
           title={t(`episodeType.${key.toLowerCase()}`, {
             count: item.Count || 1,
-            defaultValue: item.Count > 1 ? `${key}s` : key,
           })}
           range={item.Range}
         />
@@ -69,30 +68,25 @@ type GroupProps = {
 const Group = ({ group }: GroupProps) => {
   const { t } = useTranslation('files');
   const sizes = useMemo(() => {
-    const sizeMap: Record<string, { size: number, count: number }> = {};
-    forEach(group.RangeByType, (item, key) => {
-      let idx = 'Other';
-      if (key === 'Normal') {
-        idx = item.Count > 1 ? 'Episodes' : 'Episode';
-      } else if (key === 'Special') {
-        idx = item.Count > 1 ? 'Specials' : 'Special';
-      }
+    const parts = map(group.RangeByType, (item, key) => {
+      if (!item.Count || item.Count === 0) return null;
 
-      if (!sizeMap[idx]) {
-        sizeMap[idx] = { size: 0, count: 0 };
-      }
-      sizeMap[idx].size += item.FileSize;
-      sizeMap[idx].count += item.Count;
-    });
+      const typeKey = key.toLowerCase(); // Normal → normal, Credit → credit ...
+      const title = t(`episodeType.${typeKey}`, {
+        count: item.Count ?? 1,
+        // 已提供所有类型的 _one / _other，无需 defaultValue
+      });
 
-    return map(sizeMap, (size, name) => (
-      `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
-    )).join(' | ');
-  }, [group]);
+      return `${item.Count} ${title} (${prettyBytes(item.FileSize, { binary: true })})`;
+    }).filter(Boolean);
 
-  const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [
-    group,
-  ]);
+    return parts.length > 0 ? parts.join(' | ') : t('unknown');
+  }, [group, t]);
+
+  const groupDetails = useMemo(
+    () => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : t('unknown')),
+    [group, t],
+  );
   const videoDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.FileSource) {
@@ -110,7 +104,7 @@ const Group = ({ group }: GroupProps) => {
     if (group.VideoCodecs) {
       conditions.push(group.VideoCodecs);
     }
-    return conditions.length ? conditions.join(' | ') : '-';
+    return conditions.length ? conditions.join(' | ') : t('unknown');
   }, [group, t]);
   const audioDetails = useMemo(() => {
     const conditions: string[] = [];
@@ -125,7 +119,7 @@ const Group = ({ group }: GroupProps) => {
         conditions.push(langStr);
       }
     }
-    return conditions.length ? conditions.join(' | ') : '-';
+    return conditions.length ? conditions.join(' | ') : t('unknown');
   }, [group, t]);
   const subtitleDetails = useMemo(() => {
     const conditions: string[] = [];
@@ -140,7 +134,7 @@ const Group = ({ group }: GroupProps) => {
         conditions.push(langStr);
       }
     }
-    return conditions.length ? conditions.join(' | ') : '-';
+    return conditions.length ? conditions.join(' | ') : t('unknown');
   }, [group, t]);
   const locationDetails = group.FileLocation ?? t('unknown');
 

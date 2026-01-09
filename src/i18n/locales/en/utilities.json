@@ -185,14 +185,14 @@
       "duplicateCount": "Duplicate Count",
       "selectSeries": "Select series to populate",
       "selected": "{{count}} Selected",
-      "noSeriesPrefix": "No series with",
+      "noSeriesPrefix": "No series with ",
       "noSeriesMultiples": "multiple releases!",
       "noSeriesDuplicates": "duplicate files!",
       "noSeriesMissing": "missing episodes!"
     },
     "common": {
-      "entry_one": "Entry",
-      "entry_other": "Entries",
+      "entry_one": " Entry",
+      "entry_other": " Entries",
       "file_one": "File",
       "file_other": "Files",
       "duplicate_one": "Duplicate",

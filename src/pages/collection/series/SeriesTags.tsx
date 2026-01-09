@@ -120,9 +120,9 @@ const SeriesTags = () => {
                 </>
               )
               : <span className="text-panel-text-important">{totalCount}</span>}
-            &nbsp;
-            {t('tags.unit')}
+            &nbsp;&nbsp;
           </span>
+          {t('tags.unit')}
         </div>
       </div>
     ),
