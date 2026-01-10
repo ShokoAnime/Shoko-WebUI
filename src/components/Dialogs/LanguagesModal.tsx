@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, map, remove } from 'lodash';
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const LanguagesModal = ({ onClose, type }: Props) => {
+  const { t } = useTranslation('dialogs');
   const settings = useSettingsQuery().data;
 
   const languagesQuery = useSupportedLanguagesQuery();
@@ -77,7 +79,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
     <ModalPanel
       show={type !== null}
       onRequestClose={onClose}
-      header={`${type} Languages`}
+      header={type ? t(`dialogs.languagesModal.${type.toLowerCase()}Languages`) : ''}
     >
       {languagesQuery.isPending
         && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
@@ -98,9 +100,9 @@ const LanguagesModal = ({ onClose, type }: Props) => {
         </div>
       )}
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Discard</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">{t('dialogs.common.discard')}</Button>
         <Button onClick={handleSave} buttonType="primary" className="px-5 py-2" disabled={languages.length === 0}>
-          Save
+          {t('dialogs.common.save')}
         </Button>
       </div>
     </ModalPanel>

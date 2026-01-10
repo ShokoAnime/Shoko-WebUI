@@ -1,0 +1,43 @@
+{
+  "version": "Version",
+
+  "error": {
+    "invalidCredentials": "Invalid username or password. Try again."
+  },
+
+  "form": {
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember Me",
+    "login": "Login"
+  },
+
+  "server": {
+    "starting": "Server is starting. Please wait!",
+    "failed": "Server startup failed!",
+    "status": "Status:"
+  },
+
+  "firstrun": {
+    "welcome": "Welcome, and thank you for installing Shoko!",
+    "description": {
+      "before": "Before Shoko can begin organizing your anime collection, you'll need to go through the",
+      "highlight": "First Time Setup",
+      "after": "process. This step lets you tailor Shoko according to your preferences."
+    },
+    "continueHint": {
+      "before": "Click ",
+      "after": " below to proceed."
+    }
+  },
+
+  "series": {
+    "default": "One Piece",
+    "notFound": "Series Not Found"
+  },
+
+  "common": {
+    "continue": "Continue",
+    "unknown": "Unknown"
+  }
+}

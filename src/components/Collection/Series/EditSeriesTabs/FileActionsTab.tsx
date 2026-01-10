@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import toast from '@/components/Toast';
@@ -14,6 +15,7 @@ type Props = {
 };
 
 const FileActionsTab = ({ seriesId }: Props) => {
+  const { t } = useTranslation('series');
   const { mutate: rehashSeriesFiles } = useRehashSeriesFilesMutation(seriesId);
   const { mutate: rescanSeriesFiles } = useRescanSeriesFilesMutation(seriesId);
   const { mutate: relocateSeriesFiles } = useRelocateSeriesFilesMutation(seriesId);
@@ -24,13 +26,13 @@ const FileActionsTab = ({ seriesId }: Props) => {
   return (
     <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
       <Action
-        name="Rescan Files"
-        description="Rescans every file associated with the series."
+        name={t('actions.file.rescan.name')}
+        description={t('actions.file.rescan.description')}
         onClick={rescanSeriesFiles}
       />
       <Action
-        name="Rehash Files"
-        description="Rehashes every file associated with the series."
+        name={t('actions.file.rehash.name')}
+        description={t('actions.file.rehash.description')}
         onClick={rehashSeriesFiles}
       />
       <Action

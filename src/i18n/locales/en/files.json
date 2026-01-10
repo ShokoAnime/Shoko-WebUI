@@ -1,0 +1,40 @@
+{
+  "bluRay": "Blu-Ray",
+  "multiAudio": "Multi Audio",
+  "multiSubtitle": "Multi Subtitle",
+  "unknown": "-",
+  "row": {
+    "group": "Group",
+    "video": "Video",
+    "location": "Location",
+    "total": "Total",
+    "audio": "Audio",
+    "subtitles": "Subtitles"
+  },
+  "overview": {
+    "title": "Files Overview",
+    "totalFileSize": "Total File Size",
+    "groups": "Groups",
+    "na": "N/A"
+  },
+  "missing": {
+    "noMissing": "You have no missing episodes or specials. Well done!",
+    "type": "Type",
+    "title": "Title",
+    "airingDate": "Airing Date"
+  },
+  "episodeType": {
+    "normal_one": "Episode",
+    "normal_other": "Episodes",
+    "special_one": "Special",
+    "special_other": "Specials",
+    "credit_one": "Credit",
+    "credit_other": "Credits",
+    "trailer_one": "Trailer",
+    "trailer_other": "Trailers",
+    "parody_one": "Parody",
+    "parody_other": "Parodies",
+    "other_one": "Other",
+    "other_other": "Others"
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -18,6 +19,7 @@ const newNewsCheck = (date: string) => {
 };
 
 const NewsRow = ({ item }: { item: DashboardNewsType }) => {
+  const { t } = useTranslation('panels');
   const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
   const newsUrl = `https://shokoanime.com/blog/${item.filename.replace('.mdx', '')}`;
 
@@ -25,7 +27,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
     <div className="flex flex-col gap-y-1" key={item.meta.title}>
       <div className={cx('flex gap-x-4 justify-between font-semibold', shokoNewsPostsCount > 4 && ('mr-4'))}>
         <p>{item.meta.date}</p>
-        {newNewsCheck(item.meta.date) && <p className="text-panel-text-important">New!</p>}
+        {newNewsCheck(item.meta.date) && <p className="text-panel-text-important">{t('dashboardNews.newLabel')}</p>}
       </div>
       <a
         href={newsUrl}
@@ -42,12 +44,13 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
 };
 
 const ShokoNews = () => {
+  const { t } = useTranslation('panels');
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const newsQuery = useShokoNewsQuery();
   const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
   return (
-    <ShokoPanel title="Shoko News" isFetching={newsQuery.isPending} editMode={layoutEditMode}>
+    <ShokoPanel title={t('dashboardNews.panelTitle')} isFetching={newsQuery.isPending} editMode={layoutEditMode}>
       <div className="mr-3 flex flex-col gap-y-4">
         {newsQuery.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.meta.title} />)}
       </div>

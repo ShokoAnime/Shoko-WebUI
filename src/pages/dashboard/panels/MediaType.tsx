@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
@@ -6,10 +7,6 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashboardSeriesSummaryQuery } from '@/core/react-query/dashboard/queries';
 
 import type { RootState } from '@/core/store';
-
-const names = {
-  Series: 'TV Series',
-};
 
 const getColor = (type: string) => {
   switch (type) {
@@ -28,11 +25,21 @@ const getColor = (type: string) => {
   }
 };
 
-const Item = ({ count, countPercentage, item }: { count: number, countPercentage: number, item: string }) => (
+const Item = ({
+  count,
+  countPercentage,
+  displayName,
+  item,
+}: {
+  count: number;
+  countPercentage: number;
+  item: string;
+  displayName: string;
+}) => (
   <div>
     <div className="mb-1 flex">
       <span className="grow">
-        {names[item] ?? item}
+        {displayName}
         &nbsp;-&nbsp;
         {count}
       </span>
@@ -48,6 +55,7 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
 );
 
 const MediaType = () => {
+  const { t } = useTranslation('panels');
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const seriesSummaryQuery = useDashboardSeriesSummaryQuery();
 
@@ -61,18 +69,23 @@ const MediaType = () => {
 
   seriesSummaryArray.sort((summaryA, summaryB) => (summaryA[1] < summaryB[1] ? 1 : -1));
 
-  const items: React.ReactNode[] = [];
+  const items = seriesSummaryArray.map((item) => {
+    const typeKey = item[0];
+    const countPercentage = total ? (item[1] / total) * 100 : 0;
+    const displayName = t(`mediaType.${typeKey.toLowerCase()}`) ?? typeKey;
 
-  forEach(seriesSummaryArray, (item) => {
-    let countPercentage = 0;
-    if (total) {
-      countPercentage = (item[1] / total) * 100;
-    }
-    items.push(<Item key={item[0]} item={item[0]} count={item[1]} countPercentage={countPercentage} />);
+    return (
+      <Item
+        key={typeKey}
+        item={typeKey}
+        count={item[1]}
+        countPercentage={countPercentage}
+        displayName={displayName}
+      />
+    );
   });
-
   return (
-    <ShokoPanel title="Media Type" isFetching={seriesSummaryQuery.isPending} editMode={layoutEditMode}>
+    <ShokoPanel title={t('mediaType.panelTitle')} isFetching={seriesSummaryQuery.isPending} editMode={layoutEditMode}>
       <div className="flex grow flex-col justify-between">{items}</div>
     </ShokoPanel>
   );

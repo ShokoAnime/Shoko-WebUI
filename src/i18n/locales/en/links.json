@@ -1,0 +1,77 @@
+{
+  "tmdbLinking": {
+    "seriesLinked": "Series has been linked and TMDB related tasks for data and images have been added to the queue!",
+    "episodeLinksUpdated": "Episode links have been updated!",
+    "saveLinksFailed": "Failed to save links!",
+    "linksSaved": "Links saved!",
+    "editLink": "Edit Link"
+  },
+  "linkFilesTab": {
+    "searchPlaceholder": "Enter Series Name or AniDB ID...",
+    "getSeriesFailed": "Failed to get series data!",
+    "addSeriesFailed": "Failed to add series! Unable to create shoko series entry.",
+    "invalidPositiveInt": "Value is not a positive integer.",
+    "startEpisodeNotFound": "Unable to find starting episode.",
+    "autoMatchApplied": "Auto matching applied",
+    "autoMatchSkipped": "Some matches could not be filled it. Be sure to verify the ones that were, and fill in the rest!",
+    "autoMatchSuccess": "Auto matching applied.",
+    "autoMatchVerify": "Be sure to verify before saving!",
+    "linkingAborted": "Linking aborted!",
+    "fetchEpisodesFailed": "Unable to fetch shoko episodes!",
+    "manyToManyFailed": "Unable create many-to-many relations. Try again or contact support.",
+    "episodeLinkSkipped": "Episode linking skipped!",
+    "pathTemplate": "Path: {{path}}",
+    "duplicateEntry": "Duplicate Entry",
+    "removeEntry": "Remove Entry",
+    "rangeFill": "Range Fill",
+    "cancel": "Cancel",
+    "save": "Save",
+    "noEpisodes": "No episodes exist!",
+    "selectedFiles": "Selected Files",
+    "anidb": "AniDB",
+    "missingFilePath": "<missing file path>",
+    "oneToOneLinkingScheduled": "Scheduled a 1:1 linking for {{count}} files!",
+    "oneToOneLinkingFailed": "Failed 1:1 linking for {{count}} files!",
+    "oneToManyLinkingScheduled": "Scheduled a 1:N linking for {{count}} files!",
+    "oneToManyLinkingFailed": "Failed 1:N linking for {{count}} files!",
+    "manyToOneLinkingScheduled": "Scheduled an N:1 linking for {{count}} files!",
+    "manyToOneLinkingFailed": "Failed N:1 linking for {{count}} files!"
+  },
+  "manuallyLinkedTab": {
+    "manuallyLinked": {
+      "title": "Manually Linked Files",
+      "series": "Series (AniDB ID)",
+      "linkCount": "Link Count",
+      "episodeName": "Episode Name",
+      "emptySeries": "No series with manually linked files!",
+      "selectSeries": "Select Series to Populate"
+    },
+    "common": {
+      "search": "Search...",
+      "fileCountTitle": "File Count",
+      "fileCount": "{{count}} Files"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "rescan": "Rescan",
+      "cancelSelection": "Cancel Selection",
+      "unlink": "Unlink"
+    },
+    "toast": {
+      "rescanFailed": "Rescan failed for {{count}} files!",
+      "rescanning": "Rescanning {{count}} files!",
+      "unlinkFailed": "Error unlinking {{count}} files!",
+      "unlinked": "{{count}} files unlinked!"
+    }
+  },
+  "rangeFillModal": {
+    "rangeFillOptions": "Range Fill Options",
+    "type": "Type",
+    "episode": "Episode",
+    "special": "Special",
+    "other": "Other",
+    "rangeStartNumber": "Range Starting Number",
+    "cancel": "Cancel",
+    "fill": "Fill"
+  }
+}

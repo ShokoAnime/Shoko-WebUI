@@ -1,0 +1,43 @@
+{
+  "version": "版本",
+
+  "error": {
+    "invalidCredentials": "用户名或密码错误，请重试。"
+  },
+
+  "form": {
+    "username": "用户名",
+    "password": "密码",
+    "rememberMe": "记住我",
+    "login": "登录"
+  },
+
+  "server": {
+    "starting": "服务器正在启动，请稍候！",
+    "failed": "服务器启动失败！",
+    "status": "状态："
+  },
+
+  "firstrun": {
+    "welcome": "欢迎，感谢你安装 Shoko！",
+    "description": {
+      "before": "在 Shoko 开始整理你的动画收藏之前，你需要完成",
+      "highlight": "首次设置",
+      "after": "流程。该步骤用于根据你的偏好配置 Shoko，整个过程快速且简单，只需几分钟即可完成。"
+    },
+    "continueHint": {
+      "before": "点击下方的 ",
+      "after": " 按钮继续。"
+    }
+  },
+
+  "series": {
+    "default": "海贼王",
+    "notFound": "未找到系列"
+  },
+
+  "common": {
+    "continue": "继续",
+    "unknown": "未知"
+  }
+}

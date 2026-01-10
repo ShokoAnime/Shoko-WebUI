@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiInformationOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
+  const { t } = useTranslation('components');
   const {
     children,
     className,
@@ -75,13 +77,13 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     background.onerror = () => {
       if (complete) return;
       complete = true;
-      setImageError('Please refresh your browser to correct.');
+      setImageError(t('background_image_placeholder.refresh_browser'));
     };
     background.src = imageSource;
     return () => {
       complete = true;
     };
-  }, [imageSource, inCollection]);
+  }, [imageSource, inCollection, t]);
 
   return (
     <div className={cx(className, 'relative overflow-hidden')}>
@@ -100,7 +102,9 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
             )}
           >
             <Icon path={mdiInformationOutline} size={1.5} className="text-panel-icon-important" />
-            <div className="my-4 font-semibold">Failed to Load</div>
+            <div className="my-4 font-semibold">
+              {t('background_image_placeholder.failed_to_load')}
+            </div>
             {imageError}
           </div>
         )}
@@ -115,7 +119,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         <a
           className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-overlay p-2 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
           href={backgroundImage.src}
-          aria-label="Link to image"
+          aria-label={t('background_image_placeholder.link_to_image')}
           rel="noopener noreferrer"
           target="_blank"
           onClick={event => event.stopPropagation()}

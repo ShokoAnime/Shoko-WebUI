@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -19,6 +20,7 @@ type Props = {
 };
 
 const AddSeriesModal = ({ onClose, show }: Props) => {
+  const { t } = useTranslation('utilities');
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
 
@@ -33,13 +35,13 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
   const createSeries = (anidbId: number) => {
     refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true, force: true }, {
       onSuccess: () => {
-        toast.success('Series added successfully!');
+        toast.success(t('releaseManagement.addSeries.success'));
         invalidateQueries(['series', 'without-files']);
         onClose();
       },
       onError: (error) => {
         console.error(error);
-        toast.error('Failed to add series! Unable to create series entry.');
+        toast.error(t('releaseManagement.addSeries.error'));
       },
     });
   };
@@ -48,7 +50,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header="Add new series"
+      header={t('releaseManagement.addSeries.title')}
       size="sm"
       noPadding
     >
@@ -56,8 +58,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
         <div className="flex justify-start gap-x-2">
           <Icon className="shrink-0" path={mdiInformationOutline} size={1} />
           <div className="flex">
-            Search for a series using the provided search, then click on a result to create an empty series (without
-            files) in Shoko.
+            {t('releaseManagement.addSeries.info')}
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
@@ -65,7 +66,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
             id="search"
             value={searchText}
             type="text"
-            placeholder="Search..."
+            placeholder={t('releaseManagement.addSeries.searchPlaceholder')}
             onChange={event => setSearchText(event.target.value)}
             startIcon={mdiMagnify}
             disabled={isRefreshPending}
@@ -120,7 +121,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
             className="flex items-center justify-center"
             onClick={onClose}
           >
-            Cancel
+            {t('releaseManagement.addSeries.cancel')}
           </Button>
         </div>
       </div>

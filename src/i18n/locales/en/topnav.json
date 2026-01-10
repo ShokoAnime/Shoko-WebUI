@@ -1,0 +1,34 @@
+{
+  "tooltip": {
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "collection": "Collection",
+    "utilities": "Utilities",
+    "log": "Log",
+    "actions": "Actions",
+    "dashboardSettings": "Dashboard Settings"
+  },
+  "webui": {
+    "updating": "Updating WebUI...",
+    "checking": "Checking for WebUI update",
+    "available": "WebUI Update Available"
+  },
+  "network": {
+    "noInternet": "No Internet Connection"
+  },
+  "utilities": {
+    "unrecognizedFiles": "Unrecognized Files",
+    "releaseManagement": "Release Management",
+    "seriesWithoutFiles": "Series Without Files",
+    "fileSearch": "File Search",
+    "fileRename": "File Rename"
+  },
+  "links": {
+    "discord": "Discord",
+    "docs": "Docs",
+    "github": "GitHub"
+  }
+}

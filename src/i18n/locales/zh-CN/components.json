@@ -1,0 +1,9 @@
+{
+  "background_image_placeholder": {
+    "image_not_available": "图像不可用。请运行「验证图像」操作，或等待任务队列处理完成。",
+    "no_image_metadata": "无图像元数据。",
+    "refresh_browser": "请刷新浏览器以修复问题。",
+    "failed_to_load": "加载失败",
+    "link_to_image": "在新标签页打开图像"
+  }
+}

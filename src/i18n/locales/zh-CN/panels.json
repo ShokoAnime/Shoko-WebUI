@@ -1,0 +1,129 @@
+{
+  "recommendedAnime": {
+    "title": "推荐动漫",
+    "emptyTitle": "没有推荐动漫！",
+    "emptyDescription": "观看动漫以填充此区域。",
+    "similarMatches_one": "{{count}} 个匹配",
+    "similarMatches_other": "{{count}} 个匹配"
+  },
+  "continueWatching": {
+    "title": "继续观看",
+    "emptyTitle": "没有正在进行的剧集。",
+    "emptyDescription": "在播放中途停止一集以填充此区域。"
+  },
+  "upcomingAnime": {
+    "title": "即将播出",
+    "emptyTitle": "没有即将播出的动漫。",
+    "tabs": {
+      "myCollection": "我的收藏",
+      "all": "全部"
+    },
+    "emptyCollectionDescription": "开始观看当前连载中的系列以填充此区域。",
+    "emptyAllDescription": "启用日历功能以填充此区域。"
+  },
+  "nextUp": {
+    "titleContinue": "继续观看",
+    "titleNextUp": "下一集",
+    "emptyTitle": "没有正在进行的剧集。",
+    "emptyDescription": "在播放中途停止一集以填充此区域。"
+  },
+  "tmdbTopPanel": {
+    "metadataLinking": "元数据关联",
+    "entries": "条目",
+    "matchType": "匹配类型",
+    "perfect": "完全匹配",
+    "approximate": "近似匹配",
+    "fallback": "备用匹配",
+    "override": "覆盖",
+    "cancel": "取消",
+    "noLinksToSave": "没有可保存的链接！",
+    "saveLinks": "保存链接"
+  },
+  "series": {
+    "adultOnly": "18+ 仅限成人",
+    "description": "系列简介",
+    "information": "系列信息",
+    "topTags": "热门标签（前 10）",
+    "userStats": "用户统计"
+  },
+  "recentlyImported": {
+    "title": "最近导入",
+    "tabs": {
+      "episodes": "剧集",
+      "series": "系列"
+    },
+    "emptyEpisodes": "暂无最近导入的剧集！",
+    "emptySeries": "暂无最近导入的系列！"
+  },
+  "collectionStats": {
+    "panelTitle": "收藏统计",
+    "series": "系列",
+    "seriesCompleted": "已完成系列",
+    "episodesWatched": "观看的集数",
+    "hoursWatched": "观看时长",
+    "hours": "小时",
+    "collectionSize": "收藏大小",
+    "files": "文件",
+    "unrecognizedFiles": "未知文件",
+    "duplicateEpisodes": "重复集数",
+    "duplicateHashes": "重复哈希",
+    "missingTmdbLinks": "缺少 TMDB 链接",
+    "missingEpisodesCollecting": "缺少集数（收集中）",
+    "missingEpisodesTotal": "缺少集数（总计）"
+  },
+  "importFolders": {
+    "tooltip": {
+      "addFolder": "添加文件夹",
+      "rescanFolder": "重新扫描文件夹",
+      "editFolder": "编辑文件夹"
+    },
+    "panel": {
+      "title": "导入文件夹"
+    },
+    "field": {
+      "location": "位置",
+      "type": "类型",
+      "size": "大小",
+      "none": "无"
+    },
+    "noFolders": "尚未添加导入文件夹！",
+    "toast": {
+      "scanSuccess": "扫描导入文件夹成功",
+      "queued": "导入文件夹 {{folderName}} 已加入扫描队列。"
+    }
+  },
+  "mediaType": {
+    "panelTitle": "媒体类型",
+    "series": "电视系列",
+    "other": "其他",
+    "web": "网络",
+    "movie": "剧场版",
+    "ova": "OVA"
+  },
+  "queueProcessor": {
+    "panelTitle": "队列处理器",
+    "pauseAll": "暂停所有",
+    "resumeAll": "恢复所有",
+    "clearAll": "清空所有",
+    "workers": "工作线程",
+    "tasks": "任务",
+    "paused": "已暂停",
+    "queueEmpty": "队列为空！"
+  },
+  "dashboardNews": {
+    "panelTitle": "Shoko 新闻",
+    "newLabel": "新！"
+  },
+  "unrecognizedFiles": {
+    "title": "未识别文件",
+    "file": "个文件",
+    "file_plural": "个文件",
+    "missingPath": "<缺少文件路径>",
+    "empty": "没有未识别的文件，干得不错！",
+    "tabs": {
+      "unrecognized": "未识别",
+      "manuallyLinked": "手动关联",
+      "ignored": "已忽略"
+    }
+  }
+}

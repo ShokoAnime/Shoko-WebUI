@@ -1,0 +1,34 @@
+{
+  "bluRay": "蓝光",
+  "multiAudio": "多音频",
+  "multiSubtitle": "多字幕",
+  "unknown": "-",
+  "row": {
+    "group": "字幕组",
+    "video": "视频",
+    "location": "文件位置",
+    "total": "总数",
+    "audio": "音频",
+    "subtitles": "字幕"
+  },
+  "overview": {
+    "title": "文件概览",
+    "totalFileSize": "总文件大小",
+    "groups": "字幕组",
+    "na": "无"
+  },
+  "missing": {
+    "noMissing": "您没有缺失的剧集或特别篇。做得好！",
+    "type": "类型",
+    "title": "标题",
+    "airingDate": "播出日期"
+  },
+  "episodeType": {
+    "normal_other": "剧集",
+    "special_other": "特别篇",
+    "credit_other": "片尾",
+    "trailer_other": "预告片",
+    "parody_other": "恶搞",
+    "other_other": "其他"
+  }
+}

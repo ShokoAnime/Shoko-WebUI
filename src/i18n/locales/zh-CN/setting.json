@@ -1,0 +1,379 @@
+{
+  "page": {
+    "title": "设置",
+    "menu": {
+      "general": "常规",
+      "import": "导入",
+      "anidb": "AniDB",
+      "metadata-sites": "元数据站点",
+      "collection": "收藏",
+      "integrations": "集成",
+      "user-management": "用户管理",
+      "api-keys": "API 密钥"
+    },
+    "unsaved": {
+      "title": "未保存的更改",
+      "message": "请在离开此页面前保存。"
+    },
+    "actions": {
+      "save": "保存",
+      "cancel": "取消"
+    },
+    "httpError": {
+      "title": "HTTP 服务器地址无效",
+      "message": "地址格式必须如下：{scheme}://{address}:{port}",
+      "scheme": "协议：http 或 https",
+      "port": "端口：可选",
+      "example": "例如：http://api.anidb.net:9001"
+    }
+  },
+
+  "general": {
+    "title": "常规",
+    "description": "这里可以找到版本信息、主题自定义、通知管理和日志配置的设置。",
+    "version": {
+      "title": "版本信息",
+      "refresh": "刷新",
+      "checkUpdate": "检查 WebUI 更新",
+      "serverVersion": "服务器版本",
+      "serverChannel": "服务器频道",
+      "webuiVersion": "Web UI 版本",
+      "webuiChannel": "Web UI 频道",
+      "channel": {
+        "stable": "稳定版",
+        "dev": "开发版"
+      }
+    },
+    "theme": {
+      "title": "主题选项",
+      "upload": "上传主题",
+      "uploadTooltip": "上传或安装新主题",
+      "uploadSuccess": "成功上传主题 \"{name}\"",
+      "theme": "主题",
+      "description": "描述",
+      "version": "版本",
+      "author": "作者",
+      "defaultDescription": "默认主题。",
+      "defaultAuthor": "Shoko 团队"
+    },
+    "notifications": {
+      "title": "通知选项",
+      "enable": "启用",
+      "position": "通知位置",
+      "bottomRight": "右下角",
+      "topRight": "右上角"
+    },
+    "logs": {
+      "title": "日志选项",
+      "enable": "启用",
+      "compress": "压缩日志",
+      "delete": "删除旧日志",
+      "deleteFrequency": "删除频率",
+      "never": "从不",
+      "daily": "每天",
+      "monthly": "每月",
+      "quarterly": "每季度",
+      "trace": "跟踪日志"
+    }
+  },
+
+  "frequency": {
+    "never": "从不",
+    "6hours": "每6小时",
+    "12hours": "每12小时",
+    "24hours": "每24小时",
+    "week": "每周",
+    "month": "每月"
+  },
+
+  "import": {
+    "title": "导入",
+    "description": "配置 Shoko 如何将文件导入收藏夹，指定文件类型并启用重命名和移动选项。",
+    "options": "导入选项",
+    "importOnStart": "启动时导入",
+    "renameOnImport": "导入时重命名",
+    "moveOnImport": "导入时移动",
+    "allowRelocation": "允许在目标文件夹内重新定位",
+    "deleteDuplicates": "导入时删除重复文件",
+    "setFileWatched": "如果剧集已观看则标记文件为已观看",
+    "videoExtensions": "视频扩展名"
+  },
+
+  "anidb": {
+    "title": "AniDB",
+    "description": "配置 Shoko 从 AniDB 获取的番剧信息，以及 MyList 选项和 AniDB 数据更新偏好设置。",
+    "login": {
+      "title": "登录选项",
+      "test": "测试",
+      "username": "用户名",
+      "password": "密码",
+      "success": "AniDB 登录成功！",
+      "error": "用户名或密码错误！"
+    },
+    "avdumpKey": "AVDump 密钥",
+    "serverUrl": "HTTP 服务器 URL",
+    "clientPort": "客户端端口",
+    "udpPort": "UDP 服务器端口",
+    "maxRelationDepth": "最大关联深度",
+    "maxRelationDepthError": "最大关联深度只能在 0 到 5 之间",
+    "download": {
+      "title": "下载选项",
+
+      "characters": "下载角色信息",
+      "creators": "下载制作人员信息",
+      "related": "下载关联番剧",
+
+      "characterImages": "角色图片",
+      "creatorImages": "创作者图片",
+      "releaseGroups": "发布组",
+      "alwaysDownloadRelatedAnime": "始终下载相关动画",
+      "relatedDepth": "关联深度"
+    },
+    "mylist": {
+      "title": "MyList 选项",
+      "addFiles": "添加文件",
+      "readWatched": "读取已观看",
+      "readUnwatched": "读取未观看",
+      "setWatched": "标记为已观看",
+      "setUnwatched": "标记为未观看",
+      "storageState": "存储状态",
+      "storageOptions": {
+        "0": "未知",
+        "1": "HDD",
+        "2": "硬盘",
+        "3": "已删除",
+        "4": "远程"
+      },
+      "deleteType": "删除操作",
+      "deleteOptions": {
+        "0": "删除文件（AniDB）",
+        "1": "删除文件（本地）",
+        "2": "标记为已删除",
+        "3": "标记为外部存储（CD/DVD）",
+        "4": "标记为未知",
+        "5": "DVD/BD"
+      }
+    },
+    "update": {
+      "title": "更新选项",
+      "calendar": "日历",
+      "animeInfo": "番剧信息",
+      "missingFiles": "缺失信息的文件",
+      "notifications": "通知",
+      "handleMovedFiles": "处理移动的文件"
+    }
+  },
+
+  "metadataSites": {
+    "title": "元数据站点",
+    "description": "自定义 Shoko 为收藏中的番剧下载的信息和图片",
+    "tmdb": "TMDB 选项",
+    "tmdbDownload": "TMDB 下载选项"
+  },
+
+  "tmdb": {
+    "autoLink": "自动关联",
+    "autoLinkRestricted": "自动关联受限内容",
+    "includeRestricted": "在搜索中包含受限内容",
+    "downloadCrewAndCast": "下载剧组和演员信息",
+    "downloadCollections": "下载电影合集",
+    "downloadAlternateOrdering": "下载备用排序",
+    "downloadBackdrops": "下载背景图",
+    "maxBackdrops": "最大背景图数量",
+    "downloadPosters": "下载海报",
+    "maxPosters": "最大海报数量",
+    "downloadLogos": "下载 Logo",
+    "maxLogos": "最大 Logo 数量",
+    "downloadThumbnails": "下载剧集缩略图",
+    "maxThumbnails": "最大剧集缩略图数量",
+    "downloadStaffImages": "下载工作人员图片",
+    "maxStaffImages": "最大工作人员图片数量",
+    "downloadStudioImages": "下载工作室图片"
+  },
+
+  "integrations": {
+    "title": "集成",
+    "description": "自定义 Shoko 用于记录播放进度的集成服务"
+  },
+
+  "trakt": {
+    "title": "Trakt 选项",
+    "getCode": "获取代码",
+    "requesting": "正在请求...",
+    "activate": "点击此处激活",
+    "tokenValidUntil": "令牌有效期至",
+    "autoLink": "自动关联",
+    "updateData": "自动更新数据",
+    "syncFrequency": "同步频率",
+    "unlink": "解除绑定",
+    "codeLabel": "Trakt 代码",
+    "activationInstructions": "点击代码即可复制。您大约有 10 分钟的时间访问提供的 URL 并输入代码。激活完成后，请保存您的设置。",
+    "enabled": "启用"
+  },
+
+  "plex": {
+    "title": "Plex 选项",
+    "server": "服务器",
+    "selectPlaceholder": "--选择服务器--",
+    "libraries": "可用媒体库",
+    "noLibraries": "未找到媒体库！",
+    "unlink": "解除绑定"
+  },
+
+  "collection": {
+    "title": "收藏",
+    "description": "设置您收藏中番剧和剧集的首选语言，并决定 Shoko 如何在您的收藏中分组相关番剧。",
+    "language": {
+      "title": "语言选项",
+      "useSynonyms": "同时使用同义词"
+    },
+    "seriesLanguage": "番剧标题语言顺序（拖动排序）",
+    "episodeLanguage": "剧集标题语言顺序（拖动排序）",
+    "descriptionLanguage": "描述语言顺序（拖动排序）",
+    "addLanguage": "添加语言",
+    "removeTooltip": "移除",
+    "seriesEmpty": "标题偏好未设置。将回退到主标题。",
+    "relation": {
+      "title": "关联选项",
+      "autoGroupSeries": "自动分组番剧",
+      "useScoreAlgorithm": "使用关联权重确定主番剧",
+      "excludeRelations": "排除以下关联类型",
+      "dissimilarTitles": "标题不相似的作品",
+      "prequel": "前传",
+      "sequel": "续集",
+      "ova": "OVA",
+      "movie": "剧场版",
+      "sameSetting": "相同设定",
+      "altSetting": "不同设定",
+      "altVersion": "不同版本",
+      "parentStory": "主线故事",
+      "sideStory": "外传",
+      "character": "角色相关",
+      "spinOff": "衍生作品",
+      "summary": "总结",
+      "fullStory": "完整故事",
+      "other": "其他"
+    }
+  },
+
+  "userManagement": {
+    "availableTags": "可用标签",
+    "searchPlaceholder": "搜索...",
+    "selectedTags": "已选标签",
+    "noTags": "无限制标签！",
+    "unknownTag": "未知",
+
+    "description": "配置 Shoko 用户账户，通过更改用户名、密码、头像，并指定用户被限制查看的标签。",
+    "currentUsers": "当前用户",
+    "userOptions": "用户选项",
+    "pickAvatar": "选择头像",
+    "removeAvatar": "移除头像",
+    "displayName": "显示名称",
+    "administrator": "管理员",
+    "anidbUser": "AniDB 用户",
+    "traktUser": "Trakt 用户",
+    "plexUsers": "Plex 用户",
+    "password": "密码",
+    "changePassword": "更改",
+    "newPassword": "新密码",
+    "logoutAllSessions": "注销所有会话",
+    "tagRestrictions": "标签限制",
+
+    "toasts": {
+      "passwordFieldChanged": "密码字段已更改！",
+      "passwordFieldChangedMessage": "点击“更改”按钮以保存您的新密码",
+      "passwordChangedSuccess": "密码更改成功！",
+      "logoutWarning": "您将在 5 秒后被注销！",
+      "deleteSelfTitle": "哎呀，伙计！",
+      "deleteSelfMessage": "你刚刚试图将自己从系统中删除。这可不是正确的做法。"
+    }
+  },
+
+  "apiKeys": {
+    "title": "API 密钥",
+    "description": "以下是 Shoko 及其他程序/插件使用的所有 API 密钥。您可以创建新的或删除现有密钥。",
+    "generate": {
+      "title": "生成 API 密钥",
+      "placeholder": "为新 API 密钥输入名称",
+      "button": "生成"
+    },
+    "issued": "已颁发 API 密钥",
+    "delete": "删除",
+    "generated": "API 密钥已生成！",
+    "copyWarning": {
+      "title": "请复制您的 API 密钥！",
+      "message": "离开此页面后将无法再次复制。"
+    },
+    "copied": "API 密钥已复制到剪贴板！",
+    "copyFailed": "API 密钥复制失败！",
+    "deleteSuccess": {
+      "title": "API 密钥已删除",
+      "message": "API 密钥 {device} 已删除！"
+    }
+  },
+
+  "avatar": {
+    "title": "头像",
+    "apply": "应用",
+    "loadError": "图片加载失败！"
+  },
+
+  "dashboardSettings": {
+    "title": "显示设置",
+    "enableEditMode": "启用编辑模式",
+    "availableWidgets": "可用小部件",
+    "displayOptions": "显示选项",
+    "hideQueueProcessor": "隐藏队列处理器",
+    "hideUnrecognizedFiles": "隐藏未识别文件",
+    "hideRecentlyImported": "隐藏最近导入内容",
+    "hideCollectionStatistics": "隐藏收藏统计",
+    "hideMediaType": "隐藏媒体类型",
+    "hideImportFolders": "隐藏导入文件夹",
+    "hideShokoNews": "隐藏 Shoko 新闻",
+    "hideNextUp": "隐藏下一个待播",
+    "hideContinueWatching": "隐藏继续观看",
+    "hideUpcomingAnime": "隐藏即将开播动画",
+    "hideRecommendedAnime": "隐藏推荐动画",
+    "combineContinueWatching": "合并「继续观看」与「下一个待播」",
+    "hideR18Content": "隐藏 R18 内容",
+    "shokoNewsPosts": "Shoko 新闻帖子数量",
+    "recentlyImportedEpisodes": "最近导入的剧集数量",
+    "recentlyImportedSeries": "最近导入的系列数量"
+  },
+
+  "displaySettingsModal": {
+    "title": "显示设置",
+
+    "poster": {
+      "title": "海报视图选项",
+      "totalEpisodes": "总集数",
+      "groupIndicator": "分组指示器",
+      "unwatchedCount": "未观看集数"
+    },
+
+    "list": {
+      "title": "列表视图选项",
+      "itemType": "条目类型",
+      "groupIndicator": "分组指示器",
+      "topTags": "热门标签",
+      "customTags": "自定义标签"
+    },
+
+    "image": {
+      "title": "图片选项",
+      "randomPoster": "加载时随机海报",
+      "randomBackdrop": "加载时随机背景图",
+      "thumbnailFallback": "缩略图缺失时显示背景图"
+    },
+
+    "anidb": {
+      "title": "AniDB 选项",
+      "filterDescription": "过滤 AniDB 描述内容"
+    },
+
+    "actions": {
+      "cancel": "取消",
+      "save": "保存"
+    }
+  }
+}

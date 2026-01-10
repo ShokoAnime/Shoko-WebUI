@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Button from '@/components/Input/Button';
 import InputSmall from '@/components/Input/InputSmall';
@@ -12,6 +13,7 @@ type Props = {
 };
 
 const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
+  const { t } = useTranslation('links');
   const [rangeStart, setRangeStart] = useState('');
   const [epType, setEpType] = useState('Normal');
 
@@ -25,16 +27,21 @@ const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
       show={show}
       size="sm"
       onRequestClose={onClose}
-      header="Range Fill Options"
+      header={t('rangeFillModal.rangeFillOptions')}
     >
       <div className="flex flex-col gap-y-2">
-        <SelectSmall label="Type" id="Type" value={epType} onChange={event => setEpType(event.target.value)}>
-          <option value="Normal">Episode</option>
-          <option value="Special">Special</option>
-          <option value="Other">Other</option>
+        <SelectSmall
+          label={t('rangeFillModal.type')}
+          id="Type"
+          value={epType}
+          onChange={event => setEpType(event.target.value)}
+        >
+          <option value="Normal">{t('rangeFillModal.episode')}</option>
+          <option value="Special">{t('rangeFillModal.special')}</option>
+          <option value="Other">{t('rangeFillModal.other')}</option>
         </SelectSmall>
         <div className="flex items-center justify-between">
-          Range Starting Number
+          {t('rangeFillModal.rangeStartNumber')}
           <InputSmall
             id="RangeStart"
             type="number"
@@ -45,8 +52,10 @@ const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
         </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Cancel</Button>
-        <Button onClick={handleFill} buttonType="primary" className="px-5 py-2" disabled={!rangeStart}>Fill</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">{t('rangeFillModal.cancel')}</Button>
+        <Button onClick={handleFill} buttonType="primary" className="px-5 py-2" disabled={!rangeStart}>
+          {t('rangeFillModal.fill')}
+        </Button>
       </div>
     </ModalPanel>
   );

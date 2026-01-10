@@ -1,0 +1,9 @@
+{
+  "dashboard": "Dashboard",
+  "editModeEnabled": "Edit Mode Enabled",
+  "resetToDefault": "Reset to Default",
+  "cancel": "Cancel",
+  "save": "Save",
+  "layoutReset": "Layout reset to default!",
+  "layoutSaved": "Layout Saved!"
+}

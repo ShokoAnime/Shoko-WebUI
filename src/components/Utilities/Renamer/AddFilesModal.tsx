@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
@@ -84,6 +85,7 @@ const getSearchFilter = (query: string, isSeries: boolean): FilterType => {
 };
 
 const AddFilesModal = ({ onClose, show }: Props) => {
+  const { t } = useTranslation('utilities');
   const [pageSize, setPageSize] = useState(10);
 
   const [search, setSearch] = useState('');
@@ -102,17 +104,17 @@ const AddFilesModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header="Add Files"
+      header={t('renamer.addFiles.title')}
       size="sm"
       noGap
     >
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-y-4">
-          <div className="font-semibold">One Click Options</div>
+          <div className="font-semibold">{t('renamer.addFiles.oneClick')}</div>
           <div className="border-b border-panel-border" />
           <div className="flex flex-col gap-y-2">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold">Entire Collection</div>
+              <div className="text-sm font-semibold">{t('renamer.addFiles.entireCollection')}</div>
               <Button
                 onClick={addEntireCollection}
               >
@@ -120,7 +122,7 @@ const AddFilesModal = ({ onClose, show }: Props) => {
               </Button>
             </div>
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold">Recently Imported Files</div>
+              <div className="text-sm font-semibold">{t('renamer.addFiles.recentlyImported')}</div>
               <div className="flex items-center gap-x-2">
                 <InputSmall
                   id="pageSize"
@@ -141,13 +143,13 @@ const AddFilesModal = ({ onClose, show }: Props) => {
         </div>
 
         <div className="flex flex-col gap-y-4">
-          <div className="font-semibold">Select Series</div>
+          <div className="font-semibold">{t('renamer.addFiles.selectSeries')}</div>
           <div className="border-b border-panel-border" />
           <div className="flex flex-col gap-y-4">
             <Input
               id="search"
               type="text"
-              placeholder="Search..."
+              placeholder={t('common.actions.searchPlaceholder')}
               startIcon={mdiMagnify}
               value={search}
               onChange={event => setSearch(event.target.value)}

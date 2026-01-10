@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { forEach, map, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
+  const { t } = useTranslation('utilities');
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
@@ -79,10 +81,10 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
         {
           onSuccess: () => {
             resetQueries(['release-management']);
-            toast.success(`${fileIds.length} ${fileIds.length === 1 ? 'file' : 'files'} deleted!`);
+            toast.success(t('releaseManagement.quickSelect.filesDeleted', { count: fileIds.length }));
             onClose();
           },
-          onError: () => toast.error('Files could not be deleted!'),
+          onError: () => toast.error(t('releaseManagement.quickSelect.deleteError')),
         },
       );
 
@@ -114,7 +116,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
   };
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} header="Quick Select" size="sm">
+    <ModalPanel show={show} onRequestClose={onClose} header={t('releaseManagement.quickSelect.title')} size="sm">
       {fileSummaryQuery.isSuccess && (
         map(
           fileSummary?.Groups,
@@ -228,14 +230,16 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
       )}
 
       <div className="mt-4 flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">
+          {t('releaseManagement.quickSelect.cancel')}
+        </Button>
         <Button
           onClick={handleConfirm}
           buttonType="primary"
           className="px-6 py-2"
           loading={isDeletingFiles || isDeletingLocations}
         >
-          Confirm
+          {t('releaseManagement.quickSelect.confirm')}
         </Button>
       </div>
     </ModalPanel>

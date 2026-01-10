@@ -1,0 +1,129 @@
+{
+  "recommendedAnime": {
+    "title": "Recommended Anime",
+    "emptyTitle": "No Recommended Anime!",
+    "emptyDescription": "Watch Anime To Populate This Section.",
+    "similarMatches_one": "{{count}} Match",
+    "similarMatches_other": "{{count}} Matches"
+  },
+  "continueWatching": {
+    "title": "Continue Watching",
+    "emptyTitle": "No Episodes In Progress.",
+    "emptyDescription": "Stop An Episode During Playback To Populate This Section."
+  },
+  "upcomingAnime": {
+    "title": "Upcoming Anime",
+    "emptyTitle": "No Upcoming Anime.",
+    "tabs": {
+      "myCollection": "My Collection",
+      "all": "All"
+    },
+    "emptyCollectionDescription": "Start A Currently Airing Series To Populate This Section.",
+    "emptyAllDescription": "Enable Calendar To Populate This Section."
+  },
+  "nextUp": {
+    "titleContinue": "Continue Watching",
+    "titleNextUp": "Next Up",
+    "emptyTitle": "No Episodes In Progress.",
+    "emptyDescription": "Stop An Episode During Playback To Populate This Section."
+  },
+  "tmdbTopPanel": {
+    "metadataLinking": "Metadata Linking",
+    "entries": "Entries",
+    "matchType": "Match Type",
+    "perfect": "Perfect",
+    "approximate": "Approximate",
+    "fallback": "Fallback",
+    "override": "Override",
+    "cancel": "Cancel",
+    "noLinksToSave": "No links to save!",
+    "saveLinks": "Save Links"
+  },
+  "series": {
+    "adultOnly": "18+ Adults Only",
+    "description": "Series Description",
+    "information": "Series Information",
+    "topTags": "Top 10 Tags",
+    "userStats": "User Stats"
+  },
+  "recentlyImported": {
+    "title": "Recently Imported",
+    "tabs": {
+      "episodes": "Episodes",
+      "series": "Series"
+    },
+    "emptyEpisodes": "No Recently Imported Episodes!",
+    "emptySeries": "No Recently Imported Series!"
+  },
+  "collectionStats": {
+    "panelTitle": "Collection Statistics",
+    "series": "Series",
+    "seriesCompleted": "Series Completed",
+    "episodesWatched": "Episodes Watched",
+    "hoursWatched": "Hours Watched",
+    "hours": "H",
+    "collectionSize": "Collection Size",
+    "files": "Files",
+    "unrecognizedFiles": "Unknown Files",
+    "duplicateEpisodes": "Duplicate Episodes",
+    "duplicateHashes": "Duplicate Hashes",
+    "missingTmdbLinks": "Missing TMDB Links",
+    "missingEpisodesCollecting": "Missing Episodes (Collecting)",
+    "missingEpisodesTotal": "Missing Episodes (Total)"
+  },
+  "importFolders": {
+    "tooltip": {
+      "addFolder": "Add Folder",
+      "rescanFolder": "Rescan Folder",
+      "editFolder": "Edit Folder"
+    },
+    "panel": {
+      "title": "Import Folders"
+    },
+    "field": {
+      "location": "Location",
+      "type": "Type",
+      "size": "Size",
+      "none": "None"
+    },
+    "noFolders": "No Import Folders Added!",
+    "toast": {
+      "scanSuccess": "Scan Import Folder Success",
+      "queued": "Import Folder {{folderName}} queued for scanning."
+    }
+  },
+  "mediaType": {
+    "panelTitle": "Media Type",
+    "series": "TV Series",
+    "other": "Other",
+    "web": "Web",
+    "movie": "Movie",
+    "ova": "OVA"
+  },
+  "queueProcessor": {
+    "panelTitle": "Queue Processor",
+    "pauseAll": "Pause All",
+    "resumeAll": "Resume All",
+    "clearAll": "Clear All",
+    "workers": "Workers",
+    "tasks": "Tasks",
+    "paused": "Paused",
+    "queueEmpty": "Queue is empty!"
+  },
+  "dashboardNews": {
+    "panelTitle": "Shoko News",
+    "newLabel": "New!"
+  },
+  "unrecognizedFiles": {
+    "title": "Unrecognized Files",
+    "file": "File",
+    "file_plural": "Files",
+    "missingPath": "<missing file path>",
+    "empty": "No unrecognized files. Good job!",
+    "tabs": {
+      "unrecognized": "Unrecognized",
+      "manuallyLinked": "Manually Linked",
+      "ignored": "Ignored"
+    }
+  }
+}

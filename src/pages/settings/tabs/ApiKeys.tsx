@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
 import { map } from 'lodash';
@@ -13,12 +14,13 @@ import { copyToClipboard } from '@/core/util';
 import type { AuthToken } from '@/core/types/api/authToken';
 
 const UserApiTokens = ({ token }: { token: AuthToken }) => {
+  const { t } = useTranslation('settings');
   const { isPending, mutate: deleteToken } = useDeleteApiToken();
 
   const onDeleteClick = () => {
     deleteToken(token.Device, {
       onSuccess: (() => {
-        toast.success('API Key Deleted', `API Key ${token.Device} has been deleted!`, {
+        toast.success(t('apiKeys.deleteSuccess.title'), t('apiKeys.deleteSuccess.message', { device: token.Device }), {
           autoClose: 3000,
         });
       }),
@@ -31,13 +33,14 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
         {token.Device}
       </div>
       <Button buttonType="danger" buttonSize="small" onClick={onDeleteClick} loading={isPending}>
-        Delete
+        {t('apiKeys.delete')}
       </Button>
     </div>
   );
 };
 
 const ApiKeys = () => {
+  const { t } = useTranslation('settings');
   const [deviceName, setDeviceName] = useState('');
 
   const onDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +60,7 @@ const ApiKeys = () => {
       .then(
         () =>
           toast.success(
-            'API Key has been copied to clipboard!',
+            t('apiKeys.copied'),
             undefined,
             {
               autoClose: 3000,
@@ -67,21 +70,25 @@ const ApiKeys = () => {
       )
       .catch((error) => {
         console.error(error);
-        toast.error('API Key copy failed!');
+        toast.error(t('apiKeys.copyFailed'));
       });
   };
 
   const handleTokenGeneration = () => {
     createApiToken(deviceName, {
       onSuccess: () => {
-        toast.success('API Key has been generated!', undefined, {
+        toast.success(t('apiKeys.generated'), undefined, {
           autoClose: 3000,
           toastId: 'api-generated',
         });
-        toast.warning('Copy Your API Key!', 'You won\'t be able to copy this key anymore once you leave this page!', {
-          autoClose: false,
-          toastId: 'copy-api-key',
-        });
+        toast.warning(
+          t('apiKeys.copyWarning.title'),
+          t('apiKeys.copyWarning.message'),
+          {
+            autoClose: false,
+            toastId: 'copy-api-key',
+          },
+        );
       },
     });
   };
@@ -98,17 +105,16 @@ const ApiKeys = () => {
     <>
       <title>Settings &gt; API Keys | Shoko</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">API Keys</div>
+        <div className="text-xl font-semibold">{t('apiKeys.title')}</div>
         <div>
-          Below are all the API keys utilized by Shoko and other programs/plugins. You can create new ones or remove
-          existing ones as needed.
+          {t('apiKeys.description')}
         </div>
       </div>
 
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Generate API Key</div>
+        <div className="flex items-center font-semibold">{t('apiKeys.generate.title')}</div>
         <div className="flex flex-row justify-between gap-x-2">
           <Input
             id="key-input"
@@ -124,7 +130,7 @@ const ApiKeys = () => {
             onChange={onDeviceNameChange}
             type="text"
             value={createdToken ?? deviceName}
-            placeholder="Type a name for your new API key"
+            placeholder={t('apiKeys.generate.placeholder')}
           />
           <Button
             buttonType="primary"
@@ -134,7 +140,7 @@ const ApiKeys = () => {
             disabled={!deviceName || isTokenGenerating}
             loading={isTokenGenerating}
           >
-            Generate
+            {t('apiKeys.generate.button')}
           </Button>
         </div>
       </div>
@@ -142,7 +148,7 @@ const ApiKeys = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Issued API Keys</div>
+        <div className="flex items-center font-semibold">{t('apiKeys.issued')}</div>
         <div className="flex flex-col gap-y-1">
           {map(tokens, token => <UserApiTokens key={token.Device} token={token} />)}
         </div>

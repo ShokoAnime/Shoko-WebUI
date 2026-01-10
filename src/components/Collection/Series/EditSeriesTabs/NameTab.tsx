@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
 import { useToggle } from 'usehooks-ts';
@@ -12,6 +13,7 @@ type Props = {
 };
 
 const NameTab = ({ seriesId }: Props) => {
+  const { t } = useTranslation('series');
   const [name, setName] = useState('');
   const [nameEditable, toggleNameEditable] = useToggle(true);
 
@@ -29,7 +31,7 @@ const NameTab = ({ seriesId }: Props) => {
         icon: mdiPencilCircleOutline,
         className: 'text-panel-text-primary',
         onClick: toggleNameEditable,
-        tooltip: 'Edit name',
+        tooltip: t('name.editTooltip'),
       }];
     }
 
@@ -43,7 +45,7 @@ const NameTab = ({ seriesId }: Props) => {
           setName(seriesData.Name ?? '');
           toggleNameEditable();
         },
-        tooltip: 'Cancel',
+        tooltip: t('common.cancel'),
       },
       {
         icon: mdiCheckUnderlineCircleOutline,
@@ -52,7 +54,7 @@ const NameTab = ({ seriesId }: Props) => {
           overrideTitle(name, {
             onSuccess: () => toggleNameEditable(),
           }),
-        tooltip: 'Save name',
+        tooltip: t('name.saveTooltip'),
       },
     ];
   }, [
@@ -63,13 +65,14 @@ const NameTab = ({ seriesId }: Props) => {
     overrideTitle,
     seriesData?.Name,
     toggleNameEditable,
+    t,
   ]);
 
   return (
     <div className="flex h-full flex-col">
       {isError && (
         <div className="m-auto text-lg font-semibold text-panel-text-danger">
-          Series data could not be loaded!
+          {t('name.loadError')}
         </div>
       )}
 
@@ -78,8 +81,8 @@ const NameTab = ({ seriesId }: Props) => {
         type="text"
         onChange={event => setName(event.target.value)}
         value={name}
-        placeholder={isFetching ? 'Loading...' : undefined}
-        label="Name"
+        placeholder={isFetching ? t('common.loading') : undefined}
+        label={t('name.nameLabel')}
         className="mb-4"
         inputClassName={cx(nameInputIcons.length > 1 ? 'pr-[5rem]' : 'pr-12', 'truncate')}
         endIcons={nameInputIcons}

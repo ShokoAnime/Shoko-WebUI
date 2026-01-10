@@ -1,0 +1,77 @@
+{
+  "tmdbLinking": {
+    "seriesLinked": "系列已关联，TMDB 相关数据和图片任务已添加到队列！",
+    "episodeLinksUpdated": "剧集链接已更新！",
+    "saveLinksFailed": "保存链接失败！",
+    "linksSaved": "链接已保存！",
+    "editLink": "编辑链接"
+  },
+  "linkFilesTab": {
+    "searchPlaceholder": "输入系列名称或 AniDB ID...",
+    "getSeriesFailed": "获取系列数据失败！",
+    "addSeriesFailed": "添加系列失败！无法创建 Shoko 系列条目。",
+    "invalidPositiveInt": "值必须为正整数。",
+    "startEpisodeNotFound": "找不到起始剧集。",
+    "autoMatchApplied": "自动匹配已应用",
+    "autoMatchSkipped": "部分匹配未能完成，请验证已匹配条目并补充剩余条目！",
+    "autoMatchSuccess": "自动匹配已应用。",
+    "autoMatchVerify": "请在保存前验证匹配结果！",
+    "linkingAborted": "链接操作已中止！",
+    "fetchEpisodesFailed": "无法获取 Shoko 剧集！",
+    "manyToManyFailed": "无法创建多对多关联，请重试或联系支持。",
+    "episodeLinkSkipped": "剧集链接已跳过！",
+    "pathTemplate": "路径：{{path}}",
+    "duplicateEntry": "复制条目",
+    "removeEntry": "移除条目",
+    "rangeFill": "范围填充",
+    "cancel": "取消",
+    "save": "保存",
+    "noEpisodes": "没有可用剧集！",
+    "selectedFiles": "已选择文件",
+    "anidb": "AniDB",
+    "missingFilePath": "缺失文件路径",
+    "oneToOneLinkingScheduled": "已调度 {{count}} 个文件的 1:1 链接！",
+    "oneToOneLinkingFailed": "1:1 链接失败 {{count}} 个文件！",
+    "oneToManyLinkingScheduled": "已调度 {{count}} 个文件的 1:N 链接！",
+    "oneToManyLinkingFailed": "1:N 链接失败 {{count}} 个文件！",
+    "manyToOneLinkingScheduled": "已调度 {{count}} 个文件的 N:1 链接！",
+    "manyToOneLinkingFailed": "N:1 链接失败 {{count}} 个文件！"
+  },
+  "manuallyLinkedTab": {
+    "manuallyLinked": {
+      "title": "手动关联的文件",
+      "series": "系列（AniDB ID）",
+      "linkCount": "关联数量",
+      "episodeName": "剧集名称",
+      "emptySeries": "没有包含手动关联文件的系列",
+      "selectSeries": "请选择一个系列以显示内容"
+    },
+    "common": {
+      "search": "搜索...",
+      "fileCountTitle": "文件数量",
+      "fileCount": "{{count}} 个文件"
+    },
+    "actions": {
+      "refresh": "刷新",
+      "rescan": "重新扫描",
+      "cancelSelection": "取消选择",
+      "unlink": "解除关联"
+    },
+    "toast": {
+      "rescanFailed": "{{count}} 个文件重新扫描失败",
+      "rescanning": "正在重新扫描 {{count}} 个文件",
+      "unlinkFailed": "{{count}} 个文件解除关联失败",
+      "unlinked": "{{count}} 个文件已解除关联"
+    }
+  },
+  "rangeFillModal": {
+    "rangeFillOptions": "范围填充选项",
+    "type": "类型",
+    "episode": "普通集",
+    "special": "特别篇",
+    "other": "其他",
+    "rangeStartNumber": "起始集数",
+    "cancel": "取消",
+    "fill": "填充"
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { forEach, map, omit } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import { map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
@@ -21,13 +22,30 @@ const HeaderFragment = ({ range, title }: HeaderFragmentProps) => {
 type HeaderProps = {
   ranges: WebuiSeriesFileSummaryGroupRangeByType;
 };
-const Header = ({ ranges }: HeaderProps) => (
-  <div className="flex gap-x-2">
-    <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
-    <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
-    {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item.Range} />)}
-  </div>
-);
+const Header = ({ ranges }: HeaderProps) => {
+  const { t } = useTranslation('files');
+  return (
+    <div className="flex gap-x-2">
+      <HeaderFragment
+        title={ranges?.Normal ? t('episodeType.normal', { count: ranges.Normal.Count || 1 }) : undefined}
+        range={ranges?.Normal?.Range}
+      />
+      <HeaderFragment
+        title={ranges?.Special ? t('episodeType.special', { count: ranges.Special.Count || 1 }) : undefined}
+        range={ranges?.Special?.Range}
+      />
+      {map(omit(ranges, ['Normal', 'Special']), (item, key) => (
+        <HeaderFragment
+          key={key}
+          title={t(`episodeType.${key.toLowerCase()}`, {
+            count: item.Count || 1,
+          })}
+          range={item.Range}
+        />
+      ))}
+    </div>
+  );
+};
 
 type RowProps = {
   label: string;
@@ -48,35 +66,31 @@ type GroupProps = {
   group: WebuiSeriesFileSummaryGroupType;
 };
 const Group = ({ group }: GroupProps) => {
+  const { t } = useTranslation('files');
   const sizes = useMemo(() => {
-    const sizeMap: Record<string, { size: number, count: number }> = {};
-    forEach(group.RangeByType, (item, key) => {
-      let idx = 'Other';
-      if (key === 'Normal') {
-        idx = item.Count > 1 ? 'Episodes' : 'Episode';
-      } else if (key === 'Special') {
-        idx = item.Count > 1 ? 'Specials' : 'Special';
-      }
+    const parts = map(group.RangeByType, (item, key) => {
+      if (!item.Count || item.Count === 0) return null;
 
-      if (!sizeMap[idx]) {
-        sizeMap[idx] = { size: 0, count: 0 };
-      }
-      sizeMap[idx].size += item.FileSize;
-      sizeMap[idx].count += item.Count;
-    });
+      const typeKey = key.toLowerCase(); // Normal → normal, Credit → credit ...
+      const title = t(`episodeType.${typeKey}`, {
+        count: item.Count ?? 1,
+        // 已提供所有类型的 _one / _other，无需 defaultValue
+      });
 
-    return map(sizeMap, (size, name) => (
-      `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
-    )).join(' | ');
-  }, [group]);
+      return `${item.Count} ${title} (${prettyBytes(item.FileSize, { binary: true })})`;
+    }).filter(Boolean);
 
-  const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [
-    group,
-  ]);
+    return parts.length > 0 ? parts.join(' | ') : t('unknown');
+  }, [group, t]);
+
+  const groupDetails = useMemo(
+    () => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : t('unknown')),
+    [group, t],
+  );
   const videoDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.FileSource) {
-      conditions.push(group.FileSource.replace('BluRay', 'Blu-Ray'));
+      conditions.push(group.FileSource.replace('BluRay', t('bluRay')));
     }
     if (group.FileVersion) {
       conditions.push(`v${group.FileVersion}`);
@@ -90,37 +104,39 @@ const Group = ({ group }: GroupProps) => {
     if (group.VideoCodecs) {
       conditions.push(group.VideoCodecs);
     }
-    return conditions.length ? conditions.join(' | ') : '-';
-  }, [group]);
+    return conditions.length ? conditions.join(' | ') : t('unknown');
+  }, [group, t]);
   const audioDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.AudioCodecs) {
       conditions.push(group.AudioCodecs.toUpperCase());
     }
     if (group.AudioLanguages) {
+      const langStr = group.AudioLanguages.join(', ');
       if (group.AudioStreamCount !== undefined) {
-        conditions.push(`Multi Audio (${group.AudioLanguages.join(', ')})`);
+        conditions.push(`${t('multiAudio')} (${langStr})`);
       } else {
-        conditions.push(group.AudioLanguages.join(', '));
+        conditions.push(langStr);
       }
     }
-    return conditions.length ? conditions.join(' | ') : '-';
-  }, [group]);
+    return conditions.length ? conditions.join(' | ') : t('unknown');
+  }, [group, t]);
   const subtitleDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.SubtitleCodecs) {
       conditions.push(group.SubtitleCodecs.toUpperCase());
     }
     if (group.SubtitleLanguages) {
+      const langStr = group.SubtitleLanguages.join(', ');
       if (group.SubtitleStreamCount !== undefined) {
-        conditions.push(`Multi Audio (${group.SubtitleLanguages.join(', ')})`);
+        conditions.push(`${t('multiSubtitle')} (${langStr})`);
       } else {
-        conditions.push(group.SubtitleLanguages.join(', '));
+        conditions.push(langStr);
       }
     }
-    return conditions.length ? conditions.join(' | ') : '-';
-  }, [group]);
-  const locationDetails = group.FileLocation ?? '-';
+    return conditions.length ? conditions.join(' | ') : t('unknown');
+  }, [group, t]);
+  const locationDetails = group.FileLocation ?? t('unknown');
 
   return (
     <div className="flex flex-col gap-y-6 rounded-sm border border-panel-border bg-panel-background-transparent p-6">
@@ -129,14 +145,14 @@ const Group = ({ group }: GroupProps) => {
       </div>
       <div className="flex gap-x-[4.5rem]">
         <div className="flex flex-col gap-y-2">
-          <Row label="Group" value={groupDetails} />
-          <Row label="Video" value={videoDetails} />
-          <Row label="Location" value={locationDetails} />
+          <Row label={t('row.group')} value={groupDetails} />
+          <Row label={t('row.video')} value={videoDetails} />
+          <Row label={t('row.location')} value={locationDetails} />
         </div>
         <div className="flex flex-col gap-y-2">
-          <Row label="Total" value={sizes} />
-          <Row label="Audio" value={audioDetails} />
-          <Row label="Subtitles" value={subtitleDetails} />
+          <Row label={t('row.total')} value={sizes} />
+          <Row label={t('row.audio')} value={audioDetails} />
+          <Row label={t('row.subtitles')} value={subtitleDetails} />
         </div>
       </div>
     </div>

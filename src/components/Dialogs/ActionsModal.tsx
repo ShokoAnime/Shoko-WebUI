@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -93,12 +94,14 @@ type Props = {
 };
 
 const Action = ({ actionKey, length }: { actionKey: string, length: number }) => {
+  const { t } = useTranslation('actions');
   const { mutate: runAction } = useRunActionMutation();
   const { mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
-  const { functionName, name } = action;
-
+  const { functionName, info: fallbackInfo, name: fallbackName } = action;
+  const translatedName = t(`${actionKey}.name`, { defaultValue: fallbackName });
+  const translatedInfo = t(`${actionKey}.info`, { defaultValue: fallbackInfo });
   const handleAction = () => {
     if (actionKey === 'plex-force-unlink') {
       invalidatePlexToken(undefined, {
@@ -107,7 +110,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
       return;
     }
     runAction(functionName, {
-      onSuccess: () => toast.success(`Running action "${name}"`),
+      onSuccess: () => toast.success(t('toast.running', { name: translatedName })),
     });
   };
 
@@ -121,22 +124,23 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
     >
       <div className="flex w-full flex-col gap-y-1">
         <div className="flex justify-between">
-          <div>{name}</div>
+          <div>{translatedName}</div>
         </div>
-        <div className="text-sm text-panel-text opacity-65">{quickActions[actionKey].info}</div>
+        <div className="text-sm text-panel-text opacity-65">{translatedInfo}</div>
       </div>
     </div>
   );
 };
 
 const ActionsModal = ({ onClose, show }: Props) => {
+  const { t } = useTranslation('actions');
   const [activeTab, setActiveTab] = useState('import');
 
   return (
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header="Actions"
+      header={t('modal.title', { defaultValue: 'Actions' })}
       size="md"
       noPadding
     >
@@ -153,7 +157,7 @@ const ActionsModal = ({ onClose, show }: Props) => {
                 key={key}
                 onClick={() => setActiveTab(key)}
               >
-                {value.title}
+                {t(`tabs.${key}`, { defaultValue: value.title })}
               </div>
             ))}
           </div>

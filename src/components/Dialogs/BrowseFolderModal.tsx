@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '@/components/Input/Button';
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const BrowseFolderModal = ({ onSelect }: Props) => {
+  const { t } = useTranslation('dialogs');
   const dispatch = useDispatch();
 
   const status = useSelector((state: RootState) => state.modals.browseFolder.status);
@@ -32,7 +34,7 @@ const BrowseFolderModal = ({ onSelect }: Props) => {
     <ModalPanel
       show={status}
       onRequestClose={() => handleClose()}
-      header="Select Import Folder"
+      header={t('dialogs.browseFolderModal.header')}
       size="sm"
       overlayClassName="!z-[90]"
     >
@@ -40,8 +42,10 @@ const BrowseFolderModal = ({ onSelect }: Props) => {
         <TreeView />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
-        <Button onClick={handleSelect} buttonType="primary" className="px-6 py-2">Select</Button>
+        <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">{t('dialogs.common.cancel')}</Button>
+        <Button onClick={handleSelect} buttonType="primary" className="px-6 py-2">
+          {t('dialogs.browseFolderModal.selectButton')}
+        </Button>
       </div>
     </ModalPanel>
   );

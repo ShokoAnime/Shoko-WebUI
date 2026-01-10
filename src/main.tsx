@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 import App from './core/app';
 import { isDebug, uiVersion } from './core/util';
 import './css/main.css';
+import '@/i18n';
 import './css/tailwind.css';
 
 if (!isDebug()) {

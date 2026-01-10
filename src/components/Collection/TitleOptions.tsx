@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   mdiCogOutline,
   mdiFilterMenuOutline,
@@ -49,6 +50,7 @@ const OptionButton = React.memo(
 );
 
 const TitleOptions = (props: Props) => {
+  const { t } = useTranslation('collection');
   const {
     groupSearch,
     isSeries,
@@ -70,20 +72,36 @@ const TitleOptions = (props: Props) => {
         <Input
           id="search"
           type="text"
-          placeholder="Search..."
+          placeholder={t('search.placeholder')}
           startIcon={mdiMagnify}
           value={isSeries ? seriesSearch : groupSearch}
           onChange={setSearch}
         />
-        {!isSeries && <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />}
-        {isSeries && <OptionButton onClick={editGroupModalCallback} icon={mdiPencil} tooltip="Edit Group" />}
-        <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />
+        {!isSeries && (
+          <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip={t('actions.filterPresets')} />
+        )}
+        {isSeries && (
+          <OptionButton
+            onClick={editGroupModalCallback}
+            icon={mdiPencil}
+            tooltip={t('actions.editGroup')}
+          />
+        )}
+        <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip={t('actions.filter')} />
         <OptionButton
           onClick={toggleMode}
           icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline}
-          tooltip={`Switch to ${mode === 'poster' ? 'list' : 'poster'} mode`}
+          tooltip={t('actions.switchMode', {
+            mode: mode === 'poster'
+              ? t('modes.list')
+              : t('modes.poster'),
+          })}
         />
-        <OptionButton onClick={toggleDisplaySettingsModal} icon={mdiCogOutline} tooltip="Display Settings" />
+        <OptionButton
+          onClick={toggleDisplaySettingsModal}
+          icon={mdiCogOutline}
+          tooltip={t('actions.displaySettings')}
+        />
       </div>
       <FilterPresetsModal show={showFilterModal} onClose={toggleFilterModal} />
       <DisplaySettingsModal show={showDisplaySettingsModal} onClose={toggleDisplaySettingsModal} />

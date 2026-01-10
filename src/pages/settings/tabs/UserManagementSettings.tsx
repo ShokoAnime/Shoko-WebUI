@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -24,6 +25,7 @@ import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/quer
 import type { UserType } from '@/core/types/api/user';
 
 const UserManagementSettings = () => {
+  const { t } = useTranslation('settings');
   const dispatch = useDispatch();
 
   const currentUserQuery = useCurrentUserQuery();
@@ -61,12 +63,12 @@ const UserManagementSettings = () => {
       toast.dismiss('unsaved');
     } else {
       toast.info(
-        'Unsaved Changes',
-        'Please save before leaving this page.',
+        t('page.unsaved.title'),
+        t('page.unsaved.message'),
         { autoClose: false, position: 'top-right', toastId: 'unsaved' },
       );
     }
-  }, [selectedUser, unsavedChanges]);
+  }, [selectedUser, t, unsavedChanges]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = event.target;
@@ -81,16 +83,20 @@ const UserManagementSettings = () => {
 
   useEffect(() => {
     if (newPassword) {
-      toast.info('Password field changed!', 'Click on the "Change" button to save your new password', {
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        toastId: 'password-changed',
-      });
+      toast.info(
+        t('userManagement.toasts.passwordFieldChanged'),
+        t('userManagement.toasts.passwordFieldChangedMessage'),
+        {
+          autoClose: false,
+          draggable: false,
+          closeOnClick: false,
+          toastId: 'password-changed',
+        },
+      );
     } else {
       toast.dismiss('password-changed');
     }
-  }, [newPassword]);
+  }, [newPassword, t]);
 
   const handlePasswordChange = () => {
     if (!selectedUser) return;
@@ -102,7 +108,9 @@ const UserManagementSettings = () => {
       onSuccess: () => {
         setNewPassword('');
         if (currentUserQuery.data?.ID === selectedUser.ID && logoutOthers) {
-          toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
+          toast.success(t('userManagement.toasts.passwordChangedSuccess'), t('userManagement.toasts.logoutWarning'), {
+            autoClose: 5000,
+          });
           setTimeout(() => {
             dispatch({ type: Events.AUTH_LOGOUT });
           }, 6000);
@@ -138,8 +146,8 @@ const UserManagementSettings = () => {
   const deleteSelectedUser = (user: UserType) => {
     if (currentUserQuery.data?.ID === user.ID) {
       toast.error(
-        'Woah there buddy!',
-        'You just tried to delete yourself from the matrix. That\'s not the way to go about doing it.',
+        t('userManagement.toasts.deleteSelfTitle'),
+        t('userManagement.toasts.deleteSelfMessage'),
       );
     } else {
       deleteUser(user.ID);
@@ -175,17 +183,16 @@ const UserManagementSettings = () => {
     <>
       <title>Settings &gt; User Management | Shoko</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">User Management</div>
+        <div className="text-xl font-semibold">{t('page.menu.user-management')}</div>
         <div>
-          Configure Shoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is
-          restricted from viewing.
+          {t('userManagement.description')}
         </div>
       </div>
 
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Current Users</div>
+        <div className="flex items-center font-semibold">{t('userManagement.currentUsers')}</div>
         <div className="flex flex-col gap-y-1">
           {map(usersQuery.data, user => (
             <div className="flex h-8 justify-between" key={`user-${user.ID}`}>
@@ -207,13 +214,13 @@ const UserManagementSettings = () => {
 
       <div className="flex flex-col gap-y-6">
         <div className="flex items-center justify-between font-semibold">
-          User Options
+          {t('userManagement.userOptions')}
           <div className="flex gap-x-2">
             <label
               htmlFor="avatar"
               className="flex cursor-pointer items-center rounded-lg border border-panel-border bg-button-secondary px-4 py-1 text-sm font-semibold drop-shadow-md hover:bg-button-secondary-hover"
             >
-              Pick Avatar
+              {t('userManagement.pickAvatar')}
               <input
                 type="file"
                 id="avatar"
@@ -224,14 +231,14 @@ const UserManagementSettings = () => {
             </label>
             {selectedUser.Avatar && (
               <Button onClick={removeAvatar} buttonType="danger" buttonSize="small">
-                Remove Avatar
+                {t('userManagement.removeAvatar')}
               </Button>
             )}
           </div>
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
-            <div className="mx-0 my-auto">Display Name</div>
+            <div className="mx-0 my-auto">{t('userManagement.displayName')}</div>
             <InputSmall
               id="Username"
               value={selectedUser.Username}
@@ -242,7 +249,7 @@ const UserManagementSettings = () => {
           </div>
           <Checkbox
             justify
-            label="Administrator"
+            label={t('userManagement.administrator')}
             id="IsAdmin"
             isChecked={selectedUser.IsAdmin}
             onChange={handleInputChange}
@@ -250,7 +257,7 @@ const UserManagementSettings = () => {
           />
           <Checkbox
             justify
-            label="AniDB User"
+            label={t('userManagement.anidbUser')}
             id="AniDB"
             isChecked={selectedUser.CommunitySites?.AniDB}
             onChange={handleInputChange}
@@ -258,14 +265,14 @@ const UserManagementSettings = () => {
           />
           <Checkbox
             justify
-            label="Trakt User"
+            label={t('userManagement.traktUser')}
             id="Trakt"
             isChecked={selectedUser.CommunitySites?.Trakt}
             onChange={handleInputChange}
             className="h-8"
           />
           <div className="flex items-center justify-between">
-            Plex Users
+            {t('userManagement.plexUsers')}
             <InputSmall
               id="PlexUsernames"
               value={selectedUser.PlexUsernames}
@@ -281,7 +288,7 @@ const UserManagementSettings = () => {
 
       <div className="flex flex-col">
         <div className="mb-4 flex justify-between">
-          <div className="flex items-center font-semibold">Password</div>
+          <div className="flex items-center font-semibold">{t('userManagement.password')}</div>
           <Button
             onClick={handlePasswordChange}
             loading={isChangePasswordPending}
@@ -289,12 +296,12 @@ const UserManagementSettings = () => {
             buttonType="primary"
             buttonSize="small"
           >
-            Change
+            {t('userManagement.changePassword')}
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
-            <div className="mx-0 my-auto">New Password</div>
+            <div className="mx-0 my-auto">{t('userManagement.newPassword')}</div>
             <InputSmall
               id="new-password"
               value={newPassword}
@@ -307,7 +314,7 @@ const UserManagementSettings = () => {
           <div className="h-8">
             <Checkbox
               justify
-              label="Logout all sessions"
+              label={t('userManagement.logoutAllSessions')}
               id="logout-all"
               isChecked={logoutOthers}
               onChange={toggleLogoutOthers}
@@ -320,12 +327,12 @@ const UserManagementSettings = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Tag Restrictions</div>
+        <div className="flex items-center font-semibold">{t('userManagement.tagRestrictions')}</div>
         <div>
-          <div className="mb-2 font-semibold">Available Tags</div>
+          <div className="mb-2 font-semibold">{t('userManagement.availableTags')}</div>
           <Input
             type="text"
-            placeholder="Search..."
+            placeholder={t('userManagement.searchPlaceholder')}
             startIcon={mdiMagnify}
             id="search"
             value={tagSearch}
@@ -353,7 +360,7 @@ const UserManagementSettings = () => {
           </div>
         </div>
         <div>
-          <div className="mb-2 font-semibold">Selected Tags</div>
+          <div className="mb-2 font-semibold">{t('userManagement.selectedTags')}</div>
           <div className="flex min-h-32 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
             {selectedUser.RestrictedTags?.length
               ? selectedUser.RestrictedTags?.map(tag => (
@@ -361,7 +368,7 @@ const UserManagementSettings = () => {
                   {tagsQuery.data?.find(
                     tagData =>
                       tagData.ID === tag,
-                  )?.Name ?? 'Unknown'}
+                  )?.Name ?? t('userManagement.unknownTag')}
                   <Button
                     onClick={() =>
                       handleTagChange(tag, false)}
@@ -370,7 +377,7 @@ const UserManagementSettings = () => {
                   </Button>
                 </div>
               ))
-              : <div className="flex grow items-center justify-center font-semibold">No Restricted Tags!</div>}
+              : <div className="flex grow items-center justify-center font-semibold">{t('userManagement.noTags')}</div>}
           </div>
         </div>
       </div>
@@ -378,7 +385,7 @@ const UserManagementSettings = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">Cancel</Button>
+        <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">{t('page.actions.cancel')}</Button>
         <Button
           onClick={() => editUser(selectedUser)}
           buttonType="primary"
@@ -386,7 +393,7 @@ const UserManagementSettings = () => {
           disabled={!unsavedChanges}
           loading={editUserPending}
         >
-          Save
+          {t('page.actions.save')}
         </Button>
       </div>
 

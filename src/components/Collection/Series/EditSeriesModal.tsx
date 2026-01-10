@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
-import { map } from 'lodash';
 
 import DeleteActionsTab from '@/components/Collection/Series/EditSeriesTabs/DeleteActionsTab';
 import FileActionsTab from '@/components/Collection/Series/EditSeriesTabs/FileActionsTab';
@@ -17,12 +17,12 @@ import type { RootState } from '@/core/store';
 // import PersonalStats from '@/components/Collection/Series/EditSeriesTabs/PersonalStats';
 
 const tabs = {
-  name: 'Name',
-  group: 'Group',
-  update_actions: 'Update Actions',
-  file_actions: 'File Actions',
-  delete_actions: 'Delete Actions',
-  // stats: 'Personal Stats',
+  name: 'name',
+  group: 'group',
+  update_actions: 'update_actions',
+  file_actions: 'file_actions',
+  delete_actions: 'delete_actions',
+  // stats: 'stats',
 };
 
 const renderTab = (activeTab: string, seriesId = -1) => {
@@ -45,9 +45,19 @@ const renderTab = (activeTab: string, seriesId = -1) => {
 };
 
 const EditSeriesModal = () => {
+  const { t } = useTranslation('series');
   const dispatch = useDispatch();
 
   const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
+
+  const translatedTabs = useMemo(() => ({
+    name: t('edit.tabs.name'),
+    group: t('edit.tabs.group'),
+    update_actions: t('edit.tabs.updateActions'),
+    file_actions: t('edit.tabs.fileActions'),
+    delete_actions: t('edit.tabs.deleteActions'),
+    // stats: t('edit.tabs.stats'),
+  }), [t]);
 
   const onClose = useCallback(() => {
     if (seriesId === -1) return;
@@ -59,11 +69,18 @@ const EditSeriesModal = () => {
   const [activeTab, setActiveTab] = useState('name');
 
   return (
-    <ModalPanel show={seriesId !== -1} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
+    <ModalPanel
+      show={seriesId !== -1}
+      onRequestClose={onClose}
+      header={t('edit.modal.title')}
+      size="md"
+      noPadding
+      noGap
+    >
       <div className="flex h-[26rem] flex-row gap-x-6 p-6">
         <div className="flex shrink-0 gap-y-6 font-semibold">
           <div className="flex flex-col gap-y-1">
-            {map(tabs, (value, key) => (
+            {Object.entries(tabs).map(([key, _]) => (
               <div
                 className={cx(
                   activeTab === key
@@ -73,7 +90,7 @@ const EditSeriesModal = () => {
                 key={key}
                 onClick={() => setActiveTab(key)}
               >
-                {value}
+                {translatedTabs[key as keyof typeof translatedTabs]}
               </div>
             ))}
           </div>
