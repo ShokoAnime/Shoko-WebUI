@@ -1,0 +1,9 @@
+{
+  "dashboard": "仪表板",
+  "editModeEnabled": "编辑模式已启用",
+  "resetToDefault": "重置为默认",
+  "cancel": "取消",
+  "save": "保存",
+  "layoutReset": "布局已重置为默认！",
+  "layoutSaved": "布局已保存！"
+}

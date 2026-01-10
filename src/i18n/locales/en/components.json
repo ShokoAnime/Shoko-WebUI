@@ -1,0 +1,9 @@
+{
+  "background_image_placeholder": {
+    "image_not_available": "Image is not available. Run the validate image action or wait for the queue to settle.",
+    "no_image_metadata": "No image metadata.",
+    "refresh_browser": "Please refresh your browser to correct.",
+    "failed_to_load": "Failed to Load",
+    "link_to_image": "Link to image"
+  }
+}

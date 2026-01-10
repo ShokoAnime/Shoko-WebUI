@@ -1,0 +1,18 @@
+{
+  "search": {
+    "placeholder": "Search..."
+  },
+
+  "actions": {
+    "filterPresets": "Filter Presets",
+    "editGroup": "Edit Group",
+    "filter": "Filter",
+    "switchMode": "Switch to {{mode}} mode",
+    "displaySettings": "Display Settings"
+  },
+
+  "modes": {
+    "poster": "poster",
+    "list": "list"
+  }
+}

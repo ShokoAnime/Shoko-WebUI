@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiInformationOutline, mdiMagnify } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -19,6 +20,7 @@ type Props = {
 };
 
 const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
+  const { t } = useTranslation('series');
   const {
     availability,
     hasMissing,
@@ -34,7 +36,7 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
   return (
     <div className="flex flex-col gap-y-6">
       <ShokoPanel
-        title="Search & Filter"
+        title={t('panels.searchAndFilter')}
         className="w-100"
         contentClassName="gap-y-6"
         fullHeight={false}
@@ -44,70 +46,70 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
         <Input
           inputClassName=""
           id="search"
-          label="Episode Search"
+          label={t('panels.episodes.searchLabel')}
           startIcon={mdiMagnify}
           type="text"
-          placeholder="Search..."
+          placeholder={t('panels.episodes.searchPlaceholder')}
           value={search}
           onChange={onFilterChange}
         />
 
         <Select
           id="type"
-          label="Type"
+          label={t('panels.episodes.typeLabel')}
           value={type}
           onChange={onFilterChange}
         >
-          <option value="">All</option>
-          <option value="Normal">Episodes</option>
-          <option value="Special">Specials</option>
-          <option value="Other">Others</option>
-          <option value="ThemeSong,OpeningSong,EndingSong">Credits</option>
-          <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
+          <option value="">{t('panels.episodes.type.all')}</option>
+          <option value="Normal">{t('panels.episodes.type.episodes')}</option>
+          <option value="Special">{t('panels.episodes.type.specials')}</option>
+          <option value="Other">{t('panels.episodes.type.others')}</option>
+          <option value="ThemeSong,OpeningSong,EndingSong">{t('panels.episodes.type.credits')}</option>
+          <option value="Unknown,Trailer,Parody,Interview,Extra">{t('panels.episodes.type.misc')}</option>
         </Select>
 
         <Select
           id="includeMissing"
-          label="Episode Status"
+          label={t('panels.episodes.statusLabel')}
           value={availability}
           onChange={onFilterChange}
         >
-          <option value="true">All Episodes</option>
-          <option value="false">Available Episodes</option>
-          <option value="only">Missing Episodes</option>
+          <option value="true">{t('panels.episodes.status.all')}</option>
+          <option value="false">{t('panels.episodes.status.available')}</option>
+          <option value="only">{t('panels.episodes.status.missing')}</option>
         </Select>
 
         <Select
           id="includeWatched"
-          label="Watched State"
+          label={t('panels.episodes.watchedLabel')}
           value={watched}
           onChange={onFilterChange}
         >
-          <option value="true">All</option>
-          <option value="only">Watched</option>
-          <option value="false">Unwatched</option>
+          <option value="true">{t('panels.episodes.watched.all')}</option>
+          <option value="only">{t('panels.episodes.watched.watched')}</option>
+          <option value="false">{t('panels.episodes.watched.unwatched')}</option>
         </Select>
 
         <Select
           id="includeHidden"
-          label="Hidden Status"
+          label={t('panels.episodes.hiddenLabel')}
           value={hidden}
           onChange={onFilterChange}
         >
-          <option value="true">Show All Entries</option>
-          <option value="false">Hide Hidden Entries</option>
-          <option value="only">Show Only Hidden Entries</option>
+          <option value="true">{t('panels.episodes.hidden.all')}</option>
+          <option value="false">{t('panels.episodes.hidden.hide')}</option>
+          <option value="only">{t('panels.episodes.hidden.only')}</option>
         </Select>
 
         <Select
           id="includeUnaired"
-          label="Air Status"
+          label={t('panels.episodes.airLabel')}
           value={unaired}
           onChange={onFilterChange}
         >
-          <option value="true">All</option>
-          <option value="only">Unaired</option>
-          <option value="false">Aired</option>
+          <option value="true">{t('panels.episodes.air.all')}</option>
+          <option value="only">{t('panels.episodes.air.unaired')}</option>
+          <option value="false">{t('panels.episodes.air.aired')}</option>
         </Select>
 
         {(hasUnaired || hasMissing) && <hr className="border border-panel-border" />}
@@ -116,7 +118,7 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
             <div className="flex flex-row gap-x-3">
               <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
               <div className="grow text-base font-semibold">
-                Series has Unaired Episodes
+                {t('panels.episodes.warningUnaired')}
               </div>
             </div>
           )}
@@ -124,7 +126,7 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
             <div className="flex flex-row gap-x-3">
               <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
               <div className="grow text-base font-semibold">
-                Series has Missing Episodes
+                {t('panels.episodes.warningMissing')}
               </div>
             </div>
           )}

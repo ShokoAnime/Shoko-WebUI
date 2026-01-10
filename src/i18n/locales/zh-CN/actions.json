@@ -1,0 +1,150 @@
+{
+  "modal": {
+    "title": "操作"
+  },
+  "tabs": {
+    "import": "导入",
+    "anidb": "AniDB",
+    "trakt": "Trakt",
+    "tvdb": "TvDB",
+    "tmdb": "TMDB",
+    "shoko": "Shoko",
+    "images": "图像",
+    "plex": "Plex"
+  },
+  "toast": {
+    "running": "正在运行操作 \"{{name}}\""
+  },
+  "sync-votes": {
+    "name": "同步 AniDB 投票",
+    "info": "从 Shoko 将系列和剧集投票同步到 AniDB。"
+  },
+  "sync-mylist": {
+    "name": "覆盖 AniDB MyList",
+    "info": "从 Shoko 将所有系列和剧集的观看状态数据同步到 AniDB。这是一个单向操作，将覆盖所有 AniDB 数据！"
+  },
+  "add-all-manually-linked-files-to-mylist": {
+    "name": "将所有手动链接添加到 MyList",
+    "info": "将手动链接的剧集同步到你的 MyList。在 AniDB 上，文件条目将显示为通用类型。"
+  },
+  "download-missing-anidb-data": {
+    "name": "下载缺失的 AniDB 数据",
+    "info": "强制从 AniDB 下载 XML 数据。仅在 XML 被编辑、删除，或 Shoko 意外关闭或崩溃时使用。"
+  },
+  "update-anidb-calendar": {
+    "name": "更新 AniDB 日历",
+    "info": "使用 AniDB 的最新信息更新 Shoko 中的「即将上映动画」日历。"
+  },
+  "update-all-anidb-info": {
+    "name": "更新所有 AniDB 信息",
+    "info": "使用 AniDB 的最新数据更新所有系列信息。"
+  },
+  "get-anidb-notifications": {
+    "name": "获取 AniDB 通知",
+    "info": "从 AniDB 获取未读通知和消息"
+  },
+  "process-moved-files": {
+    "name": "处理移动的文件",
+    "info": "处理来自 AniDB 的文件移动消息。这将强制更新受影响的文件。"
+  },
+  "sync-trakt": {
+    "name": "同步 Trakt 收藏",
+    "info": "从 Shoko 将观看状态同步到 Trakt。这是一个单向操作，将覆盖所有 Trakt 数据！"
+  },
+  "update-all-trakt-info": {
+    "name": "更新所有 Trakt 信息",
+    "info": "从 Trakt 将所有系列信息同步到 Shoko。"
+  },
+  "purge-all-tvdb-info": {
+    "name": "清除所有 TVDB 信息",
+    "info": "从 Shoko 清除所有 TVDB 数据，包括所有图像、剧集、系列和交叉引用。还将禁用 TVDB 自动链接。这是一个单向操作，将清除所有 TVDB 数据！"
+  },
+  "run-import": {
+    "name": "运行导入",
+    "info": "检查新文件、计算哈希、扫描掉落文件夹、检查并扫描社区站点链接（Trakt、TMDB 等），并下载缺失图像。"
+  },
+  "import-new-files": {
+    "name": "导入新文件",
+    "info": "队列任务，仅导入导入文件夹中发现的新文件"
+  },
+  "avdump-mismatched-files": {
+    "name": "AVDump 不匹配的文件",
+    "info": "扫描库，检测在 AniDB 中没有哈希匹配的文件，并对它们运行 AVDump。"
+  },
+  "update-all-mediainfo": {
+    "name": "更新所有媒体信息",
+    "info": "对收藏中的每个文件运行 MediaInfo 以更新其元数据。"
+  },
+  "update-series-stats": {
+    "name": "更新系列统计",
+    "info": "更新收藏中的所有系列，重新计算总数、剩余量和观看状态。"
+  },
+  "update-missing-anidb-file-release-groups": {
+    "name": "更新缺失的 AniDB 发布组",
+    "info": "检查 AniDB 上收藏中缺少发布组的文件更新数据。"
+  },
+  "update-missing-anidb-file-info": {
+    "name": "更新缺失的 AniDB 文件信息",
+    "info": "更新缺少文件信息的 AniDB 文件，包括缺少发布组以及内部数据版本过时的文件。"
+  },
+  "update-all-images": {
+    "name": "更新所有图像",
+    "info": "从 AniDB 和 TMDB 更新并下载所有缺失图像。"
+  },
+  "validate-all-images": {
+    "name": "验证所有图像",
+    "info": "识别任何无效图像并重新下载它们。"
+  },
+  "search-for-tmdb-matches": {
+    "name": "搜索 TMDB 匹配",
+    "info": "为所有未链接的 AniDB 动画扫描 TMDB 匹配项。"
+  },
+  "update-all-tmdb-movies": {
+    "name": "更新所有 TMDB 电影",
+    "info": "更新本地数据库中的所有 TMDB 电影。"
+  },
+  "update-all-tmdb-shows": {
+    "name": "更新所有 TMDB 剧集",
+    "info": "更新本地数据库中的所有 TMDB 剧集。"
+  },
+  "delete-unused-tmdb-movies": {
+    "name": "删除未使用的 TMDB 电影",
+    "info": "删除所有未链接到任何 AniDB 动画的未使用 TMDB 电影。"
+  },
+  "delete-unused-tmdb-shows": {
+    "name": "删除未使用的 TMDB 剧集",
+    "info": "删除所有未链接到任何 AniDB 动画的未使用 TMDB 剧集。"
+  },
+  "download-missing-tmdb-people": {
+    "name": "下载缺失的 TMDB 人物",
+    "info": "下载本地数据库中缺失的任何 TMDB 人物。"
+  },
+  "purge-tmdb-movie-collections": {
+    "name": "删除所有 TMDB 电影合集",
+    "info": "删除本地数据库中存储的所有 TMDB 电影合集，并移除与之关联的任何图像。"
+  },
+  "purge-tmdb-show-alternate-orderings": {
+    "name": "删除所有 TMDB 剧集备选排序",
+    "info": "删除本地数据库中存储的所有 TMDB 剧集备选排序。"
+  },
+  "plex-sync-all": {
+    "name": "同步 Plex 观看状态",
+    "info": "与 Plex 同步观看状态。"
+  },
+  "remove-missing-files-mylist": {
+    "name": "移除缺失文件",
+    "info": "删除 Shoko 和 MyList 中不再可访问的文件条目。"
+  },
+  "remove-missing-files": {
+    "name": "移除缺失文件（保留在 MyList）",
+    "info": "删除 Shoko 中的条目，同时在 MyList 中保留，对于不再可访问的文件。"
+  },
+  "recreate-all-groups": {
+    "name": "重新创建所有组",
+    "info": "删除 Shoko 中所有现有组并重新创建它们。"
+  },
+  "rename-all-groups": {
+    "name": "重命名所有组",
+    "info": "使用当前语言设置重命名所有默认组（排除已自定义名称的组）。"
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, flatMap, forEach, map, toNumber } from 'lodash';
@@ -18,6 +19,7 @@ type Props = {
 };
 
 const Episode = ({ episode, setFileOptions, type }: Props) => {
+  const { t } = useTranslation('utilities');
   const [options, setOptions] = useState<ReleaseManagementOptionsType>(
     () => {
       const tempOptions: ReleaseManagementOptionsType = {};
@@ -61,15 +63,20 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
         {`${getEpisodePrefix(episode.AniDB?.Type)}${episode.AniDB?.EpisodeNumber} - ${episode.Name}`}
         <div>
           <span className="text-panel-text-important">{optionCounts.keep ?? 0}</span>
-          &nbsp;Kept |&nbsp;
+          &nbsp;
+          {t('releaseManagement.episode.kept')}
+          |&nbsp;
           {type === ReleaseManagementItemType.MultipleReleases && (
             <>
               <span className="text-panel-text-warning">{optionCounts.variation ?? 0}</span>
-              &nbsp;Variation |&nbsp;
+              &nbsp;
+              {t('releaseManagement.episode.variation')}
+              |&nbsp;
             </>
           )}
           <span className="text-panel-text-danger">{optionCounts.delete ?? 0}</span>
-          &nbsp;Delete
+          &nbsp;
+          {t('releaseManagement.episode.delete')}
         </div>
       </div>
 
@@ -87,11 +94,11 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
               <div className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
                   <div className="flex">
-                    <div className="min-w-[9.375rem] font-semibold">File Name</div>
+                    <div className="min-w-[9.375rem] font-semibold">{t('releaseManagement.episode.fileName')}</div>
                     {fileName}
                   </div>
                   <div className="flex">
-                    <div className="min-w-[9.375rem] font-semibold">Location</div>
+                    <div className="min-w-[9.375rem] font-semibold">{t('releaseManagement.episode.location')}</div>
                     {folderPath}
                   </div>
                 </div>
@@ -107,8 +114,8 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
                       event.target.value as 'keep' | 'delete',
                     )}
                 >
-                  <option value="keep">Will be kept</option>
-                  <option value="delete">Will be deleted</option>
+                  <option value="keep">{t('releaseManagement.episode.options.keep')}</option>
+                  <option value="delete">{t('releaseManagement.episode.options.delete')}</option>
                 </Select>
 
                 {file.AniDB?.ID && (
@@ -145,9 +152,9 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
               value={options[file.ID]}
               onChange={event => handleOptionChange(file.ID, event.target.value as 'keep' | 'variation' | 'delete')}
             >
-              <option value="keep">Will be kept</option>
-              <option value="delete">Will be deleted</option>
-              <option value="variation">Marked as Variation</option>
+              <option value="keep">{t('releaseManagement.episode.options.keep')}</option>
+              <option value="delete">{t('releaseManagement.episode.options.delete')}</option>
+              <option value="variation">{t('releaseManagement.episode.options.variation')}</option>
             </Select>
 
             {file.AniDB?.ID && (

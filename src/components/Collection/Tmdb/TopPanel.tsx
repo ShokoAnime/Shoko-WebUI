@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiLinkPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const TopPanel = (props: Props) => {
+  const { t } = useTranslation('panels');
   const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
   const navigate = useNavigateVoid();
 
@@ -43,8 +45,8 @@ const TopPanel = (props: Props) => {
 
   return (
     <ShokoPanel
-      title="Metadata Linking"
-      options={<ItemCount count={xrefsCount ?? flatXrefs?.length ?? 0} suffix="Entries" />}
+      title={t('tmdbTopPanel.metadataLinking')}
+      options={<ItemCount count={xrefsCount ?? flatXrefs?.length ?? 0} suffix={t('tmdbTopPanel.entries')} />}
       className="sticky -top-6 z-10"
     >
       <div className="flex items-center gap-x-3">
@@ -54,32 +56,32 @@ const TopPanel = (props: Props) => {
             !flatXrefs && 'opacity-50 pointer-events-none',
           )}
         >
-          Match Type
+          {t('tmdbTopPanel.matchType')}
           <span>|</span>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
               {(matchRatingCounts.DateAndTitleMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)}
             </div>
-            Perfect
+            {t('tmdbTopPanel.perfect')}
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
               {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
                 + (matchRatingCounts.TitleKindaMatches ?? 0)}
             </div>
-            Approximate
+            {t('tmdbTopPanel.approximate')}
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-danger px-2 text-button-primary-text">
               {matchRatingCounts.FirstAvailable ?? 0}
             </div>
-            Fallback
+            {t('tmdbTopPanel.fallback')}
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-primary px-2 text-button-primary-text">
               {matchRatingCounts.UserVerified ?? 0}
             </div>
-            Override
+            {t('tmdbTopPanel.override')}
           </div>
         </div>
         <Button
@@ -88,7 +90,7 @@ const TopPanel = (props: Props) => {
           className="flex flex-row flex-wrap items-center gap-x-2 py-3"
           onClick={() => navigate(`/webui/collection/series/${seriesId}`)}
         >
-          Cancel
+          {t('tmdbTopPanel.cancel')}
         </Button>
         <Button
           buttonType="primary"
@@ -96,11 +98,11 @@ const TopPanel = (props: Props) => {
           className="flex flex-row flex-wrap items-center gap-x-2 py-3"
           onClick={handleCreateLink}
           disabled={disableCreateLink}
-          tooltip={disableCreateLink ? 'No links to save!' : ''}
+          tooltip={disableCreateLink ? t('tmdbTopPanel.noLinksToSave') : ''}
           loading={createInProgress}
         >
           <Icon path={mdiLinkPlus} size={1} />
-          Save Links
+          {t('tmdbTopPanel.saveLinks')}
         </Button>
       </div>
     </ShokoPanel>

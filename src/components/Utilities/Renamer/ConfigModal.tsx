@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { find } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const ConfigModal = (props: Props) => {
+  const { t } = useTranslation('utilities');
   const {
     changeSelectedConfig,
     config,
@@ -94,11 +96,11 @@ const ConfigModal = (props: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header={rename ? 'Rename Config' : 'New Config'}
+      header={rename ? t('configModal.rename') : t('configModal.create')}
       size="sm"
     >
       <Select
-        label="Renamer"
+        label={t('configModal.renamer')}
         id="renamer"
         value={selectedRenamer}
         onChange={event => setSelectedRenamer(event.target.value)}
@@ -112,7 +114,7 @@ const ConfigModal = (props: Props) => {
 
         {renamers?.length === 0 && (
           <option key="na" value="na">
-            No renamer found!
+            {t('configModal.noRenamer')}
           </option>
         )}
 
@@ -126,22 +128,22 @@ const ConfigModal = (props: Props) => {
       <Input
         id="config-name"
         type="text"
-        label="Config Name"
+        label={t('configModal.configName')}
         value={configName}
         onChange={event => setConfigName(event.target.value)}
       />
 
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">{t('configModal.cancel')}</Button>
         <Button
           onClick={handleSave}
           buttonType="primary"
           className="px-6 py-2"
           loading={isPatchConfigPending || isNewConfigPending}
           disabled={!configName || selectedRenamer === 'na' || configExists}
-          tooltip={configExists ? 'Another config with the same name already exists!' : ''}
+          tooltip={configExists ? t('configModal.nameExists') : ''}
         >
-          Save
+          {t('configModal.save')}
         </Button>
       </div>
     </ModalPanel>

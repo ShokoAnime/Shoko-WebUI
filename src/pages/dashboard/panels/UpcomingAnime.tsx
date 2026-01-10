@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { produce } from 'immer';
 import { map } from 'lodash';
@@ -14,12 +15,9 @@ import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 import type { RootState } from '@/core/store';
 
 type TabType = 'collection' | 'all';
-const tabStates: { label?: string, value: TabType }[] = [
-  { label: 'My Collection', value: 'collection' },
-  { label: 'All', value: 'all' },
-];
 
 const UpcomingAnime = () => {
+  const { t } = useTranslation('panels');
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const settings = useSettingsQuery().data;
@@ -27,6 +25,11 @@ const UpcomingAnime = () => {
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const [currentTab, setCurrentTab] = useState<TabType>(upcomingAnimeView);
+
+  const tabStates = [
+    { label: t('upcomingAnime.tabs.myCollection'), value: 'collection' },
+    { label: t('upcomingAnime.tabs.all'), value: 'all' },
+  ];
 
   const calendarQuery = useDashboardCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
   const calendarAllQuery = useDashboardCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });
@@ -41,7 +44,7 @@ const UpcomingAnime = () => {
 
   return (
     <ShokoPanel
-      title="Upcoming Anime"
+      title={t('upcomingAnime.title')}
       editMode={layoutEditMode}
       isFetching={currentTab === 'all' ? calendarAllQuery.isPending : calendarQuery.isPending}
       options={
@@ -55,8 +58,8 @@ const UpcomingAnime = () => {
       >
         {(!calendarQuery.data || calendarQuery.data.length === 0) && (
           <div className="flex size-full flex-col justify-center gap-y-2 pb-10 text-center">
-            <div>No Upcoming Anime.</div>
-            <div>Start A Currently Airing Series To Populate This Section.</div>
+            <div>{t('upcomingAnime.emptyTitle')}</div>
+            <div>{t('upcomingAnime.emptyCollectionDescription')}</div>
           </div>
         )}
 
@@ -72,8 +75,8 @@ const UpcomingAnime = () => {
       >
         {(!calendarAllQuery.data || calendarAllQuery.data.length === 0) && (
           <div className="flex size-full flex-col justify-center gap-y-2 pb-10 text-center">
-            <div>No Upcoming Anime.</div>
-            <div>Enable Calendar To Populate This Section</div>
+            <div>{t('upcomingAnime.emptyTitle')}</div>
+            <div>{t('upcomingAnime.emptyAllDescription')}</div>
           </div>
         )}
 

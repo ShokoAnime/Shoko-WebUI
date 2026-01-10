@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiBrushOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -19,6 +20,7 @@ let themeUpdateCounter = 0;
 const UI_VERSION = uiVersion();
 
 const GeneralSettings = () => {
+  const { t } = useTranslation('settings');
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
   const {
@@ -65,12 +67,12 @@ const GeneralSettings = () => {
             themeUpdateCounter += 1;
             // URL cannot be built without a base, so we use localhost
             const path = new URL(themePathHref.value, 'http://localhost');
-            path.searchParams.set('updateCount', themeUpdateCounter.toString());
+            path.searchParams.set('general.updateCount', themeUpdateCounter.toString());
             // Remove base from URL and set value
             themePathHref.value = `${path.pathname}${path.search}`;
 
             updateSetting('WebUI_Settings', 'theme', `theme-${data.ID}`);
-            toast.info(`Successfully uploaded theme "${data.Name}"`);
+            toast.info(t('general.theme.uploadSuccess', { name: data.Name }));
           })
           .catch(console.error);
       },
@@ -83,12 +85,13 @@ const GeneralSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; General | Shoko</title>
+      <title>{t('general.pageTitle')}</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">General</div>
+        <div className="text-xl font-semibold">
+          {t('general.title')}
+        </div>
         <div>
-          Here you can find settings for version details, theme customization, notification management, and log
-          configurations.
+          {t('general.description')}
         </div>
       </div>
 
@@ -96,7 +99,9 @@ const GeneralSettings = () => {
 
       <div className="flex flex-col gap-y-6">
         <div className="flex items-center justify-between">
-          <div className="font-semibold">Version Information</div>
+          <div className="font-semibold">
+            {t('general.version.title')}
+          </div>
           <Button
             buttonType="primary"
             buttonSize="small"
@@ -104,19 +109,19 @@ const GeneralSettings = () => {
             onClick={() => {
               checkWebuiUpdateQuery.refetch().then(() => {}, () => {});
             }}
-            tooltip="Check for WebUI Update"
+            tooltip={t('general.version.checkUpdate')}
           >
             <Icon
               path={mdiRefresh}
               size={0.85}
               spin={checkWebuiUpdateQuery.isFetching}
             />
-            <span>Refresh</span>
+            <span>{t('general.version.refresh')}</span>
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
-            <span>Server Version</span>
+            <span>{t('general.version.serverVersion')}</span>
             <div className="flex gap-2">
               {versionQuery.data?.Server.Version}
               <a
@@ -133,11 +138,11 @@ const GeneralSettings = () => {
             </div>
           </div>
           <div className="flex h-8 justify-between">
-            <span>Server Channel</span>
+            <span>{t('general.version.serverChannel')}</span>
             {versionQuery.data?.Server.ReleaseChannel}
           </div>
           <div className="flex h-8 justify-between">
-            <span>Web UI Version</span>
+            <span>{t('general.version.webuiVersion')}</span>
             <div className="flex gap-2">
               {versionQuery.data?.WebUI?.Version}
               <a
@@ -152,7 +157,7 @@ const GeneralSettings = () => {
             </div>
           </div>
           <div className="flex items-center justify-between ">
-            <span>Web UI Channel</span>
+            <span>{t('general.version.webuiChannel')}</span>
             <SelectSmall
               id="update-channel"
               value={WebUI_Settings.updateChannel}
@@ -169,7 +174,9 @@ const GeneralSettings = () => {
 
       <div className="flex flex-col gap-y-6">
         <div className="flex items-center justify-between">
-          <div className="font-semibold">Theme Options</div>
+          <div className="font-semibold">
+            {t('general.theme.title')}
+          </div>
           <input
             ref={fileInputRef}
             className="hidden"
@@ -185,18 +192,18 @@ const GeneralSettings = () => {
             className="flex flex-row flex-wrap items-center gap-x-2"
             onClick={onOpenFileDialog}
             disabled={isUploading}
-            tooltip="Upload or install a new Theme"
+            tooltip={t('general.theme.uploadTooltip')}
           >
             <Icon
               path={mdiBrushOutline}
               size={0.85}
             />
-            <span>Upload Theme</span>
+            <span>{t('general.theme.upload')}</span>
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
-            Theme
+            {t('general.theme.theme')}
             <SelectSmall
               id="theme"
               value={WebUI_Settings.theme}
@@ -207,16 +214,18 @@ const GeneralSettings = () => {
             </SelectSmall>
           </div>
           <div className="flex h-8 items-center justify-between">
-            <span>Description</span>
-            <span className="max-w-xs truncate">{currentTheme?.Description ?? 'The default theme.'}</span>
+            <span>{t('general.theme.description')}</span>
+            <span className="max-w-xs truncate">
+              {currentTheme?.Description ?? t('general.theme.defaultDescription')}
+            </span>
           </div>
           <div className="flex h-8 items-center justify-between">
-            <span>Version</span>
+            <span>{t('general.theme.version')}</span>
             {currentTheme?.Version ?? '1.0.0'}
           </div>
           <div className="flex h-8 items-center justify-between">
-            <span>Author</span>
-            {currentTheme?.Author ?? 'Shoko Staff'}
+            <span>{t('general.theme.author')}</span>
+            {currentTheme?.Author ?? t('general.theme.defaultAuthor')}
           </div>
         </div>
       </div>
@@ -225,9 +234,11 @@ const GeneralSettings = () => {
 
       <div className="flex flex-col gap-y-6">
         <div className="flex justify-between">
-          <div className="flex items-center font-semibold">Notification Options</div>
+          <div className="flex items-center font-semibold">
+            {t('general.notifications.title')}
+          </div>
           <Checkbox
-            label="Enable"
+            label={t('general.notifications.enable')}
             id="enable-notifications"
             isChecked={WebUI_Settings?.notifications ?? true}
             onChange={event => updateSetting('WebUI_Settings', 'notifications', event.target.checked)}
@@ -239,14 +250,14 @@ const GeneralSettings = () => {
             !(WebUI_Settings?.notifications ?? true) && 'pointer-events-none opacity-65',
           )}
         >
-          <span>Notification Position</span>
+          <span>{t('general.notifications.position')}</span>
           <SelectSmall
             id="toast-position"
             value={WebUI_Settings.toastPosition}
             onChange={event => updateSetting('WebUI_Settings', 'toastPosition', event.target.value)}
           >
-            <option value="bottom-right">Bottom Right</option>
-            <option value="top-right">Top Right</option>
+            <option value="bottom-right">{t('general.notifications.bottomRight')}</option>
+            <option value="top-right">{t('general.notifications.topRight')}</option>
           </SelectSmall>
         </div>
       </div>
@@ -255,10 +266,10 @@ const GeneralSettings = () => {
 
       <div className="flex flex-col gap-y-6">
         <div className="flex justify-between">
-          <div className="flex items-center font-semibold">Log Options</div>
+          <div className="flex items-center font-semibold">{t('general.logs.title')}</div>
           <Checkbox
             id="enable-logs"
-            label="Enable"
+            label={t('general.notifications.enable')}
             isChecked={LogRotator.Enabled}
             onChange={event => updateSetting('LogRotator', 'Enabled', event.target.checked)}
           />
@@ -271,14 +282,14 @@ const GeneralSettings = () => {
         >
           <Checkbox
             justify
-            label="Compress Logs"
+            label={t('general.logs.compress')}
             id="compress-logs"
             isChecked={LogRotator.Zip}
             onChange={event => updateSetting('LogRotator', 'Zip', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Delete Older Logs"
+            label={t('general.logs.delete')}
             id="delete-logs"
             isChecked={LogRotator.Delete}
             onChange={event => updateSetting('LogRotator', 'Delete', event.target.checked)}
@@ -289,21 +300,21 @@ const GeneralSettings = () => {
               !LogRotator.Delete && 'pointer-events-none opacity-65',
             )}
           >
-            <span>Delete Frequency</span>
+            <span>{t('general.logs.deleteFrequency')}</span>
             <SelectSmall
               id="delete-frequency"
               value={LogRotator.Delete_Days}
               onChange={event => updateSetting('LogRotator', 'Delete_Days', event.target.value)}
             >
-              <option value="0">Never</option>
-              <option value="7">Daily</option>
-              <option value="30">Monthly</option>
-              <option value="90">Quarterly</option>
+              <option value="0">{t('general.logs.never')}</option>
+              <option value="7">{t('general.logs.daily')}</option>
+              <option value="30">{t('general.logs.monthly')}</option>
+              <option value="90">{t('general.logs.quarterly')}</option>
             </SelectSmall>
           </div>
           <Checkbox
             justify
-            label="Trace Logs"
+            label={t('general.logs.trace')}
             id="trace-logs"
             isChecked={TraceLog}
             onChange={event => setNewSettings({ ...newSettings, TraceLog: event.target.checked })}

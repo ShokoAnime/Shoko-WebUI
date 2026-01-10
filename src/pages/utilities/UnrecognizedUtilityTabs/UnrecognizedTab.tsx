@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import useMeasure from 'react-use-measure';
 import {
@@ -63,6 +64,7 @@ const Menu = (
     setSelectedRows: Updater<Record<number, boolean>>;
   },
 ) => {
+  const { t } = useTranslation('utilities');
   const {
     selectedRows,
     setSelectedRows,
@@ -99,8 +101,8 @@ const Menu = (
         removeFolder: true,
       },
       {
-        onSuccess: () => toast.success(`${selectedRows.length} files deleted!`),
-        onError: () => toast.error('Files could not be deleted!'),
+        onSuccess: () => toast.success(t('unrecognized.filesDeleted', { count: selectedRows.length })),
+        onError: () => toast.error(t('unrecognized.filesDeleteFailed')),
       },
     );
     setSelectedRows([]);
@@ -115,12 +117,14 @@ const Menu = (
       .allSettled(promises)
       .then((result) => {
         const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Error ignoring ${failedCount} files!`);
-        if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
+        if (failedCount) toast.error(t('unrecognized.filesIgnoreError', { count: failedCount }));
+        if (failedCount !== selectedRows.length) {
+          toast.success(t('unrecognized.filesIgnored', { count: selectedRows.length }));
+        }
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [ignoreFile, selectedRows, setSelectedRows]);
+  }, [ignoreFile, selectedRows, setSelectedRows, t]);
 
   const rehashFiles = useCallback(() => {
     const promises = selectedRows.map(row => rehashFile(row.ID));
@@ -129,12 +133,14 @@ const Menu = (
       .allSettled(promises)
       .then((result) => {
         const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Rehash failed for ${failedCount} files!`);
-        if (failedCount !== selectedRows.length) toast.success(`Rehashing ${selectedRows.length} files!`);
+        if (failedCount) toast.error(t('unrecognized.rehashFailed', { count: failedCount }));
+        if (failedCount !== selectedRows.length) {
+          toast.success(t('unrecognized.rehashSuccess', { count: selectedRows.length }));
+        }
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [rehashFile, selectedRows, setSelectedRows]);
+  }, [rehashFile, selectedRows, setSelectedRows, t]);
 
   const rescanFiles = useCallback(() => {
     const promises = selectedRows.map(row => rescanFile(row.ID));
@@ -143,12 +149,14 @@ const Menu = (
       .allSettled(promises)
       .then((result) => {
         const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Rescan failed for ${failedCount} files!`);
-        if (failedCount !== selectedRows.length) toast.success(`Rescanning ${selectedRows.length} files!`);
+        if (failedCount) toast.error(t('unrecognized.rescanFailed', { count: failedCount }));
+        if (failedCount !== selectedRows.length) {
+          toast.success(t('unrecognized.rescanSuccess', { count: selectedRows.length }));
+        }
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [rescanFile, selectedRows, setSelectedRows]);
+  }, [rescanFile, selectedRows, setSelectedRows, t]);
 
   const handleRename = useCallback(() => {
     dispatch(addFiles(selectedRows));
@@ -166,31 +174,28 @@ const Menu = (
                 invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
               }}
               icon={mdiRefresh}
-              name="Refresh"
+              name={t('unrecognized.refresh')}
             />
           )}
       </div>
-      <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
-      <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
-      <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
-      <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
-      <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
+      <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name={t('unrecognized.rescan')} />
+      <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name={t('unrecognized.rehash')} />
+      <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name={t('unrecognized.rename')} />
+      <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name={t('unrecognized.ignore')} />
+      <MenuButton
+        onClick={showDeleteConfirmation}
+        icon={mdiMinusCircleOutline}
+        name={t('unrecognized.delete')}
+        highlight
+      />
       <MenuButton
         onClick={() => setSelectedRows([])}
         icon={mdiCloseCircleOutline}
-        name="Cancel Selection"
+        name={t('unrecognized.cancelSelection')}
         highlight
       />
     </>
-  ), [
-    handleRename,
-    ignoreFiles,
-    rehashFiles,
-    rescanFiles,
-    setSelectedRows,
-    showDeleteConfirmation,
-    selectedRows,
-  ]);
+  ), [t, handleRename, ignoreFiles, rehashFiles, rescanFiles, showDeleteConfirmation, setSelectedRows, selectedRows]);
 
   return (
     <>
@@ -206,7 +211,7 @@ const Menu = (
             invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
           }}
           icon={mdiRefresh}
-          name="Refresh"
+          name={t('unrecognized.refresh')}
         />
         <TransitionDiv
           className="hidden grow gap-x-2 lg:flex 2xl:gap-x-4"
@@ -217,7 +222,7 @@ const Menu = (
       </div>
 
       <div className={cx(selectedRows.length !== 0 ? 'flex' : 'hidden', '3xl:hidden')}>
-        <DropdownButton buttonTypes="secondary" content={<span>Options</span>}>
+        <DropdownButton buttonTypes="secondary" content={<span>{t('unrecognized.options')}</span>}>
           {renderSelectedRowActions}
         </DropdownButton>
       </div>
@@ -234,6 +239,7 @@ const Menu = (
 };
 
 const UnrecognizedTab = () => {
+  const { t } = useTranslation('utilities');
   const navigate = useNavigateVoid();
 
   const {
@@ -270,13 +276,13 @@ const UnrecognizedTab = () => {
     () => [
       {
         id: 'importFolder',
-        name: 'Import Folder',
+        name: t('unrecognized.importFolder'),
         className: 'w-40',
         item: (file) => {
           const importFolder = find(
             importFolders,
             { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
-          )?.Name ?? '<Unknown>';
+          )?.Name ?? '{t(\'unknown\')}';
 
           return (
             <div
@@ -298,7 +304,7 @@ const UnrecognizedTab = () => {
         item: file => <AVDumpFileIcon file={file} />,
       },
     ],
-    [importFolders],
+    [importFolders, t],
   );
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
@@ -371,7 +377,7 @@ const UnrecognizedTab = () => {
             <div className="flex items-center gap-x-3">
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t('unrecognized.searchPlaceholder')}
                 startIcon={mdiMagnify}
                 id="search"
                 value={search}
@@ -391,7 +397,7 @@ const UnrecognizedTab = () => {
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={1} />
-                  <span>Manual Link</span>
+                  <span>{t('unrecognized.manualLink')}</span>
                 </Button>
                 <Button
                   buttonType="primary"
@@ -402,9 +408,9 @@ const UnrecognizedTab = () => {
                 >
                   <Icon path={mdiDumpTruck} size={1} />
                   <span>
-                    {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
-                    {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
-                    {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
+                    {isAvdumpFinished && !dumpInProgress && t('unrecognized.finishAVDump')}
+                    {!isAvdumpFinished && dumpInProgress && t('unrecognized.dumpingFiles')}
+                    {!isAvdumpFinished && !dumpInProgress && t('unrecognized.avdumpFiles')}
                   </span>
                 </Button>
               </div>
@@ -420,7 +426,9 @@ const UnrecognizedTab = () => {
           )}
 
           {!filesQuery.isPending && fileCount === 0 && (
-            <div className="flex grow items-center justify-center font-semibold">No unrecognized file(s)!</div>
+            <div className="flex grow items-center justify-center font-semibold">
+              {t('unrecognized.noUnrecognizedFiles')}
+            </div>
           )}
 
           {filesQuery.isSuccess && fileCount > 0 && (

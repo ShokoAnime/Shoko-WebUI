@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFolderOpen } from '@mdi/js';
 import { find } from 'lodash';
@@ -31,6 +32,7 @@ const defaultImportFolder = {
 } as ImportFolderType;
 
 const ImportFolderModal = () => {
+  const { t } = useTranslation('dialogs');
   const dispatch = useDispatch();
 
   const { ID, edit, status } = useSelector((state: RootState) => state.modals.importFolder);
@@ -65,7 +67,7 @@ const ImportFolderModal = () => {
   const handleDelete = () => {
     deleteFolder({ folderId: ID }, {
       onSuccess: () => {
-        toast.success('Import folder deleted!');
+        toast.success(t('dialogs.importFolderModal.toastDeleted'));
         dispatch(setStatus(false));
       },
     });
@@ -75,14 +77,14 @@ const ImportFolderModal = () => {
     if (edit) {
       updateFolder(importFolder, {
         onSuccess: () => {
-          toast.success('Import folder edited!');
+          toast.success(t('dialogs.importFolderModal.toastEdited'));
           dispatch(setStatus(false));
         },
       });
     } else {
       createFolder(importFolder, {
         onSuccess: () => {
-          toast.success('Import folder added!');
+          toast.success(t('dialogs.importFolderModal.toastAdded'));
           dispatch(setStatus(false));
         },
       });
@@ -98,7 +100,7 @@ const ImportFolderModal = () => {
         show={status}
         onRequestClose={handleClose}
         onAfterOpen={() => getFolderDetails()}
-        header={edit ? 'Edit Import Folder' : 'Add New Import Folder'}
+        header={edit ? t('dialogs.importFolderModal.editHeader') : t('dialogs.importFolderModal.addHeader')}
         size="sm"
         noPadding
       >
@@ -107,60 +109,62 @@ const ImportFolderModal = () => {
             <Input
               id="Name"
               value={importFolder.Name}
-              label="Name"
+              label={t('dialogs.importFolderModal.nameLabel')}
               type="text"
-              placeholder="Folder name"
+              placeholder={t('dialogs.importFolderModal.namePlaceholder')}
               onChange={handleInputChange}
               className="w-full"
             />
             <Input
               id="Path"
               value={importFolder.Path}
-              label="Location"
+              label={t('dialogs.importFolderModal.locationLabel')}
               type="text"
-              placeholder="Location"
+              placeholder={t('dialogs.importFolderModal.locationPlaceholder')}
               onChange={handleInputChange}
               className="w-full"
               endIcons={[{ icon: mdiFolderOpen, onClick: handleBrowse }]}
             />
             <Select
-              label="Drop Type"
+              label={t('dialogs.importFolderModal.dropTypeLabel')}
               id="DropFolderType"
               value={importFolder.DropFolderType ?? 'None'}
               onChange={handleInputChange}
               className="w-full"
             >
-              <option value="None">None</option>
-              <option value="Source">Source</option>
-              <option value="Destination">Destination</option>
-              <option value="Both">Both</option>
+              <option value="None">{t('dialogs.importFolderModal.dropNone')}</option>
+              <option value="Source">{t('dialogs.importFolderModal.dropSource')}</option>
+              <option value="Destination">{t('dialogs.importFolderModal.dropDestination')}</option>
+              <option value="Both">{t('dialogs.importFolderModal.dropBoth')}</option>
             </Select>
             <Select
-              label="Watch For New Files"
+              label={t('dialogs.importFolderModal.watchLabel')}
               id="WatchForNewFiles"
               value={importFolder.WatchForNewFiles ? 1 : 0}
               onChange={handleInputChange}
               className="w-full"
             >
-              <option value={0}>No</option>
-              <option value={1}>Yes</option>
+              <option value={0}>{t('dialogs.importFolderModal.watchNo')}</option>
+              <option value={1}>{t('dialogs.importFolderModal.watchYes')}</option>
             </Select>
           </div>
           <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
             <div className="flex justify-end gap-x-3 font-semibold">
               {edit && (
                 <Button onClick={handleDelete} buttonType="danger" buttonSize="normal">
-                  Delete
+                  {t('dialogs.common.delete')}
                 </Button>
               )}
-              <Button onClick={handleClose} buttonType="secondary" buttonSize="normal">Cancel</Button>
+              <Button onClick={handleClose} buttonType="secondary" buttonSize="normal">
+                {t('dialogs.common.cancel')}
+              </Button>
               <Button
                 onClick={handleSave}
                 buttonType="primary"
                 buttonSize="normal"
                 disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}
               >
-                Save
+                {t('dialogs.common.save')}
               </Button>
             </div>
           </div>

@@ -67,7 +67,7 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
     const selectedTagId1 = parseInt(event.currentTarget.dataset.tagId ?? '0', 10);
     if (Number.isNaN(selectedTagId1) || !selectedTagId1) return;
     const selectedTag1 = userTagsQuery.data?.find(tag => tag.ID === selectedTagId1) ?? null;
-    if (selectedTag1 && selectedTag && selectedTag1.ID === selectedTag.ID) {
+    if (selectedTag1 && selectedTag1.ID === selectedTag?.ID) {
       setSelectedTagId(null);
       setTagName('');
       setTagDescription('');
@@ -277,7 +277,7 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
                 'flex flex-row justify-between',
                 lockedTag && 'opacity-65',
                 !lockedTag && 'cursor-pointer',
-                !lockedTag && activeTagSet.has(tag.ID) && (!selectedTag || selectedTag.ID !== tag.ID)
+                !lockedTag && activeTagSet.has(tag.ID) && (selectedTag?.ID !== tag.ID)
                   && 'text-panel-text-primary',
                 selectedTag?.ID === tag.ID && 'text-panel-text-important',
               )}

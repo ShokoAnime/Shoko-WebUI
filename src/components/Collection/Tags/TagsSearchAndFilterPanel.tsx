@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -20,6 +21,7 @@ type Props = {
 };
 const TagsSearchAndFilterPanel = React.memo(
   ({ handleInputChange, search, seriesId, showSpoilers, sort, tagSourceFilter, toggleSort }: Props) => {
+    const { t } = useTranslation('series');
     const { isPending: anidbRefreshPending, mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(seriesId);
     const refreshAnidbCallback = useCallback(() => {
       refreshAnidb({ force: true });
@@ -28,22 +30,22 @@ const TagsSearchAndFilterPanel = React.memo(
     const searchInput = useMemo(() => (
       <Input
         id="search"
-        label="Tag Search"
+        label={t('panels.tags.searchLabel')}
         startIcon={mdiMagnify}
         type="text"
-        placeholder="Search..."
+        placeholder={t('panels.tags.searchPlaceholder')}
         value={search}
         onChange={handleInputChange}
       />
-    ), [handleInputChange, search]);
+    ), [handleInputChange, search, t]);
     const tagSources = useMemo(() => (
       <div className="flex flex-col gap-y-2">
-        <div className="text-base font-bold">Tag Source</div>
+        <div className="text-base font-bold">{t('panels.tags.tagSourceTitle')}</div>
         <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
           {['AniDB', 'User'].map((tagSource: TagType['Source']) => (
             <Checkbox
               justify
-              label={tagSource}
+              label={tagSource === 'AniDB' ? t('panels.tags.tagSources.anidb') : t('panels.tags.tagSources.user')}
               key={tagSource}
               id={tagSource}
               isChecked={!tagSourceFilter.has(tagSource)}
@@ -52,34 +54,34 @@ const TagsSearchAndFilterPanel = React.memo(
           ))}
         </div>
       </div>
-    ), [handleInputChange, tagSourceFilter]);
+    ), [handleInputChange, tagSourceFilter, t]);
     const spoilers = useMemo(() => (
       <div className="flex flex-col gap-x-2">
-        <div className="text-base font-bold">Display</div>
+        <div className="text-base font-bold">{t('panels.tags.displayTitle')}</div>
         <Checkbox
           id="show-spoilers"
-          label="Show Spoiler Tags"
+          label={t('panels.tags.showSpoilers')}
           isChecked={showSpoilers}
           onChange={handleInputChange}
           justify
         />
       </div>
-    ), [handleInputChange, showSpoilers]);
+    ), [handleInputChange, showSpoilers, t]);
     const sortAction = useMemo(() => (
       <button
         type="button"
         className="flex w-full flex-row justify-between"
         onClick={toggleSort}
       >
-        Change Sort |&nbsp;
-        {sort ? 'Tag Weight' : 'A-Z'}
+        {t('panels.tags.changeSortPrefix')}
+        {sort ? t('panels.tags.sortWeight') : t('panels.tags.sortAlphabetical')}
         <Icon
           path={mdiPlayCircleOutline}
           className="pointer-events-auto text-panel-icon-action"
           size={1}
         />
       </button>
-    ), [sort, toggleSort]);
+    ), [sort, toggleSort, t]);
     const forceRefreshAnidbData = useMemo(() => (
       <button
         type="button"
@@ -87,18 +89,18 @@ const TagsSearchAndFilterPanel = React.memo(
         onClick={refreshAnidbCallback}
         disabled={anidbRefreshPending}
       >
-        Force refresh: AniDB
+        {t('panels.tags.forceRefresh')}
         <Icon
           path={mdiPlayCircleOutline}
           className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
           size={1}
         />
       </button>
-    ), [anidbRefreshPending, refreshAnidbCallback]);
+    ), [anidbRefreshPending, refreshAnidbCallback, t]);
     return (
       <div className="flex w-100 shrink-0 flex-col gap-y-6">
         <ShokoPanel
-          title="Search & Filter"
+          title={t('panels.searchAndFilter')}
           className="w-full"
           contentClassName="gap-y-6"
           fullHeight={false}
@@ -109,7 +111,7 @@ const TagsSearchAndFilterPanel = React.memo(
           {tagSources}
           {spoilers}
           <div className="flex flex-col gap-2">
-            <div className="text-base font-bold">Quick Actions</div>
+            <div className="text-base font-bold">{t('panels.tags.quickActions')}</div>
             {sortAction}
             {forceRefreshAnidbData}
           </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import toast from '@/components/Toast';
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const DeleteActionsTab = ({ seriesId }: Props) => {
+  const { t } = useTranslation('series');
   const navigate = useNavigateVoid();
 
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
@@ -24,18 +26,18 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
         onClick={() =>
           deleteSeries({ seriesId, deleteFiles: false }, {
             onSuccess: () => {
-              toast.success('Series deleted!');
+              toast.success(t('toast.delete.keep'));
               navigateToCollection();
             },
           })}
       />
       <Action
-        name="Delete Series - Remove Files"
-        description="Deletes the series from Shoko along with the files"
+        name={t('actions.delete.removeFiles.name')}
+        description={t('actions.delete.removeFiles.description')}
         onClick={() =>
           deleteSeries({ seriesId, deleteFiles: true }, {
             onSuccess: () => {
-              toast.success('Series and files deleted!');
+              toast.success(t('toast.delete.remove'));
               navigateToCollection();
             },
           })}
@@ -46,7 +48,7 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
         onClick={() =>
           deleteSeries({ seriesId, deleteFiles: true, completelyRemove: true }, {
             onSuccess: () => {
-              toast.success('Series deleted completely!');
+              toast.success(t('toast.delete.complete'));
               navigateToCollection();
             },
           })}

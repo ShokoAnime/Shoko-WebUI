@@ -1,4 +1,5 @@
 import React, { Suspense, lazy } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { findKey } from 'lodash';
@@ -17,6 +18,7 @@ type Props = {
 };
 
 const RenamerScript = ({ newConfig, setNewConfig, settingsModel }: Props) => {
+  const { t } = useTranslation('utilities');
   const settingName = findKey(
     settingsModel,
     setting => setting.SettingType === 'Code',
@@ -32,7 +34,7 @@ const RenamerScript = ({ newConfig, setNewConfig, settingsModel }: Props) => {
   if (!settingName) {
     return (
       <div className="flex size-full grow flex-col items-center justify-center gap-y-2 text-center">
-        This renamer does not have any script to edit!
+        {t('renamerScript.noScript')}
       </div>
     );
   }

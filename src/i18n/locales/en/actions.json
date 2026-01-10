@@ -1,0 +1,150 @@
+{
+  "modal": {
+    "title": "Actions"
+  },
+  "tabs": {
+    "import": "Import",
+    "anidb": "AniDB",
+    "trakt": "Trakt",
+    "tvdb": "TvDB",
+    "tmdb": "TMDB",
+    "shoko": "Shoko",
+    "images": "Images",
+    "plex": "Plex"
+  },
+  "toast": {
+    "running": "Running action \"{{name}}\""
+  },
+  "sync-votes": {
+    "name": "Sync AniDB Votes",
+    "info": "Sync Series & Episode Votes from Shoko to AniDB."
+  },
+  "sync-mylist": {
+    "name": "OVERWRITE AniDB MyList",
+    "info": "Syncs all Series & Episode watch state data from Shoko to AniDB. THIS IS A ONE-WAY ACTION AND WILL OVERWRITE ALL ANIDB DATA!"
+  },
+  "add-all-manually-linked-files-to-mylist": {
+    "name": "Add All Manual Links To MyList",
+    "info": "Syncs Manually Linked Episodes to your MyList. File entries on AniDB will show up as Generic."
+  },
+  "download-missing-anidb-data": {
+    "name": "Download Missing AniDB Data",
+    "info": "Downloads XML data from AniDB forcefully. Use this only if the XML has been edited, deleted, or if Shoko has unexpectedly closed or crashed."
+  },
+  "update-anidb-calendar": {
+    "name": "Update AniDB Calendar",
+    "info": "Updates the 'Upcoming Anime' calendar in Shoko with the most recent information from AniDB."
+  },
+  "update-all-anidb-info": {
+    "name": "Update All AniDB Info",
+    "info": "Update all Series information with the latest data from AniDB."
+  },
+  "get-anidb-notifications": {
+    "name": "Get AniDB Notifications",
+    "info": "Fetch unread notifications and messages from AniDB"
+  },
+  "process-moved-files": {
+    "name": "Process Moved Files",
+    "info": "Process file moved messages from AniDB. This will force an update on the affected files."
+  },
+  "sync-trakt": {
+    "name": "Sync Trakt Collection",
+    "info": "Sync watch states from Shoko to Trakt. THIS IS A ONE-WAY ACTION AND WILL OVERWRITE ALL TRAKT DATA!"
+  },
+  "update-all-trakt-info": {
+    "name": "Update All Trakt Info",
+    "info": "Sync all info for Series from Trakt to Shoko."
+  },
+  "purge-all-tvdb-info": {
+    "name": "Purge All TVDB Info",
+    "info": "Purges all TVDB data from Shoko, including all images, episodes, series and cross-references. Will also disable auto-linking for TvDB. THIS IS A ONE-WAY ACTION AND WILL CLEAR OUT ALL TVDB DATA!"
+  },
+  "run-import": {
+    "name": "Run Import",
+    "info": "This checks for new files, hashes them etc, scans Drop Folders, checks and scans for community site links (trakt, tmdb, etc), and downloads missing images."
+  },
+  "import-new-files": {
+    "name": "Import New Files",
+    "info": "Queues a task to import only new files found in the import folder"
+  },
+  "avdump-mismatched-files": {
+    "name": "AVDump Mismatched Files",
+    "info": "Scans the library, detects files without a hash match in AniDB, and runs AVDump on them."
+  },
+  "update-all-mediainfo": {
+    "name": "Update All Mediainfo",
+    "info": "Runs MediaInfo on every file in your collection to update their metadata."
+  },
+  "update-series-stats": {
+    "name": "Update Series Stats",
+    "info": "Updates all series in your collection, recalculating totals, remainders, and watched statuses of items."
+  },
+  "update-missing-anidb-file-release-groups": {
+    "name": "Update Missing AniDB Release Groups",
+    "info": "Checks AniDB for updated data on files in your collection that lack a release group."
+  },
+  "update-missing-anidb-file-info": {
+    "name": "Update Missing AniDB File Info",
+    "info": "Updates AniDB files lacking file information, including those missing release groups and those with outdated internal data versions."
+  },
+  "update-all-images": {
+    "name": "Update All Images",
+    "info": "Updates and downloads all missing images from AniDB and TMDB."
+  },
+  "validate-all-images": {
+    "name": "Validate All Images",
+    "info": "Identifies any invalid images and re-downloads them."
+  },
+  "search-for-tmdb-matches": {
+    "name": "Search for TMDB Matches",
+    "info": "Scan for TMDB matches for all unlinked AniDB anime."
+  },
+  "update-all-tmdb-movies": {
+    "name": "Update All TMDB Movies",
+    "info": "Updates all TMDB Movies in the local database."
+  },
+  "update-all-tmdb-shows": {
+    "name": "Update All TMDB Shows",
+    "info": "Updates all TMDB Shows in the local database."
+  },
+  "delete-unused-tmdb-movies": {
+    "name": "Delete Unused TMDB Movies",
+    "info": "Deletes all unused TMDB Movies that are not linked to any AniDB anime."
+  },
+  "delete-unused-tmdb-shows": {
+    "name": "Delete Unused TMDB Shows",
+    "info": "Deletes all unused TMDB Shows that are not linked to any AniDB anime."
+  },
+  "download-missing-tmdb-people": {
+    "name": "Download Missing TMDB People",
+    "info": "Downloads any TMDB People missing in the local database."
+  },
+  "purge-tmdb-movie-collections": {
+    "name": "Delete All TMDB Movie Collections",
+    "info": "Deletes all TMDB Movie Collections stored in the local database, and removes any images associated with them."
+  },
+  "purge-tmdb-show-alternate-orderings": {
+    "name": "Delete All TMDB Show Alternate Orderings",
+    "info": "Deletes all TMDB Show Alternate Orderings stored in the local database."
+  },
+  "plex-sync-all": {
+    "name": "Sync Plex Watch Status",
+    "info": "Synchronizes watch states with Plex."
+  },
+  "remove-missing-files-mylist": {
+    "name": "Remove Missing Files",
+    "info": "Deletes entries in Shoko and MyList for files that are no longer accessible."
+  },
+  "remove-missing-files": {
+    "name": "Remove Missing Files (Keep in MyList)",
+    "info": "Deletes entries in Shoko, while retaining them in MyList, for files that are no longer accessible."
+  },
+  "recreate-all-groups": {
+    "name": "Recreate All Groups",
+    "info": "Deletes all existing groups in Shoko and recreates them."
+  },
+  "rename-all-groups": {
+    "name": "Rename All Groups",
+    "info": "Renames all default groups, excluding those with custom names, using the current language settings."
+  }
+}

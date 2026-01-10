@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { mdiMenuDown } from '@mdi/js';
@@ -39,22 +40,24 @@ const renderResizeHandle = () => (
 const Toast = React.memo((
   { cancelLayoutChange, saveLayout }: { cancelLayoutChange: () => void, saveLayout: (reset?: boolean) => void },
 ) => {
+  const { t } = useTranslation('dashboard');
   const resetLayout = () => saveLayout(true);
   const saveNewLayout = () => saveLayout();
 
   return (
     <div className="flex flex-col gap-y-3">
-      Edit Mode Enabled
+      {t('editModeEnabled')}
       <div className="flex items-center justify-end gap-x-3 font-semibold">
-        <Button onClick={resetLayout} buttonType="danger" className="px-3 py-1.5">Reset to Default</Button>
-        <Button onClick={cancelLayoutChange} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
-        <Button onClick={saveNewLayout} buttonType="primary" className="px-3 py-1.5">Save</Button>
+        <Button onClick={resetLayout} buttonType="danger" className="px-3 py-1.5">{t('resetToDefault')}</Button>
+        <Button onClick={cancelLayoutChange} buttonType="secondary" className="px-3 py-1.5">{t('cancel')}</Button>
+        <Button onClick={saveNewLayout} buttonType="primary" className="px-3 py-1.5">{t('save')}</Button>
       </div>
     </div>
   );
 });
 
 const DashboardPage = () => {
+  const { t } = useTranslation('dashboard');
   const dispatch = useDispatch();
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -103,11 +106,11 @@ const DashboardPage = () => {
       onSuccess: () => {
         dispatch(setLayoutEditMode(false));
         toast.dismiss('layoutEditMode');
-        toast.success(reset ? 'Layout reset to default!' : 'Layout Saved!');
+        toast.success(reset ? t('layoutReset') : t('layoutSaved'));
       },
       onError: error => toast.error('', error.message),
     });
-  }, [currentLayout, dispatch, patchSettings, settings]);
+  }, [currentLayout, dispatch, patchSettings, settings, t]);
 
   const location = useLocation();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
@@ -149,7 +152,7 @@ const DashboardPage = () => {
 
   return (
     <>
-      <title>Dashboard | Shoko</title>
+      <title>{`${t('dashboard')} | Shoko`}</title>
       <ResponsiveGridLayout
         layouts={currentLayout}
         breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)

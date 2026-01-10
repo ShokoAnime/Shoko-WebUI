@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import prettyBytes from 'pretty-bytes';
@@ -46,43 +47,56 @@ const Item = (
 };
 
 const CollectionStats = () => {
+  const { t } = useTranslation('panels');
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const statsQuery = useDashbordStatsQuery();
 
   const childrenFirst = [
-    <Item key="series" title="Series" value={statsQuery.data?.SeriesCount} />,
-    <Item key="series-completed" title="Series Completed" value={statsQuery.data?.FinishedSeries} />,
-    <Item key="episodes-watched" title="Episodes Watched" value={statsQuery.data?.WatchedEpisodes} />,
-    <Item key="hours-watched" title="Hours Watched" value={`${statsQuery.data?.WatchedHours ?? 0} H`} />,
+    <Item key="series" title={t('collectionStats.series')} value={statsQuery.data?.SeriesCount} />,
+    <Item
+      key="series-completed"
+      title={t('collectionStats.seriesCompleted')}
+      value={statsQuery.data?.FinishedSeries}
+    />,
+    <Item
+      key="episodes-watched"
+      title={t('collectionStats.episodesWatched')}
+      value={statsQuery.data?.WatchedEpisodes}
+    />,
+    <Item
+      key="hours-watched"
+      title={t('collectionStats.hoursWatched')}
+      value={`${statsQuery.data?.WatchedHours ?? 0} H`}
+    />,
   ];
   const childrenSecond = [
     <Item
       key="collection-size"
-      title="Collection Size"
+      title={t('collectionStats.collectionSize')}
       value={prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}
     />,
     <Item
       key="files"
-      title="Files"
+      title={t('collectionStats.files')}
       value={statsQuery.data?.FileCount}
       link="/webui/utilities/file-search"
     />,
     <Item
       key="unrecognized-files"
-      title="Unknown Files"
+      title={t('collectionStats.unrecognizedFiles')}
       value={statsQuery.data?.UnrecognizedFiles}
       link="/webui/utilities/unrecognized"
     />,
     <Item
       key="multiple-files"
-      title="Duplicate Episodes"
+      title={t('collectionStats.duplicateEpisodes')}
       value={statsQuery.data?.EpisodesWithMultipleFiles}
       link="/webui/utilities/release-management/multiples"
     />,
     <Item
       key="duplicate-files"
-      title="Duplicate Hashes"
+      title={t('collectionStats.duplicateHashes')}
       value={statsQuery.data?.FilesWithDuplicateLocations}
       link="/webui/utilities/release-management/duplicates"
     />,
@@ -91,19 +105,19 @@ const CollectionStats = () => {
   const childrenThird = [
     <Item
       key="missing-links"
-      title="Missing TMDB Links"
+      title={t('collectionStats.missingTmdbLinks')}
       value={statsQuery.data?.SeriesWithMissingLinks}
       filter="MissingTmdbLink"
     />,
     <Item
       key="missing-episodes-collecting"
-      title="Missing Episodes (Collecting)"
+      title={t('collectionStats.missingEpisodesCollecting')}
       value={statsQuery.data?.MissingEpisodesCollecting}
       link="/webui/utilities/release-management/missing-episodes?onlyCollecting=true"
     />,
     <Item
       key="missing-episodes"
-      title="Missing Episodes (Total)"
+      title={t('collectionStats.missingEpisodesTotal')}
       value={statsQuery.data?.MissingEpisodes}
       link="/webui/utilities/release-management/missing-episodes"
     />,
@@ -111,7 +125,7 @@ const CollectionStats = () => {
 
   return (
     <ShokoPanel
-      title="Collection Statistics"
+      title={t('collectionStats.panelTitle')}
       isFetching={statsQuery.isPending}
       editMode={layoutEditMode}
       contentClassName="flex gap-y-6"

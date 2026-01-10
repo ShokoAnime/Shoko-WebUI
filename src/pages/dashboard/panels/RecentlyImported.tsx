@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { produce } from 'immer';
 import { map } from 'lodash';
@@ -17,12 +18,15 @@ import SeriesDetails from '@/pages/dashboard/components/SeriesDetails';
 
 import type { RootState } from '@/core/store';
 
-const tabStates: { label?: string, value: string }[] = [
-  { label: 'Episodes', value: 'episodes' },
-  { label: 'Series', value: 'series' },
-];
-
 const RecentlyImported = () => {
+  const { t } = useTranslation('panels');
+  const tabStates = React.useMemo(
+    () => [
+      { label: t('recentlyImported.tabs.episodes'), value: 'episodes' },
+      { label: t('recentlyImported.tabs.series'), value: 'series' },
+    ],
+    [t],
+  );
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const settings = useSettingsQuery().data;
@@ -59,7 +63,7 @@ const RecentlyImported = () => {
 
   return (
     <ShokoPanel
-      title="Recently Imported"
+      title={t('recentlyImported.title')}
       editMode={layoutEditMode}
       isFetching={viewMode === 'series' ? recentSeriesQuery.isPending : recentEpisodesQuery.isPending}
       options={
@@ -78,7 +82,7 @@ const RecentlyImported = () => {
       >
         {(!recentEpisodesQuery.data || recentEpisodesQuery.data.length === 0) && (
           <div className="flex size-full flex-col justify-center pb-10 text-center">
-            No Recently Imported Episodes!
+            {t('recentlyImported.emptyEpisodes')}
           </div>
         )}
 
@@ -94,7 +98,7 @@ const RecentlyImported = () => {
       >
         {(!recentSeriesQuery.data || recentSeriesQuery.data.length === 0) && (
           <div className="flex size-full flex-col justify-center pb-10 text-center">
-            No Recently Imported Series!
+            {t('recentlyImported.emptySeries')}
           </div>
         )}
 

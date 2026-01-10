@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { mdiTagPlusOutline } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -20,6 +21,7 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
 const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
+  const { t } = useTranslation('panels');
   const { seriesId } = useParams();
 
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true, filter: 1 }, !!seriesId);
@@ -51,13 +53,13 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       >
         {(series.AniDB?.Restricted ?? false) && (
           <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-            18+ Adults Only
+            {t('series.adultOnly')}
           </div>
         )}
       </BackgroundImagePlaceholderDiv>
       <div className="flex w-full max-w-[56.25rem] flex-col gap-y-6">
         <ShokoPanel
-          title="Series Description"
+          title={t('series.description')}
           className="!h-64"
           contentClassName="contain-strict"
           transparent
@@ -69,7 +71,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
         </ShokoPanel>
 
         <ShokoPanel
-          title="Series Information"
+          title={t('series.information')}
           className="!h-60"
           transparent
         >
@@ -80,7 +82,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       </div>
       <div className="flex w-full flex-col gap-y-6">
         <ShokoPanel
-          title="Top 10 Tags"
+          title={t('series.topTags')}
           className="!h-64"
           contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
@@ -99,7 +101,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
         </ShokoPanel>
 
         <ShokoPanel
-          title="User Stats"
+          title={t('series.userStats')}
           className="!h-60"
           contentClassName="flex-wrap gap-3"
           transparent

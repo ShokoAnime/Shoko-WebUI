@@ -118,7 +118,7 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
               className={cx(
                 'flex flex-row justify-between transition-colors',
                 !ordering.InUse && 'cursor-pointer',
-                ordering.InUse && (!selectedOrdering || selectedOrdering.OrderingID !== ordering.OrderingID)
+                ordering.InUse && (selectedOrdering?.OrderingID !== ordering.OrderingID)
                   && 'text-panel-text-primary',
                 selectedOrdering?.OrderingID === ordering.OrderingID && 'text-panel-text-important',
               )}

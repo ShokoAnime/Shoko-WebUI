@@ -1,0 +1,18 @@
+{
+  "search": {
+    "placeholder": "搜索..."
+  },
+
+  "actions": {
+    "filterPresets": "筛选预设",
+    "editGroup": "编辑分组",
+    "filter": "筛选",
+    "switchMode": "切换到{{mode}}模式",
+    "displaySettings": "显示设置"
+  },
+
+  "modes": {
+    "poster": "海报",
+    "list": "列表"
+  }
+}

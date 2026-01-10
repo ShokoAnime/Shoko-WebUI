@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { produce } from 'immer';
 
@@ -14,6 +15,8 @@ type Props = {
 };
 
 const DisplaySettingsModal = ({ onClose, show }: Props) => {
+  // const { t } = useTranslation('displaySettingsModal');
+  const { t } = useTranslation('settings');
   const dispatch = useDispatch();
 
   const settings = useSettingsQuery().data;
@@ -55,32 +58,32 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header="Display Settings"
+      header={t('displaySettingsModal.title')}
       size="sm"
       noPadding
       noGap
     >
       <div className="flex max-h-96 flex-col gap-y-6 overflow-y-auto p-6">
         <div className="flex flex-col gap-y-4">
-          <div className="font-semibold">Poster View Options</div>
+          <div className="font-semibold">{t('displaySettingsModal.poster.title')}</div>
           <div className="flex flex-col gap-y-1">
             <Checkbox
               justify
-              label="Total Episodes"
+              label={t('displaySettingsModal.poster.totalEpisodes')}
               id="poster-showEpisodeCount"
               isChecked={posterSettings.showEpisodeCount}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Group Indicator"
+              label={t('displaySettingsModal.poster.groupIndicator')}
               id="poster-showGroupIndicator"
               isChecked={posterSettings.showGroupIndicator}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Unwatched Episode Count"
+              label={t('displaySettingsModal.poster.unwatchedCount')}
               id="poster-showUnwatchedCount"
               isChecked={posterSettings.showUnwatchedCount}
               onChange={handleSettingChange}
@@ -91,32 +94,32 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
         <div className="border-b border-panel-border" />
 
         <div className="flex flex-col gap-y-4">
-          <div className="font-semibold">List View Options</div>
+          <div className="font-semibold">{t('displaySettingsModal.list.title')}</div>
           <div className="flex flex-col gap-1">
             <Checkbox
               justify
-              label="Item Type"
+              label={t('displaySettingsModal.list.itemType')}
               id="list-showItemType"
               isChecked={listSettings.showItemType}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Group Indicator"
+              label={t('displaySettingsModal.list.groupIndicator')}
               id="list-showGroupIndicator"
               isChecked={listSettings.showGroupIndicator}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Top Tags"
+              label={t('displaySettingsModal.list.topTags')}
               id="list-showTopTags"
               isChecked={listSettings.showTopTags}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Custom Tags"
+              label={t('displaySettingsModal.list.customTags')}
               id="list-showCustomTags"
               isChecked={listSettings.showCustomTags}
               onChange={handleSettingChange}
@@ -127,25 +130,25 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
         <div className="border-b border-panel-border" />
 
         <div className="flex flex-col gap-y-4">
-          <div className="font-semibold">Image Options</div>
+          <div className="font-semibold">{t('displaySettingsModal.image.title')}</div>
           <div className="flex flex-col gap-1">
             <Checkbox
               justify
-              label="Random Posters on Load"
+              label={t('displaySettingsModal.image.randomPoster')}
               id="image-showRandomPoster"
               isChecked={imageSettings.showRandomPoster}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Random Backdrop on Load"
+              label={t('displaySettingsModal.image.randomBackdrop')}
               id="image-showRandomBackdrop"
               isChecked={imageSettings.showRandomBackdrop}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Show Backdrop if Thumbnail is missing"
+              label={t('displaySettingsModal.image.thumbnailFallback')}
               id="image-useThumbnailFallback"
               isChecked={imageSettings.useThumbnailFallback}
               onChange={handleSettingChange}
@@ -156,11 +159,11 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
         <div className="border-b border-panel-border" />
 
         <div className="flex flex-col gap-y-4">
-          <div className="font-semibold">AniDB Options</div>
+          <div className="font-semibold">{t('displaySettingsModal.anidb.title')}</div>
           <div className="flex flex-col gap-1">
             <Checkbox
               justify
-              label="Filter AniDB descriptions"
+              label={t('displaySettingsModal.anidb.filterDescription')}
               id="anidb-filterDescription"
               isChecked={anidbSettings.filterDescription}
               onChange={handleSettingChange}
@@ -171,13 +174,15 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
       <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
         <div className="flex justify-end gap-x-3 font-semibold">
-          <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+          <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">
+            {t('displaySettingsModal.actions.cancel')}
+          </Button>
           <Button
             onClick={handleSave}
             buttonType="primary"
             className="px-6 py-2"
           >
-            Save
+            {t('displaySettingsModal.actions.save')}
           </Button>
         </div>
       </div>

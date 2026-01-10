@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -11,6 +12,7 @@ import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const AniDBSettings = () => {
+  const { t } = useTranslation('settings');
   const { newSettings, updateSetting } = useSettingsContext();
   const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
 
@@ -40,14 +42,14 @@ const AniDBSettings = () => {
 
   const testLogin = () => {
     testAniDbLogin({ Username, Password }, {
-      onSuccess: () => toast.success('AniDB Login Successful!'),
-      onError: () => toast.error('Incorrect Username/Password!'),
+      onSuccess: () => toast.success(t('anidb.login.success')),
+      onError: () => toast.error(t('anidb.login.error')),
     });
   };
 
   const validateAndSaveRelationDepth = (depth: string) => {
     if (parseInt(depth, 10) < 0 || parseInt(depth, 10) > 5) {
-      toast.error('Max Relation Depth may only be between 0 and 5');
+      toast.error(t('anidb.maxRelationDepthError'));
     } else updateSetting('AniDb', 'MaxRelationDepth', depth);
   };
 
@@ -55,10 +57,9 @@ const AniDBSettings = () => {
     <>
       <title>Settings &gt; AniDB | Shoko</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">AniDB</div>
+        <div className="text-xl font-semibold">{t('anidb.title')}</div>
         <div>
-          Configure the information Shoko retrieves from AniDB for the series in your collection, and set your
-          preferences for MyList options and the general updating of AniDB data.
+          {t('anidb.description')}
         </div>
       </div>
 
@@ -66,19 +67,19 @@ const AniDBSettings = () => {
 
       <div className="mt-0.5 flex flex-col gap-y-6">
         <div className="flex justify-between">
-          <div className="items-center font-semibold">Login Options</div>
+          <div className="items-center font-semibold">{t('anidb.login.title')}</div>
           <Button
             onClick={() => testLogin()}
             loading={isAnidbLoginPending}
             buttonType="primary"
             buttonSize="small"
           >
-            Test
+            {t('anidb.login.test')}
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
-            Username
+            {t('anidb.login.username')}
             <InputSmall
               id="username"
               value={Username}
@@ -88,7 +89,7 @@ const AniDBSettings = () => {
             />
           </div>
           <div className="flex justify-between">
-            Password
+            {t('anidb.login.password')}
             <InputSmall
               id="password"
               value={Password}
@@ -98,7 +99,7 @@ const AniDBSettings = () => {
             />
           </div>
           <div className="flex justify-between">
-            AVDump Key
+            {t('anidb.avdumpKey')}
             <InputSmall
               id="avdump-key"
               value={AVDumpKey ?? ''}
@@ -108,7 +109,7 @@ const AniDBSettings = () => {
             />
           </div>
           <div className="flex justify-between">
-            HTTP Server URL
+            {t('anidb.serverUrl')}
             <InputSmall
               id="http-server-url"
               value={HTTPServerUrl}
@@ -123,38 +124,38 @@ const AniDBSettings = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Download Options</div>
+        <div className="flex items-center font-semibold">{t('anidb.download.title')}</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
-            label="Character Images"
+            label={t('anidb.download.characterImages')}
             id="character-images"
             isChecked={DownloadCharacters}
             onChange={event => updateSetting('AniDb', 'DownloadCharacters', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Creator Images"
+            label={t('anidb.download.creatorImages')}
             id="creator-images"
             isChecked={DownloadCreators}
             onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Release Groups"
+            label={t('anidb.download.releaseGroups')}
             id="release-groups"
             isChecked={DownloadReleaseGroups}
             onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Always Download Related Anime"
+            label={t('anidb.download.alwaysDownloadRelatedAnime')}
             id="related-anime"
             isChecked={DownloadRelatedAnime}
             onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked)}
           />
           <div className="flex items-center justify-between transition-opacity">
-            Related Depth
+            {t('anidb.download.relatedDepth')}
             <InputSmall
               id="max-relation-depth"
               value={MaxRelationDepth}
@@ -169,70 +170,70 @@ const AniDBSettings = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Mylist Options</div>
+        <div className="flex items-center font-semibold">{t('anidb.mylist.title')}</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
-            label="Add Files"
+            label={t('anidb.mylist.addFiles')}
             id="add-files"
             isChecked={MyList_AddFiles}
             onChange={event => updateSetting('AniDb', 'MyList_AddFiles', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Read Watched"
+            label={t('anidb.mylist.readWatched')}
             id="read-watched"
             isChecked={MyList_ReadWatched}
             onChange={event => updateSetting('AniDb', 'MyList_ReadWatched', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Read Unwatched"
+            label={t('anidb.mylist.readUnwatched')}
             id="read-unwatched"
             isChecked={MyList_ReadUnwatched}
             onChange={event => updateSetting('AniDb', 'MyList_ReadUnwatched', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Set Watched"
+            label={t('anidb.mylist.setWatched')}
             id="set-watched"
             isChecked={MyList_SetWatched}
             onChange={event => updateSetting('AniDb', 'MyList_SetWatched', event.target.checked)}
           />
           <Checkbox
             justify
-            label="Set Unwatched"
+            label={t('anidb.mylist.setUnwatched')}
             id="set-unwatched"
             isChecked={MyList_SetUnwatched}
             onChange={event => updateSetting('AniDb', 'MyList_SetUnwatched', event.target.checked)}
           />
           <div className="flex items-center justify-between">
-            <span>Storage State</span>
+            <span>{t('anidb.mylist.storageState')}</span>
             <SelectSmall
               id="storage-state"
               value={MyList_StorageState}
               onChange={event => updateSetting('AniDb', 'MyList_StorageState', event.target.value)}
             >
-              <option value={0}>Unknown</option>
-              <option value={1}>HDD</option>
-              <option value={2}>Disk</option>
-              <option value={3}>Deleted</option>
-              <option value={4}>Remote</option>
+              <option value={0}>{t('anidb.mylist.storageOptions.0')}</option>
+              <option value={1}>{t('anidb.mylist.storageOptions.1')}</option>
+              <option value={2}>{t('anidb.mylist.storageOptions.2')}</option>
+              <option value={3}>{t('anidb.mylist.storageOptions.3')}</option>
+              <option value={4}>{t('anidb.mylist.storageOptions.4')}</option>
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">
-            <span>Delete Action</span>
+            <span>{t('anidb.mylist.deleteType')}</span>
             <SelectSmall
               id="delete-action"
               value={MyList_DeleteType}
               onChange={event => updateSetting('AniDb', 'MyList_DeleteType', event.target.value)}
             >
-              <option value={0}>Delete File (AniDB)</option>
-              <option value={1}>Delete File (Local)</option>
-              <option value={2}>Mark Deleted</option>
-              <option value={3}>Mark External (CD/DVD)</option>
-              <option value={4}>Mark Unknown</option>
-              <option value={5}>DVD/BD</option>
+              <option value={0}>{t('anidb.mylist.deleteOptions.0')}</option>
+              <option value={1}>{t('anidb.mylist.deleteOptions.1')}</option>
+              <option value={2}>{t('anidb.mylist.deleteOptions.2')}</option>
+              <option value={3}>{t('anidb.mylist.deleteOptions.3')}</option>
+              <option value={4}>{t('anidb.mylist.deleteOptions.4')}</option>
+              <option value={5}>{t('anidb.mylist.deleteOptions.5')}</option>
             </SelectSmall>
           </div>
         </div>
@@ -241,10 +242,10 @@ const AniDBSettings = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Update Options</div>
+        <div className="flex items-center font-semibold">{t('anidb.update.title')}</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
-            <span>Calendar</span>
+            <span>{t('anidb.update.calendar')}</span>
             <SelectSmall
               id="calendar"
               value={Calendar_UpdateFrequency}
@@ -254,7 +255,7 @@ const AniDBSettings = () => {
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">
-            <span>Anime Information</span>
+            <span>{t('anidb.update.animeInfo')}</span>
             <SelectSmall
               id="anime-information"
               value={Anime_UpdateFrequency}
@@ -264,7 +265,7 @@ const AniDBSettings = () => {
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">
-            <span>Files With Missing Info</span>
+            <span>{t('anidb.update.missingFiles')}</span>
             <SelectSmall
               id="files-missing-info"
               value={File_UpdateFrequency}
@@ -274,7 +275,7 @@ const AniDBSettings = () => {
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">
-            <span>Notifications</span>
+            <span>{t('anidb.update.notifications')}</span>
             <SelectSmall
               id="notifications"
               value={Notification_UpdateFrequency}
@@ -285,7 +286,7 @@ const AniDBSettings = () => {
           </div>
           <Checkbox
             justify
-            label="Handle Moved Files"
+            label={t('anidb.update.handleMovedFiles')}
             id="handle-moved-files"
             isChecked={Notification_HandleMovedFiles}
             onChange={event => updateSetting('AniDb', 'Notification_HandleMovedFiles', event.target.checked)}
