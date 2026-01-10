@@ -1,7 +1,7 @@
 export type ImportFolderType = {
   ID: number;
   WatchForNewFiles?: boolean;
-  DropFolderType?: 0 | 1 | 2 | 3;
+  DropFolderType?: 'None' | 'Source' | 'Destination' | 'Both';
   Path: string;
   Name: string;
   Size?: number;

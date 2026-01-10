@@ -10,7 +10,6 @@ import {
   useSyncSeriesTraktMutation,
   useUpdateSeriesTMDBImagesMutation,
 } from '@/core/react-query/series/mutations';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   seriesId: number;
@@ -29,9 +28,9 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
     refreshAnidb({ force, cacheOnly });
   };
 
-  const updateTmdbImagesForce = useEventCallback(() => {
+  const updateTmdbImagesForce = () => {
     updateTmdbImagesMutation({ force: true });
-  });
+  };
 
   return (
     <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { mdiCloseCircleOutline, mdiLoading, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiPauseCircleOutline, mdiPlayCircleOutline, mdiProgressClock } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { map } from 'lodash';
 
@@ -14,7 +14,6 @@ import {
 } from '@/core/react-query/queue/mutations';
 import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
 import { dayjs } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { QueueItemType } from '@/core/signalr/types';
 import type { RootState } from '@/core/store';
@@ -27,9 +26,9 @@ const Options = () => {
   const { mutate: pauseQueue } = useQueuePauseMutation();
   const { mutate: resumeQueue } = useQueueResumeMutation();
 
-  const handleResume = useEventCallback(() => resumeQueue());
-  const handlePause = useEventCallback(() => pauseQueue());
-  const handleClear = useEventCallback(() => clearQueue());
+  const handleResume = () => resumeQueue();
+  const handlePause = () => pauseQueue();
+  const handleClear = () => clearQueue();
 
   return (
     <div className="flex gap-x-2">
@@ -91,7 +90,7 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
       </span>
       {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
-    {item.IsRunning && <Icon path={mdiLoading} size={1} spin className="shrink-0 text-panel-text-primary" />}
+    {item.IsRunning && <Icon path={mdiProgressClock} size={1} className="shrink-0 text-panel-text-primary" />}
   </div>
 );
 
@@ -104,7 +103,7 @@ const QueueItems = () => { // This is a separate component so that the whole Sho
     : <div className="flex grow items-center justify-center pb-14 font-semibold">{t('queueProcessor.queueEmpty')}</div>;
 };
 
-function QueueProcessor() {
+const QueueProcessor = () => {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
@@ -118,6 +117,6 @@ function QueueProcessor() {
       <QueueItems />
     </ShokoPanel>
   );
-}
+};
 
 export default QueueProcessor;

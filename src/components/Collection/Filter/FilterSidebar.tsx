@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFilterPlusOutline } from '@mdi/js';
 import { keys, map, values } from 'lodash';
@@ -17,7 +17,6 @@ import {
   setActiveFilter,
 } from '@/core/slices/collection';
 import { buildSidebarFilter } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -32,14 +31,12 @@ const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
   return <DefaultCriteria criteria={criteria} />;
 };
 
-type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
-const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
+const OptionButton = ({ icon, onClick }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => (
   <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
 );
-type OptionsProps = {
-  showModal: () => void;
-};
-const Options = ({ showModal }: OptionsProps) => <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />;
+const Options = ({ showModal }: { showModal: () => void }) => (
+  <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />
+);
 
 const FilterSidebar = () => {
   const [criteriaModal, setCriteriaModal] = useState(false);
@@ -47,18 +44,18 @@ const FilterSidebar = () => {
   const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
   const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
 
-  const applyFilter = useEventCallback(() => {
+  const applyFilter = useCallback(() => {
     const requestData = buildSidebarFilter(values(selectedCriteria));
     dispatch(setActiveFilter(requestData));
-  });
+  }, [dispatch, selectedCriteria]);
 
   const showCriteriaModal = (state: boolean) => () => {
     setCriteriaModal(state);
   };
 
-  const handleResetFilter = useEventCallback(() => {
+  const handleResetFilter = () => {
     dispatch(resetFilter());
-  });
+  };
 
   useEffect(() => {
     const count = keys(selectedCriteria).length;

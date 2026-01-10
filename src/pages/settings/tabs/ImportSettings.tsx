@@ -4,10 +4,9 @@ import { produce } from 'immer';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
-function ImportSettings() {
+const ImportSettings = () => {
   const { t } = useTranslation('settings');
   const { newSettings, updateSetting } = useSettingsContext();
 
@@ -24,15 +23,16 @@ function ImportSettings() {
     RenameOnImport,
   } = newSettings.Plugins.Renamer;
 
-  const handleRenamerSettingChange = useEventCallback(
-    (type: 'MoveOnImport' | 'RenameOnImport' | 'AllowRelocationInsideDestinationOnImport', value: boolean) => {
-      const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
-        ...settings,
-        [type]: value,
-      }));
-      updateSetting('Plugins', 'Renamer', renamerSettings);
-    },
-  );
+  const handleRenamerSettingChange = (
+    type: 'MoveOnImport' | 'RenameOnImport' | 'AllowRelocationInsideDestinationOnImport',
+    value: boolean,
+  ) => {
+    const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
+      ...settings,
+      [type]: value,
+    }));
+    updateSetting('Plugins', 'Renamer', renamerSettings);
+  };
 
   return (
     <>
@@ -107,6 +107,6 @@ function ImportSettings() {
       <div className="border-b border-panel-border" />
     </>
   );
-}
+};
 
 export default ImportSettings;

@@ -8,7 +8,7 @@ type Props = {
   show: boolean;
 };
 
-const SuccessNotifyModal = (props: Props) => {
+const WelcomeModal = (props: Props) => {
   const {
     onClose,
     show,
@@ -72,4 +72,4 @@ const SuccessNotifyModal = (props: Props) => {
   );
 };
 
-export default SuccessNotifyModal;
+export default WelcomeModal;

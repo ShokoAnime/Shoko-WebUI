@@ -28,6 +28,7 @@ import type {
   AniDBBanItemType,
   NetworkAvailabilityEnum,
   QueueStatusType,
+  SeriesUpdateEventType,
 } from '@/core/signalr/types';
 import type store from '@/core/store';
 import type { RootState } from '@/core/store';
@@ -104,7 +105,7 @@ const startSignalRConnection = (connection: HubConnection) =>
 
 const signalRMiddleware: Middleware<object, RootState> = ({
   dispatch,
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Not our code, so we cannot fix it
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   getState,
 }) =>
 next =>
@@ -157,7 +158,10 @@ async (action: UnknownAction) => {
       connectionEvents.on('ShokoEvent:FileMatched', () => handleEvent('FileMatched'));
       connectionEvents.on('ShokoEvent:FileMoved', () => handleEvent('FileMoved'));
       connectionEvents.on('ShokoEvent:FileRenamed', () => handleEvent('FileRenamed'));
-      connectionEvents.on('ShokoEvent:SeriesUpdated', () => handleEvent('SeriesUpdated'));
+      connectionEvents.on(
+        'ShokoEvent:SeriesUpdated',
+        (event: SeriesUpdateEventType) => handleEvent('SeriesUpdated', event),
+      );
 
       connectionEvents.onreconnecting(
         () =>

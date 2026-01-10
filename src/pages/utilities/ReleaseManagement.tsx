@@ -32,7 +32,7 @@ import {
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
-import useEventCallback from '@/hooks/useEventCallback';
+import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 import type { ReleaseManagementOptionsType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -64,13 +64,13 @@ const ReleaseManagement = () => {
     onlyFinishedSeries: searchParams.get('onlyFinishedSeries') === 'true',
   }), [searchParams]);
 
-  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParams((currentParams) => {
       const newParams = new URLSearchParams(currentParams);
       newParams.set(event.target.id, String(event.target.checked));
       return newParams;
     });
-  });
+  };
 
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedSeries, setSelectedSeries] = useState(0);
@@ -91,7 +91,7 @@ const ReleaseManagement = () => {
   const { mutateAsync: deleteFileLocation } = useDeleteFileLocationMutation();
   const { mutateAsync: hideEpisode } = useHideEpisodeMutation();
 
-  const confirmChanges = useEventCallback(() => {
+  const confirmChanges = () => {
     setOperationsPending(true);
 
     let operations: (Promise<AxiosResponse<unknown, unknown>> | null)[];
@@ -114,7 +114,7 @@ const ReleaseManagement = () => {
       });
     }
 
-    Promise.all(operations)
+    Promise.all(operations.filter(operation => !!operation))
       .then(() => toast.success('Successful!'))
       .catch(() => toast.error('One or more operations failed!'))
       .finally(() => {
@@ -122,9 +122,9 @@ const ReleaseManagement = () => {
         resetQueries(['release-management']);
         setSelectedEpisode(undefined);
       });
-  });
+  };
 
-  const hideEpisodes = useEventCallback(() => {
+  const hideEpisodes = () => {
     setOperationsPending(true);
 
     const operations = map(selectedEpisodes, episode => hideEpisode({ episodeId: episode.IDs.ID, hidden: true }));
@@ -137,7 +137,9 @@ const ReleaseManagement = () => {
         resetQueries(['release-management']);
         setSelectedEpisodes([]);
       });
-  });
+  };
+
+  const isDuplicatesQuickSelectSupported = useIsFeatureSupported(FeatureType.DuplicatesQuickSelect);
 
   return (
     <>
@@ -198,12 +200,16 @@ const ReleaseManagement = () => {
             {/*   </Button> */}
             {/* )} */}
 
-            {(type === ReleaseManagementItemType.MultipleReleases && !selectedEpisode) && (
+            {!selectedEpisode && (
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                disabled={!selectedSeries}
+                disabled={!selectedSeries
+                  || (type === ReleaseManagementItemType.DuplicateFiles && !isDuplicatesQuickSelectSupported)}
                 onClick={toggleShowQuickSelectModal}
+                tooltip={(type === ReleaseManagementItemType.DuplicateFiles && !isDuplicatesQuickSelectSupported)
+                  ? `This feature requires server version >= ${FeatureType.DuplicatesQuickSelect}`
+                  : ''}
               >
                 <Icon path={mdiSelectMultiple} size={0.8333} />
                 {t('releaseManagement.quickSelect.title')}
@@ -278,6 +284,7 @@ const ReleaseManagement = () => {
           show={showQuickSelectModal}
           onClose={toggleShowQuickSelectModal}
           seriesId={selectedSeries}
+          type={type}
         />
       </div>
     </>

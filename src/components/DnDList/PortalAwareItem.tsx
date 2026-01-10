@@ -13,21 +13,23 @@ type Props = {
   children: React.ReactNode;
 };
 
-function PortalAwareItem(props: Props) {
-  const usePortal: boolean = props.snapshot.isDragging;
+const PortalAwareItem = (props: Props) => {
+  const { children, provided, snapshot } = props;
+
+  const usePortal: boolean = snapshot.isDragging;
 
   const child: JSX.Element = (
     <div
-      ref={props.provided.innerRef}
-      {...(props.provided.draggableProps)}
-      {...(props.provided.dragHandleProps)}
+      ref={provided.innerRef}
+      {...(provided.draggableProps)}
+      {...(provided.dragHandleProps)}
       className="group"
     >
-      {props.children}
+      {children}
     </div>
   );
 
   return usePortal ? ReactDOM.createPortal(child, portal) : child;
-}
+};
 
 export default PortalAwareItem;

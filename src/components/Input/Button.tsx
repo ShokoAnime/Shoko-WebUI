@@ -40,7 +40,7 @@ const Button = React.memo(
       type={submit ? 'submit' : 'button'}
       className={cx([
         className,
-        'relative button text-sm font-semibold transition ease-in-out rounded-lg outline-none',
+        'relative text-sm font-semibold transition ease-in-out rounded-lg outline-hidden',
         buttonType && `${buttonTypeClasses[buttonType]}`,
         buttonSize && `${buttonSizeClasses[buttonSize]}`,
         (loading || disabled) && 'opacity-65 cursor-default',

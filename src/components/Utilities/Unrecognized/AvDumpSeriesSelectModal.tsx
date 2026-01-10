@@ -1,8 +1,8 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { countBy, forEach, some, toNumber } from 'lodash';
+import { countBy, some, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -13,14 +13,14 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
 type Props = {
   show: boolean;
   onClose: (refresh?: boolean) => void;
-  getLinks: () => { fileIds: number[], links: string[] };
+  fileIds: number[];
+  links: string[];
 };
 
 const Title = ({ count, step, stepCount }: { count: number, step: number, stepCount: number }) => (
@@ -54,7 +54,7 @@ const StepDescription = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
+const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   const { mutateAsync: rescanFile } = useRescanFileMutation();
   const [clickedLink, setClickedLink] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -66,24 +66,12 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
-
-  const { ed2kLinks, fileIds, links } = useMemo(() => {
-    if (!show) return { ed2kLinks: '', links: [], fileIds: [] };
-    const { fileIds: tempFileIds, links: tempLinks } = getLinks();
-    let tempEd2kLinks = '';
-    forEach(tempLinks, (link) => {
-      tempEd2kLinks += `${link}\n`;
-    });
-    return { ed2kLinks: tempEd2kLinks, links: tempLinks, fileIds: tempFileIds };
-  }, [getLinks, show]);
-  const commonSeries = useMemo(
-    () => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))),
-    [links],
-  );
+  const ed2kLinks = links.join('\n');
+  const commonSeries = findMostCommonShowName(links.map(link => detectShow(link.split('|')[2])));
 
   useEffect(() => {
     setSearchText(commonSeries);
-  }, [commonSeries]);
+  }, [commonSeries, show]);
 
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
@@ -103,7 +91,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       });
   };
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = () => {
     onClose(true);
 
     const promises = fileIds.map(fileId => rescanFile(toNumber(fileId)));
@@ -116,7 +104,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         if (failedCount !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
       })
       .catch(console.error);
-  });
+  };
 
   useLayoutEffect(() => () => {
     if (show) return;
@@ -257,6 +245,6 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default AvDumpSeriesSelectModal;

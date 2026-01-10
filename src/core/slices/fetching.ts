@@ -7,10 +7,10 @@ const fetchingSlice = createSlice({
   } as Record<string, boolean>,
   reducers: {
     startFetching(sliceState, action) {
-      return Object.assign({}, sliceState, { [action.payload]: true });
+      return { ...sliceState, [action.payload]: true };
     },
     stopFetching(sliceState, action) {
-      return Object.assign({}, sliceState, { [action.payload]: false });
+      return { ...sliceState, [action.payload]: false };
     },
   },
 });

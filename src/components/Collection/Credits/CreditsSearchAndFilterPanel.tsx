@@ -1,4 +1,4 @@
-import React, {} from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';

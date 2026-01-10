@@ -10,7 +10,7 @@ type Props = {
   children: { key: string, item: React.ReactNode }[];
 };
 
-function DnDList(props: Props) {
+const DnDList = (props: Props) => {
   const { children, onDragEnd } = props;
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -46,6 +46,6 @@ function DnDList(props: Props) {
       </Droppable>
     </DragDropContext>
   );
-}
+};
 
 export default DnDList;

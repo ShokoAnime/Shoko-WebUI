@@ -46,6 +46,7 @@ const SeriesPoster = React.memo((props: Props) => {
         hidePlaceholderOnHover
         overlayOnHover
         zoomOnHover
+        inCollection={inCollection}
       >
         {isAnidb && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
@@ -75,7 +76,9 @@ const SeriesPoster = React.memo((props: Props) => {
       {subtitle && (
         <div
           className="truncate text-center text-sm font-semibold opacity-65"
-          title={subtitle}
+          data-tooltip-id="tooltip"
+          data-tooltip-content={subtitle}
+          data-tooltip-delay-show={500}
         >
           {subtitle}
         </div>

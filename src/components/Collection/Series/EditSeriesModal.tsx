@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
@@ -10,7 +10,6 @@ import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
@@ -60,10 +59,10 @@ const EditSeriesModal = () => {
     // stats: t('edit.tabs.stats'),
   }), [t]);
 
-  const onClose = useEventCallback(() => {
+  const onClose = useCallback(() => {
     if (seriesId === -1) return;
     dispatch(setSeriesId(-1));
-  });
+  }, [dispatch, seriesId]);
 
   useEffect(() => onClose, [onClose]);
 

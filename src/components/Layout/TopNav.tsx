@@ -45,7 +45,6 @@ import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
@@ -71,7 +70,7 @@ const QueueCount = () => {
   );
 };
 
-function TopNav() {
+const TopNav = () => {
   const { t } = useTranslation('topNav');
   const dispatch = useDispatch();
 
@@ -110,7 +109,7 @@ function TopNav() {
     [networkStatus],
   );
 
-  const closeModalsAndSubmenus = useEventCallback((event?: React.MouseEvent, id?: string) => {
+  const closeModalsAndSubmenus = (event?: React.MouseEvent, id?: string) => {
     if (layoutEditMode && event) {
       event.preventDefault();
       return;
@@ -118,11 +117,11 @@ function TopNav() {
     setShowActionsModal(false);
     setShowDashboardSettingsModal(false);
     if (id !== 'utilities') setShowUtilitiesMenu(false);
-  });
+  };
 
-  const handleLogout = useEventCallback(() => {
+  const handleLogout = () => {
     dispatch({ type: Events.AUTH_LOGOUT });
-  });
+  };
 
   const handleWebUiUpdate = () => {
     const renderToast = () => (
@@ -172,7 +171,7 @@ function TopNav() {
       >
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-6 py-2">
           <Link to="/webui/dashboard" className="flex items-center gap-x-3">
-            <ShokoIcon className="w-20" />
+            <ShokoIcon className="size-20" />
             <span className="mt-1 text-2xl font-semibold text-header-text">Shoko</span>
           </Link>
           <div className="flex items-center gap-x-6">
@@ -374,6 +373,6 @@ function TopNav() {
       <DashboardSettingsModal show={showDashboardSettingsModal} onClose={() => setShowDashboardSettingsModal(false)} />
     </>
   );
-}
+};
 
 export default TopNav;

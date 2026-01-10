@@ -25,15 +25,13 @@ import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-type SeriesTabProps = (props: { icon: string, text: string, to: string }) => React.ReactNode;
-const SeriesTab: SeriesTabProps = ({ icon, text, to }) => {
+const SeriesTab = ({ icon, text, to }: { icon: string, text: string, to: string }) => {
   const { t } = useTranslation('series');
   return (
     <NavLink
@@ -79,9 +77,9 @@ const Series = () => {
     ];
   }, [series]);
 
-  const onClickHandler = useEventCallback(() => {
+  const onClickHandler = () => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
-  });
+  };
 
   const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomBackdrop);
@@ -163,6 +161,7 @@ const Series = () => {
       <Outlet context={{ backdrop, scrollRef, series } satisfies SeriesContextType} />
 
       <div
+        id="series-background"
         className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-5"
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)

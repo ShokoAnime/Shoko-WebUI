@@ -8,7 +8,6 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
@@ -18,12 +17,12 @@ const Item = (
 ) => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
-  const handleMissingFilter = useEventCallback((filterName: string) => {
+  const handleMissingFilter = (filterName: string) => {
     dispatch(resetFilter());
     addFilterCriteriaToStore(filterName).then(() => {
       navigate('/webui/collection/filter/live');
     }).catch(console.error);
-  });
+  };
 
   return (
     <div className="flex">
@@ -47,7 +46,7 @@ const Item = (
   );
 };
 
-function CollectionStats() {
+const CollectionStats = () => {
   const { t } = useTranslation('panels');
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
@@ -75,7 +74,7 @@ function CollectionStats() {
     <Item
       key="collection-size"
       title={t('collectionStats.collectionSize')}
-      value={`${prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}`}
+      value={prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}
     />,
     <Item
       key="files"
@@ -142,6 +141,6 @@ function CollectionStats() {
       </div>
     </ShokoPanel>
   );
-}
+};
 
 export default CollectionStats;

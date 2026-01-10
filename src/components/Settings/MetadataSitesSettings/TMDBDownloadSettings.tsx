@@ -4,7 +4,6 @@ import cx from 'classnames';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SettingsContextType } from '@/core/types/context';
 
@@ -31,11 +30,11 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
     MaxAutoThumbnails,
   } = newSettings.TMDB;
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = useEventCallback((event) => {
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const propId = event.target.id.replace('TMDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     updateSetting('TMDB', propId, value);
-  });
+  };
 
   return (
     <>
@@ -77,7 +76,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoBackdrops"
           value={MaxAutoBackdrops}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -99,7 +99,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoPosters"
           value={MaxAutoPosters}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -121,7 +122,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoLogos"
           value={MaxAutoLogos}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -143,7 +145,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoThumbnails"
           value={MaxAutoThumbnails}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />
@@ -165,7 +168,8 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
         <InputSmall
           id="TMDB_MaxAutoStaffImages"
           value={MaxAutoStaffImages}
-          type="text"
+          type="number"
+          max={30}
           onChange={handleInputChange}
           className="w-12 px-3 py-1"
         />

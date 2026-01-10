@@ -33,6 +33,7 @@ export type FileType = {
   Resolution: string;
   Created: string;
   Updated: string;
+  Imported?: string;
   IsVariation: boolean;
   SeriesIDs?: XRefsType[];
   AniDB?: FileAniDBType;

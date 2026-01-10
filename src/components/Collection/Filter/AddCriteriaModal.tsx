@@ -7,7 +7,6 @@ import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilterExpressionsQuery } from '@/core/react-query/filter/queries';
 import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
@@ -18,26 +17,24 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
   const allCriteria = useFilterExpressionsQuery(show).data;
   const selectedKeys = useSelector(selectActiveCriteria);
-  const unusedCriteria = useMemo(() => filter(allCriteria, item => selectedKeys.indexOf(item.Expression) === -1), [
+  const unusedCriteria = useMemo(() => filter(allCriteria, item => !selectedKeys.includes(item.Expression)), [
     allCriteria,
     selectedKeys,
   ]);
   const [newCriteria, setNewCriteria] = useState('');
 
-  const handleClose = useEventCallback(() => {
+  const handleClose = () => {
     setNewCriteria('');
     onClose();
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
     dispatch(addFilterCriteria(filterExpression));
     handleClose();
-  });
+  };
 
-  const changeCriteria = useEventCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => setNewCriteria(event.currentTarget.value),
-  );
+  const changeCriteria = (event: React.ChangeEvent<HTMLSelectElement>) => setNewCriteria(event.currentTarget.value);
 
   return (
     <ModalPanel show={show} onRequestClose={onClose} header="Add Condition" size="sm">

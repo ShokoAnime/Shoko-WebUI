@@ -145,7 +145,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   );
 };
 
-function SeriesWithoutFilesUtility() {
+const SeriesWithoutFilesUtility = () => {
   const { t } = useTranslation('utilities');
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
@@ -217,6 +217,6 @@ function SeriesWithoutFilesUtility() {
       </div>
     </>
   );
-}
+};
 
 export default SeriesWithoutFilesUtility;

@@ -43,10 +43,10 @@ const mainpageSlice = createSlice({
   } as State,
   reducers: {
     setFetched(sliceState, action) {
-      sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: true });
+      sliceState.fetched = { ...sliceState.fetched, [action.payload]: true };
     },
     setQueueStatus(sliceState, action: PayloadAction<QueueStatusType>) {
-      sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
+      sliceState.queueStatus = { ...sliceState.queueStatus, ...action.payload };
     },
     resetQueueStatus(sliceState) {
       sliceState.queueStatus = initialQueueStatus;

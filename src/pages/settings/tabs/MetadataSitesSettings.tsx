@@ -5,7 +5,7 @@ import TMDBDownloadSettings from '@/components/Settings/MetadataSitesSettings/TM
 import TMDBSettings from '@/components/Settings/MetadataSitesSettings/TMDBSettings';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
-function MetadataSitesSettings() {
+const MetadataSitesSettings = () => {
   const { t } = useTranslation('settings');
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
@@ -40,6 +40,6 @@ function MetadataSitesSettings() {
       <div className="border-b border-panel-border" />
     </>
   );
-}
+};
 
 export default MetadataSitesSettings;

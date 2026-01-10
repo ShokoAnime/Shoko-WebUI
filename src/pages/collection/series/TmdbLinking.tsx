@@ -1,18 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOutletContext, useParams, useSearchParams } from 'react-router';
-import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
+import { mdiCogOutline, mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useToggle } from 'usehooks-ts';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeRow from '@/components/Collection/Tmdb/EpisodeRow';
 import MovieRow from '@/components/Collection/Tmdb/MovieRow';
 import TmdbLinkSelectPanel from '@/components/Collection/Tmdb/TmdbLinkSelectPanel';
 import TopPanel from '@/components/Collection/Tmdb/TopPanel';
+import TmdbShowSettingsModal from '@/components/Dialogs/TmdbShowSettingsModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { resetQueries } from '@/core/react-query/queryClient';
@@ -31,7 +33,6 @@ import {
   useTmdbShowOrMovieQuery,
 } from '@/core/react-query/tmdb/queries';
 import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -53,6 +54,9 @@ const TmdbLinking = () => {
   const tmdbId = useMemo(() => toNumber(searchParams.get('id')), [searchParams]);
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
+
+  const [toggledSettingsModal, toggleShowSettingsModal] = useToggle();
+  const showSettings = type === 'Show' && tmdbId > 0;
 
   const [createInProgress, setCreateInProgress] = useState(false);
 
@@ -122,11 +126,11 @@ const TmdbLinking = () => {
     setLinkOverrides,
   ] = useImmer<Record<number, number[]>>({});
 
-  const estimateSize = useEventCallback((index: number) => {
+  const estimateSize = (index: number) => {
     const episode = episodes[index];
     if (!episode) return 60; // 60px is the minimum height of a loaded row.
     return 60 * (linkOverrides[episode.IDs.AniDB]?.length || 1);
-  });
+  };
 
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
@@ -158,7 +162,7 @@ const TmdbLinking = () => {
 
       forEach(linkOverrides, (overrideIds, episodeId) => {
         // The rule makes it unreadable....
-        // eslint-disable-next-line prefer-destructuring
+        // eslint-disable-next-line  @typescript-eslint/prefer-destructuring
         tempXrefs[toNumber(episodeId)] = overrideIds[0];
       });
 
@@ -196,7 +200,7 @@ const TmdbLinking = () => {
   const { mutateAsync: deleteLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Show');
   const { mutateAsync: createAutoLinks } = useTmdbAddAutoXrefsMutation(seriesId);
 
-  const createEpisodeLinks = useEventCallback(async () => {
+  const createEpisodeLinks = async () => {
     setCreateInProgress(true);
     try {
       // If we're not giving the server any clues about which series to link
@@ -243,13 +247,13 @@ const TmdbLinking = () => {
       }
       // Note: The tmdb linking page's parent is the collection page, so we need to navigate from the collection page to the series page, even though we use the series id on the tmdb linking page too.
       navigate(`../series/${seriesId}`);
-    } catch (error) {
+    } catch (_) {
       toast.error(t('tmdbLinking.saveLinksFailed'));
     }
     setCreateInProgress(false);
-  });
+  };
 
-  const createMovieLinks = useEventCallback(async () => {
+  const createMovieLinks = async () => {
     setCreateInProgress(true);
     try {
       const linkGroups = reduce(
@@ -282,16 +286,16 @@ const TmdbLinking = () => {
       toast.error('Failed to save links!');
     }
     setCreateInProgress(false);
-  });
+  };
 
-  const handleCreateLink = useEventCallback(() => {
+  const handleCreateLink = () => {
     if (type === 'Movie') {
       createMovieLinks().catch(console.error);
       return;
     }
 
     createEpisodeLinks().catch(console.error);
-  });
+  };
 
   const disableCreateLink = useMemo(() => {
     if (type === 'Movie') {
@@ -303,10 +307,10 @@ const TmdbLinking = () => {
     return Object.keys(linkOverrides).length === 0;
   }, [isNewLink, linkOverrides, type]);
 
-  const handleNewLinkEdit = useEventCallback(() => {
+  const handleNewLinkEdit = () => {
     setSearchParams({});
     setLinkOverrides({});
-  });
+  };
 
   return (
     <div className="flex grow flex-col gap-y-6">
@@ -353,7 +357,7 @@ const TmdbLinking = () => {
                   {seriesQuery.data.Name}
                 </div>
 
-                <div className="ml-2 shrink-0">
+                <div className="mx-1 shrink-0">
                   <Icon path={mdiOpenInNew} size={1} />
                 </div>
               </a>
@@ -366,7 +370,7 @@ const TmdbLinking = () => {
                 <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
                   {tmdbShowOrMovieQuery.data && (
                     <>
-                      <div className="flex items-center">
+                      <div className="flex grow items-center">
                         <div className="shrink-0">
                           TMDB |&nbsp;
                         </div>
@@ -387,14 +391,33 @@ const TmdbLinking = () => {
                             {tmdbShowOrMovieQuery.data.Title}
                           </div>
 
-                          <div className="ml-2 shrink-0">
+                          <div className="mx-1 shrink-0">
                             <Icon path={mdiOpenInNew} size={1} />
                           </div>
                         </a>
+                        <div className="grow" />
+                        {showSettings
+                          ? (
+                            <>
+                              <TmdbShowSettingsModal
+                                show={toggledSettingsModal}
+                                showId={tmdbId}
+                                onClose={toggleShowSettingsModal}
+                              />
+                              <Button
+                                className="text-panel-icon-action"
+                                onClick={toggleShowSettingsModal}
+                                tooltip="Open Settings"
+                              >
+                                <Icon path={mdiCogOutline} size={1} />
+                              </Button>
+                            </>
+                          )
+                          : null}
                       </div>
                       {isNewLink && (
                         <Button
-                          className="text-panel-text-primary"
+                          className="ml-1 text-panel-text-primary"
                           onClick={handleNewLinkEdit}
                           tooltip={t('tmdbLinking.editLink')}
                         >

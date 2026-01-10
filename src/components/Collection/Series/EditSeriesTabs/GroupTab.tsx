@@ -21,7 +21,6 @@ import {
   usePatchGroupMutation,
 } from '@/core/react-query/group/mutations';
 import { useSeriesGroupQuery } from '@/core/react-query/series/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -54,19 +53,19 @@ const EditableNameComponent = React.memo(
       setModifiableName(name);
     }, [name]);
 
-    const cancelEditing = useEventCallback(() => {
+    const cancelEditing = () => {
       setModifiableName(() => {
         setEditingName(false);
         return name;
       });
-    });
+    };
 
-    const saveName = useEventCallback(() => {
+    const saveName = () => {
       if (modifiableName !== name) {
         renameGroup({ groupId, newName: modifiableName });
       }
       setEditingName(false);
-    });
+    };
 
     const endIcons: EndIcon[] = (!editingName)
       ? [
@@ -92,9 +91,9 @@ const EditableNameComponent = React.memo(
         },
       ];
 
-    const updateInput = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const updateInput = (event: React.ChangeEvent<HTMLInputElement>) => {
       setModifiableName(event.target.value);
-    });
+    };
 
     return (
       <Input
@@ -153,7 +152,7 @@ const getFilter = (query: string): FilterType => ((query === '') ? {} : {
   Sorting: { Type: 'Name', IsInverted: false },
 });
 
-function GroupTab({ seriesId }: Props) {
+const GroupTab = ({ seriesId }: Props) => {
   const { t } = useTranslation('series');
   const i18nProps = {
     nameLabel: t('group.nameLabel'),
@@ -171,7 +170,7 @@ function GroupTab({ seriesId }: Props) {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
-  const updateSearch = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value));
+  const updateSearch = (event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
 
   const { data: seriesGroup, isFetching } = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useFilteredGroupsInfiniteQuery({
@@ -184,14 +183,14 @@ function GroupTab({ seriesId }: Props) {
   const { mutate: moveToExistingGroupMutation } = useMoveGroupMutation();
   const { mutate: renameGroupMutation } = usePatchGroupMutation();
 
-  const moveToNewGroup = useEventCallback(() => moveToNewGroupMutation(seriesId));
-  const moveToExistingGroup = useEventCallback(({ groupId }: { groupId: number }) => {
+  const moveToNewGroup = () => moveToNewGroupMutation(seriesId);
+  const moveToExistingGroup = ({ groupId }: { groupId: number }) => {
     const currentGroupId = seriesGroup?.IDs?.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup;
     if (currentGroupId && currentGroupId !== groupId) {
       moveToExistingGroupMutation({ seriesId, groupId });
     }
-  });
-  const renameGroup = useEventCallback(({ groupId, newName }: { groupId: number, newName: string }) => {
+  };
+  const renameGroup = ({ groupId, newName }: { groupId: number, newName: string }) => {
     renameGroupMutation(
       {
         seriesId,
@@ -202,7 +201,7 @@ function GroupTab({ seriesId }: Props) {
         ],
       },
     );
-  });
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -261,6 +260,6 @@ function GroupTab({ seriesId }: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default GroupTab;

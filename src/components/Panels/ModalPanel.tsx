@@ -23,7 +23,7 @@ const sizeClass = {
   lg: 'w-[62rem]',
 };
 
-function ModalPanel(props: Props) {
+const ModalPanel = (props: Props) => {
   const {
     children,
     className,
@@ -83,6 +83,6 @@ function ModalPanel(props: Props) {
       </div>
     </Modal>
   );
-}
+};
 
 export default ModalPanel;

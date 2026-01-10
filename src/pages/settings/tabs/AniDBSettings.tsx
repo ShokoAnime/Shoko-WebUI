@@ -11,7 +11,7 @@ import toast from '@/components/Toast';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
-function AniDBSettings() {
+const AniDBSettings = () => {
   const { t } = useTranslation('settings');
   const { newSettings, updateSetting } = useSettingsContext();
   const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
@@ -296,6 +296,6 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
     </>
   );
-}
+};
 
 export default AniDBSettings;

@@ -19,11 +19,13 @@ const colorClass = {
 const isColorClass = (type: string): type is keyof typeof colorClass => type in colorClass;
 
 const ToastComponent = (props: Props) => {
+  'use no memo';
+
   const { closeToast, data, toastProps } = props;
   const color = isColorClass(toastProps.type) ? toastProps?.type : 'info';
 
   return (
-    <div className="flex bg-panel-background">
+    <div className="flex bg-panel-background w-full">
       <span>
         <Icon path={data.icon} size={1} className={colorClass[color]} />
       </span>
@@ -32,8 +34,8 @@ const ToastComponent = (props: Props) => {
         <div className="text-panel-text">{data.message}</div>
       </div>
       {toastProps.autoClose && (
-        <span onClick={closeToast}>
-          <Icon path={mdiCloseCircleOutline} size={1} className="text-panel-text opacity-65" />
+        <span onClick={closeToast} className="cursor-pointer text-panel-text opacity-65">
+          <Icon path={mdiCloseCircleOutline} size={1} />
         </span>
       )}
     </div>

@@ -7,7 +7,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
-import useEventCallback from '@/hooks/useEventCallback';
+import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
 
 const actions = {
   import: {
@@ -81,6 +81,7 @@ const actions = {
     title: 'Plex',
     data: [
       'plex-sync-all',
+      'plex-force-unlink',
     ],
   },
 };
@@ -95,16 +96,23 @@ type Props = {
 const Action = ({ actionKey, length }: { actionKey: string, length: number }) => {
   const { t } = useTranslation('actions');
   const { mutate: runAction } = useRunActionMutation();
+  const { mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, info: fallbackInfo, name: fallbackName } = action;
   const translatedName = t(`${actionKey}.name`, { defaultValue: fallbackName });
   const translatedInfo = t(`${actionKey}.info`, { defaultValue: fallbackInfo });
-  const handleAction = useEventCallback(() => {
+  const handleAction = () => {
+    if (actionKey === 'plex-force-unlink') {
+      invalidatePlexToken(undefined, {
+        onSuccess: () => toast.success('Plex token invalidated!'),
+      });
+      return;
+    }
     runAction(functionName, {
       onSuccess: () => toast.success(t('toast.running', { name: translatedName })),
     });
-  });
+  };
 
   return (
     <div
@@ -124,7 +132,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
   );
 };
 
-function ActionsModal({ onClose, show }: Props) {
+const ActionsModal = ({ onClose, show }: Props) => {
   const { t } = useTranslation('actions');
   const [activeTab, setActiveTab] = useState('import');
 
@@ -166,6 +174,6 @@ function ActionsModal({ onClose, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default ActionsModal;

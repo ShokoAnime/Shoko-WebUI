@@ -74,7 +74,7 @@ const TreeNode = React.memo((props: Props) => {
   }
 
   const getChoppedPath = () => {
-    const isUnix = path.indexOf('/') !== -1;
+    const isUnix = path.includes('/');
 
     if (isUnix && level === 2) return path;
 

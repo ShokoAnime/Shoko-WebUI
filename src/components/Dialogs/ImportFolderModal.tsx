@@ -17,7 +17,6 @@ import {
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import { setStatus } from '@/core/slices/modals/importFolder';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import BrowseFolderModal from './BrowseFolderModal';
 
@@ -26,13 +25,13 @@ import type { ImportFolderType } from '@/core/types/api/import-folder';
 
 const defaultImportFolder = {
   WatchForNewFiles: false,
-  DropFolderType: 0 as 0 | 1 | 2 | 3,
+  DropFolderType: 'None',
   Path: '',
   Name: '',
   ID: 0,
-};
+} as ImportFolderType;
 
-function ImportFolderModal() {
+const ImportFolderModal = () => {
   const { t } = useTranslation('dialogs');
   const dispatch = useDispatch();
 
@@ -63,18 +62,18 @@ function ImportFolderModal() {
   };
 
   const handleBrowse = () => dispatch(setBrowseStatus(true));
-  const handleClose = useEventCallback(() => dispatch(setStatus(false)));
+  const handleClose = () => dispatch(setStatus(false));
 
-  const handleDelete = useEventCallback(() => {
+  const handleDelete = () => {
     deleteFolder({ folderId: ID }, {
       onSuccess: () => {
         toast.success(t('dialogs.importFolderModal.toastDeleted'));
         dispatch(setStatus(false));
       },
     });
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     if (edit) {
       updateFolder(importFolder, {
         onSuccess: () => {
@@ -90,7 +89,7 @@ function ImportFolderModal() {
         },
       });
     }
-  });
+  };
 
   const onFolderSelect = (Path: string) => setImportFolder({ ...importFolder, Path });
   const isLoading = isCreatePending || isDeletePending || isUpdatePending;
@@ -129,14 +128,14 @@ function ImportFolderModal() {
             <Select
               label={t('dialogs.importFolderModal.dropTypeLabel')}
               id="DropFolderType"
-              value={importFolder.DropFolderType}
+              value={importFolder.DropFolderType ?? 'None'}
               onChange={handleInputChange}
               className="w-full"
             >
-              <option value={0}>{t('dialogs.importFolderModal.dropNone')}</option>
-              <option value={1}>{t('dialogs.importFolderModal.dropSource')}</option>
-              <option value={2}>{t('dialogs.importFolderModal.dropDestination')}</option>
-              <option value={3}>{t('dialogs.importFolderModal.dropBoth')}</option>
+              <option value="None">{t('dialogs.importFolderModal.dropNone')}</option>
+              <option value="Source">{t('dialogs.importFolderModal.dropSource')}</option>
+              <option value="Destination">{t('dialogs.importFolderModal.dropDestination')}</option>
+              <option value="Both">{t('dialogs.importFolderModal.dropBoth')}</option>
             </Select>
             <Select
               label={t('dialogs.importFolderModal.watchLabel')}
@@ -174,6 +173,6 @@ function ImportFolderModal() {
       <BrowseFolderModal onSelect={onFolderSelect} />
     </>
   );
-}
+};
 
 export default ImportFolderModal;

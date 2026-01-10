@@ -4,8 +4,6 @@ import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 
-import useEventCallback from '@/hooks/useEventCallback';
-
 type Props = {
   buttonTypes?: 'primary' | 'secondary' | 'danger';
   className?: string;
@@ -36,9 +34,9 @@ const DropdownButton = (props: Props) => {
   } = props;
 
   const [open, setOpen] = useState(false);
-  const onClick = useEventCallback(() => {
+  const onClick = () => {
     setOpen(prev => !prev);
-  });
+  };
   const [containerRef, containerBounds] = useMeasure();
   const [menuRef, menuBounds] = useMeasure();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -67,7 +65,7 @@ const DropdownButton = (props: Props) => {
         type="button"
         title={tooltip}
         className={cx([
-          `${className} button rounded font-semibold transition ease-in-out focus:shadow-none focus:outline-none min-w-full px-4 py-3`,
+          `${className} rounded-sm font-semibold transition ease-in-out focus:shadow-none focus:outline-hidden min-w-full px-4 py-3`,
           buttonTypes !== undefined
           && `${buttonTypeClasses[buttonTypes ?? 'secondary']} hover:bg-button-${
             buttonTypes ?? 'secondary'

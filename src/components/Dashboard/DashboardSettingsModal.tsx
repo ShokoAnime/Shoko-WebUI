@@ -12,7 +12,6 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   onClose: () => void;
@@ -23,10 +22,10 @@ const Title = React.memo(({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation('settings');
 
-  const handleEdit = useEventCallback(() => {
+  const handleEdit = () => {
     dispatch(setLayoutEditMode(true));
     onClose();
-  });
+  };
 
   return (
     <div className="flex items-center justify-between text-xl font-semibold">
@@ -73,6 +72,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     recentlyImportedEpisodesCount,
     recentlyImportedSeriesCount,
     shokoNewsPostsCount,
+    useThumbnailsForEpisodes,
   } = newSettings.WebUI_Settings.dashboard;
 
   const updateSetting = (key: string, value: boolean | number) => {
@@ -82,23 +82,23 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(tempSettings);
   };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setNewSettings(settings);
     onClose();
-  });
+  };
 
-  const handleUpdate = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateSetting(
       event.target.id,
       event.target.type === 'checkbox' ? event.target.checked : Math.min(toNumber(event.target.value), 100),
     );
-  });
+  };
 
   return (
     <ModalPanel
@@ -231,6 +231,13 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 label={t('dashboardSettings.combineContinueWatching')}
                 id="combineContinueWatching"
                 isChecked={combineContinueWatching}
+                onChange={handleUpdate}
+              />
+              <Checkbox
+                justify
+                label="Use Thumbnails for Episodes"
+                id="useThumbnailsForEpisodes"
+                isChecked={useThumbnailsForEpisodes}
                 onChange={handleUpdate}
               />
               <Checkbox

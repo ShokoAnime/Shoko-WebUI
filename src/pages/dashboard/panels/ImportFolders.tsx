@@ -27,7 +27,7 @@ const Options = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-function ImportFolders() {
+const ImportFolders = () => {
   const { t } = useTranslation('panels');
   const dispatch = useDispatch();
 
@@ -48,19 +48,11 @@ function ImportFolders() {
 
   const renderFolder = (folder: ImportFolderType) => {
     let flags = '';
-    switch (folder.DropFolderType) {
-      case 1:
-        flags = 'Source';
-        break;
-      case 2:
-        flags = 'Destination';
-        break;
-      case 3:
-        flags = 'Source, Destination';
-        break;
-      default:
-    }
-    if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
+
+    if (folder.DropFolderType === 'Both') flags = 'Source, Destination';
+    else if (folder.DropFolderType !== 'None') flags = folder.DropFolderType ?? '';
+
+    if (folder.WatchForNewFiles) flags += flags ? ', Watch' : 'Watch';
 
     return (
       <div key={folder.ID} className="flex flex-col border-t border-panel-border py-6 first:border-t-0">
@@ -130,6 +122,6 @@ function ImportFolders() {
         : importFolders.map(importFolder => renderFolder(importFolder))}
     </ShokoPanel>
   );
-}
+};
 
 export default ImportFolders;

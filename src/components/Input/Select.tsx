@@ -45,7 +45,7 @@ const Select = React.memo((props: Props) => {
             id={id}
             value={value}
             onChange={onChange}
-            className="w-full appearance-none rounded-lg border border-panel-border bg-panel-input px-4 py-3 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
+            className="w-full appearance-none rounded-lg border border-panel-border bg-panel-input px-4 py-3 transition ease-in-out focus:shadow-none focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
             disabled={disabled}
           >
             {children}

@@ -24,7 +24,6 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { buildFilter } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -82,7 +81,7 @@ const getFilter = (
   );
 };
 
-function Collection() {
+const Collection = () => {
   const { pathname } = useLocation();
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
@@ -92,17 +91,28 @@ function Collection() {
   const navigate = useNavigateVoid();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const groupSearch = useMemo(() => searchParams.get('q') ?? '', [searchParams]);
-  const seriesSearch = useMemo(() => searchParams.get('qs') ?? '', [searchParams]);
-  const setSearch = (query: string) => {
-    if (!query) {
+  const [groupSearch, setGroupSearch] = useState(searchParams.get('q') ?? '');
+  const [seriesSearch, setSeriesSearch] = useState(searchParams.get('qs') ?? '');
+  const setSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+
+    if (!query.trim()) {
       setSearchParams({}, { replace: true });
+      setGroupSearch('');
+      setSeriesSearch('');
       return;
     }
-    setSearchParams({ [isSeries ? 'qs' : 'q']: query }, { replace: true });
+
+    if (isSeries) {
+      setSearchParams({ qs: query }, { replace: true });
+      setSeriesSearch(query);
+    } else {
+      setSearchParams({ q: query }, { replace: true });
+      setGroupSearch(query);
+    }
   };
-  const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
-  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
+  const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
+  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
 
   const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
   const activeFilter = useMemo(() => {
@@ -117,20 +127,22 @@ function Collection() {
   const { showRandomPoster } = settings.WebUI_Settings.collection.image;
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
-  const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
+  const [showFilterSidebar, toggleFilterSidebar, setShowFilterSidebar] = useToggle();
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
-  const handleFilterSidebarToggle = useEventCallback(() => {
-    if (!showFilterSidebar && !filterId) {
+  const handleFilterSidebarToggle = () => {
+    if (!filterId) {
       dispatch(resetFilter());
       navigate('filter/live');
+      return;
     }
     toggleFilterSidebar();
-  });
+  };
 
   useEffect(() => {
-    if (!filterId && showFilterSidebar) toggleFilterSidebar();
-  }, [filterId, showFilterSidebar, toggleFilterSidebar]);
+    if (filterId === 'live') setShowFilterSidebar(true);
+    if (!filterId) setShowFilterSidebar(false);
+  }, [filterId, setShowFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
@@ -202,7 +214,7 @@ function Collection() {
     viewSetting === 'list' && lastPageIds.length > 0,
   ).data;
 
-  const toggleMode = useEventCallback(() => {
+  const toggleMode = () => {
     if (isFetching) return;
 
     const newMode = mode === 'list' ? 'poster' : 'list';
@@ -216,7 +228,7 @@ function Collection() {
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
     patchSettings({ newSettings });
-  });
+  };
 
   return (
     <>
@@ -274,6 +286,6 @@ function Collection() {
       </div>
     </>
   );
-}
+};
 
 export default Collection;

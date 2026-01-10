@@ -150,6 +150,11 @@ const quickActions = {
     functionName: 'PlexSyncAll',
     info: 'Synchronizes watch states with Plex.',
   },
+  'plex-force-unlink': {
+    name: 'Force Unlink Plex',
+    functionName: '',
+    info: 'Invalidates the Plex token forcefully.',
+  },
   'remove-missing-files-mylist': {
     name: 'Remove Missing Files',
     functionName: 'RemoveMissingFiles/true',

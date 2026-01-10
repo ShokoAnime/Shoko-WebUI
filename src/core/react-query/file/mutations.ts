@@ -7,6 +7,7 @@ import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
   DeleteFileLocationRequestType,
+  DeleteFileLocationsRequestType,
   DeleteFileRequestType,
   DeleteFilesRequestType,
   IgnoreFileRequestType,
@@ -67,6 +68,11 @@ export const useDeleteFileLinkMutation = () =>
           data: null,
         },
       ),
+  });
+
+export const useDeleteFileLocationsMutation = () =>
+  useMutation({
+    mutationFn: (data: DeleteFileLocationsRequestType) => axios.delete('File/Location', { data }),
   });
 
 export const useDeleteFileLocationMutation = () =>

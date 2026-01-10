@@ -39,3 +39,9 @@ export type InfiniteResultType<T> = {
   pages: Record<number, T[]>;
   total: number;
 };
+
+export type ShokoError = {
+  errors: Record<string, string[]>;
+  status: number;
+  title: string;
+};

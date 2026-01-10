@@ -43,7 +43,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
   );
 };
 
-function ShokoNews() {
+const ShokoNews = () => {
   const { t } = useTranslation('panels');
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const newsQuery = useShokoNewsQuery();
@@ -56,6 +56,6 @@ function ShokoNews() {
       </div>
     </ShokoPanel>
   );
-}
+};
 
 export default ShokoNews;

@@ -1,9 +1,8 @@
-import * as React from 'react';
-import cx from 'classnames';
+import React from 'react';
 
-const SVGComponent = React.memo(({ className }: { className?: string }) => (
+const ShokoIcon = React.memo(({ className }: { className?: string }) => (
   <svg
-    className={cx('size-20', className)}
+    className={className}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 159.145 136.46"
   >
@@ -126,4 +125,4 @@ const SVGComponent = React.memo(({ className }: { className?: string }) => (
   </svg>
 ));
 
-export default SVGComponent;
+export default ShokoIcon;

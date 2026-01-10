@@ -13,7 +13,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { copyToClipboard, dayjs } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
+import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const TraktSettings = () => {
@@ -25,7 +25,9 @@ const TraktSettings = () => {
   const traktQuery = useTraktCodeQuery(false);
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const handleGetCode = useEventCallback(() => {
+  const isTraktVipCheckSupported = useIsFeatureSupported(FeatureType.TraktVipCheck);
+
+  const handleGetCode = () => {
     traktQuery.refetch().then(
       () => {
         toast.info(
@@ -41,16 +43,14 @@ const TraktSettings = () => {
         }, 600000);
       },
     ).catch(console.error);
-  });
+  };
 
-  const handleTraktClear = useEventCallback(
-    () => patchSettings({ newSettings: { ...settings, TraktTv: initialSettings.TraktTv } }),
-  );
+  const handleTraktClear = () => patchSettings({ newSettings: { ...settings, TraktTv: initialSettings.TraktTv } });
 
-  const handleCopy = useEventCallback(() => {
+  const handleCopy = () => {
     if (!traktQuery.data?.usercode) return;
     copyToClipboard(traktQuery.data.usercode, 'Trakt Code').catch(console.error);
-  });
+  };
 
   useEffect(() => {
     if (TraktTv.TokenExpirationDate === '') return;
@@ -62,12 +62,10 @@ const TraktSettings = () => {
     if (TraktTv.TokenExpirationDate) toast.dismiss('trakt-code');
   }, [TraktTv.TokenExpirationDate]);
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useEventCallback(
-    (event) => {
-      const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-      updateSetting('TraktTv', event.target.id, value);
-    },
-  );
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    updateSetting('TraktTv', event.target.id, value);
+  };
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -174,6 +172,15 @@ const TraktSettings = () => {
                 <option value={6}>{t('frequency.month')}</option>
               </SelectSmall>
             </div>
+            {isTraktVipCheckSupported && (
+              <Checkbox
+                justify
+                label="VIP"
+                id="VipStatus"
+                isChecked={TraktTv.VipStatus}
+                onChange={handleInputChange}
+              />
+            )}
           </div>
         )}
       </div>

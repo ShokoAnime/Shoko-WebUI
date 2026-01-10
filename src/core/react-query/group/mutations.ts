@@ -5,6 +5,7 @@ import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/react-query/group/types';
+import type { SeriesType } from '@/core/types/api/series';
 
 // TODO: FIX INVALIDATIONS
 
@@ -56,4 +57,20 @@ export const useMoveGroupMutation = () =>
       defaultInvalidations(seriesId);
       toast.success('Moved series into new group!');
     },
+  });
+
+export const useRelocateGroupFilesMutation = (groupId: number) =>
+  useMutation({
+    mutationFn: async () => {
+      const targetSeries = await axios.get<unknown, SeriesType[]>(`Group/${groupId}/Series`, {
+        params: { recursive: true },
+      });
+
+      return Promise.all(
+        targetSeries.map(
+          series => axios.post(`Series/${series.IDs.ID}/File/Relocate`),
+        ),
+      );
+    },
+    onSuccess: () => toast.success('Group files renamed/moved!'),
   });

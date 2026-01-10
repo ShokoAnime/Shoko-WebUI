@@ -3,7 +3,6 @@ import { filter, map } from 'lodash';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RenamerConfigSettingsType, RenamerSettingsType } from '@/core/types/api/renamer';
 import type { Updater } from 'use-immer';
@@ -21,7 +20,7 @@ type SettingProps = {
 };
 
 const Setting = React.memo(({ currentValue, settingModel, updateSetting }: SettingProps) => {
-  const handleChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.type === 'checkbox') {
       updateSetting(settingModel.Name, event.target.checked);
       return;
@@ -31,7 +30,7 @@ const Setting = React.memo(({ currentValue, settingModel, updateSetting }: Setti
       ? event.target.valueAsNumber
       : event.target.value;
     updateSetting(settingModel.Name, value);
-  });
+  };
 
   if (currentValue === undefined) return null;
 

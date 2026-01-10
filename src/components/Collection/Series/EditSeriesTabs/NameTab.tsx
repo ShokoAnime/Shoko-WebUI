@@ -15,7 +15,7 @@ type Props = {
 const NameTab = ({ seriesId }: Props) => {
   const { t } = useTranslation('series');
   const [name, setName] = useState('');
-  const [nameEditable, toggleNameEditable] = useToggle(false);
+  const [nameEditable, toggleNameEditable] = useToggle(true);
 
   const { data: seriesData, isError, isFetching, isSuccess } = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
 

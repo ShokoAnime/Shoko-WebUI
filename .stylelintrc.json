@@ -27,15 +27,14 @@
       true,
       {
         "ignoreAtRules": [
-          "tailwind",
-          "apply",
-          "variants",
-          "responsive",
-          "screen"
+          "theme",
+          "source"
         ]
       }
     ],
     "@stylistic/declaration-block-trailing-semicolon": null,
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "custom-property-empty-line-before": null,
+    "custom-property-pattern": null
   }
 }

@@ -2,8 +2,6 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 
-import useEventCallback from '@/hooks/useEventCallback';
-
 import type { FileSortCriteriaEnum } from '@/core/types/api/file';
 
 const useTableSearchSortCriteria = (defaultSortCriteria: FileSortCriteriaEnum) => {
@@ -13,14 +11,14 @@ const useTableSearchSortCriteria = (defaultSortCriteria: FileSortCriteriaEnum) =
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 250);
 
-  const updateSortCriteria = useEventCallback((newCriteria: FileSortCriteriaEnum) => {
+  const updateSortCriteria = (newCriteria: FileSortCriteriaEnum) => {
     if (debouncedSearch) setSearchSortCriteria(newCriteria);
     else setSortCriteria(newCriteria);
-  });
+  };
 
-  const updateSearch = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-  });
+  };
 
   // Reset search sort criteria if search is cleared
   useEffect(() => {

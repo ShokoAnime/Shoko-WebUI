@@ -10,6 +10,7 @@ import type {
   TmdbBulkRequestType,
   TmdbSearchRequestType,
   TmdbShowEpisodesRequestType,
+  TmdbShowOrderingInformationType,
 } from '@/core/react-query/tmdb/types';
 import type { ListResultType } from '@/core/types/api';
 import type {
@@ -84,7 +85,7 @@ export const useTmdbSearchQuery = (
         try {
           const idLookupData: TmdbSearchResultType = await axios.get(`Tmdb/${type}/Online/${query}`);
           finalData.push(idLookupData);
-        } catch (error) {
+        } catch (_) {
           // Ignore, show/movie not found on TMDB with provided ID
         }
       }
@@ -129,6 +130,7 @@ export const useTmdbBulkEpisodesQuery = (data: TmdbBulkRequestType, enabled = tr
   });
 
   return {
+    // eslint-disable-next-line @tanstack/query/no-rest-destructuring
     ...bulkEpisodesQuery,
     isSuccess: query.isSuccess,
     isPending: query.isPending,
@@ -141,4 +143,12 @@ export const useTmdbBulkMoviesOnlineQuery = (data: TmdbBulkRequestType, enabled 
     queryKey: ['series', 'tmdb', 'movie', 'bulk', data],
     queryFn: () => axios.post('Tmdb/Movie/Online/Bulk', data),
     enabled: enabled && data.IDs.length > 0,
+  });
+
+export const useTmdbShowOrderingQuery = (showId: number, enabled = true) =>
+  useQuery<TmdbShowOrderingInformationType[]>({
+    queryKey: ['series', 'tmdb', 'show', showId, 'ordering'],
+    queryFn: () => (showId > 0 ? axios.get(`TMDB/Show/${showId}/Ordering`) : Promise.resolve([])),
+    initialData: () => [],
+    enabled,
   });

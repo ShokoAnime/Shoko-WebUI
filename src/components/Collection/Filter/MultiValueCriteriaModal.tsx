@@ -6,7 +6,6 @@ import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { selectFilterMatch, selectFilterValues, setFilterMatch, setFilterValues } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -31,41 +30,41 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
 
       return filter(
         possibleValues,
-        item => selectedValues.indexOf(item) === -1 && unsavedValues.indexOf(item) === -1,
+        item => !selectedValues.includes(item) && !unsavedValues.includes(item),
       );
     },
     [criteria.PossibleParameters, criteria.PossibleParameterPairs, selectedValues, unsavedValues],
   );
   const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, criteria.Expression));
 
-  const handleMatchChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleMatchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setFilterMatch({ [criteria.Expression]: event.target.value as 'Or' | 'And' }));
-  });
+  };
 
   const selectValue = (value: string) => {
     setUnsavedValues([...unsavedValues, value]);
   };
 
   const removeValue = (value: string) => {
-    if (unsavedValues.indexOf(value) !== -1) {
+    if (unsavedValues.includes(value)) {
       setUnsavedValues(pull([...unsavedValues], value));
     }
-    if (selectedValues.indexOf(value) !== -1) {
+    if (selectedValues.includes(value)) {
       dispatch(setFilterValues({ [criteria.Expression]: pull([...selectedValues], value) }));
     }
   };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setUnsavedValues([]);
     if (selectedValues.length === 0) removeCriteria();
     onClose();
-  });
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     dispatch(setFilterValues({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
     setUnsavedValues([]);
     onClose();
-  });
+  };
 
   return (
     <ModalPanel

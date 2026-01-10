@@ -2,17 +2,22 @@ import copy from 'copy-to-clipboard';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import calendar from 'dayjs/plugin/calendar';
+import customParseFormatPlugin from 'dayjs/plugin/customParseFormat';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
-import { toNumber } from 'lodash';
+import { reduce, toNumber } from 'lodash';
 import semver from 'semver';
 
 import toast from '@/components/Toast';
 
+import type { ShokoError } from '@/core/types/api';
+import type { AxiosError } from 'axios';
+
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
 dayjs.extend(durationPlugin);
+dayjs.extend(customParseFormatPlugin);
 
 export { default as dayjs } from 'dayjs';
 
@@ -29,7 +34,7 @@ export function isDebug() {
   return DEV;
 }
 
-export const minimumSupportedServerVersion = '5.0.0.89';
+export const minimumSupportedServerVersion = '5.1.0.28';
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
@@ -69,3 +74,16 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
 };
 
 export const padNumber = (num: number | string, size = 2) => num.toString().padStart(size, '0');
+
+export const processError = (axiosError: AxiosError) => {
+  const errorData = axiosError.response?.data as ShokoError;
+  if (!errorData) return 'Please check the logs.';
+
+  const errors = reduce(
+    errorData.errors,
+    (result, value, _) => result.concat(value),
+    [] as string[],
+  );
+
+  return errors.join(', ');
+};

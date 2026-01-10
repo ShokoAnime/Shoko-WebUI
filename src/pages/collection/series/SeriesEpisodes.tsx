@@ -16,7 +16,6 @@ import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/querie
 import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
@@ -40,7 +39,9 @@ const SeriesEpisodes = () => {
 
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [selectedEpisodes, setSelectedEpisodes] = useState<Set<number>>(new Set());
-  const [debouncedSearch] = useDebounceValue(searchParams.get('search'), 200);
+
+  const [search, setSearch] = useState(searchParams.get('search') ?? '');
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   const filterOptions = useMemo(() => ({
     type: [searchParams.get('type') ?? EpisodeTypeEnum.Normal],
@@ -48,25 +49,44 @@ const SeriesEpisodes = () => {
     includeWatched: searchParams.get('includeWatched') ?? IncludeOnlyFilterEnum.true,
     includeHidden: searchParams.get('includeHidden') ?? IncludeOnlyFilterEnum.false,
     includeUnaired: searchParams.get('includeUnaired') ?? IncludeOnlyFilterEnum.false,
-    search: debouncedSearch ?? '',
+    search: debouncedSearch,
   } as FilterOptionsType), [debouncedSearch, searchParams]);
 
-  const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id: eventType, value } = event.target;
+
+    if (eventType === 'search') {
+      setSearch(value);
+      return;
+    }
+
     setSearchParams((currentParams) => {
       const newParams = new URLSearchParams(currentParams);
       newParams.set(eventType, value);
       return newParams;
     });
-  });
+  };
 
-  const onSelectionChange = useEventCallback((episodeId: number) => {
+  useEffect(() => {
+    setSearchParams((currentParams) => {
+      const newParams = new URLSearchParams(currentParams);
+      newParams.set('search', debouncedSearch);
+
+      if (!debouncedSearch) {
+        newParams.delete('search');
+      }
+
+      return newParams;
+    });
+  }, [debouncedSearch, setSearchParams]);
+
+  const onSelectionChange = (episodeId: number) => {
     setSelectedEpisodes((prevState) => {
       const selectionList = new Set(prevState);
       if (!selectionList.delete(episodeId)) selectionList.add(episodeId);
       return selectionList;
     });
-  });
+  };
 
   useEffect(() => {
     setSelectedEpisodes(new Set());
@@ -128,12 +148,12 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const markFilteredWatched = useEventCallback(() => watchEpisode({ value: true, ...filterOptions }));
-  const markFilteredUnwatched = useEventCallback(() => watchEpisode({ value: false, ...filterOptions }));
+  const markFilteredWatched = () => watchEpisode({ value: true, ...filterOptions });
+  const markFilteredUnwatched = () => watchEpisode({ value: false, ...filterOptions });
 
-  const resetSelection = useEventCallback(() => setSelectedEpisodes(new Set()));
+  const resetSelection = () => setSelectedEpisodes(new Set());
 
-  const openOptionsModal = useEventCallback(() => setShowOptionsModal(true));
+  const openOptionsModal = () => setShowOptionsModal(true);
 
   return (
     <>
@@ -141,7 +161,7 @@ const SeriesEpisodes = () => {
       <div className="flex w-full gap-x-6">
         <EpisodeSearchAndFilterPanel
           onFilterChange={onFilterChange}
-          search={filterOptions.search}
+          search={search}
           type={filterOptions.type[0]}
           availability={filterOptions.includeMissing}
           watched={filterOptions.includeWatched}

@@ -12,7 +12,6 @@ import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
@@ -20,12 +19,12 @@ import type { ImageType } from '@/core/types/api/common';
 
 type ImageTabType = 'Posters' | 'Backdrops' | 'Logos';
 
-const InfoLine = ({ titleKey, value }) => {
+const InfoLine = ({ titleKey, value }: { titleKey: string, value: string }) => {
   const { t } = useTranslation('series');
   return (
     <div className="flex w-full flex-col gap-y-1">
       <span className="font-semibold text-panel-text">{t(`images.info.${titleKey}`)}</span>
-      <span className="line-clamp-1" title={`${value}`}>{value}</span>
+      <span className="line-clamp-1" title={value}>{value}</span>
     </div>
   );
 };
@@ -65,17 +64,17 @@ const SeriesImages = () => {
     setSelectedImage(old => ((old === item) ? null : item));
   };
 
-  const handleSetPreferredImage = useEventCallback(() => {
+  const handleSetPreferredImage = () => {
     if (!selectedImage) return;
     changeImage(selectedImage, {
       onSuccess: () => setSelectedImage(null),
     });
-  });
+  };
 
-  const handleTabChange = useEventCallback((newType: ImageTabType) => {
+  const handleTabChange = (newType: ImageTabType) => {
     setSelectedImage(null);
     navigate(`../images/${newType.toLowerCase()}`);
-  });
+  };
 
   return (
     <>
@@ -89,7 +88,7 @@ const SeriesImages = () => {
             transparent
             sticky
           >
-            <InfoLine titleKey="filename" value={filename} />
+            <InfoLine titleKey="filename" value={filename ?? 'N/A'} />
             <InfoLine titleKey="location" value={filepath} />
             <InfoLine titleKey="source" value={selectedImage?.Source ?? '-'} />
             <InfoLine

@@ -41,7 +41,7 @@ export type WebuiSeriesFileSummaryGroupType = {
   FileSource?: string;
   FileLocation?: string;
   FileIsDeprecated?: boolean;
-  ImportFolder?: string;
+  ImportFolder?: number;
   VideoCodecs?: string;
   VideoBitDepth?: number;
   VideoResolution?: string;
@@ -62,6 +62,13 @@ export type WebuiSeriesFileSummaryGroupType = {
     Number: number;
     Size: number;
     Type: EpisodeTypeEnum;
+  }[];
+  Locations?: {
+    ID: number;
+    FileID: number;
+    ImportFolderID: number;
+    IsAccessible: boolean;
+    RelativePath: string;
   }[];
 };
 

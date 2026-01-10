@@ -1,0 +1,96 @@
+@import 'tailwindcss' source('../');
+
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@theme {
+  --breakpoint-3xl: 1630px;
+
+  --default-transition-duration: 300ms;
+
+  --drop-shadow-md: 0px 4px 4px rgb(0, 0, 0, 0.25);
+
+  --font-weight-extralight: 100;
+  --font-weight-light: 200;
+  --font-weight-normal: 300;
+  --font-weight-medium: 400;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 600;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 800;
+
+  --shadow-md: 0px 4px 4px rgb(0, 0, 0, 0.25);
+
+  --text-base--line-height: 1.6rem;
+  --text-lg--line-height: 1.8rem;
+  --text-xl--line-height: 2rem;
+}
+
+@theme inline {
+  --color-button-danger: var(--button-danger);
+  --color-button-danger-border: var(--button-danger-border);
+  --color-button-danger-hover: var(--button-danger-hover);
+  --color-button-danger-text: var(--button-danger-text);
+  --color-button-primary: var(--button-primary);
+  --color-button-primary-border: var(--button-primary-border);
+  --color-button-primary-hover: var(--button-primary-hover);
+  --color-button-primary-text: var(--button-primary-text);
+  --color-button-secondary: var(--button-secondary);
+  --color-button-secondary-border: var(--button-secondary-border);
+  --color-button-secondary-hover: var(--button-secondary-hover);
+  --color-button-secondary-text: var(--button-secondary-text);
+  --color-header-background: var(--header-background);
+  --color-header-icon: var(--header-icon);
+  --color-header-icon-primary: var(--header-icon-primary);
+  --color-header-text: var(--header-text);
+  --color-header-text-important: var(--header-text-important);
+  --color-header-user-background: var(--header-user-background);
+  --color-header-user-text: var(--header-user-text);
+  --color-panel-background: var(--panel-background);
+  --color-panel-background-alt: var(--panel-background-alt);
+  --color-panel-background-selected-row: var(--panel-background-selected-row);
+  --color-panel-background-overlay: var(--panel-background-overlay);
+  --color-panel-background-poster-overlay: var(--panel-background-poster-overlay);
+  --color-panel-background-transparent: var(--panel-background-transparent);
+  --color-panel-border: var(--panel-border);
+  --color-panel-icon: var(--panel-icon);
+  --color-panel-icon-action: var(--panel-icon-action);
+  --color-panel-icon-danger: var(--panel-icon-danger);
+  --color-panel-icon-important: var(--panel-icon-important);
+  --color-panel-icon-warning: var(--panel-icon-warning);
+  --color-panel-input: var(--panel-input);
+  --color-panel-menu-item-background: var(--panel-menu-item-background);
+  --color-panel-menu-item-background-hover: var(--panel-menu-item-background-hover);
+  --color-panel-menu-item-text: var(--panel-menu-item-text);
+  --color-panel-table-header: var(--panel-table-header);
+  --color-panel-tags: var(--panel-tags);
+  --color-panel-text: var(--panel-text);
+  --color-panel-text-danger: var(--panel-text-danger);
+  --color-panel-text-important: var(--panel-text-important);
+  --color-panel-text-other: var(--panel-text-other);
+  --color-panel-text-primary: var(--panel-text-primary);
+  --color-panel-text-warning: var(--panel-text-warning);
+  --color-panel-toggle-background: var(--panel-toggle-background);
+  --color-panel-toggle-background-alt: var(--panel-toggle-background-alt);
+  --color-panel-toggle-background-hover: var(--panel-toggle-background-hover);
+  --color-panel-toggle-text: var(--panel-toggle-text);
+  --color-panel-toggle-text-alt: var(--panel-toggle-text-alt);
+  --color-slider-background: var(--slider-background);
+  --color-slider-background-alt: var(--slider-background-alt);
+  --color-slider-color: var(--slider-color);
+  --color-slider-color-alt: var(--slider-color-alt);
+  --color-topnav-background: var(--topnav-background);
+  --color-topnav-border: var(--topnav-border);
+  --color-topnav-icon: var(--topnav-icon);
+  --color-topnav-icon-important: var(--topnav-icon-important);
+  --color-topnav-icon-primary: var(--topnav-icon-primary);
+  --color-topnav-icon-warning: var(--topnav-icon-warning);
+  --color-topnav-text: var(--topnav-text);
+  --color-topnav-text-primary: var(--topnav-text-primary);
+
+  --font-body: 'Sora', var(--font-sans);
+}

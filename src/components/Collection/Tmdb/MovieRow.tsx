@@ -8,7 +8,6 @@ import { find, map, toNumber } from 'lodash';
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import Button from '@/components/Input/Button';
 import { useTmdbBulkMoviesOnlineQuery, useTmdbShowOrMovieQuery } from '@/core/react-query/tmdb/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { TmdbMovieXrefType } from '@/core/types/api/tmdb';
@@ -70,7 +69,7 @@ const MovieRow = React.memo((props: Props) => {
     [tmdbBulkMoviesQuery.isPending, tmdbMovieQuery.isPending, xref, xrefs],
   );
 
-  const handleOverrideLink = useEventCallback(() => {
+  const handleOverrideLink = () => {
     setLinkOverrides((draftState) => {
       const anidbEpisodeId = episode.IDs.AniDB;
       const newTmdbId = tmdbMovie?.ID ? 0 : tmdbId;
@@ -80,7 +79,7 @@ const MovieRow = React.memo((props: Props) => {
       else if (draftState[anidbEpisodeId]?.[0] === tmdbId && newTmdbId === 0) delete draftState[anidbEpisodeId];
       else draftState[anidbEpisodeId] = [newTmdbId];
     });
-  });
+  };
 
   const lockMovie = useMemo(
     () => (tmdbMovie?.ID ? tmdbMovie?.ID !== tmdbId : false),

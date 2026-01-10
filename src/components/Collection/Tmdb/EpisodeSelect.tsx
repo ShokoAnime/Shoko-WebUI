@@ -11,7 +11,6 @@ import { useDebounceValue } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import { useTmdbShowEpisodesQuery } from '@/core/react-query/tmdb/queries';
 import { padNumber } from '@/core/util';
-import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
@@ -52,9 +51,9 @@ const EpisodeSelect = React.memo((props: Props) => {
     setTmdbEpisode(initialTmdbEpisode);
   }, [episodes, initialTmdbEpisode, override]);
 
-  const handleSelect = useEventCallback((newSelectedEpisode?: TmdbEpisodeType) => {
+  const handleSelect = (newSelectedEpisode?: TmdbEpisodeType) => {
     overrideLink(newSelectedEpisode?.ID ?? 0);
-  });
+  };
 
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
   const rowVirtualizer = useVirtualizer({
@@ -134,10 +133,10 @@ const EpisodeSelect = React.memo((props: Props) => {
             padding: '1rem',
             gap: '0.5rem',
           }}
-          className="z-[110] w-[var(--button-width)] rounded-lg bg-panel-background focus:outline-none"
+          className="z-[110] w-[var(--button-width)] rounded-lg bg-panel-background focus:outline-hidden"
         >
           <Input
-            autoFocus
+            autoFocusHook
             id="episode-search"
             type="text"
             value={searchText}

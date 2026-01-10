@@ -27,7 +27,7 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
 
-function LoginPage() {
+const LoginPage = () => {
   const { t } = useTranslation('login');
   const navigate = useNavigateVoid();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -71,9 +71,9 @@ function LoginPage() {
 
   useEffect(() => {
     if (!serverStatusQuery.data) setPollingInterval(500);
-    else if (serverStatusQuery.data?.State !== 1) setPollingInterval(0);
+    else if (serverStatusQuery.data?.State !== 'Starting') setPollingInterval(0);
 
-    if (serverStatusQuery.data?.State === 2 && apiSession.apikey !== '') {
+    if (serverStatusQuery.data?.State === 'Started' && apiSession.apikey !== '') {
       navigate(searchParams.get('redirectTo') ?? '/webui', { replace: true });
     }
   }, [serverStatusQuery.data, apiSession, navigate, searchParams]);
@@ -148,7 +148,7 @@ function LoginPage() {
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
                 </div>
               )}
-              {serverStatusQuery.data?.State === 1 && (
+              {serverStatusQuery.data?.State === 'Starting' && (
                 <div className="flex flex-col items-center justify-center gap-y-2">
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
                   <div className="mt-2 text-xl font-semibold">{t('server.starting')}</div>
@@ -160,7 +160,7 @@ function LoginPage() {
                   </div>
                 </div>
               )}
-              {serverStatusQuery.data?.State === 2 && (
+              {serverStatusQuery.data?.State === 'Started' && (
                 <form onSubmit={handleSignIn} className="flex flex-col gap-y-6">
                   <Input
                     autoFocus
@@ -169,7 +169,8 @@ function LoginPage() {
                     label={t('form.username')}
                     type="text"
                     placeholder={t('form.username')}
-                    onChange={event => setUsername(event.target.value)}
+                    onChange={event =>
+                      setUsername(event.target.value)}
                   />
                   <Input
                     id="password"
@@ -177,7 +178,8 @@ function LoginPage() {
                     label={t('form.password')}
                     type="password"
                     placeholder={t('form.password')}
-                    onChange={event => setPassword(event.target.value)}
+                    onChange={event =>
+                      setPassword(event.target.value)}
                   />
                   <Checkbox
                     id="rememberUser"
@@ -199,7 +201,7 @@ function LoginPage() {
                   </Button>
                 </form>
               )}
-              {serverStatusQuery.data?.State === 3 && (
+              {serverStatusQuery.data?.State === 'Failed' && (
                 <div className="flex max-h-80 flex-col items-center justify-center gap-y-2 pb-2">
                   <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
                   <div className="mt-2 text-xl font-semibold">
@@ -211,7 +213,7 @@ function LoginPage() {
                   </div>
                 </div>
               )}
-              {serverStatusQuery.data?.State === 4 && (
+              {serverStatusQuery.data?.State === 'Waiting' && (
                 <div className="flex flex-col gap-y-6">
                   <div className="flex flex-col gap-y-4">
                     <div>{t('firstrun.welcome')}</div>
@@ -308,6 +310,6 @@ function LoginPage() {
       </div>
     </>
   );
-}
+};
 
 export default LoginPage;

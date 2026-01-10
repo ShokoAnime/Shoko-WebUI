@@ -12,7 +12,6 @@ import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
 
@@ -39,10 +38,10 @@ const TabButton = (
 const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => {
   const dispatch = useDispatch();
 
-  const handleClose = useEventCallback(() => {
+  const handleClose = () => {
     dispatch(resetFilter());
     onClose();
-  });
+  };
 
   return (
     <div
@@ -76,7 +75,7 @@ const SidePanel = (
     if (subFiltersQuery.isSuccess) {
       return subFiltersQuery.data.List.filter(
         item => (!item.IsDirectory
-          && (debouncedSearch === '' || item.Name.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1)),
+          && (debouncedSearch === '' || item.Name.toLowerCase().includes(debouncedSearch.toLowerCase()))),
       );
     }
     return [];
@@ -150,7 +149,7 @@ const SidePanel = (
   );
 };
 
-function FilterPresetsModal({ onClose, show }: Props) {
+const FilterPresetsModal = ({ onClose, show }: Props) => {
   const { t } = useTranslation('dialogs');
   const filtersQuery = useFiltersQuery(show);
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
@@ -222,6 +221,6 @@ function FilterPresetsModal({ onClose, show }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default FilterPresetsModal;

@@ -7,7 +7,7 @@ import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
-function Acknowledgement() {
+const Acknowledgement = () => {
   const dispatch = useDispatch();
 
   const serverStatusQuery = useServerStatusQuery();
@@ -53,13 +53,13 @@ function Acknowledgement() {
           onClick={handleNext}
           buttonType="primary"
           className="py-2 font-semibold"
-          disabled={serverStatusQuery.data?.State !== 4}
+          disabled={serverStatusQuery.data?.State !== 'Waiting'}
         >
           Continue
         </Button>
       </TransitionDiv>
     </>
   );
-}
+};
 
 export default Acknowledgement;

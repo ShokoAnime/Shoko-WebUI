@@ -9,7 +9,6 @@ import CleanDescription from '@/components/Collection/CleanDescription';
 import TagDetailsModal from '@/components/Collection/Tags/TagDetailsModal';
 import TagsSearchAndFilterPanel from '@/components/Collection/Tags/TagsSearchAndFilterPanel';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { TagType } from '@/core/types/api/tags';
@@ -18,7 +17,7 @@ const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
 const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand: (tag: TagType) => void }) => {
   const { t } = useTranslation('series');
-  const emitTag = useEventCallback(() => onTagExpand(tag));
+  const emitTag = () => onTagExpand(tag);
   const tagDescription = tag.Description?.trim() ? tag.Description : t('tags.descriptionNotAvailable');
 
   return (
@@ -60,7 +59,7 @@ const SeriesTags = () => {
   const [tagSourceFilter, setTagSourceFilter] = useState<Set<string>>(new Set());
   const [sort, toggleSort] = useToggle(false);
 
-  const handleInputChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, id: eventType, value } = event.target;
     switch (eventType) {
       case 'search':
@@ -84,7 +83,7 @@ const SeriesTags = () => {
       default:
         break;
     }
-  });
+  };
 
   const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(series.IDs.ID, { filter: 1 });
 
@@ -129,12 +128,10 @@ const SeriesTags = () => {
     [t, hasFilter, filteredCount, totalCount],
   );
 
-  const onTagSelection = useEventCallback((tag: TagType) => {
+  const onTagSelection = (tag: TagType) => {
     setSelectedTag(tag);
     toggleShowTagModal();
-  });
-  const clearTagSelection = useEventCallback(toggleShowTagModal);
-
+  };
   return (
     <>
       <title>{t('pageTitle.tags', { name: series.Name })}</title>
@@ -166,7 +163,7 @@ const SeriesTags = () => {
               )}
           </div>
         </div>
-        <TagDetailsModal show={showTagModal} tag={selectedTag} onClose={clearTagSelection} />
+        <TagDetailsModal show={showTagModal} tag={selectedTag} onClose={toggleShowTagModal} />
       </div>
     </>
   );

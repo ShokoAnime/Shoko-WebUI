@@ -1,5 +1,5 @@
 // This is the least maintainable file in the entire codebase
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import {
@@ -10,6 +10,7 @@ import {
   mdiOpenInNew,
   mdiPencilCircleOutline,
   mdiPlusCircleMultipleOutline,
+  mdiRefresh,
   mdiSortAlphabeticalAscending,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -47,7 +48,6 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
-import useEventCallback from '@/hooks/useEventCallback';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FileType } from '@/core/types/api/file';
@@ -192,7 +192,7 @@ const AnimeSelectPanel = (
   );
 };
 
-function LinkFilesTab() {
+const LinkFilesTab = () => {
   const { t } = useTranslation('links');
   const navigate = useNavigateVoid();
   const { selectedRows } = (useLocation().state ?? { selectedRows: [] }) as { selectedRows: FileType[] };
@@ -275,32 +275,30 @@ function LinkFilesTab() {
     ))
   ), [episodes]);
 
-  const addLink = useEventCallback(
-    (FileID: number, EpisodeID = 0, LinkID?: number) =>
-      setLinks((immerState) => {
-        if (EpisodeID === 0) {
-          immerState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
-        } else {
-          const itemIndex = LinkID
-            ? immerState.findIndex(link => link.LinkID === LinkID)
-            : immerState.findIndex(link => link.FileID === FileID);
-          immerState[itemIndex].EpisodeID = EpisodeID;
-        }
-      }),
-  );
+  const addLink = (FileID: number, EpisodeID = 0, LinkID?: number) =>
+    setLinks((draftState) => {
+      if (EpisodeID === 0) {
+        draftState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
+      } else {
+        const itemIndex = LinkID
+          ? draftState.findIndex(link => link.LinkID === LinkID)
+          : draftState.findIndex(link => link.FileID === FileID);
+        draftState[itemIndex].EpisodeID = EpisodeID;
+      }
+    });
 
-  const duplicateLink = useEventCallback(() => {
+  const duplicateLink = () => {
     addLink(orderedLinks[selectedLink].FileID);
-  });
+  };
 
-  const removeLink = useEventCallback(() => {
+  const removeLink = () => {
     const { LinkID } = orderedLinks[selectedLink];
     setSelectedLink(-1);
     setLinks((linkState) => {
       const itemIndex = linkState.findLastIndex(link => link.LinkID === LinkID);
       linkState.splice(itemIndex, 1);
     });
-  });
+  };
 
   const updateSelectedLink = (idx: number) => {
     if (isLinking) return;
@@ -334,24 +332,37 @@ function LinkFilesTab() {
     setSeriesUpdating(false);
   };
 
-  const editSelectedSeries = useEventCallback(() => {
+  const refreshSelectedSeries = () => {
+    if (!selectedSeries?.ID) return;
+    refreshSeries({ anidbID: selectedSeries.ID, force: true, immediate: true })
+      .then(async () => {
+        const seriesData = await getSeriesAniDBData(selectedSeries.ID);
+        setSelectedSeries(seriesData);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Failed to get series data!');
+      });
+  };
+
+  const editSelectedSeries = () => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
-  });
+  };
 
-  const openRangeFill = useEventCallback(() => {
+  const openRangeFill = () => {
     setShowRangeFillModal(true);
-  });
+  };
 
-  const closeRangeFill = useEventCallback(() => {
+  const closeRangeFill = () => {
     setShowRangeFillModal(false);
-  });
+  };
 
-  const cancelChanges = useEventCallback(() => {
+  const cancelChanges = () => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
     navigate('../');
-  });
+  };
 
-  const saveChanges = useEventCallback(async () => {
+  const saveChanges = async () => {
     if (isLinking) return;
     setSelectedLink(-1);
     const doesNotExist = selectedSeries.ShokoID === null;
@@ -366,7 +377,7 @@ function LinkFilesTab() {
         setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       }
     }
-  });
+  };
 
   const rangeFill = (rangeStart: string, epType: string) => {
     if (toInteger(rangeStart) <= 0) {
@@ -388,12 +399,12 @@ function LinkFilesTab() {
     });
   };
 
-  const autoFill = useEventCallback(() => {
-    if (!episodes.length) return;
+  const autoFill = useEffectEvent(() => {
     let hasChanged = false;
     let skipped = false;
     const newLinks: ManualLink[] = [];
     let specials = 0;
+
     forEach(groupBy(orderedLinks, 'FileID'), (link) => {
       const { FileID } = link[0];
       const { details } = showDataMap.get(FileID)!;
@@ -444,12 +455,13 @@ function LinkFilesTab() {
         newLinks.push(...link);
       }
     });
+
     if (hasChanged) {
       setLinks(newLinks);
       if (skipped) {
         toast.warning(
-          t('linkFilesTab.autoMatchApplied'),
-          t('linkFilesTab.autoMatchSkipped'),
+          'Auto matching applied',
+          'Some matches could not be filled it. Be sure to verify the ones that were, and fill in the rest!',
         );
       } else {
         toast.success(t('linkFilesTab.autoMatchSuccess'), t('linkFilesTab.autoMatchVerify'));
@@ -457,7 +469,13 @@ function LinkFilesTab() {
     }
   });
 
-  const makeLinks = useEventCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
+  useEffect(() => {
+    if (selectedSeries.ID && episodes.length) {
+      autoFill();
+    }
+  }, [selectedSeries.ID, episodes.length]);
+
+  const makeLinks = useCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
 
     const seriesEpisodesData = await seriesEpisodesQuery.refetch();
@@ -543,19 +561,22 @@ function LinkFilesTab() {
     setLinks([]);
     setSelectedSeries({} as SeriesAniDBSearchResult);
     navigate('../');
-  });
+  }, [
+    deleteSeries,
+    linkManyFilesToOneEpisode,
+    linkOneFileToManyEpisodes,
+    navigate,
+    seriesEpisodesQuery,
+    setLinks,
+    showDataMap,
+    t,
+  ]);
 
   useEffect(() => {
     if (links.length === 0) {
       navigate('/webui/Utilities/Unrecognized', { replace: true });
     }
   }, [links, navigate]);
-
-  useEffect(() => {
-    if (selectedSeries.ID && episodes.length) {
-      autoFill();
-    }
-  }, [selectedSeries.ID, episodes.length, autoFill]);
 
   useEffect(() => {
     const seriesId = selectedSeries?.ShokoID;
@@ -586,8 +607,12 @@ function LinkFilesTab() {
           ])}
           key={`${link.FileID}-${link.EpisodeID}-${idx}-static`}
           onClick={() => updateSelectedLink(idx)}
+          data-tooltip-id="tooltip"
+          data-tooltip-content={path}
         >
-          {path}
+          <div className="line-clamp-1">
+            {path}
+          </div>
         </div>
       );
     });
@@ -608,9 +633,13 @@ function LinkFilesTab() {
           key={`${link.FileID}-${link.EpisodeID}-${idx}`}
           data-file-id={link.FileID}
           onClick={() => updateSelectedLink(idx)}
+          data-tooltip-id="tooltip"
+          data-tooltip-content={path}
         >
-          {path}
-          {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
+          <div className="line-clamp-1">
+            {path}
+            {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
+          </div>
         </div>,
       );
       if (episodes.length > 0) {
@@ -697,20 +726,46 @@ function LinkFilesTab() {
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeriesLoaded && (
-              <div className="flex rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-                AniDB |&nbsp;
+              <div className="flex items-center rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
+                <div className="shrink-0">
+                  AniDB |&nbsp;
+                </div>
                 <a
                   className="flex cursor-pointer font-semibold text-panel-text-primary"
                   href={`https://anidb.net/anime/${selectedSeries.ID}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-tooltip-id="tooltip"
+                  data-tooltip-content={selectedSeries.Title}
                 >
-                  {selectedSeries.ID}
-                  &nbsp;-&nbsp;
-                  {selectedSeries.Title}
-                  <Icon path={mdiOpenInNew} size={1} className="ml-3" />
+                  <div className="shrink-0">
+                    {selectedSeries.ID}
+                    &nbsp;-&nbsp;
+                  </div>
+
+                  <div className="line-clamp-1">
+                    {selectedSeries.Title}
+                  </div>
+
+                  <div className="mx-1 shrink-0">
+                    <Icon path={mdiOpenInNew} size={1} />
+                  </div>
                 </a>
-                <Button onClick={editSelectedSeries} className="ml-auto text-panel-text-primary" disabled={isLinking}>
+                <div className="grow" />
+                <Button
+                  onClick={refreshSelectedSeries}
+                  className="ml-auto text-panel-text-primary"
+                  tooltip="Force Refresh"
+                  disabled={isLinking}
+                >
+                  <Icon path={mdiRefresh} size={1} />
+                </Button>
+                <Button
+                  onClick={editSelectedSeries}
+                  className="ml-1 text-panel-text-primary"
+                  tooltip="Edit Link"
+                  disabled={isLinking}
+                >
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>
@@ -729,6 +784,6 @@ function LinkFilesTab() {
       <RangeFillModal show={showRangeFillModal} onClose={closeRangeFill} rangeFill={rangeFill} />
     </>
   );
-}
+};
 
 export default LinkFilesTab;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
 import { useToggle } from 'usehooks-ts';
@@ -6,7 +6,6 @@ import { useToggle } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import { usePatchGroupMutation } from '@/core/react-query/group/mutations';
 import { useGroupQuery, useGroupSeriesQuery } from '@/core/react-query/group/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   groupId: number;
@@ -34,7 +33,7 @@ const NameTab = React.memo(({ groupId }: Props) => {
   const [nameEditable, toggleNameEditable] = useToggle(false);
 
   const { mutate: renameGroupMutation } = usePatchGroupMutation();
-  const renameGroup = useEventCallback(() => {
+  const renameGroup = useCallback(() => {
     if (groupName !== groupData?.Name) {
       renameGroupMutation(
         {
@@ -48,16 +47,16 @@ const NameTab = React.memo(({ groupId }: Props) => {
       );
     }
     toggleNameEditable();
-  });
+  }, [groupData?.Name, groupId, groupName, renameGroupMutation, toggleNameEditable]);
 
-  const updateName = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGroupName(event.target.value);
-  });
+  };
 
-  const resetName = useEventCallback(() => {
+  const resetName = useCallback(() => {
     toggleNameEditable();
     setGroupName(groupData?.Name ?? '');
-  });
+  }, [groupData?.Name, toggleNameEditable]);
 
   const nameInputIcons = useMemo(() => {
     if (!nameEditable || groupFetching || seriesFetching) {

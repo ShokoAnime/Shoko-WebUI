@@ -6,7 +6,6 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { resetFilter } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   count: number;
@@ -20,9 +19,9 @@ const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName
   const { groupId } = useParams();
   const dispatch = useDispatch();
 
-  const handlFilterReset = useEventCallback(() => {
+  const handlFilterReset = () => {
     dispatch(resetFilter());
-  });
+  };
 
   return (
     <div className="flex min-w-0 items-center gap-x-2 text-xl font-semibold">

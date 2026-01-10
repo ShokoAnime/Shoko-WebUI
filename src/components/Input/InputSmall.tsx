@@ -1,7 +1,6 @@
 import React from 'react';
 
 import toast from '@/components/Toast';
-import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   id: string;
@@ -36,7 +35,7 @@ const InputSmall = React.memo((props: Props) => {
     value,
   } = props;
 
-  const handleChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (type === 'number' && max && event.target.valueAsNumber > max) {
       toast.info(`Value cannot be greater than ${max}!`);
       onChange({
@@ -51,12 +50,12 @@ const InputSmall = React.memo((props: Props) => {
     }
 
     onChange(event);
-  });
+  };
 
   return (
     <>
       <input
-        className={`${className} h-8 appearance-none rounded-lg border border-panel-border bg-panel-input text-sm transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action`}
+        className={`${className} h-8 appearance-none rounded-lg border border-panel-border bg-panel-input text-sm transition ease-in-out focus:shadow-none focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-panel-icon-action`}
         id={id}
         type={type}
         placeholder={placeholder ?? ''}

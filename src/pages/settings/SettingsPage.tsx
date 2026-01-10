@@ -14,7 +14,6 @@ import toast from '@/components/Toast';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
@@ -31,7 +30,7 @@ const items = [
   { name: 'API Keys', path: 'api-keys' },
 ];
 
-function SettingsPage() {
+const SettingsPage = () => {
   const { t } = useTranslation('settings');
   const dispatch = useDispatch();
 
@@ -120,7 +119,7 @@ function SettingsPage() {
     }
   };
 
-  const validateAndPatchSettings = useEventCallback(() => {
+  const validateAndPatchSettings = () => {
     if (!isHttpServerUrlValid()) {
       toast.error(
         t('page.httpError.title'),
@@ -140,12 +139,12 @@ function SettingsPage() {
     }
 
     patchSettings({ newSettings });
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setNewSettings(settings);
     dispatch(setMiscItem({ webuiPreviewTheme: '' }));
-  });
+  };
 
   const [containerRef, containerBounds] = useMeasure();
 
@@ -205,6 +204,7 @@ function SettingsPage() {
           )}
       </div>
       <div
+        id="settings-background"
         className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-20"
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
@@ -215,6 +215,6 @@ function SettingsPage() {
       />
     </div>
   );
-}
+};
 
 export default SettingsPage;

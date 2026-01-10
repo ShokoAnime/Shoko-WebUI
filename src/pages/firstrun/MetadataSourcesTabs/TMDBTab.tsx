@@ -5,7 +5,7 @@ import TMDBSettings from '@/components/Settings/MetadataSitesSettings/TMDBSettin
 import TransitionDiv from '@/components/TransitionDiv';
 import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
-function TMDBTab() {
+const TMDBTab = () => {
   const { newSettings, setNewSettings, updateSetting } = useFirstRunSettingsContext();
 
   return (
@@ -21,6 +21,6 @@ function TMDBTab() {
       </div>
     </TransitionDiv>
   );
-}
+};
 
 export default TMDBTab;

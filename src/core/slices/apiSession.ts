@@ -15,7 +15,7 @@ const apiSessionSlice = createSlice({
   } as ApiSessionState,
   reducers: {
     setDetails(sliceState, action: PayloadAction<ApiSessionState>) {
-      return Object.assign({}, sliceState, action.payload);
+      return { ...sliceState, ...action.payload };
     },
   },
 });

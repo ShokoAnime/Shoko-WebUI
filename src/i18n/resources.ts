@@ -10,7 +10,7 @@ import enPanels from './locales/en/panels.json';
 import enPoster from './locales/en/poster.json';
 import enSeries from './locales/en/series.json';
 import enSetting from './locales/en/setting.json';
-import enTopNav from './locales/en/topNav.json';
+import enTopNav from './locales/en/topnav.json';
 import enUtilities from './locales/en/utilities.json';
 import zhActions from './locales/zh-CN/actions.json';
 import zhCollection from './locales/zh-CN/collection.json';
@@ -24,7 +24,7 @@ import zhPanels from './locales/zh-CN/panels.json';
 import zhPoster from './locales/zh-CN/poster.json';
 import zhSeries from './locales/zh-CN/series.json';
 import zhSetting from './locales/zh-CN/setting.json';
-import zhTopNav from './locales/zh-CN/topNav.json';
+import zhTopNav from './locales/zh-CN/topnav.json';
 import zhUtilities from './locales/zh-CN/utilities.json';
 
 const resources = {
