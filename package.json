@@ -1,6 +1,6 @@
 {
   "name": "shoko-webui",
-  "version": "2.4.0-dev",
+  "version": "2.4.1-dev",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -40,7 +40,7 @@
     "react-redux": "^9.2.0",
     "react-resizable": "^3.0.5",
     "react-responsive": "^10.0.1",
-    "react-router": "^7.9.6",
+    "react-router": "^7.12.0",
     "react-toastify": "^11.0.5",
     "react-tooltip": "^5.30.0",
     "react-use-measure": "^2.1.7",
