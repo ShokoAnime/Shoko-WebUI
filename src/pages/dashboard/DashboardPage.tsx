@@ -141,6 +141,7 @@ const DashboardPage = () => {
         toastId: 'layoutEditMode',
         className: 'max-w-[27.3rem] ml-auto',
       },
+      true,
     );
   }, [cancelLayoutChange, layoutEditMode]);
 

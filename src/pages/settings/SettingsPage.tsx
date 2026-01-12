@@ -68,6 +68,7 @@ const SettingsPage = () => {
       'Unsaved Changes',
       'Please save before leaving this page.',
       { autoClose: false, position: 'top-right' },
+      true,
     );
   }, [debouncedUnsavedChanges]);
 

@@ -5,6 +5,18 @@ import type { ToastOptions } from 'react-toastify';
 import { mdiAlertCircleOutline, mdiCheckboxMarkedCircleOutline, mdiInformationOutline } from '@mdi/js';
 
 import ToastComponent from '@/components/ToastComponent';
+import queryClient from '@/core/react-query/queryClient';
+
+import type { SettingsServerType, WebUISettingsType } from '@/core/types/api/settings';
+
+const showToast = (isSystemToast?: boolean) => {
+  if (isSystemToast) return true;
+
+  const settings = queryClient.getQueryData<SettingsServerType>(['settings'])!;
+  const webuiSettings = JSON.parse(settings.WebUI_Settings) as WebUISettingsType;
+
+  return webuiSettings?.notifications;
+};
 
 const success = (header: string, message?: React.ReactNode, options?: ToastOptions) =>
   toast.success(ToastComponent, {
@@ -36,8 +48,10 @@ const warning = (header: string, message?: React.ReactNode, options?: ToastOptio
     ...options,
   });
 
-const info = (header: string, message?: React.ReactNode, options?: ToastOptions) =>
-  toast.info(ToastComponent, {
+const info = (header: string, message?: React.ReactNode, options?: ToastOptions, isSystemToast?: boolean) => {
+  if (!showToast(isSystemToast)) return undefined;
+
+  return toast.info(ToastComponent, {
     data: {
       header,
       message,
@@ -45,6 +59,7 @@ const info = (header: string, message?: React.ReactNode, options?: ToastOptions)
     },
     ...options,
   });
+};
 
 const dismiss = (id: number | string) => toast.dismiss(id);
 
