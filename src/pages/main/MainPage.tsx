@@ -15,7 +15,7 @@ const MainPage = () => {
   const dispatch = useDispatch();
 
   const settingsQuery = useSettingsQuery();
-  const { notifications, toastPosition } = settingsQuery.data.WebUI_Settings;
+  const { toastPosition } = settingsQuery.data.WebUI_Settings;
 
   // settingsQuery.isSuccess is always true due to the existence of initialData
   // settingsRevision will be 0 before the first actual fetch and it will never be 0 for fetched data
@@ -41,27 +41,25 @@ const MainPage = () => {
 
   return (
     <>
-      {notifications && (
-        <ToastContainer
-          position={toastPosition}
-          autoClose={4000}
-          transition={Slide}
-          className="mt-32 !w-[29.5rem]"
-          closeButton={false}
-          icon={false}
-        />
-      )}
+      <ToastContainer
+        position={toastPosition}
+        autoClose={4000}
+        transition={Slide}
+        className="mt-32 w-118!"
+        closeButton={false}
+        icon={false}
+      />
       <Tooltip
         id="tooltip"
         render={({ content }) => content}
         place="top-start"
-        className="z-[10000]"
+        className="z-10000"
       />
       <div className="flex grow flex-col overflow-x-clip">
         <ImportFolderModal />
         <TopNav />
         <div className="scroll-gutter grow overflow-y-auto py-6 contain-strict" ref={scrollRef}>
-          <div className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-6">
+          <div className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-480 flex-col px-6">
             <Outlet context={{ scrollRef }} />
           </div>
         </div>

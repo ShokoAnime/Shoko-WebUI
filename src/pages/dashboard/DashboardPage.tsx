@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import React, { useCallback, useEffect, useEffectEvent, useState } from 'react';
+import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { mdiMenuDown } from '@mdi/js';
@@ -27,8 +27,6 @@ import UnrecognizedFiles from './panels/UnrecognizedFiles';
 import UpcomingAnime from './panels/UpcomingAnime';
 
 import type { RootState } from '@/core/store';
-
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const renderResizeHandle = () => (
   <div className="react-resizable-handle bottom-0 right-0 cursor-nwse-resize">
@@ -79,6 +77,8 @@ const DashboardPage = () => {
     hideUpcomingAnime,
   } = settings.WebUI_Settings.dashboard;
 
+  const { containerRef: gridContainerRef, width: gridWidth } = useContainerWidth();
+
   const [currentLayout, setCurrentLayout] = useState(
     settings.WebUI_Settings.layout.dashboard,
   );
@@ -93,11 +93,14 @@ const DashboardPage = () => {
     toast.dismiss('layoutEditMode');
   }, [dispatch, settings.WebUI_Settings.layout.dashboard]);
 
-  const saveLayout = useCallback((reset = false) => {
+  const saveLayout = useEffectEvent((reset = false) => {
     const newSettings = produce(settings, (draftState) => {
-      draftState.WebUI_Settings.layout.dashboard = reset
-        ? initialSettings.WebUI_Settings.layout.dashboard
-        : currentLayout;
+      draftState.WebUI_Settings.layout.dashboard = Object.assign(
+        draftState.WebUI_Settings.layout.dashboard,
+        reset
+          ? initialSettings.WebUI_Settings.layout.dashboard
+          : currentLayout,
+      );
     });
     patchSettings({ newSettings }, {
       onSuccess: () => {
@@ -107,7 +110,7 @@ const DashboardPage = () => {
       },
       onError: error => toast.error('', error.message),
     });
-  }, [currentLayout, dispatch, patchSettings, settings]);
+  });
 
   const location = useLocation();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
@@ -138,8 +141,9 @@ const DashboardPage = () => {
         toastId: 'layoutEditMode',
         className: 'max-w-[27.3rem] ml-auto',
       },
+      true,
     );
-  }, [cancelLayoutChange, layoutEditMode, saveLayout]);
+  }, [cancelLayoutChange, layoutEditMode]);
 
   useEffect(() => () => cancelLayoutChange(), [cancelLayoutChange]);
 
@@ -150,75 +154,77 @@ const DashboardPage = () => {
   return (
     <>
       <title>Dashboard | Shoko</title>
-      <ResponsiveGridLayout
-        layouts={currentLayout}
-        breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
-        cols={{ lg: 12, md: 10, sm: 6 }}
-        rowHeight={0}
-        margin={[24, 24]}
-        className="w-full"
-        onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
-        isDraggable={layoutEditMode}
-        isResizable={layoutEditMode}
-        resizeHandle={renderResizeHandle()}
-        containerPadding={[0, 0]}
-      >
-        {!hideQueueProcessor && (
-          <div key="queueProcessor">
-            <QueueProcessor />
-          </div>
-        )}
-        {!hideUnrecognizedFiles && (
-          <div key="unrecognizedFiles">
-            <UnrecognizedFiles />
-          </div>
-        )}
-        {!hideRecentlyImported && (
-          <div key="recentlyImported">
-            <RecentlyImported />
-          </div>
-        )}
-        {!hideCollectionStats && (
-          <div key="collectionBreakdown">
-            <CollectionStats />
-          </div>
-        )}
-        {!hideMediaType && (
-          <div key="collectionTypeBreakdown">
-            <MediaType />
-          </div>
-        )}
-        {!hideImportFolders && (
-          <div key="importFolders">
-            <ImportFolders />
-          </div>
-        )}
-        {!hideShokoNews && (
-          <div key="shokoNews">
-            <ShokoNews />
-          </div>
-        )}
-        {(!hideContinueWatching && !combineContinueWatching) && (
-          <div key="continueWatching">
-            <ContinueWatching />
-          </div>
-        )}
-        {!hideNextUp && (
-          <div key="nextUp">
-            <NextUp />
-          </div>
-        )}
-        {!hideUpcomingAnime && (
-          <div key="upcomingAnime">
-            <UpcomingAnime />
-          </div>
-        )}
-        {!hideRecommendedAnime && (
-          <div key="recommendedAnime">
-            <RecommendedAnime />
-          </div>
-        )}
-      </ResponsiveGridLayout>
+      <div ref={gridContainerRef}>
+        <ResponsiveGridLayout
+          width={gridWidth}
+          layouts={currentLayout}
+          breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
+          cols={{ lg: 12, md: 10, sm: 6 }}
+          rowHeight={0}
+          margin={[24, 24]}
+          className="w-full"
+          onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
+          dragConfig={{ enabled: layoutEditMode }}
+          resizeConfig={{ enabled: layoutEditMode, handleComponent: renderResizeHandle() }}
+          containerPadding={[0, 0]}
+        >
+          {!hideQueueProcessor && (
+            <div key="queueProcessor">
+              <QueueProcessor />
+            </div>
+          )}
+          {!hideUnrecognizedFiles && (
+            <div key="unrecognizedFiles">
+              <UnrecognizedFiles />
+            </div>
+          )}
+          {!hideRecentlyImported && (
+            <div key="recentlyImported">
+              <RecentlyImported />
+            </div>
+          )}
+          {!hideCollectionStats && (
+            <div key="collectionBreakdown">
+              <CollectionStats />
+            </div>
+          )}
+          {!hideMediaType && (
+            <div key="collectionTypeBreakdown">
+              <MediaType />
+            </div>
+          )}
+          {!hideImportFolders && (
+            <div key="importFolders">
+              <ImportFolders />
+            </div>
+          )}
+          {!hideShokoNews && (
+            <div key="shokoNews">
+              <ShokoNews />
+            </div>
+          )}
+          {(!hideContinueWatching && !combineContinueWatching) && (
+            <div key="continueWatching">
+              <ContinueWatching />
+            </div>
+          )}
+          {!hideNextUp && (
+            <div key="nextUp">
+              <NextUp />
+            </div>
+          )}
+          {!hideUpcomingAnime && (
+            <div key="upcomingAnime">
+              <UpcomingAnime />
+            </div>
+          )}
+          {!hideRecommendedAnime && (
+            <div key="recommendedAnime">
+              <RecommendedAnime />
+            </div>
+          )}
+        </ResponsiveGridLayout>
+      </div>
       <WelcomeModal onClose={() => setShowWelcomeModal(false)} show={showWelcomeModal} />
     </>
   );

@@ -146,6 +146,7 @@ body {
   border-radius: 5px !important;
   color: var(--panel-text) !important;
   font-family: Sora, sans, serif, mono !important;
+  width: fit-content;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */

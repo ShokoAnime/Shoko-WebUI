@@ -64,6 +64,7 @@ const UserManagementSettings = () => {
         'Unsaved Changes',
         'Please save before leaving this page.',
         { autoClose: false, position: 'top-right', toastId: 'unsaved' },
+        true,
       );
     }
   }, [selectedUser, unsavedChanges]);

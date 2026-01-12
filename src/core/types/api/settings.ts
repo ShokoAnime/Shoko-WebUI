@@ -1,3 +1,5 @@
+import type { Layout } from 'react-grid-layout';
+
 export type SettingsDatabaseType = {
   MySqliteDirectory: string;
   DatabaseBackupDirectory: string;
@@ -367,29 +369,15 @@ export type SettingsServerType = {
   Plugins: PluginSettingsType;
 };
 
-type LayoutItemType = {
-  i: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  minW?: number;
-  maxW?: number;
-  minH?: number;
-  maxH?: number;
-  static?: boolean;
-  moved?: boolean;
-};
-
-export type LayoutType = Record<string, LayoutItemType[]>;
-
 export type WebUISettingsType = {
   notifications: boolean;
   settingsRevision: number;
   theme: string;
   toastPosition: 'top-right' | 'bottom-right';
   updateChannel: 'Stable' | 'Dev';
-  layout: Record<string, LayoutType>;
+  layout: {
+    dashboard: Partial<Record<string, Layout>>;
+  };
   collection: {
     view: 'poster' | 'list';
     poster: {
