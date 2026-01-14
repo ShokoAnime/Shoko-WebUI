@@ -1,7 +1,7 @@
 name: Release-Dev-Auto
 on:
   push:
-    branches: master
+    branches: [ "master" ]
 
 jobs:
   release-dev-auto:
@@ -11,27 +11,27 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Determine bump type
-        uses: zwaldowski/match-label-action@v5
+        uses: zwaldowski/match-label-action@v6
         id: bump
         with:
           allowed: premajor,preminor,prepatch
@@ -81,7 +81,7 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_OUTPUT
 
       - name: Notify discord
-        uses: tsickert/discord-webhook@v6.0.0
+        uses: tsickert/discord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-color: 7641851
