@@ -30,6 +30,6 @@ Copy **proxy.config.default.js** to **proxy.config.js** and adjust as needed.
 If you need to adjust Webpack settings copy **webpack.config.default.js** to **webpack.config.js** and adjust as needed.  
 
 # Contributing
-We are always accepting help, and there are a million little things that always need done. Hop on our [discord](https://discord.gg/vpeHDsg) and talk to us. Communication is important in any team. No offesnse, but it's difficult to help anyone that shows up out of nowhere, opens 3 issues, then creates a PR without even talking to us. We have a wealth of experience. Let us help you...preferably before the ADHD takes over, you hyperfixate, and you come up with a fantastic solution to problem that isn't at all what you expected. Support is also best found in the discord, in case you read this far.
+We are always accepting help, and there are a million little things that always need done. Hop on our [discord](https://discord.gg/vpeHDsg) and talk to us. Communication is important in any team. No offense, but it's difficult to help anyone that shows up out of nowhere, opens 3 issues, then creates a PR without even talking to us. We have a wealth of experience. Let us help you...preferably before the ADHD takes over, you hyperfixate, and you come up with a fantastic solution to problem that isn't at all what you expected. Support is also best found in the discord, in case you read this far.
 
 ![Alt](https://repobeats.axiom.co/api/embed/cc9c359034b88cdb0168fee53bd50d317334fb88.svg "Repobeats analytics image")
