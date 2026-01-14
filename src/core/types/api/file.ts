@@ -1,7 +1,5 @@
-import type { DataSourceType } from './common';
 import type { EpisodeIDsType } from './episode';
 import type { SeriesIDsType } from './series';
-import type { PaginationType } from '@/core/types/api';
 
 type XRefsType = {
   SeriesID: SeriesIDsType;
@@ -232,17 +230,3 @@ export enum FileSortCriteriaEnum {
   FileName = 15,
   FileID = 16,
 }
-
-type SeriesEpisodesQueryBaseType = {
-  includeMissing?: string;
-  includeHidden?: string;
-  includeWatched?: string;
-  type?: string;
-  search?: string;
-  fuzzy?: boolean;
-};
-
-export type SeriesEpisodesQueryType =
-  & SeriesEpisodesQueryBaseType
-  & { includeDataFrom?: DataSourceType[] }
-  & PaginationType;
