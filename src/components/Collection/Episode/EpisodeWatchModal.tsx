@@ -10,12 +10,10 @@ type FilteredEpisodesTabProps = {
   markFilteredUnwatched: () => void;
 };
 
-type Props =
-  & {
-    show: boolean;
-    onRequestClose: () => void;
-  }
-  & FilteredEpisodesTabProps;
+type Props = {
+  show: boolean;
+  onRequestClose: () => void;
+} & FilteredEpisodesTabProps;
 
 const tabs = {
   filtered_episodes: 'Filtered Episodes',
