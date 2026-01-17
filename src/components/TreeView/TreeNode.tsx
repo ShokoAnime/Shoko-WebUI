@@ -111,7 +111,7 @@ const TreeNode = React.memo((props: Props) => {
           </span>
         </div>
         <Icon
-          className={cx('inline-block justify-self-end mr-3 text-panel-text-primary', { hidden: !isSelected })}
+          className={cx('justify-self-end mr-3 text-panel-text-primary', !isSelected ? 'hidden' : 'inline-block')}
           path={mdiCheckboxMarkedCircleOutline}
           size={1}
         />
