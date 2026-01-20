@@ -30,6 +30,7 @@ export default defineConfig(async () => {
       urlPrefix: '~/webui/dist/',
       ignore: [],
       reactComponentAnnotation: { enabled: true },
+      debug: true,
     });
   }
 
