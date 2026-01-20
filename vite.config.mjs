@@ -30,6 +30,7 @@ export default defineConfig(async () => {
           urlPrefix: '~/webui/dist/'
         }
       },
+      // The below line is intentional, it disables sourcemaps with Debug IDs from getting uploaded as we are already uploading all sourcemaps as part of uploadLegacySourcemaps above
       sourcemaps: { disable: true },
       reactComponentAnnotation: { enabled: true },
     });
