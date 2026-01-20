@@ -30,9 +30,7 @@ export default defineConfig(async () => {
           urlPrefix: '~/webui/dist/'
         }
       },
-      sourcemaps: {
-        assets: './dist/assets/*.js?(.map)',
-      },
+      sourcemaps: { disable: true },
       reactComponentAnnotation: { enabled: true },
     });
   }
