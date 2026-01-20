@@ -25,12 +25,15 @@ export default defineConfig(async () => {
       project: 'shoko-webui',
       release: {
         name: isDebug ? 'dev' : `shoko-webui@${version}`,
+        uploadLegacySourcemaps: {
+          paths: ['./dist/assets/'],
+          urlPrefix: '~/webui/dist/'
+        }
       },
-      include: './dist',
-      urlPrefix: '~/webui/dist/',
-      ignore: [],
+      sourcemaps: {
+        assets: './dist/assets/*.js?(.map)',
+      },
       reactComponentAnnotation: { enabled: true },
-      debug: true,
     });
   }
 
@@ -55,7 +58,7 @@ export default defineConfig(async () => {
           plugins: ['babel-plugin-react-compiler'],
         },
       }),
-      sentryPlugin,
+      ...sentryPlugin,
       tailwindcss()
     ],
     base: "/webui/"
