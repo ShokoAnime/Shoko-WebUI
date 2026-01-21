@@ -25,13 +25,10 @@ export default defineConfig(async () => {
       project: 'shoko-webui',
       release: {
         name: isDebug ? 'dev' : `shoko-webui@${version}`,
-        uploadLegacySourcemaps: {
-          paths: ['./dist/assets/'],
-          urlPrefix: '~/webui/dist/'
-        }
       },
-      // The below line is intentional, it disables sourcemaps with Debug IDs from getting uploaded as we are already uploading all sourcemaps as part of uploadLegacySourcemaps above
-      sourcemaps: { disable: true },
+      sourcemaps: {
+        assets: './dist/assets/*.js?(.map)',
+      },
       reactComponentAnnotation: { enabled: true },
     });
   }
@@ -48,7 +45,7 @@ export default defineConfig(async () => {
       ],
     },
     build: {
-      sourcemap: true,
+      sourcemap: 'hidden',
       chunkSizeWarningLimit: 2000
     },
     plugins: [
