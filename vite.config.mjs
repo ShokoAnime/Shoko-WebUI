@@ -54,7 +54,7 @@ export default defineConfig(async () => {
           plugins: ['babel-plugin-react-compiler'],
         },
       }),
-      ...sentryPlugin,
+      sentryPlugin,
       tailwindcss()
     ],
     base: "/webui/"
