@@ -38,14 +38,12 @@ const InputSmall = React.memo((props: Props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (type === 'number' && max && event.target.valueAsNumber > max) {
       toast.info(`Value cannot be greater than ${max}!`);
-      onChange({
-        ...event,
-        target: {
-          ...event.target,
-          value: max.toString(),
-          valueAsNumber: max,
-        },
-      });
+
+      const newEvent = { ...event };
+      newEvent.target.value = max.toString();
+      newEvent.target.valueAsNumber = max;
+
+      onChange(newEvent);
       return;
     }
 
