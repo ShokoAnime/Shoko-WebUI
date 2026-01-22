@@ -23,6 +23,7 @@ export default defineConfig(async () => {
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'shoko-anime',
       project: 'shoko-webui',
+      applicationKey: 'shoko-webui',
       release: {
         name: isDebug ? 'dev' : `shoko-webui@${version}`,
       },

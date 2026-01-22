@@ -13,6 +13,10 @@ if (!isDebug()) {
     dsn: 'https://3f1973bb1fd51855c342e5838a6d620f@o330862.ingest.us.sentry.io/1851857',
     environment: 'production',
     release: `shoko-webui@${uiVersion()}`,
+    ignoreErrors: [
+      'mt().navigator.clipboard.write',
+      /^Cancelled$/,
+    ],
     integrations: [
       Sentry.reactRouterV7BrowserTracingIntegration({
         useEffect: React.useEffect,
@@ -25,6 +29,10 @@ if (!isDebug()) {
         networkDetailAllowUrls: ['/api/v3/Init/Version'],
         maskAllText: true,
         blockAllMedia: false,
+      }),
+      Sentry.thirdPartyErrorFilterIntegration({
+        filterKeys: ['shoko-webui'],
+        behaviour: 'drop-error-if-contains-third-party-frames',
       }),
     ],
     tracesSampleRate: 0.1,
