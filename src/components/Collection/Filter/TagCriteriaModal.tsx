@@ -61,10 +61,20 @@ const TagList = (
                         className="cursor-pointer text-panel-icon-important"
                         path={mdiTagOutline}
                         size={1}
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content="Include Tag"
+                        data-tooltip-delay-show={500}
                       />
                     </div>
                     <div onClick={selectTag(item.Name, true)}>
-                      <Icon className="cursor-pointer text-panel-icon-danger" path={mdiTagOffOutline} size={1} />
+                      <Icon
+                        className="cursor-pointer text-panel-icon-danger"
+                        path={mdiTagOffOutline}
+                        size={1}
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content="Exclude Tag"
+                        data-tooltip-delay-show={500}
+                      />
                     </div>
                   </div>
                 </div>
@@ -184,7 +194,14 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
                 <div className="flex justify-between pr-4 leading-tight" key={tag.Name}>
                   {tag.Name}
                   <div onClick={removeValue(tag.Name)}>
-                    <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
+                    <Icon
+                      className="cursor-pointer text-panel-icon-danger"
+                      path={mdiMinusCircleOutline}
+                      size={1}
+                      data-tooltip-id="tooltip"
+                      data-tooltip-content="Remove Tag"
+                      data-tooltip-delay-show={500}
+                    />
                   </div>
                 </div>
               ),
