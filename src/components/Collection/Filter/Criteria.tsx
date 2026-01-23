@@ -72,10 +72,24 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
           </div>
           <div className="flex gap-x-2">
             <div onClick={openModal}>
-              <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
+              <Icon
+                className="cursor-pointer text-panel-text-primary"
+                path={mdiCircleEditOutline}
+                size={1}
+                data-tooltip-id="tooltip"
+                data-tooltip-content="Edit Criteria"
+                data-tooltip-delay-show={500}
+              />
             </div>
             <div onClick={removeCriteria}>
-              <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
+              <Icon
+                className="cursor-pointer text-panel-icon-danger"
+                path={mdiMinusCircleOutline}
+                size={1}
+                data-tooltip-id="tooltip"
+                data-tooltip-content="Remove Criteria"
+                data-tooltip-delay-show={500}
+              />
             </div>
           </div>
         </div>

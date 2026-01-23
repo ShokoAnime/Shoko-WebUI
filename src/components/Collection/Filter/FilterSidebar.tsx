@@ -31,11 +31,11 @@ const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
   return <DefaultCriteria criteria={criteria} />;
 };
 
-const OptionButton = ({ icon, onClick }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => (
-  <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
-);
+const OptionButton = (
+  { icon, onClick, tooltip }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement>, tooltip?: string },
+) => <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} tooltip={tooltip} />;
 const Options = ({ showModal }: { showModal: () => void }) => (
-  <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />
+  <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} tooltip="Add Condition" />
 );
 
 const FilterSidebar = () => {
