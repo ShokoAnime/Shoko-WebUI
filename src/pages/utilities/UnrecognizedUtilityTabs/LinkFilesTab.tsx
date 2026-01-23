@@ -257,7 +257,7 @@ const LinkFilesTab = () => {
   const orderedLinks = useMemo(() =>
     orderBy<ManualLink>(links, (item) => {
       const file = find(selectedRows, ['ID', item.FileID]);
-      return file?.Locations?.[0].RelativePath ?? item.FileID;
+      return file?.Locations?.[0]?.RelativePath ?? item.FileID;
     }), [links, selectedRows]);
 
   const episodeOptions = useMemo(() => (
