@@ -72,4 +72,4 @@ export type LogLineType = {
   Level: string;
 };
 
-export type DataSourceType = 'AniDB' | 'TMDB' | 'Trakt' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';
+export type DataSourceType = 'AniDB' | 'TMDB' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';

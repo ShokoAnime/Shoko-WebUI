@@ -217,11 +217,6 @@ input:autofill {
   &.AniList {
     background-image: url('/images/community/24-Anilist.png');
   }
-
-  /* stylelint-disable-next-line selector-class-pattern */
-  &.TraktTv {
-    background-image: url('/images/community/24-Trakt.png');
-  }
 }
 /* stylelint-disable-next-line selector-class-pattern */
 .ReactModal__Overlay {

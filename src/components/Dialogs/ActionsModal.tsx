@@ -34,8 +34,7 @@ const actions = {
   trakt: {
     title: 'Trakt',
     data: [
-      'sync-trakt',
-      'update-all-trakt-info',
+      'send-watch-states-trakt',
     ],
   },
   tvdb: {
@@ -140,15 +139,15 @@ const ActionsModal = ({ onClose, show }: Props) => {
       size="md"
       noPadding
     >
-      <div className="flex h-[29rem] gap-x-6 p-6">
+      <div className="flex h-116 gap-x-6 p-6">
         <div className="flex shrink-0 flex-col gap-y-6  font-semibold">
           <div className="flex flex-col gap-y-1">
             {map(actions, (value, key) => (
               <div
                 className={cx(
                   activeTab === key
-                    ? 'w-[7.5rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                    : 'w-[7.5rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
+                    ? 'w-30 text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                    : 'w-30 text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
                 )}
                 key={key}
                 onClick={() => setActiveTab(key)}

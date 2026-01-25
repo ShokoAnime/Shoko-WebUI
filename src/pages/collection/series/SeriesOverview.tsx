@@ -23,7 +23,7 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
 // Links
-const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv'] as const;
+const MetadataLinks = ['AniDB', 'TMDB'] as const;
 
 const SeriesOverview = () => {
   const { series } = useOutletContext<SeriesContextType>();

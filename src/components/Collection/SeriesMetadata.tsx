@@ -10,7 +10,7 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 type Props = {
   id?: number;
   seriesId: number;
-  site: 'AniDB' | 'TMDB' | 'TraktTv';
+  site: 'AniDB' | 'TMDB';
   type?: 'Movie' | 'Show';
 };
 
@@ -25,8 +25,6 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
         return `https://anidb.net/anime/${id}`;
       case 'TMDB':
         return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
-      case 'TraktTv':
-        return `https://trakt.tv/shows/${id}`;
       default:
         return '#';
     }

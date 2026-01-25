@@ -1,6 +1,6 @@
 {
   "name": "shoko-webui",
-  "version": "2.5.0-dev",
+  "version": "2.5.1-dev",
   "private": true,
   "sideEffects": false,
   "engines": {

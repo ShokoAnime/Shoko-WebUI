@@ -41,15 +41,10 @@ const quickActions = {
     functionName: 'RefreshAniDBMovedFiles',
     info: 'Process file moved messages from AniDB. This will force an update on the affected files.',
   },
-  'sync-trakt': {
-    name: 'Sync Trakt Collection',
-    functionName: 'SyncTrakt',
-    info: 'Sync watch states from Shoko to Trakt. THIS IS A ONE-WAY ACTION AND WILL OVERWRITE ALL TRAKT DATA!',
-  },
-  'update-all-trakt-info': {
-    name: 'Update All Trakt Info',
-    functionName: 'UpdateAllTraktInfo',
-    info: 'Sync all info for Series from Trakt to Shoko.',
+  'send-watch-states-trakt': {
+    name: 'Send Watch States to Trakt',
+    functionName: 'SendWatchStatesToTrakt',
+    info: 'Send missing watch states to Trakt. This does not overwrite Trakt data.',
   },
   'purge-all-tvdb-info': {
     name: 'Purge All TVDB Info',

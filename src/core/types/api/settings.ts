@@ -63,12 +63,9 @@ export type SettingsAnidbUpdateType = {
 export type SettingsTraktType = {
   Enabled: boolean;
   TokenExpirationDate: string;
-  UpdateFrequency: SettingsUpdateFrequencyType;
   SyncFrequency: SettingsUpdateFrequencyType;
-  AutoLink: boolean;
   AuthToken: string;
   RefreshToken: string;
-  VipStatus: boolean;
 };
 
 export type SettingsTMDBType = {
