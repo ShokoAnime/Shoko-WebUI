@@ -12,7 +12,6 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { copyToClipboard, dayjs } from '@/core/util';
-import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const TraktSettings = () => {
@@ -22,8 +21,6 @@ const TraktSettings = () => {
   const settings = useSettingsQuery().data;
   const traktQuery = useTraktCodeQuery(false);
   const { mutate: patchSettings } = usePatchSettingsMutation();
-
-  const isTraktVipCheckSupported = useIsFeatureSupported(FeatureType.TraktVipCheck);
 
   const handleGetCode = () => {
     traktQuery.refetch().then(
@@ -132,28 +129,6 @@ const TraktSettings = () => {
               <span>Token valid until</span>
               {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
             </div>
-            <Checkbox
-              justify
-              label="Auto Link"
-              id="AutoLink"
-              isChecked={TraktTv.AutoLink}
-              onChange={handleInputChange}
-            />
-            <div className="flex items-center justify-between">
-              <span>Automatically Update Data</span>
-              <SelectSmall
-                id="UpdateFrequency"
-                value={TraktTv.UpdateFrequency}
-                onChange={handleInputChange}
-              >
-                <option value={1}>Never</option>
-                <option value={2}>Every 6 Hours</option>
-                <option value={3}>Every 12 Hours</option>
-                <option value={4}>Every 24 Hours</option>
-                <option value={5}>Once a Week</option>
-                <option value={6}>Once a Month</option>
-              </SelectSmall>
-            </div>
             <div className="flex items-center justify-between">
               <span>Sync Frequency</span>
               <SelectSmall
@@ -169,15 +144,6 @@ const TraktSettings = () => {
                 <option value={6}>Once a Month</option>
               </SelectSmall>
             </div>
-            {isTraktVipCheckSupported && (
-              <Checkbox
-                justify
-                label="VIP"
-                id="VipStatus"
-                isChecked={TraktTv.VipStatus}
-                onChange={handleInputChange}
-              />
-            )}
           </div>
         )}
       </div>

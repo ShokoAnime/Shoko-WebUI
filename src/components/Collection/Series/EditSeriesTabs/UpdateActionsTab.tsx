@@ -5,8 +5,7 @@ import {
   useAutoSearchTmdbMatchMutation,
   useRefreshSeriesAniDBInfoMutation,
   useRefreshSeriesTMDBInfoMutation,
-  useRefreshSeriesTraktInfoMutation,
-  useSyncSeriesTraktMutation,
+  useSendSeriesWatchStatesToTraktMutation,
   useUpdateSeriesTMDBImagesMutation,
 } from '@/core/react-query/series/mutations';
 
@@ -19,8 +18,7 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
   const { mutate: autoMatchTmdb } = useAutoSearchTmdbMatchMutation(seriesId);
   const { mutate: refreshTmdb } = useRefreshSeriesTMDBInfoMutation(seriesId);
   const { mutate: updateTmdbImagesMutation } = useUpdateSeriesTMDBImagesMutation(seriesId);
-  const { mutate: refreshTrakt } = useRefreshSeriesTraktInfoMutation(seriesId);
-  const { mutate: syncTrakt } = useSyncSeriesTraktMutation(seriesId);
+  const { mutate: sendWatchStatesToTrakt } = useSendSeriesWatchStatesToTraktMutation(seriesId);
 
   const triggerAnidbRefresh = (force: boolean, cacheOnly: boolean) => {
     refreshAnidb({ force, cacheOnly });
@@ -31,7 +29,7 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
   };
 
   return (
-    <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
+    <div className="flex h-88 grow flex-col gap-y-4 overflow-y-auto">
       <Action
         name="Update AniDB Info"
         description="Gets the latest series information from the AniDB database."
@@ -63,14 +61,9 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
         onClick={updateTmdbImagesForce}
       />
       <Action
-        name="Update Trakt Show Info"
-        description="Gets the latest show information from Trakt."
-        onClick={refreshTrakt}
-      />
-      <Action
-        name="Sync Trakt Status"
-        description="Syncs episode status between Shoko and Trakt."
-        onClick={syncTrakt}
+        name="Send Watch States to Trakt"
+        description="Sends missing episode watch states to Trakt. This does not overwrite Trakt data."
+        onClick={sendWatchStatesToTrakt}
       />
     </div>
   );

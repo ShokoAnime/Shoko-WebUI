@@ -386,12 +386,9 @@ export const initialSettings: SettingsType = {
   TraktTv: {
     Enabled: false,
     TokenExpirationDate: '',
-    UpdateFrequency: 1,
     SyncFrequency: 1,
-    AutoLink: false,
     AuthToken: '',
     RefreshToken: '',
-    VipStatus: false,
   },
   Plex: {
     Server: '',
