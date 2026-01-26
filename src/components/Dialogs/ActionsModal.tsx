@@ -37,12 +37,6 @@ const actions = {
       'send-watch-states-trakt',
     ],
   },
-  tvdb: {
-    title: 'TvDB',
-    data: [
-      'purge-all-tvdb-info',
-    ],
-  },
   tmdb: {
     title: 'TMDB',
     data: [
