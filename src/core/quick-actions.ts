@@ -46,12 +46,6 @@ const quickActions = {
     functionName: 'SendWatchStatesToTrakt',
     info: 'Send missing watch states to Trakt. This does not overwrite Trakt data.',
   },
-  'purge-all-tvdb-info': {
-    name: 'Purge All TVDB Info',
-    functionName: 'PurgeAllOfTvDB',
-    info:
-      'Purges all TVDB data from Shoko, including all images, episodes, series and cross-references. Will also disable auto-linking for TvDB. THIS IS A ONE-WAY ACTION AND WILL CLEAR OUT ALL TVDB DATA!',
-  },
   'run-import': {
     name: 'Run Import',
     functionName: 'RunImport',
