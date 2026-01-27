@@ -123,7 +123,7 @@ const PlexSettings = () => {
 
   const [serverId, setServerId] = useState('');
 
-  const isAuthenticated = usePlexStatusQuery().data;
+  const isAuthenticated = usePlexStatusQuery().data ?? false;
   const serversQuery = usePlexServersQuery(isAuthenticated);
   const librariesQuery = usePlexLibrariesQuery(isAuthenticated && serversQuery.isSuccess && !!plexSettings.Server);
   const { mutate: changeServer } = useChangePlexServerMutation();
