@@ -15,7 +15,7 @@ if (!isDebug()) {
     release: `shoko-webui@${uiVersion()}`,
     ignoreErrors: [
       'mt().navigator.clipboard.write',
-      /^Cancelled$/,
+      /^Canceled$/,
     ],
     integrations: [
       Sentry.reactRouterV7BrowserTracingIntegration({
