@@ -143,6 +143,12 @@ export const useSendSeriesWatchStatesToTraktMutation = (seriesId: number) =>
     onSuccess: () => toast.success('Trakt send watch states queued!'),
   });
 
+export const useGetSeriesWatchStatesFromTraktMutation = (seriesId: number) =>
+  useMutation({
+    mutationFn: () => axios.post(`Series/${seriesId}/Trakt/GetWatchStates`),
+    onSuccess: () => toast.success('Trakt get watch states queued!'),
+  });
+
 export const useRelocateSeriesFilesMutation = (seriesId: number) =>
   useMutation({
     mutationFn: () => axios.post(`Series/${seriesId}/File/Relocate`),

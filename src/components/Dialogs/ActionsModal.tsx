@@ -35,6 +35,7 @@ const actions = {
     title: 'Trakt',
     data: [
       'send-watch-states-trakt',
+      'get-watch-states-trakt',
     ],
   },
   tmdb: {

@@ -46,6 +46,11 @@ const quickActions = {
     functionName: 'SendWatchStatesToTrakt',
     info: 'Send missing watch states to Trakt. This does not overwrite Trakt data.',
   },
+  'get-watch-states-trakt': {
+    name: 'Get Watch States from Trakt',
+    functionName: 'GetWatchStatesFromTrakt',
+    info: 'Get missing watch states fom Trakt. This does not overwrite local data.',
+  },
   'run-import': {
     name: 'Run Import',
     functionName: 'RunImport',
