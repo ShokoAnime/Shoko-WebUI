@@ -3,22 +3,27 @@ import React from 'react';
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import {
   useAutoSearchTmdbMatchMutation,
+  useGetSeriesWatchStatesFromTraktMutation,
   useRefreshSeriesAniDBInfoMutation,
   useRefreshSeriesTMDBInfoMutation,
   useSendSeriesWatchStatesToTraktMutation,
   useUpdateSeriesTMDBImagesMutation,
 } from '@/core/react-query/series/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
 type Props = {
   seriesId: number;
 };
 
 const UpdateActionsTab = ({ seriesId }: Props) => {
+  const { TraktTv } = useSettingsQuery().data;
+
   const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(seriesId);
   const { mutate: autoMatchTmdb } = useAutoSearchTmdbMatchMutation(seriesId);
   const { mutate: refreshTmdb } = useRefreshSeriesTMDBInfoMutation(seriesId);
   const { mutate: updateTmdbImagesMutation } = useUpdateSeriesTMDBImagesMutation(seriesId);
   const { mutate: sendWatchStatesToTrakt } = useSendSeriesWatchStatesToTraktMutation(seriesId);
+  const { mutate: getWatchStatesFromTrakt } = useGetSeriesWatchStatesFromTraktMutation(seriesId);
 
   const triggerAnidbRefresh = (force: boolean, cacheOnly: boolean) => {
     refreshAnidb({ force, cacheOnly });
@@ -60,11 +65,20 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
         description="Forces a complete redownload of images from TMDB."
         onClick={updateTmdbImagesForce}
       />
-      <Action
-        name="Send Watch States to Trakt"
-        description="Sends missing episode watch states to Trakt. This does not overwrite Trakt data."
-        onClick={sendWatchStatesToTrakt}
-      />
+      {TraktTv.Enabled && TraktTv.AuthToken && (
+        <>
+          <Action
+            name="Send Watch States to Trakt"
+            description="Sends missing episode watch states to Trakt. This does not overwrite Trakt data."
+            onClick={sendWatchStatesToTrakt}
+          />
+          <Action
+            name="Get Watch States from Trakt"
+            description="Gets missing episode watch states from Trakt. This does not overwrite local data."
+            onClick={getWatchStatesFromTrakt}
+          />
+        </>
+      )}
     </div>
   );
 };

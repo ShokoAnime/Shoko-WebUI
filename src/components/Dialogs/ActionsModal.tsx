@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import cx from 'classnames';
+import { produce } from 'immer';
 import { map } from 'lodash';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -7,8 +8,9 @@ import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-const actions = {
+const defaultActions = {
   import: {
     title: 'Import',
     data: [
@@ -29,12 +31,6 @@ const actions = {
       'get-anidb-notifications',
       'process-moved-files',
       'sync-mylist',
-    ],
-  },
-  trakt: {
-    title: 'Trakt',
-    data: [
-      'send-watch-states-trakt',
     ],
   },
   tmdb: {
@@ -69,6 +65,13 @@ const actions = {
       'validate-all-images',
     ],
   },
+  trakt: {
+    title: 'Trakt',
+    data: [
+      'send-watch-states-trakt',
+      'get-watch-states-trakt',
+    ],
+  },
   plex: {
     title: 'Plex',
     data: [
@@ -76,9 +79,7 @@ const actions = {
       'plex-force-unlink',
     ],
   },
-};
-
-const isActionTab = (type: string): type is keyof typeof actions => type in actions;
+} as Record<string, { title: string, data: string[] }>;
 
 type Props = {
   show: boolean;
@@ -123,7 +124,12 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
 };
 
 const ActionsModal = ({ onClose, show }: Props) => {
+  const { TraktTv } = useSettingsQuery().data;
   const [activeTab, setActiveTab] = useState('import');
+
+  const actions = produce(defaultActions, (draftState) => {
+    if (!TraktTv.Enabled || !TraktTv.AuthToken) delete draftState.trakt;
+  });
 
   return (
     <ModalPanel
@@ -154,10 +160,9 @@ const ActionsModal = ({ onClose, show }: Props) => {
         <div className="border-r border-panel-border" />
         <div className="flex grow">
           <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto">
-            {isActionTab(activeTab)
-              && actions[activeTab].data.map((key: string) => (
-                <Action actionKey={key} key={key} length={actions[activeTab].data.length} />
-              ))}
+            {actions[activeTab].data.map((key: string) => (
+              <Action actionKey={key} key={key} length={actions[activeTab].data.length} />
+            ))}
           </div>
         </div>
       </div>
