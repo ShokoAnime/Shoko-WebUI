@@ -24,7 +24,7 @@ export { default as dayjs } from 'dayjs';
 // Enables immer plugin to support Map and Set
 enableMapSet();
 
-const { DEV, VITE_APPVERSION, VITE_GITHASH } = import.meta.env;
+const { DEV, VITE_APPVERSION, VITE_GITHASH, VITE_MIN_SERVER_VERSION } = import.meta.env;
 
 export function uiVersion() {
   return DEV ? VITE_GITHASH : VITE_APPVERSION;
@@ -33,8 +33,6 @@ export function uiVersion() {
 export function isDebug() {
   return DEV;
 }
-
-export const minimumSupportedServerVersion = '5.2.5.7';
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
@@ -45,7 +43,7 @@ export const parseServerVersion = (version: string) => {
   return `${semverVersion}-dev.${prereleaseVersion}`;
 };
 
-export const getParsedSupportedServerVersion = () => parseServerVersion(minimumSupportedServerVersion)!;
+export const getParsedSupportedServerVersion = () => parseServerVersion(VITE_MIN_SERVER_VERSION)!;
 
 export const formatThousand = (num: number) => formatThousands(num, ',');
 

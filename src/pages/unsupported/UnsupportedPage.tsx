@@ -6,7 +6,8 @@ import Button from '@/components/Input/Button';
 import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
-import { minimumSupportedServerVersion } from '@/core/util';
+
+const { VITE_MIN_SERVER_VERSION } = import.meta.env;
 
 const UnsupportedPage = () => {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ const UnsupportedPage = () => {
                 {versionQuery.data.Server.Version}
                 <br />
                 Minimum Supported Server Version:&nbsp;
-                {minimumSupportedServerVersion}
+                {VITE_MIN_SERVER_VERSION}
                 <br />
                 Web UI Version:&nbsp;
                 {versionQuery.data.WebUI?.Version}
