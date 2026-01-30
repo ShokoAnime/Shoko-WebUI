@@ -56,10 +56,9 @@ jobs:
 
       - name: Create changelog
         run: |
-          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" > changelog.txt
-          echo 'CHANGELOG<<CHANGELOG_END' >> $GITHUB_ENV
-          cat changelog.txt >> $GITHUB_ENV
-          echo -e '\nCHANGELOG_END' >> $GITHUB_ENV
+          echo -e "### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > changelog.txt
+          echo -e "## What's Changed\n" >> changelog.txt
+          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" >> changelog.txt
 
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/*.js.map"
