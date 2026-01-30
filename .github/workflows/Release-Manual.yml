@@ -76,11 +76,9 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-      - name: Create changelog
+      - name: Create release notes
         run: |
-          echo -e "### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > changelog.txt
-          echo -e "## What's Changed\n" >> changelog.txt
-          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" >> changelog.txt
+          echo -e "### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > release-notes.txt
 
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/*.js.map"
@@ -93,6 +91,7 @@ jobs:
           tag_name: v${{ github.event.inputs.version }}
           prerelease: ${{ github.event.inputs.prerelease }}
           fail_on_unmatched_files: true
-          body_path: ./changelog.txt
+          body_path: ./release-notes.txt
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
