@@ -59,7 +59,7 @@ jobs:
           echo 'CHANGELOG<<CHANGELOG_END' >> $GITHUB_ENV
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" >> $GITHUB_ENV
           echo -e '\nCHANGELOG_END' >> $GITHUB_ENV
-          echo -e "### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > release-notes.txt
+          echo -e "#### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > release-notes.txt
 
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/*.js.map"
