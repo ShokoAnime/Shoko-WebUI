@@ -78,8 +78,9 @@ jobs:
 
       - name: Create changelog
         run: |
+          echo -e "### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > changelog.txt
           echo -e "## What's Changed\n" >> changelog.txt
-          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" > changelog.txt
+          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" >> changelog.txt
 
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/*.js.map"
