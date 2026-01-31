@@ -55,11 +55,13 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Create changelog and release notes
+        id: changelog
         run: |
           echo 'CHANGELOG<<CHANGELOG_END' >> $GITHUB_ENV
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" >> $GITHUB_ENV
           echo -e '\nCHANGELOG_END' >> $GITHUB_ENV
-          echo -e "#### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > release-notes.txt
+          echo "minimum_server_version=$(jq -r '.minimumServerVersion' ./dist/version.json)" >> $GITHUB_OUTPUT
+          echo -e "<!-- Minimum Server Version: **$(jq -r '.minimumServerVersion' ./dist/version.json)** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **$(jq -r '.minimumServerVersion' ./dist/version.json)** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n" > release-notes.txt
 
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/*.js.map"
@@ -92,6 +94,8 @@ jobs:
           embed-author-url: https://github.com/${{ github.repository }}
           embed-description: |
             **Version**: `${{ steps.semver.outputs.version_tag }}`
+
+            **Minimum Server Version**: `${{ steps.changelog.outputs.minimum_server_version }}`
 
             Update from the Web UI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
 
