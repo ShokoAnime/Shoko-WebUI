@@ -78,7 +78,7 @@ jobs:
 
       - name: Create release notes
         run: |
-          echo -e "#### Minimum Server Version: $(jq -r '.minimumServerVersion' ./dist/version.json)\n" > release-notes.txt
+          echo -e "<!-- Minimum Server Version: **$(jq -r '.minimumServerVersion' ./dist/version.json)** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **$(jq -r '.minimumServerVersion' ./dist/version.json)** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n" > release-notes.txt
 
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/*.js.map"
