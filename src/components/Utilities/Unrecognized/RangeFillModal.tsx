@@ -32,6 +32,8 @@ const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
           <option value="Normal">Episode</option>
           <option value="Special">Special</option>
           <option value="Other">Other</option>
+          <option value="ThemeSong">Credits</option>
+          <option value="Trailer">Trailer</option>
         </SelectSmall>
         <div className="flex items-center justify-between">
           Range Starting Number
