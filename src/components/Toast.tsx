@@ -18,8 +18,10 @@ const showToast = (isSystemToast?: boolean) => {
   return webuiSettings?.notifications;
 };
 
-const success = (header: string, message?: React.ReactNode, options?: ToastOptions) =>
-  toast.success(ToastComponent, {
+const success = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+  if (!showToast()) return undefined;
+
+  return toast.success(ToastComponent, {
     data: {
       header,
       message,
@@ -27,9 +29,12 @@ const success = (header: string, message?: React.ReactNode, options?: ToastOptio
     },
     ...options,
   });
+};
 
-const error = (header: string, message?: React.ReactNode, options?: ToastOptions) =>
-  toast.error(ToastComponent, {
+const error = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+  if (!showToast()) return undefined;
+
+  return toast.error(ToastComponent, {
     data: {
       header,
       message,
@@ -37,9 +42,12 @@ const error = (header: string, message?: React.ReactNode, options?: ToastOptions
     },
     ...options,
   });
+};
 
-const warning = (header: string, message?: React.ReactNode, options?: ToastOptions) =>
-  toast.warning(ToastComponent, {
+const warning = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+  if (!showToast()) return undefined;
+
+  return toast.warning(ToastComponent, {
     data: {
       header,
       message,
@@ -47,6 +55,7 @@ const warning = (header: string, message?: React.ReactNode, options?: ToastOptio
     },
     ...options,
   });
+};
 
 const info = (header: string, message?: React.ReactNode, options?: ToastOptions, isSystemToast?: boolean) => {
   if (!showToast(isSystemToast)) return undefined;
