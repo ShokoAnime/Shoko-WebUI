@@ -69,7 +69,7 @@ const TmdbLinking = () => {
       includeDataFrom: ['AniDB'],
       includeMissing: IncludeOnlyFilterEnum.true,
       includeUnaired: IncludeOnlyFilterEnum.true,
-      type: [EpisodeTypeEnum.Normal, EpisodeTypeEnum.Special, EpisodeTypeEnum.Other],
+      type: [EpisodeTypeEnum.Episode, EpisodeTypeEnum.Special, EpisodeTypeEnum.Other],
       pageSize: 50,
     },
     !!seriesId,
