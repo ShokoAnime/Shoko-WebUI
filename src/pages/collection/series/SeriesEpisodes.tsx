@@ -42,7 +42,7 @@ const SeriesEpisodes = () => {
   const [debouncedSearch] = useDebounceValue(search, 200);
 
   const filterOptions = useMemo(() => ({
-    type: [searchParams.get('type') ?? EpisodeTypeEnum.Normal],
+    type: [searchParams.get('type') ?? EpisodeTypeEnum.Episode],
     includeMissing: searchParams.get('includeMissing') ?? IncludeOnlyFilterEnum.false,
     includeWatched: searchParams.get('includeWatched') ?? IncludeOnlyFilterEnum.true,
     includeHidden: searchParams.get('includeHidden') ?? IncludeOnlyFilterEnum.false,

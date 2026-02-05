@@ -4,7 +4,7 @@ export const getEpisodePrefix = (type?: EpisodeTypeEnum) => {
   switch (type) {
     case EpisodeTypeEnum.Special:
       return 'S';
-    case EpisodeTypeEnum.ThemeSong:
+    case EpisodeTypeEnum.Credits:
       return 'C';
     case EpisodeTypeEnum.Trailer:
       return 'T';
@@ -12,7 +12,7 @@ export const getEpisodePrefix = (type?: EpisodeTypeEnum) => {
       return 'O';
     case EpisodeTypeEnum.Parody:
       return 'P';
-    case EpisodeTypeEnum.Normal:
+    case EpisodeTypeEnum.Episode:
     default:
       return '';
   }
@@ -22,7 +22,7 @@ export const getEpisodePrefixAlt = (type?: EpisodeTypeEnum) => {
   switch (type) {
     case EpisodeTypeEnum.Special:
       return 'SP';
-    case EpisodeTypeEnum.ThemeSong:
+    case EpisodeTypeEnum.Credits:
       return 'C';
     case EpisodeTypeEnum.Trailer:
       return 'T';
@@ -30,7 +30,7 @@ export const getEpisodePrefixAlt = (type?: EpisodeTypeEnum) => {
       return 'O';
     case EpisodeTypeEnum.Parody:
       return 'P';
-    case EpisodeTypeEnum.Normal:
+    case EpisodeTypeEnum.Episode:
     default:
       return 'EP';
   }

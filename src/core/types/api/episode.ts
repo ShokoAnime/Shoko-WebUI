@@ -40,15 +40,11 @@ export type EpisodeTitleType = {
 export const enum EpisodeTypeEnum {
   Unknown = 'Unknown',
   Other = 'Other',
-  Normal = 'Normal',
+  Episode = 'Episode',
   Special = 'Special',
   Trailer = 'Trailer',
-  ThemeSong = 'ThemeSong',
-  OpeningSong = 'OpeningSong',
-  EndingSong = 'EndingSong',
+  Credits = 'Credits',
   Parody = 'Parody',
-  Interview = 'Interview',
-  Extra = 'Extra',
 }
 
 export type AniDBEpisodeType = {

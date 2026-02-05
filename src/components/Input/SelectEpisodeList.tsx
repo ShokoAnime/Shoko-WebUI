@@ -57,7 +57,7 @@ const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: numbe
           <span className="font-semibold text-panel-text-important">{selected.number}</span>
           &nbsp;-&nbsp;
           {selected.label}
-          {selected?.type !== EpisodeTypeEnum.Normal && (
+          {selected?.type !== EpisodeTypeEnum.Episode && (
             <span className="mx-2 rounded-lg border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
               {selected.type}
             </span>

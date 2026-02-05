@@ -65,7 +65,7 @@ export default defineConfig(async () => {
 async function setupEnv(isDebug) {
   const gitHash = childProcess.execSync("git log --pretty=format:'%h' -n 1").toString().replace(/["']/g, '');
   const appVersion = pkg.version;
-  const minimumServerVersion = '5.2.5.7';
+  const minimumServerVersion = '5.3.0.6';
 
   process.env.VITE_GITHASH = gitHash;
   process.env.VITE_APPVERSION = appVersion;

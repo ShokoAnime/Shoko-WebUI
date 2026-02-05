@@ -27,12 +27,9 @@ const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string =
   const fullPrefixes = (prefix: string) => `${prefix}${epNumber}`;
   // Prefixes for episode types base on https://wiki.anidb.net/Content:Episodes#Type
   switch (type) {
-    case EpisodeTypeEnum.ThemeSong:
-    case EpisodeTypeEnum.OpeningSong:
-    case EpisodeTypeEnum.EndingSong:
+    case EpisodeTypeEnum.Credits:
       return fullPrefixes('C');
     case EpisodeTypeEnum.Special:
-    case EpisodeTypeEnum.Extra:
       return fullPrefixes('S');
     case EpisodeTypeEnum.Trailer:
       return fullPrefixes('T');

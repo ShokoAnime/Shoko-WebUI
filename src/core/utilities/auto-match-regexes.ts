@@ -135,12 +135,9 @@ try {
     // Add theme video information if found.
     const themeCheckResult = ThemeSongCheckRegex.exec(originalDetails.filePath);
     if (themeCheckResult) {
-      const { episode: episodeText = '1', isThemeSong } = themeCheckResult.groups!;
+      const { episode: episodeText = '1' } = themeCheckResult.groups!;
       const episode = parseInt(episodeText, 10);
 
-      modifiedDetails.episodeType = isThemeSong.includes('ED')
-        ? EpisodeTypeEnum.EndingSong
-        : EpisodeTypeEnum.OpeningSong;
       modifiedDetails.episodeStart = episode;
       modifiedDetails.episodeEnd = episode;
     }
@@ -161,7 +158,7 @@ try {
         const { episode: episodeText = '0' } = extraCheckResult.groups!;
         const episode = parseInt(episodeText, 10);
 
-        modifiedDetails.episodeType = EpisodeTypeEnum.Extra;
+        modifiedDetails.episodeType = EpisodeTypeEnum.Special;
         if (episode > 0) {
           modifiedDetails.episodeStart = episode;
           modifiedDetails.episodeEnd = episode;

@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
+import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 import type { WebuiSeriesFileSummaryOverview, WebuiSeriesFileSummarySourceCount } from '@/core/types/api/webui';
 
 type FileTypeSummaryProps = {
@@ -11,13 +11,12 @@ type FileTypeSummaryProps = {
   type: EpisodeTypeEnum;
 };
 const FileTypeSummary = ({ sources, type }: FileTypeSummaryProps) => {
-  const formattedType = (type === EpisodeTypeEnum.Normal) ? 'Episode' : type;
   const typeCount = sources.reduce((prev, curr) => (prev + curr.Count), 0);
   const sourceMap = sources.map(({ Count, Type }) => (`${Type} (${Count})`));
   return (
     <div className="flex flex-col gap-y-1">
       <span className="font-bold">
-        {formattedType}
+        {type}
         s&nbsp;
         {sourceMap.length > 1
           && (
