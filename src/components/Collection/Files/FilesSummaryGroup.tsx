@@ -23,9 +23,9 @@ type HeaderProps = {
 };
 const Header = ({ ranges }: HeaderProps) => (
   <div className="flex gap-x-2">
-    <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
-    <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
-    {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item.Range} />)}
+    <HeaderFragment title={ranges?.Episode?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Episode?.Range} />
+    <HeaderFragment title={ranges?.Special?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
+    {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item?.Range} />)}
   </div>
 );
 
