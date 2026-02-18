@@ -1,6 +1,4 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-import { mdiLoading } from '@mdi/js';
-import Icon from '@mdi/react';
 import { applyPatch } from 'fast-json-patch';
 import { cloneDeep, get, set, unset } from 'lodash';
 
@@ -43,15 +41,17 @@ export type PopOutModalProps = {
 
 type State = {
   shown: false;
+  index: number | null | undefined;
   path: (string | number)[];
   config?: unknown;
-  parentConfig?: unknown;
+  parentConfig?: unknown[];
   rootConfig?: unknown;
 } | {
   shown: true;
+  index: number | null | undefined;
   path: (string | number)[];
   config: unknown;
-  parentConfig: unknown;
+  parentConfig: unknown[] | undefined;
   rootConfig: unknown;
 };
 
@@ -68,7 +68,7 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
     };
   }, [props.rootSchema, props.parentSchema]);
   const { mutate: performActionRemote } = usePerformConfigurationActionMutation(props.rootSchema.id!);
-  const [state, setState] = useState<State>(() => ({ shown: false, path: [] }));
+  const [state, setState] = useState<State>(() => ({ shown: false, path: [], index: undefined }));
   const isValid = useMemo(() => !state.shown || validate(props.rootSchema, itemSchema, state.config), [
     state.shown,
     state.config,
@@ -244,63 +244,68 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
   });
 
   const handleSave = useEventCallback(() => {
-    setState(prevState => ({ ...prevState, shown: false, path: [] }));
-    props.setValue(state.config);
+    setState({ shown: false, path: [], index: undefined });
+    props.setValue(state.config, state.index ?? undefined);
     props.onClose();
   });
 
   useLayoutEffect(() => {
-    if (show && !state.shown) {
-      if (props.index === undefined) {
+    if (!show) {
+      if (state.shown) {
         setState(prevState => ({ ...prevState, shown: false, path: [] }));
         props.onClose();
-        return;
       }
+      return;
+    }
 
-      const rootConfig = cloneDeep(props.rootConfig);
-      const parentConfig = get(rootConfig, props.path) as unknown[];
-      if (props.index === null) {
-        const config = createDefaultItemForSchema(props.rootSchema, itemSchema);
-        const path = [...props.path, parentConfig.length];
-        parentConfig.push(config);
-        if (props.serverControlled) {
-          setState({ shown: true, path, rootConfig, config: unset, parentConfig: undefined });
-          performReactiveAction(rootConfig, path);
-        } else {
-          setState({ shown: true, path, rootConfig, config, parentConfig });
-        }
-        return;
+    if (props.index !== undefined && props.index === state.index && state.rootConfig && state.parentConfig && state.config) {
+      if (!state.shown) {
+        const { config, parentConfig, rootConfig } = state;
+        setState({ shown: true, path: [...props.path, parentConfig.length - 1], index: props.index, rootConfig, parentConfig, config });
       }
+      return;
+    }
 
-      const { index } = props;
-      const config = parentConfig[index];
-      if (config === undefined) {
+    if (props.index === undefined) {
+      if (state.shown) {
         setState(prevState => ({ ...prevState, shown: false, path: [] }));
         props.onClose();
-        return;
       }
+      return;
+    }
 
-      const path = [...props.path, index];
+    const rootConfig = cloneDeep(props.rootConfig);
+    const parentConfig = get(rootConfig, props.path) as unknown[];
+    if (props.index === null) {
+      const config = createDefaultItemForSchema(props.rootSchema, itemSchema);
+      const path = [...props.path, parentConfig.length];
+      parentConfig.push(config);
       if (props.serverControlled) {
-        setState({ shown: true, path, rootConfig, config: unset, parentConfig: undefined });
+        setState({ shown: true, index: null, path, rootConfig, config, parentConfig: undefined });
         performReactiveAction(rootConfig, path);
       } else {
-        setState({ shown: true, path, rootConfig, config, parentConfig });
+        setState({ shown: true, index: null, path, rootConfig, config, parentConfig });
       }
+      return;
+    }
+
+    const { index } = props;
+    const config = parentConfig[index];
+    if (config === undefined) {
+      setState(prevState => ({ ...prevState, shown: false, path: [], index: undefined }));
+      props.onClose();
+      return;
+    }
+
+    const path = [...props.path, index];
+    if (props.serverControlled) {
+      setState({ shown: true, index, path, rootConfig, config, parentConfig: undefined });
+      performReactiveAction(rootConfig, path);
+    } else {
+      setState({ shown: true, index, path, rootConfig, config, parentConfig });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    props.rootSchema,
-    props.index,
-    itemSchema,
-    props.rootConfig,
-    show,
-    state.shown,
-    props.path,
-    props.serverControlled,
-    performReactiveAction,
-    props.onClose,
-  ]);
+  }, [props.rootSchema, props.rootConfig, props.path, props.index, show]);
 
   return (
     <ModalPanel
@@ -309,11 +314,6 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
       header={title}
       subHeader={category}
     >
-      {state.config === undefined && (
-        <div className="flex items-center justify-center">
-          <Icon path={mdiLoading} size={2} className="animate-spin" />
-        </div>
-      )}
       {state.config !== undefined && (
         <AnySectionContainer
           rootConfig={state.rootConfig}

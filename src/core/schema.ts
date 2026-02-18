@@ -134,8 +134,9 @@ export function createDefaultItemForSchema(
   schema: JSONSchema4WithUiDefinition,
 ): unknown {
   const resolvedSchema = resolveReference(rootSchema, schema);
-  if (resolvedSchema.type !== 'object') {
-    if (resolvedSchema.type === 'array') {
+  const types = Array.isArray(resolvedSchema.type) ? resolvedSchema.type.filter(tpe => tpe !== 'null') : [resolvedSchema.type];
+  if (types[0] !== 'object') {
+    if (types[0] === 'array') {
       if (resolvedSchema.minItems !== undefined && resolvedSchema.minItems > 0) {
         return new Array(resolvedSchema.minItems).fill(
           createDefaultItemForSchema(rootSchema, resolveListReference(rootSchema, resolvedSchema)),
@@ -145,7 +146,7 @@ export function createDefaultItemForSchema(
     }
     const min = resolvedSchema.minimum;
     const max = resolvedSchema.maximum;
-    switch (resolvedSchema.type) {
+    switch (types[0]) {
       case 'integer':
       case 'number':
         if (
@@ -180,13 +181,22 @@ export function createDefaultItemForSchema(
       default:
         break;
     }
-    if (resolvedSchema.default != null) {
-      return cloneDeep(resolvedSchema.default);
+    if (schema.default != null) {
+      if (typeof schema.default === 'string' && schema.default.startsWith('{') && schema.default.endsWith('}')) {
+        return JSON.parse(schema.default) as unknown;
+      }
+      return cloneDeep(schema.default);
     }
     if (assertIsNullable(schema)) {
       return null;
     }
     return null;
+  }
+
+  if (schema.default != null) {
+    if (typeof schema.default === 'string' && schema.default.startsWith('{') && schema.default.endsWith('}')) {
+      return JSON.parse(schema.default) as Record<string, unknown>;
+    }
   }
 
   if (!resolvedSchema.properties) {
@@ -195,9 +205,8 @@ export function createDefaultItemForSchema(
 
   const obj = {} as Record<string, unknown>;
   for (const [key, valueSchema] of Object.entries(resolvedSchema.properties)) {
-    const resolvedValueSchema = resolveReference(rootSchema, valueSchema);
-    obj[key] = createDefaultItemForSchema(rootSchema, resolvedValueSchema);
+    obj[key] = createDefaultItemForSchema(rootSchema, valueSchema);
   }
 
-  return {};
+  return obj;
 }

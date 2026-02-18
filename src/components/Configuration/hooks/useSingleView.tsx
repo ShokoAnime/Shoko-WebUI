@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { pathToString } from '@/core/schema';
@@ -53,10 +53,6 @@ function useSingleView(
       return changedState;
     }, { replace });
   });
-
-  useLayoutEffect(() => {
-    setCurrentView(-1);
-  }, [sections, setCurrentView]);
 
   return [currentSection, currentIndex, setCurrentView];
 }
