@@ -2,7 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 
 export type TabType = {
-  name: string;
+  name: React.ReactNode;
   onClick: () => void;
   current: boolean;
 };

@@ -14,56 +14,13 @@ function AnySectionContainer(props: AnySchemaProps): React.JSX.Element {
   const uiDefinition = resolvedSchema['x-uiDefinition'] as SectionsConfigurationUiDefinitionType;
   switch (uiDefinition.sectionType) {
     case 'field-set':
-      return (
-        <FieldSetSectionContainer
-          rootSchema={props.rootSchema}
-          schema={props.schema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <FieldSetSectionContainer {...props} />;
     case 'tab':
-      return (
-        <TabSectionContainer
-          rootSchema={props.rootSchema}
-          schema={props.schema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <TabSectionContainer {...props} />;
     case 'minimal':
-      return (
-        <MinimalSectionContainer
-          rootSchema={props.rootSchema}
-          schema={props.schema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <MinimalSectionContainer {...props} />;
+    case 'checkbox':
+      return <UnableToRenderSchema type="Checkbox Section Container" path={props.path} schema={resolvedSchema} />;
     default:
       return <UnableToRenderSchema type="Invalid Section Container" path={props.path} schema={resolvedSchema} />;
   }

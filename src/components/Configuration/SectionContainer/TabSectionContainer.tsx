@@ -13,9 +13,10 @@ function TabSectionContainer(props: AnySchemaProps): React.JSX.Element {
     props.schema,
     props.config,
     props.path,
+    props.defaultSave,
     props.performAction,
     props.configHasChanged,
-    props.advancedMode,
+    props.modes,
   );
   const [
     {
@@ -49,18 +50,12 @@ function TabSectionContainer(props: AnySchemaProps): React.JSX.Element {
         <AnySchema
           // eslint-disable-next-line react/no-array-index-key
           key={`${element.key}-${index}`}
-          rootSchema={props.rootSchema}
+          {...props}
           schema={element.schema}
           parentConfig={props.config}
           config={element.config}
           path={[...props.path, element.key]}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
           renderHeader
-          configHasChanged={props.configHasChanged}
         />
       ))}
 

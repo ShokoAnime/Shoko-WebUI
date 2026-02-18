@@ -11,9 +11,10 @@ function FieldSetSectionContainer(props: AnySchemaProps): React.JSX.Element {
     props.schema,
     props.config,
     props.path,
+    props.defaultSave,
     props.performAction,
     props.configHasChanged,
-    props.advancedMode,
+    props.modes,
   );
   return (
     <>
@@ -31,17 +32,9 @@ function FieldSetSectionContainer(props: AnySchemaProps): React.JSX.Element {
         <FieldSetSection
           // eslint-disable-next-line react/no-array-index-key
           key={`${section.title}-${index}`}
-          rootSchema={props.rootSchema}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
+          {...props}
           renderHeader={props.renderHeader
             && (sections.length > 1 || (sections.length === 1 && sections[0].title !== 'Default'))}
-          configHasChanged={props.configHasChanged}
           section={section}
         />
       ))}

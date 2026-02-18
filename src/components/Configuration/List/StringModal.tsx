@@ -10,7 +10,6 @@ export type StringModalProps = {
   addValue: (value: string) => void;
   show: boolean;
   title: string;
-  values: string[];
 };
 
 function StringModal({ show, title, ...props }: StringModalProps) {

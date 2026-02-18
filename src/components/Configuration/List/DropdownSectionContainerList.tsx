@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import cx from 'classnames';
+import { forEach, groupBy, map } from 'lodash';
 
 import AnySchema from '@/components/Configuration/AnySchema';
 import useListSections from '@/components/Configuration/hooks/useListSections';
@@ -11,20 +12,22 @@ import { pathToString } from '@/core/schema';
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 
 function DropdownSectionContainerList(props: AnySchemaProps): React.JSX.Element | null {
-  const { addItem, canAdd, sections, showAddButton } = useListSections(
-    props.rootSchema,
-    props.schema,
-    props.config,
-    props.path,
-    props.updateField,
-    props.performAction,
-    props.configHasChanged,
-    true,
-  );
+  const { canAdd, canRemove, removeItem, sections, setItem: addItem, showAddButton, showRemoveButton } =
+    useListSections(
+      props.rootSchema,
+      props.schema,
+      props.config,
+      props.path,
+      props.updateField,
+      props.defaultSave,
+      props.performAction,
+      props.configHasChanged,
+      true,
+    );
   const visibility = useVisibility(
     props.schema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const isDisabled = visibility === 'disabled';
@@ -43,14 +46,33 @@ function DropdownSectionContainerList(props: AnySchemaProps): React.JSX.Element 
       };
     }
 
+    const defList: React.ReactElement[] = [];
+    forEach(groupBy(tabs, 'category'), (value, key) => {
+      if (key === 'null') {
+        forEach(value, (tab, tabIdx) => {
+          defList.push(
+            // eslint-disable-next-line react/no-array-index-key
+            <option key={`ungrouped-${tab.name?.toString()}-${tabIdx}`} value={tabIdx.toString()}>
+              {tab.name}
+            </option>,
+          );
+        });
+        return;
+      }
+      defList.push(
+        <optgroup key={`group-${key}`} label={key}>
+          {map(value, (tab, tabIdx) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <option key={`${tab.name?.toString()}-${tabIdx}`} value={tabIdx.toString()}>
+              {tab.name}
+            </option>
+          ))}
+        </optgroup>,
+      );
+    });
     return {
       currentValue: tabs.findIndex(tab => tab.current).toString(),
-      definitions: tabs.map((tab, tabIdx) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <option key={`${tab.name}-${tabIdx}`} value={tabIdx.toString()}>
-          {tab.name}
-        </option>
-      )),
+      definitions: defList,
     };
   }, [tabs]);
 
@@ -59,6 +81,16 @@ function DropdownSectionContainerList(props: AnySchemaProps): React.JSX.Element 
     if (tab) {
       tab.onClick();
     }
+  };
+
+  const onRemove = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const tab = tabs.findIndex(tabDef => tabDef.current);
+    if (tab === -1) {
+      return;
+    }
+    removeItem(tab);
   };
 
   return (
@@ -83,22 +115,17 @@ function DropdownSectionContainerList(props: AnySchemaProps): React.JSX.Element 
         <AnySchema
           // eslint-disable-next-line react/no-array-index-key
           key={`${element.key}-${index}`}
-          rootSchema={props.rootSchema}
+          {...props}
           schema={element.schema}
           parentConfig={props.config}
           config={element.config}
           path={element.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
           updateField={props.updateField}
           renderHeader={false}
-          configHasChanged={props.configHasChanged}
         />
       ))}
 
-      {showAddButton
+      {showAddButton || showRemoveButton
         ? (
           <>
             <div className="border-b border-panel-border" />
@@ -112,6 +139,16 @@ function DropdownSectionContainerList(props: AnySchemaProps): React.JSX.Element 
                   disabled={!canAdd}
                 >
                   Add
+                </button>
+              )}
+              {showRemoveButton && (
+                <button
+                  className="text-sm"
+                  type="button"
+                  onClick={onRemove}
+                  disabled={!canRemove}
+                >
+                  Remove
                 </button>
               )}
             </div>

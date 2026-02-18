@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -23,7 +23,9 @@ function EnumList(props: AnySchemaProps): React.JSX.Element | null {
   const uiDefinition = resolvedSchema['x-uiDefinition'] as
     & Omit<EnumConfigurationUiDefinitionType, 'elementType'>
     & SimpleListConfigurationUiDefinitionType;
-  const definitions = uiDefinition.enumDefinitions;
+  const definitions = useMemo(() => (uiDefinition.deniedValues
+    ? uiDefinition.enumDefinitions.filter(definition => !uiDefinition.deniedValues!.includes(definition.value))
+    : uiDefinition.enumDefinitions), [uiDefinition]);
   const title = props.schema.title ?? resolvedSchema.title ?? props.path[props.path.length - 1]?.toString()
     ?? '<unknown>';
   const [showModal, setShowModal] = useState(false);
@@ -32,7 +34,7 @@ function EnumList(props: AnySchemaProps): React.JSX.Element | null {
   const visibility = useVisibility(
     resolvedSchema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);
@@ -106,7 +108,7 @@ function EnumList(props: AnySchemaProps): React.JSX.Element | null {
           <div className="mt-1 text-sm text-panel-text opacity-65">{description}</div>
         </div>
         <EnumModal
-          definitions={uiDefinition.enumDefinitions}
+          definitions={definitions}
           title={title}
           show={showModal}
           onClose={onModalClose}

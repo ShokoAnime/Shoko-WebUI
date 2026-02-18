@@ -20,11 +20,11 @@ type ListTabPillsProps = {
 function ListTabPills(props: ListTabPillsProps): React.JSX.Element {
   const { addItem, canAdd, canRemove, removeItem, showAddButton, showRemoveButton, tabs } = props;
   return (
-    <div className="flex gap-x-3">
+    <div className="flex gap-x-3 overflow-x-scroll">
       <nav
         aria-label="Tabs"
         className={cx(
-          'isolate flex divide-x divide-panel-toggle-background-alt overflow-x-auto rounded-lg shadow-sm',
+          'isolate flex divide-x divide-panel-toggle-background-alt overflow-x-scroll rounded-lg shadow-sm',
           tabs.length === 0 && 'hidden',
         )}
       >

@@ -1,26 +1,27 @@
 import React, { useMemo } from 'react';
 import cx from 'classnames';
 
+import SelectComponent from '@/components/Configuration/Select/SelectComponent';
 import useBadges from '@/components/Configuration/hooks/useBadges';
 import useVisibility from '@/components/Configuration/hooks/useVisibility';
-import SelectSmall from '@/components/Input/SelectSmall';
 import { useReference } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
+import type { OptionType } from '@/components/Configuration/Select/SelectComponent';
 import type { EnumConfigurationUiDefinitionType } from '@/core/react-query/configuration/types';
 
 function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
   const resolvedSchema = useReference(props.rootSchema, props.schema);
   const title = props.schema.title ?? resolvedSchema.title ?? props.path[props.path.length - 1] ?? '<unknown>';
   const description = props.schema.description ?? resolvedSchema.description ?? '';
-  const onChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) =>
-    props.updateField(props.path, event.target.value, props.schema, props.rootSchema)
+  const onChange = useEventCallback((option: OptionType<string>) =>
+    props.updateField(props.path, option.value, props.schema, props.rootSchema)
   );
   const visibility = useVisibility(
     props.schema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const badges = useBadges(props.schema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);
@@ -28,19 +29,17 @@ function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
   const isReadOnly = visibility === 'read-only';
   const options = useMemo(() => {
     const uiDefinition = props.schema['x-uiDefinition'] as EnumConfigurationUiDefinitionType;
-    const definitions = uiDefinition.enumDefinitions;
-    const defaultValue = props.schema.default ?? definitions[0].value;
-    const isFlag = uiDefinition.enumIsFlag;
-    return {
-      isFlag,
-      definitions: definitions.map(definition => (
-        <option data-tooltip-id="tooltip" key={definition.value} value={definition.value}>
-          {definition.title}
-          {defaultValue === definition.value ? ' (Default)' : ''}
-        </option>
-      )),
-    };
-  }, [props.schema]);
+    const definitions = uiDefinition.deniedValues
+      ? uiDefinition.enumDefinitions.filter(definition => !uiDefinition.deniedValues!.includes(definition.value))
+      : uiDefinition.enumDefinitions;
+    const defaultValue = props.schema.default ?? definitions[0]?.value;
+    return definitions.map<OptionType<string>>(definition => ({
+      label: definition.title,
+      value: definition.value,
+      default: definition.value === defaultValue,
+      selected: definition.value === props.config,
+    }));
+  }, [props.schema, props.config]);
   const size = useMemo(() => {
     const uiDefinition = props.schema['x-uiDefinition'] as EnumConfigurationUiDefinitionType;
     if (uiDefinition.elementSize === 'full') {
@@ -62,15 +61,14 @@ function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
           {isReadOnly && <span className="self-center text-xs opacity-65">(Read-Only)</span>}
           {badges}
         </span>
-        <SelectSmall
+        <SelectComponent
           className={cx('flex-col', size)}
           disabled={isDisabled || isReadOnly}
           id={props.path.join('.')}
-          value={props.config as string | number}
+          values={options}
           onChange={onChange}
-        >
-          {options.definitions}
-        </SelectSmall>
+          serverControlled={props.serverControlled}
+        />
       </div>
       <div className="mt-1 text-sm text-panel-text opacity-65">{description}</div>
     </div>

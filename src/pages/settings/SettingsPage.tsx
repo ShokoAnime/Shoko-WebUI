@@ -1,6 +1,6 @@
 /* global globalThis */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading } from '@mdi/js';
@@ -13,10 +13,9 @@ import toast from '@/components/Toast';
 import { useConfigurationGetAllQuery } from '@/core/react-query/configuration/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setAdvancedMode, setItem as setMiscItem } from '@/core/slices/misc';
+import { setItem as setMiscItem } from '@/core/slices/misc';
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { RootState } from '@/core/store';
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
 const staticItems = [
@@ -41,29 +40,10 @@ function SettingsPage() {
   const toastId = useRef<number | string>(undefined);
 
   const [[showHiddenSettings, clickCount], setShowHiddenSettings] = useState([false, 0]);
-  const [advancedClickCount, setAdvancedClickCount] = useState(0);
-  const showAdvancedSettings = useSelector((state: RootState) => state.misc.advancedMode);
-
   const settingsQuery = useSettingsQuery();
   const configQuery = useConfigurationGetAllQuery();
   const settings = settingsQuery.data;
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
-
-  const handleAdvancedSettingChange = useEventCallback(() => {
-    if (advancedClickCount === 6) {
-      toast.info(`${showAdvancedSettings ? 'Hiding' : 'Showing'} advanced settings.`);
-      setAdvancedClickCount(0);
-      dispatch(setAdvancedMode(!showAdvancedSettings));
-      return;
-    }
-    if (advancedClickCount >= 3) {
-      toast.info(
-        `Press ${6 - advancedClickCount} more times to ${showAdvancedSettings ? 'hide' : 'show'} advanced settings.`,
-      );
-    }
-
-    setAdvancedClickCount(advancedClickCount + 1);
-  });
 
   const handleHiddenSettingChange = useEventCallback(() => {
     if (clickCount === 6) {
@@ -200,7 +180,7 @@ function SettingsPage() {
     <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
       <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
         <div className="sticky top-6">
-          <div className="mb-8 text-center text-xl" onClick={handleAdvancedSettingChange}>
+          <div className="mb-8 text-center text-xl">
             Core Settings
           </div>
           <div className="flex flex-col items-center gap-y-2">

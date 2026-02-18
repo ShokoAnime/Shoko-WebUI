@@ -35,12 +35,18 @@ function StringInput(props: AnySchemaProps): React.JSX.Element | null {
   const visibility = useVisibility(
     resolvedSchema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);
   const isDisabled = visibility === 'disabled';
   const isReadOnly = visibility === 'read-only';
+  const onClick = useEventCallback(() => {
+    if (!props.serverControlled) {
+      return;
+    }
+    props.updateField(props.path, props.config, props.schema, props.rootSchema);
+  });
   return (
     <div>
       <div
@@ -55,14 +61,22 @@ function StringInput(props: AnySchemaProps): React.JSX.Element | null {
           {isReadOnly && <span className="self-center text-xs opacity-65">(Read-Only)</span>}
           {badges}
         </span>
-        <InputSmall
-          disabled={isDisabled || isReadOnly}
-          id={props.path.join('.')}
-          value={(props.config as string | null) ?? ''}
-          type={isPassword ? 'password' : 'text'}
-          onChange={onChange}
-          className={cx('px-3 py-1', size)}
-        />
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <InputSmall
+            disabled={isDisabled || isReadOnly}
+            id={props.path.join('.')}
+            value={(props.config as string | null) ?? ''}
+            type={isPassword ? 'password' : 'text'}
+            onChange={onChange}
+            className={cx('px-3 py-1', size)}
+          />
+          {(isDisabled || isReadOnly) && (
+            <div
+              onClick={props.serverControlled ? onClick : undefined}
+              className="absolute inset-0 cursor-not-allowed"
+            />
+          )}
+        </div>
       </div>
       <div className="mt-1 text-sm text-panel-text opacity-65">{description}</div>
     </div>

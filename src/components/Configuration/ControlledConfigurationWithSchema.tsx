@@ -1,11 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { applyPatch } from 'fast-json-patch';
 import { cloneDeep, get, set, unset } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import AnySchema from '@/components/Configuration/AnySchema';
-import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { usePerformConfigurationActionMutation } from '@/core/react-query/configuration/mutations';
 import { assertIsNullable, pathToString } from '@/core/schema';
@@ -13,10 +11,9 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useNavigate from '@/hooks/useNavigateVoid';
 
 import type {
+  ConfigurationActionResultType,
   JSONSchema4WithUiDefinition,
-  SectionsConfigurationUiDefinitionType,
 } from '@/core/react-query/configuration/types';
-import type { RootState } from '@/core/store';
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { UseMutateFunction } from '@tanstack/react-query';
 
@@ -28,15 +25,19 @@ export type ControlledConfigurationWithSchemaProps = {
   configGuid: string;
   setTitle?: boolean;
   baseConfig?: boolean;
-  save: UseMutateFunction<void, Error, unknown, unknown>;
+  save: UseMutateFunction<ConfigurationActionResultType, Error, unknown, unknown>;
   setConfig: (config: unknown) => void;
   onSave?: () => void;
+};
+
+const StaticModes = {
+  advanced: true,
+  debug: false,
 };
 
 const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSchemaProps): React.JSX.Element => {
   const navigate = useNavigate();
   const { mutate: performActionRemote } = usePerformConfigurationActionMutation(props.configGuid);
-  const showAdvancedSettings = useSelector((state: RootState) => state.misc.advancedMode);
   const toastId = useRef<number | string>(undefined);
 
   const performCustomAction = useEventCallback((path: (string | number)[], actionName: string) => {
@@ -88,10 +89,10 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
   });
 
   const performReactiveAction = useEventCallback(
-    (newConfig: unknown, path: (string | number)[], actionType: 'Saved' | 'Loaded' | 'Changed') => {
-      performActionRemote({ config: newConfig, path: pathToString(path), actionType }, {
+    (newConfig: unknown, path: (string | number)[]) => {
+      performActionRemote({ config: newConfig, path: pathToString(path), actionType: 'Changed' }, {
         onError(error) {
-          toast.error(`Failed to perform reactive action "${actionType}" on ${JSON.stringify(path)}: ${error.message}`);
+          toast.error(`Failed to perform reactive action on ${JSON.stringify(path)}: ${error.message}`);
         },
         onSuccess(data) {
           if (data.Redirect) {
@@ -124,6 +125,8 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
             const newerConfig = cloneDeep(newConfig);
             applyPatch(newerConfig, data.PatchOperations);
             props.setConfig(newerConfig);
+          } else {
+            props.setConfig(newConfig);
           }
           if (data.ShowSaveMessage) {
             if (!props.baseConfig) toast.success(`Successfully saved configuration for "${props.schema.title}"`);
@@ -180,9 +183,10 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
       } else {
         set(newConfig as Record<string, unknown>, path, configValue);
       }
-      props.setConfig(newConfig);
-      if (props.info.HasReactiveActions) {
-        performReactiveAction(newConfig, path, 'Changed');
+      if (props.info.HasLiveEdit) {
+        performReactiveAction(newConfig, path);
+      } else {
+        props.setConfig(newConfig);
       }
     },
   );
@@ -190,19 +194,15 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
   const defaultSave = useEventCallback(() => {
     if (!props.hasChanged) return;
 
-    if (!props.baseConfig && props.info.HasReactiveActions) {
-      performReactiveAction(props.config, [], 'Saved');
-    } else {
-      props.save(props.config, {
-        onError(error) {
-          toast.error(`Failed to save: ${error.message}`);
-        },
-        onSuccess() {
-          if (!props.baseConfig) toast.success(`Successfully saved configuration for "${props.schema.title}"`);
-          if (props.onSave) props.onSave();
-        },
-      });
-    }
+    props.save(props.config, {
+      onError(error) {
+        toast.error(`Failed to save: ${error.message}`);
+      },
+      onSuccess() {
+        if (!props.baseConfig) toast.success(`Successfully saved configuration for "${props.schema.title}"`);
+        if (props.onSave) props.onSave();
+      },
+    });
   });
 
   const [debouncedUnsavedChanges] = useDebounceValue(props.hasChanged, 100);
@@ -232,18 +232,6 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
     toastId.current = undefined;
   }, [props.schema]);
 
-  useEffect(() => {
-    if (props.info.HasReactiveActions) {
-      performReactiveAction(props.config, [], 'Loaded');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.info.HasReactiveActions, props.configGuid]);
-
-  const hideButtons =
-    (props.schema['x-uiDefinition'] as Partial<SectionsConfigurationUiDefinitionType> | undefined)?.actions
-      ?.hideSaveAction
-      ?? false;
-
   return (
     <>
       {!props.baseConfig && props.setTitle && (
@@ -261,34 +249,20 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
       <AnySchema
         rootSchema={props.schema}
         schema={props.schema}
+        rootConfig={props.config}
         parentConfig={props.config}
         config={props.config}
         path={[]}
         restartPendingFor={props.info.RestartPendingFor}
         loadedEnvironmentVariables={props.info.LoadedEnvironmentVariables}
-        advancedMode={showAdvancedSettings}
+        serverControlled={props.info.HasLiveEdit}
+        modes={StaticModes}
         performAction={performCustomAction}
         updateField={updateField}
         renderHeader={false}
         configHasChanged={props.hasChanged}
+        defaultSave={defaultSave}
       />
-
-      {!hideButtons && (
-        <>
-          <div className="border-b border-panel-border" />
-
-          <div className="flex justify-end gap-x-3 font-semibold">
-            <Button
-              disabled={!props.hasChanged}
-              onClick={defaultSave}
-              buttonType="primary"
-              buttonSize="normal"
-            >
-              Save
-            </Button>
-          </div>
-        </>
-      )}
     </>
   );
 };

@@ -23,7 +23,7 @@ function CodeBlockInput(props: AnySchemaProps): React.JSX.Element | null {
   const visibility = useVisibility(
     resolvedSchema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);

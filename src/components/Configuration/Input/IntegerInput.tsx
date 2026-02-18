@@ -4,7 +4,7 @@ import cx from 'classnames';
 import useBadges from '@/components/Configuration/hooks/useBadges';
 import useVisibility from '@/components/Configuration/hooks/useVisibility';
 import InputSmall from '@/components/Input/InputSmall';
-import { useReference } from '@/core/schema';
+import { createDefaultItemForSchema, useReference } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
@@ -15,15 +15,19 @@ function IntegerInput(props: AnySchemaProps): React.JSX.Element | null {
   const resolvedSchema = useReference(props.rootSchema, schema);
   const title = schema.title ?? resolvedSchema.title ?? props.path[props.path.length - 1] ?? '<unknown>';
   const description = schema.description ?? resolvedSchema.description ?? '';
-  const onChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) =>
-    props.updateField(props.path, event.target.value, props.schema, props.rootSchema)
-  );
+  const onChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    let { value } = event.target;
+    if (value === '') {
+      value = createDefaultItemForSchema(props.rootSchema, resolvedSchema)?.toString() ?? '0';
+    }
+    props.updateField(props.path, value, props.schema, props.rootSchema);
+  });
   const min = resolvedSchema.minimum;
   const max = resolvedSchema.maximum;
   const visibility = useVisibility(
     resolvedSchema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);

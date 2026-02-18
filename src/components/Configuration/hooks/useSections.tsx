@@ -20,6 +20,7 @@ export type SectionElementType = {
 
 export type SectionType = {
   title: string;
+  category: string | null;
   description: string | null;
   elements: SectionElementType[];
   buttons: ActionButtonType;
@@ -36,13 +37,14 @@ function useSections(
   schema: JSONSchema4WithUiDefinition,
   config: unknown,
   path: (string | number)[],
-  performAction: (path: (string | number)[], action: string) => void,
+  defaultSave: (() => void) | undefined,
+  performAction: ((path: (string | number)[], action: string) => void) | undefined,
   configHasChanged: boolean,
-  advancedMode: boolean,
+  modes: { advanced: boolean, debug: boolean },
 ): { buttons: ActionButtonType, sections: SectionType[] } {
   return useMemo(() => {
     const resolvedContainerSchema = resolveReference(rootSchema, schema);
-    const { actions: { customActions }, sectionAppendFloatingAtEnd, sectionName: defaultSectionName = 'Default' } =
+    const { actions, sectionAppendFloatingAtEnd, sectionName: defaultSectionName = 'Default', showSaveAction } =
       resolvedContainerSchema['x-uiDefinition']! as SectionsConfigurationUiDefinitionType;
     const sections = new Array<SectionType>();
     const extraSection = new Map<string, SectionElementType[]>();
@@ -51,45 +53,70 @@ function useSections(
       top: [],
       bottom: [],
     }]]);
-    for (const [index, action] of customActions.entries()) {
-      const key = `action-${index}`;
-      const tooltip = action.description ? action.description : `${action.title}`;
-      const disabled = action.disableIfNoChanges && !configHasChanged;
-      if (action.toggle) {
-        const value = get(config, action.toggle.path.split('.')) as unknown;
-        const isToggled = isEqual(value, action.toggle.value);
-        if (action.inverseToggle !== isToggled) {
-          continue;
+    if (performAction) {
+      for (const [actionId, action] of Object.entries(actions)) {
+        const key = `action-${actionId}`;
+        const tooltip = action.description ? action.description : `${action.title}`;
+        let disabled = action.disableIfNoChanges && !configHasChanged;
+        if (!disabled && action.disableToggle) {
+          const value = get(config, action.disableToggle.path.split('.')) as unknown;
+          const isDisabled = isEqual(value, action.disableToggle.value);
+          disabled = action.disableToggle.inverseCondition === isDisabled;
+        }
+        if (action.toggle) {
+          const value = get(config, action.toggle.path.split('.')) as unknown;
+          const isToggled = isEqual(value, action.toggle.value);
+          if (action.toggle.inverseCondition !== isToggled) {
+            continue;
+          }
+        }
+        const onClick = () => performAction(path, actionId);
+        const actionButton = (
+          <Button
+            key={key}
+            disabled={disabled}
+            buttonType={action.theme}
+            buttonSize={action.position === 'top' ? 'small' : 'normal'}
+            tooltip={tooltip}
+            onClick={onClick}
+          >
+            {action.title}
+          </Button>
+        );
+        let buttonList = buttons.get(action.sectionName ?? defaultSectionName);
+        if (!buttonList) {
+          buttons.set(action.sectionName ?? defaultSectionName, buttonList = { auto: [], top: [], bottom: [] });
+        }
+        switch (action.position) {
+          case 'top':
+            buttonList.top.push(actionButton);
+            break;
+          case 'bottom':
+            buttonList.bottom.push(actionButton);
+            break;
+          default:
+            buttonList.auto.push(actionButton);
+            break;
         }
       }
-      const onClick = () => performAction(path, action.title);
+    }
+    if (defaultSave && showSaveAction) {
       const actionButton = (
         <Button
-          key={key}
-          disabled={disabled}
-          buttonType={action.theme}
-          buttonSize={action.position === 'top' ? 'small' : 'normal'}
-          tooltip={tooltip}
-          onClick={onClick}
+          key="default-save"
+          buttonType="primary"
+          buttonSize="normal"
+          onClick={defaultSave}
+          disabled={!configHasChanged}
         >
-          {action.title}
+          Save
         </Button>
       );
-      let buttonList = buttons.get(action.sectionName ?? defaultSectionName);
+      let buttonList = buttons.get(defaultSectionName);
       if (!buttonList) {
-        buttons.set(action.sectionName ?? defaultSectionName, buttonList = { auto: [], top: [], bottom: [] });
+        buttons.set(defaultSectionName, buttonList = { auto: [], top: [], bottom: [] });
       }
-      switch (action.position) {
-        case 'top':
-          buttonList.top.push(actionButton);
-          break;
-        case 'bottom':
-          buttonList.bottom.push(actionButton);
-          break;
-        default:
-          buttonList.auto.push(actionButton);
-          break;
-      }
+      buttonList.bottom.push(actionButton);
     }
 
     for (
@@ -100,13 +127,10 @@ function useSections(
       if (resolvedContainerSchema === rootSchema && key === '$schema') continue;
       const subConfig = (config as Record<string, unknown>)[key];
       const resolvedSchema = resolveReference(rootSchema, value);
-      const type = resolvedSchema.type instanceof Array
-        ? resolvedSchema.type.find(typ => typ !== 'null') ?? 'null'
-        : resolvedSchema.type ?? 'null';
       const visibility = getVisibility(
         value,
-        type === 'object' ? subConfig : config,
-        advancedMode,
+        config,
+        modes,
         [],
       );
       if (visibility === 'hidden') continue;
@@ -117,10 +141,17 @@ function useSections(
         if (!sectionList) {
           extraSection.set(sectionName, sectionList = []);
         }
-        sectionList.push({ key, schema: value, config: subConfig, parentConfig: config, path: [...path, key] });
+        sectionList.push({
+          key,
+          schema: value,
+          config: subConfig,
+          parentConfig: config,
+          path: [...path, key],
+        });
       } else if (uiDefinition.elementType === 'section-container') {
         sections.push({
           title: value?.title ?? resolvedSchema.title ?? key,
+          category: null,
           description: value.description ?? resolvedSchema.description ?? null,
           elements: [{ key, schema: resolvedSchema, config: subConfig, parentConfig: config, path }],
           buttons: { auto: [], top: [], bottom: [] },
@@ -128,6 +159,7 @@ function useSections(
       } else if (uiDefinition.elementType === 'list' && uiDefinition.listElementType === 'section-container') {
         sections.push({
           title: value?.title ?? resolvedSchema.title ?? key,
+          category: null,
           description: value.description ?? resolvedSchema.description ?? null,
           elements: [{ key, schema: resolvedSchema, config: subConfig, parentConfig: config, path }],
           buttons: { auto: [], top: [], bottom: [] },
@@ -137,7 +169,13 @@ function useSections(
         if (!sectionList) {
           extraSection.set(sectionName, sectionList = []);
         }
-        sectionList.push({ key, schema: value, config: subConfig, parentConfig: config, path: [...path, key] });
+        sectionList.push({
+          key,
+          schema: value,
+          config: subConfig,
+          parentConfig: config,
+          path: [...path, key],
+        });
       }
     }
 
@@ -149,6 +187,7 @@ function useSections(
             title: extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
               ? schema.title
               : title,
+            category: null,
             description:
               extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
                 ? schema.description ?? null
@@ -163,6 +202,7 @@ function useSections(
             title: extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
               ? schema.title
               : title,
+            category: null,
             description:
               extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
                 ? schema.description ?? null
@@ -176,7 +216,7 @@ function useSections(
     }
 
     return { buttons: buttons.get(defaultSectionName)!, sections };
-  }, [rootSchema, schema, config, path, performAction, configHasChanged, advancedMode]);
+  }, [rootSchema, schema, config, path, defaultSave, performAction, configHasChanged, modes]);
 }
 
 export default useSections;

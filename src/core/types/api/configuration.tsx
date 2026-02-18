@@ -9,7 +9,9 @@ export type ConfigurationInfoType = {
   HasCustomNewFactory: boolean;
   HasCustomValidation: boolean;
   HasCustomActions: boolean;
-  HasReactiveActions: boolean;
+  HasCustomSave: boolean;
+  HasCustomLoad: boolean;
+  HasLiveEdit: boolean;
   RestartPendingFor: string[];
   LoadedEnvironmentVariables: string[];
   Plugin: PluginInfoType;

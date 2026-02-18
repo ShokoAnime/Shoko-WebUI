@@ -11,7 +11,6 @@ type State = {
     url: string;
     authenticated: boolean;
   };
-  advancedMode: boolean;
   webuiUpdateAvailable: boolean;
   webuiPreviewTheme: string;
 };
@@ -27,7 +26,6 @@ const miscSlice = createSlice({
       url: '',
       authenticated: false,
     },
-    advancedMode: false,
     webuiUpdateAvailable: false,
     webuiPreviewTheme: '',
   } as State,
@@ -35,12 +33,9 @@ const miscSlice = createSlice({
     setItem(sliceState, action: PayloadAction<object>) {
       return Object.assign({}, sliceState, action.payload);
     },
-    setAdvancedMode(sliceState, action: PayloadAction<boolean>) {
-      return Object.assign({}, sliceState, { advancedMode: action.payload });
-    },
   },
 });
 
-export const { setAdvancedMode, setItem } = miscSlice.actions;
+export const { setItem } = miscSlice.actions;
 
 export default miscSlice.reducer;

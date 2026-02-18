@@ -9,8 +9,8 @@ import type { ConfigurationActionResultType } from '@/core/react-query/configura
 export const useSaveConfigurationMutation = (configId: string) =>
   useMutation({
     mutationKey: ['configuration', 'object', configId, 'object'],
-    mutationFn: (config: any) => axios.put<any, void>(`/Configuration/${configId}`, config),
-    onSuccess: () => invalidateQueries(['configuration', 'object', configId]),
+    mutationFn: (config: any) => axios.put<any, ConfigurationActionResultType>(`/Configuration/${configId}`, config),
+    onSuccess: data => data.Refresh && invalidateQueries(['configuration', 'object', configId]),
   });
 
 export const usePerformConfigurationActionMutation = (configId: string) =>
@@ -21,11 +21,14 @@ export const usePerformConfigurationActionMutation = (configId: string) =>
         config: any;
         path: string;
         actionName?: string;
-        actionType?: 'Custom' | 'Saved' | 'Loaded' | 'Changed';
+        actionType?: 'Custom' | 'Changed';
       },
-    ) =>
-      axios.post<any, ConfigurationActionResultType>(`/Configuration/${configId}/PerformAction`, config, {
-        params: { path, actionName, actionType },
-      }),
+    ) => (actionType === 'Custom'
+      ? axios.post<any, ConfigurationActionResultType>(`/Configuration/${configId}/PerformAction`, config, {
+        params: { path, actionName },
+      })
+      : axios.post<any, ConfigurationActionResultType>(`/Configuration/${configId}/LiveEdit`, config, {
+        params: { path },
+      })),
     onSuccess: data => data.Refresh && invalidateQueries(['configuration', 'object', configId]),
   });

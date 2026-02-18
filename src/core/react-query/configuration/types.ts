@@ -2,6 +2,8 @@ import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { Operation } from 'fast-json-patch';
 import type { JSONSchema4 } from 'json-schema';
 
+export type { ValidationResult } from 'json-schema';
+
 /**
  * The server will guarantee that the config in question is in-line with the
  * schema, because it will validate the config upon loading it before sending it
@@ -15,21 +17,24 @@ export type ConfigurationWithSchemaResultType = {
 
 export type DisplayElementType = ConfigurationUiDefinitionType['elementType'];
 
-export type DisplayVisibility = 'visible' | 'hidden' | 'read-only' | 'disabled';
+export type DisplayVisibility = 'visible' | 'hidden' | 'read-only';
 
 export type DisplayElementSize = 'normal' | 'small' | 'large' | 'full';
 
 export type DisplayColorTheme = 'default' | 'primary' | 'secondary' | 'important' | 'warning' | 'danger';
 
-export type DisplaySectionType = 'field-set' | 'tab' | 'minimal';
+export type DisplaySectionType = 'field-set' | 'tab' | 'minimal' | 'checkbox';
 
 export type DisplayButtonPosition = 'auto' | 'top' | 'bottom';
+
+export type DisplayStructureType = 'property' | 'method';
 
 export type JSONSchema4WithUiDefinition<
   TUiDefinitionType extends ConfigurationUiDefinitionType = ConfigurationUiDefinitionType,
 > = JSONSchema4 & { 'x-uiDefinition'?: TUiDefinitionType };
 
 export type BaseConfigurationUiDefinitionType = {
+  deniedValues?: unknown[];
   visibility?: VisibilityType;
   badge?: {
     name: string;
@@ -55,10 +60,16 @@ export type SectionsConfigurationUiDefinitionType = BaseConfigurationUiDefinitio
   elementType: 'section-container';
   sectionType: DisplaySectionType;
   sectionAppendFloatingAtEnd: boolean;
-  actions: {
-    hideSaveAction: boolean;
-    customActions: CustomUiActionType[];
-  };
+  structure: Record<string, DisplayStructureType>;
+  showSaveAction: boolean;
+  actions: Record<string, CustomUiActionType>;
+};
+
+export type SelectConfigurationUiDefinitionType = BaseConfigurationUiDefinitionType & HasEnvironmentVariable & {
+  elementType: 'select';
+  elementSize: DisplayElementSize;
+  selectType: 'auto' | 'flat-list' | 'checkbox-list';
+  selectMultipleItems: boolean;
 };
 
 export type ListConfigurationUiDefinitionType =
@@ -66,6 +77,7 @@ export type ListConfigurationUiDefinitionType =
   | ComplexListConfigurationUiDefinitionType;
 
 export type SimpleListConfigurationUiDefinitionType = BaseConfigurationUiDefinitionType & HasEnvironmentVariable & {
+  group?: string;
   elementType: 'list';
   elementSize: DisplayElementSize;
   listType: 'auto' | 'enum-checkbox';
@@ -79,7 +91,7 @@ export type SimpleListConfigurationUiDefinitionType = BaseConfigurationUiDefinit
 export type ComplexListConfigurationUiDefinitionType = BaseConfigurationUiDefinitionType & HasEnvironmentVariable & {
   elementType: 'list';
   elementSize: DisplayElementSize;
-  listType: 'complex-dropdown' | 'complex-tab';
+  listType: 'complex-dropdown' | 'complex-tab' | 'complex-inline';
   listElementType: DisplayElementType;
   listSortable: boolean;
   listUniqueItems: boolean;
@@ -111,6 +123,7 @@ export type EnumConfigurationUiDefinitionType = BaseConfigurationUiDefinitionTyp
 
 export type ConfigurationUiDefinitionType =
   | BasicConfigurationUiDefinitionType
+  | SelectConfigurationUiDefinitionType
   | ListConfigurationUiDefinitionType
   | RecordConfigurationUiDefinitionType
   | CodeEditorConfigurationUiDefinitionType
@@ -124,6 +137,12 @@ export type VisibilityType = {
     path: string;
     value: unknown;
     visibility: DisplayVisibility;
+    inverseCondition: boolean;
+  };
+  disableToggle?: {
+    path: string;
+    value: unknown;
+    inverseCondition: boolean;
   };
 };
 
@@ -138,12 +157,18 @@ export type CustomUiActionType = {
   description: string;
   theme: DisplayColorTheme;
   position: DisplayButtonPosition;
+  icon?: string;
   sectionName?: string;
   toggle?: {
     path: string;
     value: unknown;
+    inverseCondition: boolean;
   };
-  inverseToggle: boolean;
+  disableToggle?: {
+    path: string;
+    value: unknown;
+    inverseCondition: boolean;
+  };
   disableIfNoChanges: boolean;
 };
 

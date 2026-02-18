@@ -8,15 +8,17 @@ import useTabs from '@/components/Configuration/hooks/useTabs';
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 
 function TabSectionContainerList(props: AnySchemaProps): React.JSX.Element | null {
-  const { addItem, canAdd, canRemove, removeItem, sections, showAddButton, showRemoveButton } = useListSections(
-    props.rootSchema,
-    props.schema,
-    props.config,
-    props.path,
-    props.updateField,
-    props.performAction,
-    props.configHasChanged,
-  );
+  const { canAdd, canRemove, removeItem, sections, setItem: addItem, showAddButton, showRemoveButton } =
+    useListSections(
+      props.rootSchema,
+      props.schema,
+      props.config,
+      props.path,
+      props.updateField,
+      props.defaultSave,
+      props.performAction,
+      props.configHasChanged,
+    );
   const [{ elements = [] } = {}, tabs] = useTabs(sections, props.path);
   return (
     <>
@@ -36,18 +38,12 @@ function TabSectionContainerList(props: AnySchemaProps): React.JSX.Element | nul
         <AnySchema
           // eslint-disable-next-line react/no-array-index-key
           key={`${element.key}-${index}`}
-          rootSchema={props.rootSchema}
+          {...props}
           schema={element.schema}
           parentConfig={props.config}
           config={element.config}
           path={element.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
           renderHeader={false}
-          configHasChanged={props.configHasChanged}
         />
       ))}
     </>

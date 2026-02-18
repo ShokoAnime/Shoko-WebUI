@@ -30,7 +30,7 @@ function EnumCheckboxList(props: AnySchemaProps): React.JSX.Element | null {
   const visibility = useVisibility(
     resolvedSchema,
     props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const badges = useBadges(resolvedSchema, props.path, props.loadedEnvironmentVariables, props.restartPendingFor);
@@ -38,12 +38,15 @@ function EnumCheckboxList(props: AnySchemaProps): React.JSX.Element | null {
   const isReadOnly = visibility === 'read-only';
   const isSortable = visibility === 'visible' && uiDefinition.listSortable;
   const [definitions, setOrder] = useState(() => {
+    const defList = uiDefinition.deniedValues
+      ? uiDefinition.enumDefinitions.filter(definition => !uiDefinition.deniedValues!.includes(definition.value))
+      : uiDefinition.enumDefinitions;
     if (!uiDefinition.listSortable) {
-      return uiDefinition.enumDefinitions;
+      return defList;
     }
 
-    const order = Array.from(new Set([...values, ...uiDefinition.enumDefinitions.map(def => def.value)]));
-    return uiDefinition.enumDefinitions.sort((defA, defB) => order.indexOf(defA.value) - order.indexOf(defB.value));
+    const order = Array.from(new Set([...values, ...defList.map(def => def.value)]));
+    return defList.sort((defA, defB) => order.indexOf(defA.value) - order.indexOf(defB.value));
   });
 
   const onDragEnd = useEventCallback((result: DropResult) => {

@@ -37,18 +37,11 @@ function MinimalSection(
         <AnySchema
           // eslint-disable-next-line react/no-array-index-key
           key={`${element.key}-${index}`}
-          rootSchema={props.rootSchema}
+          {...props}
           schema={element.schema}
           parentConfig={props.config}
           config={element.config}
           path={[...props.path, element.key]}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
         />
       ))}
 

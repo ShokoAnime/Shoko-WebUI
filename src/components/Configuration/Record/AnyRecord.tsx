@@ -21,115 +21,25 @@ function AnyRecord(props: AnySchemaProps): React.JSX.Element | null {
   const uiDefinition = resolvedSchema['x-uiDefinition'] as RecordConfigurationUiDefinitionType;
   switch (uiDefinition.recordElementType) {
     case 'enum':
-      return (
-        <EnumRecord
-          rootSchema={props.rootSchema}
-          schema={resolvedSchema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <EnumRecord {...props} />;
 
     default:
       switch (childType) {
         case 'boolean':
-          return (
-            <BooleanRecord
-              rootSchema={props.rootSchema}
-              schema={resolvedSchema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <BooleanRecord {...props} />;
 
         case 'string':
-          return (
-            <StringRecord
-              rootSchema={props.rootSchema}
-              schema={resolvedSchema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <StringRecord {...props} />;
 
         case 'integer':
-          return (
-            <IntegerRecord
-              rootSchema={props.rootSchema}
-              schema={resolvedSchema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <IntegerRecord {...props} />;
 
         case 'number':
-          return (
-            <FloatRecord
-              rootSchema={props.rootSchema}
-              schema={resolvedSchema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <FloatRecord {...props} />;
 
         case 'array':
         case 'object':
-          return (
-            <ComplexRecord
-              rootSchema={props.rootSchema}
-              schema={resolvedSchema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <ComplexRecord {...props} />;
 
         default:
           return <UnableToRenderSchema type="Record (Any)" schema={props.schema} path={props.path} />;

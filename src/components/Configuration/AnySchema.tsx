@@ -9,7 +9,8 @@ import StringInput from '@/components/Configuration/Input/StringInput';
 import TextAreaInput from '@/components/Configuration/Input/TextAreaInput';
 import AnyList from '@/components/Configuration/List/AnyList';
 import AnyRecord from '@/components/Configuration/Record/AnyRecord';
-import SectionContainer from '@/components/Configuration/SectionContainer/AnySectionContainer';
+import AnySectionContainer from '@/components/Configuration/SectionContainer/AnySectionContainer';
+import AnySelect from '@/components/Configuration/Select/AnySelect';
 import UnableToRenderSchema from '@/components/Configuration/UnableToRenderSchema';
 import useVisibility from '@/components/Configuration/hooks/useVisibility';
 import { useReference } from '@/core/schema';
@@ -21,16 +22,22 @@ import type {
 
 export type AnySchemaProps = {
   config: unknown;
-  configHasChanged: boolean;
   parentConfig: unknown;
+  rootConfig: unknown;
+  schema: JSONSchema4WithUiDefinition;
+  rootSchema: JSONSchema4WithUiDefinition;
+  configHasChanged: boolean;
   renderHeader: boolean;
   path: (string | number)[];
   restartPendingFor: string[];
   loadedEnvironmentVariables: string[];
-  advancedMode: boolean;
-  performAction: (path: (string | number)[], action: string) => void;
-  rootSchema: JSONSchema4WithUiDefinition;
-  schema: JSONSchema4WithUiDefinition;
+  serverControlled: boolean;
+  modes: {
+    advanced: boolean;
+    debug: boolean;
+  };
+  defaultSave?: (() => void) | undefined;
+  performAction?: (path: (string | number)[], action: string) => void;
   updateField: (
     path: (string | number)[],
     value: unknown,
@@ -52,195 +59,48 @@ function AnySchema(props: AnySchemaProps): React.JSX.Element | null {
   const visibility = useVisibility(
     props.schema,
     type === 'object' ? props.config : props.parentConfig,
-    props.advancedMode,
+    props.modes,
     props.loadedEnvironmentVariables,
   );
   const isVisible = visibility !== 'hidden';
-  if (type === 'null' || type === 'any' || !isVisible) return null;
-
-  if (uiDefinition.elementType === 'section-container') {
-    return (
-      <SectionContainer
-        rootSchema={props.rootSchema}
-        schema={props.schema}
-        parentConfig={props.parentConfig}
-        config={props.config}
-        path={props.path}
-        restartPendingFor={props.restartPendingFor}
-        loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-        advancedMode={props.advancedMode}
-        performAction={props.performAction}
-        updateField={props.updateField}
-        renderHeader={props.renderHeader}
-        configHasChanged={props.configHasChanged}
-      />
-    );
+  if (type === 'null' || type === 'any' || !isVisible) {
+    return null;
   }
-
-  if (uiDefinition.elementType === 'list') {
-    return (
-      <AnyList
-        rootSchema={props.rootSchema}
-        schema={props.schema}
-        parentConfig={props.parentConfig}
-        config={props.config}
-        path={props.path}
-        restartPendingFor={props.restartPendingFor}
-        loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-        advancedMode={props.advancedMode}
-        performAction={props.performAction}
-        updateField={props.updateField}
-        renderHeader={props.renderHeader}
-        configHasChanged={props.configHasChanged}
-      />
-    );
+  switch (uiDefinition.elementType) {
+    case 'select':
+      return <AnySelect {...props} />;
+    case 'section-container':
+      return <AnySectionContainer {...props} />;
+    case 'list':
+      return <AnyList {...props} />;
+    case 'record':
+      return <AnyRecord {...props} />;
+    default:
+      break;
   }
-
-  if (uiDefinition.elementType === 'record') {
-    return (
-      <AnyRecord
-        rootSchema={props.rootSchema}
-        schema={props.schema}
-        parentConfig={props.parentConfig}
-        config={props.config}
-        path={props.path}
-        restartPendingFor={props.restartPendingFor}
-        loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-        advancedMode={props.advancedMode}
-        performAction={props.performAction}
-        updateField={props.updateField}
-        renderHeader={props.renderHeader}
-        configHasChanged={props.configHasChanged}
-      />
-    );
-  }
-
   switch (type) {
     case 'boolean':
-      return (
-        <BooleanInput
-          rootSchema={props.rootSchema}
-          schema={props.schema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <BooleanInput {...props} />;
     case 'number':
-      return (
-        <FloatInput
-          rootSchema={props.rootSchema}
-          schema={props.schema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <FloatInput {...props} />;
     case 'integer':
-      return (
-        <IntegerInput
-          rootSchema={props.rootSchema}
-          schema={props.schema}
-          parentConfig={props.parentConfig}
-          config={props.config}
-          path={props.path}
-          restartPendingFor={props.restartPendingFor}
-          loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-          advancedMode={props.advancedMode}
-          performAction={props.performAction}
-          updateField={props.updateField}
-          renderHeader={props.renderHeader}
-          configHasChanged={props.configHasChanged}
-        />
-      );
+      return <IntegerInput {...props} />;
     case 'string':
       switch (uiDefinition.elementType) {
         case 'enum':
-          return (
-            <EnumSelectorInput
-              rootSchema={props.rootSchema}
-              schema={props.schema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <EnumSelectorInput {...props} />;
         case 'text-area':
-          return (
-            <TextAreaInput
-              rootSchema={props.rootSchema}
-              schema={props.schema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <TextAreaInput {...props} />;
         case 'code-block':
-          return (
-            <CodeBlockInput
-              rootSchema={props.rootSchema}
-              schema={props.schema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          return <CodeBlockInput {...props} />;
         default:
-          return (
-            <StringInput
-              rootSchema={props.rootSchema}
-              schema={props.schema}
-              parentConfig={props.parentConfig}
-              config={props.config}
-              path={props.path}
-              restartPendingFor={props.restartPendingFor}
-              loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-              advancedMode={props.advancedMode}
-              performAction={props.performAction}
-              updateField={props.updateField}
-              renderHeader={props.renderHeader}
-              configHasChanged={props.configHasChanged}
-            />
-          );
+          break;
       }
+      return <StringInput {...props} />;
     default:
-      return <UnableToRenderSchema type="Any" path={props.path} schema={resolvedSchema} />;
+      break;
   }
+  return <UnableToRenderSchema type="Any" path={props.path} schema={resolvedSchema} />;
 }
 
 export default AnySchema;

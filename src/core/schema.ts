@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
-import { get } from 'lodash';
+import jsonSchema from 'json-schema';
+import { cloneDeep, get } from 'lodash';
 
-import type { JSONSchema4WithUiDefinition } from './react-query/configuration/types';
+import type { JSONSchema4WithUiDefinition, ValidationResult } from './react-query/configuration/types';
+
+const { validate: internalValidate } = jsonSchema;
 
 export function assertIsNullable(object: JSONSchema4WithUiDefinition): boolean {
   if (object.type === 'null' || (object.type instanceof Array && object.type.includes('null'))) return true;
@@ -103,7 +106,7 @@ function constructPath(propertyPath: string, name: string | number, alwaysEscape
   // Escape property name if it contains any of these characters.
   if (alwaysEscape || invalidPropertyNameCharacters.some(char => propertyName.includes(char))) {
     if (propertyName.includes('\'')) {
-      propertyName = propertyName.replace(/'/g, '\\\'');
+      propertyName = propertyName.replace(/(?<!\\)'/g, '\\\'');
     }
     propertyName = `['${propertyName}']`;
     return propertyPath ? propertyPath + propertyName : propertyName;
@@ -111,13 +114,90 @@ function constructPath(propertyPath: string, name: string | number, alwaysEscape
   return propertyPath ? `${propertyPath}.${propertyName}` : propertyName;
 }
 
+export function validate(
+  rootSchema: JSONSchema4WithUiDefinition,
+  schema: JSONSchema4WithUiDefinition,
+  config: unknown,
+): ValidationResult {
+  if (rootSchema === schema) {
+    return internalValidate(config as never, rootSchema);
+  }
+  return internalValidate(config as never, {
+    ...schema,
+    definitions: rootSchema.definitions,
+  });
+}
+
 export function createDefaultItemForSchema(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rootSchema: JSONSchema4WithUiDefinition,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   schema: JSONSchema4WithUiDefinition,
 ): unknown {
-  // TODO: implement this thing.
+  const resolvedSchema = resolveReference(rootSchema, schema);
+  if (resolvedSchema.type !== 'object') {
+    if (resolvedSchema.type === 'array') {
+      if (resolvedSchema.minItems !== undefined && resolvedSchema.minItems > 0) {
+        return new Array(resolvedSchema.minItems).fill(
+          createDefaultItemForSchema(rootSchema, resolveListReference(rootSchema, resolvedSchema)),
+        );
+      }
+      return [];
+    }
+    const min = resolvedSchema.minimum;
+    const max = resolvedSchema.maximum;
+    switch (resolvedSchema.type) {
+      case 'integer':
+      case 'number':
+        if (
+          resolvedSchema.default != null && typeof resolvedSchema.default === 'number'
+          && (min == null || resolvedSchema.default >= min) && (max == null || resolvedSchema.default <= max)
+        ) {
+          return resolvedSchema.default;
+        }
+        if (assertIsNullable(schema)) {
+          return null;
+        }
+        if (min != null) {
+          return min;
+        }
+        if (max != null && max < 0) {
+          return max;
+        }
+        return 0;
+      case 'string':
+        if (resolvedSchema.default != null && typeof resolvedSchema.default === 'string') {
+          return resolvedSchema.default;
+        }
+        if (assertIsNullable(schema)) {
+          return null;
+        }
+        return '';
+      case 'boolean':
+        if (assertIsNullable(schema)) {
+          return null;
+        }
+        return false;
+      default:
+        break;
+    }
+    if (resolvedSchema.default != null) {
+      return cloneDeep(resolvedSchema.default);
+    }
+    if (assertIsNullable(schema)) {
+      return null;
+    }
+    return null;
+  }
+
+  if (!resolvedSchema.properties) {
+    return {};
+  }
+
+  const obj = {} as Record<string, unknown>;
+  for (const [key, valueSchema] of Object.entries(resolvedSchema.properties)) {
+    const resolvedValueSchema = resolveReference(rootSchema, valueSchema);
+    obj[key] = createDefaultItemForSchema(rootSchema, resolvedValueSchema);
+  }
 
   return {};
 }

@@ -11,9 +11,10 @@ function MinimalSectionContainer(props: AnySchemaProps): React.JSX.Element {
     props.schema,
     props.config,
     props.path,
+    props.defaultSave,
     props.performAction,
     props.configHasChanged,
-    props.advancedMode,
+    props.modes,
   );
   return (
     <>
@@ -33,17 +34,9 @@ function MinimalSectionContainer(props: AnySchemaProps): React.JSX.Element {
           {index !== 0 && <div className="border-b border-panel-border" />}
 
           <MinimalSection
-            rootSchema={props.rootSchema}
-            config={props.config}
-            path={props.path}
-            restartPendingFor={props.restartPendingFor}
-            loadedEnvironmentVariables={props.loadedEnvironmentVariables}
-            advancedMode={props.advancedMode}
-            performAction={props.performAction}
-            updateField={props.updateField}
+            {...props}
             renderHeader={props.renderHeader
               && (sections.length > 1 || (sections.length === 1 && sections[0].title !== 'Default'))}
-            configHasChanged={props.configHasChanged}
             section={section}
           />
         </React.Fragment>
