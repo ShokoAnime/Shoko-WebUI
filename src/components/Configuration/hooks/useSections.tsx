@@ -12,9 +12,10 @@ import type {
 
 export type SectionElementType = {
   key: string;
+  config: unknown;
   schema: JSONSchema4WithUiDefinition;
   parentConfig: unknown;
-  config: unknown;
+  parentSchema: JSONSchema4WithUiDefinition | null;
   path: (string | number)[];
 };
 
@@ -145,6 +146,7 @@ function useSections(
           key,
           schema: value,
           config: subConfig,
+          parentSchema: resolvedContainerSchema,
           parentConfig: config,
           path: [...path, key],
         });
@@ -153,7 +155,7 @@ function useSections(
           title: value?.title ?? resolvedSchema.title ?? key,
           category: null,
           description: value.description ?? resolvedSchema.description ?? null,
-          elements: [{ key, schema: resolvedSchema, config: subConfig, parentConfig: config, path }],
+          elements: [{ key, schema: resolvedSchema, parentSchema: resolvedContainerSchema, config: subConfig, parentConfig: config, path }],
           buttons: { auto: [], top: [], bottom: [] },
         });
       } else if (uiDefinition.elementType === 'list' && uiDefinition.listElementType === 'section-container') {
@@ -161,7 +163,7 @@ function useSections(
           title: value?.title ?? resolvedSchema.title ?? key,
           category: null,
           description: value.description ?? resolvedSchema.description ?? null,
-          elements: [{ key, schema: resolvedSchema, config: subConfig, parentConfig: config, path }],
+          elements: [{ key, schema: resolvedSchema, parentSchema: resolvedContainerSchema, config: subConfig, parentConfig: config, path }],
           buttons: { auto: [], top: [], bottom: [] },
         });
       } else {
@@ -174,6 +176,7 @@ function useSections(
           schema: value,
           config: subConfig,
           parentConfig: config,
+          parentSchema: resolvedContainerSchema,
           path: [...path, key],
         });
       }

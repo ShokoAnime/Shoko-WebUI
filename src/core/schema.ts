@@ -20,6 +20,14 @@ export function assertIsNullable(object: JSONSchema4WithUiDefinition): boolean {
   return false;
 }
 
+export function assertIsRequired(schema: JSONSchema4WithUiDefinition, parentSchema?: JSONSchema4WithUiDefinition | null | undefined, key?: string | symbol | number | null | undefined): boolean {
+  if (!assertIsNullable(schema) || parentSchema == null) return true;
+  if (key == null) return false;
+  if (typeof parentSchema.required === 'boolean') return parentSchema.required;
+  if (parentSchema.required == null || parentSchema.required.length === 0) return false;
+  return parentSchema.required.some(name => name === key);
+}
+
 export function useReference(
   rootSchema: JSONSchema4WithUiDefinition,
   schema: JSONSchema4WithUiDefinition,
@@ -129,18 +137,21 @@ export function validate(
 }
 
 export function createDefaultItemForSchema(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rootSchema: JSONSchema4WithUiDefinition,
   schema: JSONSchema4WithUiDefinition,
+  parentSchema: JSONSchema4WithUiDefinition | null = null,
+  path: (string | number)[] = [],
+  force = false
 ): unknown {
+  const isNullable = assertIsNullable(schema);
+  const isRequired = assertIsRequired(schema, parentSchema, path[path.length - 1]);
   const resolvedSchema = resolveReference(rootSchema, schema);
   const types = Array.isArray(resolvedSchema.type) ? resolvedSchema.type.filter(tpe => tpe !== 'null') : [resolvedSchema.type];
   if (types[0] !== 'object') {
     if (types[0] === 'array') {
       if (resolvedSchema.minItems !== undefined && resolvedSchema.minItems > 0) {
-        return new Array(resolvedSchema.minItems).fill(
-          createDefaultItemForSchema(rootSchema, resolveListReference(rootSchema, resolvedSchema)),
-        );
+        return new Array(resolvedSchema.minItems).fill(0)
+          .map((_, index) => createDefaultItemForSchema(rootSchema, resolveListReference(rootSchema, resolvedSchema), resolvedSchema, [...path, index]));
       }
       return [];
     }
@@ -155,7 +166,7 @@ export function createDefaultItemForSchema(
         ) {
           return schema.default;
         }
-        if (assertIsNullable(schema)) {
+        if (isNullable && !isRequired) {
           return null;
         }
         if (min != null) {
@@ -169,12 +180,12 @@ export function createDefaultItemForSchema(
         if (schema.default != null && typeof schema.default === 'string') {
           return schema.default;
         }
-        if (assertIsNullable(schema)) {
+        if (isNullable && !isRequired) {
           return null;
         }
         return '';
       case 'boolean':
-        if (assertIsNullable(schema)) {
+        if (isNullable && !isRequired) {
           return null;
         }
         return false;
@@ -187,7 +198,7 @@ export function createDefaultItemForSchema(
       }
       return cloneDeep(schema.default);
     }
-    if (assertIsNullable(schema)) {
+    if (isNullable && !isRequired) {
       return null;
     }
     return null;
@@ -203,9 +214,13 @@ export function createDefaultItemForSchema(
     return {};
   }
 
+  if (!force && isNullable && !isRequired) {
+    return null;
+  }
+
   const obj = {} as Record<string, unknown>;
   for (const [key, valueSchema] of Object.entries(resolvedSchema.properties)) {
-    obj[key] = createDefaultItemForSchema(rootSchema, valueSchema);
+    obj[key] = createDefaultItemForSchema(rootSchema, valueSchema, resolvedSchema, [...path, key]);
   }
 
   return obj;

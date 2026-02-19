@@ -248,6 +248,7 @@ const ControlledConfigurationWithSchema = (props: ControlledConfigurationWithSch
 
       <AnySchema
         rootSchema={props.schema}
+        parentSchema={null}
         schema={props.schema}
         rootConfig={props.config}
         parentConfig={props.config}

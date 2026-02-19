@@ -4,7 +4,7 @@ import cx from 'classnames';
 import useBadges from '@/components/Configuration/hooks/useBadges';
 import useVisibility from '@/components/Configuration/hooks/useVisibility';
 import InputSmall from '@/components/Input/InputSmall';
-import { createDefaultItemForSchema, useReference } from '@/core/schema';
+import { assertIsRequired, createDefaultItemForSchema, useReference } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
@@ -16,9 +16,11 @@ function FloatInput(props: AnySchemaProps): React.JSX.Element | null {
   const title = schema.title ?? resolvedSchema.title ?? props.path[props.path.length - 1] ?? '<unknown>';
   const description = schema.description ?? resolvedSchema.description ?? '';
   const onChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    let { value } = event.target;
+    // eslint-disable-next-line prefer-destructuring
+    let value: string | null = event.target.value;
     if (value === '') {
-      value = createDefaultItemForSchema(props.rootSchema, resolvedSchema)?.toString() ?? '0';
+      const required = assertIsRequired(resolvedSchema, props.parentSchema, props.path[props.path.length - 1] as string);
+      value = required ? createDefaultItemForSchema(props.rootSchema, resolvedSchema)?.toString() ?? '0' : null;
     }
     props.updateField(props.path, value, props.schema, props.rootSchema);
   });
@@ -63,7 +65,7 @@ function FloatInput(props: AnySchemaProps): React.JSX.Element | null {
         <InputSmall
           disabled={isDisabled || isReadOnly}
           id={props.path.join('.')}
-          value={(props.config as number | null) ?? 0}
+          value={(props.config as number | null) ?? ''}
           type="number"
           onChange={onChange}
           className={cx('px-3 py-1', size, size !== 'w-full' && 'text-center')}

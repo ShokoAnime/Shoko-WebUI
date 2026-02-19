@@ -25,6 +25,7 @@ export type AnySchemaProps = {
   parentConfig: unknown;
   rootConfig: unknown;
   schema: JSONSchema4WithUiDefinition;
+  parentSchema: JSONSchema4WithUiDefinition | null;
   rootSchema: JSONSchema4WithUiDefinition;
   configHasChanged: boolean;
   renderHeader: boolean;

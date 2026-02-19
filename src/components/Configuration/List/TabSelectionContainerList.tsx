@@ -39,8 +39,9 @@ function TabSectionContainerList(props: AnySchemaProps): React.JSX.Element | nul
           // eslint-disable-next-line react/no-array-index-key
           key={`${element.key}-${index}`}
           {...props}
+          parentSchema={element.parentSchema}
           schema={element.schema}
-          parentConfig={props.config}
+          parentConfig={element.parentConfig}
           config={element.config}
           path={element.path}
           renderHeader={false}

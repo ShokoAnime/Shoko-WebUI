@@ -24,6 +24,7 @@ function SectionContainerList(props: AnySchemaProps): React.JSX.Element | null {
           // eslint-disable-next-line react/no-array-index-key
           key={`${title}-${index}`}
           {...props}
+          parentSchema={section.parentSchema}
           schema={section.schema}
           parentConfig={props.config}
           config={section.config}

@@ -4,19 +4,21 @@ import cx from 'classnames';
 import SelectComponent from '@/components/Configuration/Select/SelectComponent';
 import useBadges from '@/components/Configuration/hooks/useBadges';
 import useVisibility from '@/components/Configuration/hooks/useVisibility';
-import { useReference } from '@/core/schema';
+import { assertIsRequired, useReference } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 import type { OptionType } from '@/components/Configuration/Select/SelectComponent';
 import type { EnumConfigurationUiDefinitionType } from '@/core/react-query/configuration/types';
 
+const NullValue = '$null$';
+
 function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
   const resolvedSchema = useReference(props.rootSchema, props.schema);
   const title = props.schema.title ?? resolvedSchema.title ?? props.path[props.path.length - 1] ?? '<unknown>';
   const description = props.schema.description ?? resolvedSchema.description ?? '';
   const onChange = useEventCallback((option: OptionType<string>) =>
-    props.updateField(props.path, option.value, props.schema, props.rootSchema)
+    props.updateField(props.path, option.value === NullValue ? null : option.value, props.schema, props.rootSchema)
   );
   const visibility = useVisibility(
     props.schema,
@@ -31,15 +33,26 @@ function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
     const uiDefinition = props.schema['x-uiDefinition'] as EnumConfigurationUiDefinitionType;
     const definitions = uiDefinition.deniedValues
       ? uiDefinition.enumDefinitions.filter(definition => !uiDefinition.deniedValues!.includes(definition.value))
-      : uiDefinition.enumDefinitions;
-    const defaultValue = props.schema.default ?? definitions[0]?.value;
+      : uiDefinition.enumDefinitions.slice();
+    // eslint-disable-next-line no-nested-ternary
+    const required = assertIsRequired(props.schema, props.parentSchema, props.path[props.path.length - 1] as string);
+    const defaultValue = props.schema.default || (props.schema.default === '' && definitions.some(definition => definition.value === '')) ?
+      props.schema.default : null;
+    if (!required) {
+      definitions.unshift({
+        value: NullValue,
+        description: '',
+        title: '-',
+      });
+    }
+    const selectedValue = props.config === null ? NullValue : props.config;
     return definitions.map<OptionType<string>>(definition => ({
       label: definition.title,
       value: definition.value,
       default: definition.value === defaultValue,
-      selected: definition.value === props.config,
+      selected: definition.value === selectedValue,
     }));
-  }, [props.schema, props.config]);
+  }, [props.schema, props.parentSchema, props.path, props.config]);
   const size = useMemo(() => {
     const uiDefinition = props.schema['x-uiDefinition'] as EnumConfigurationUiDefinitionType;
     if (uiDefinition.elementSize === 'full') {

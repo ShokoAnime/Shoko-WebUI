@@ -277,8 +277,8 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
     const rootConfig = cloneDeep(props.rootConfig);
     const parentConfig = get(rootConfig, props.path) as unknown[];
     if (props.index === null) {
-      const config = createDefaultItemForSchema(props.rootSchema, itemSchema);
       const path = [...props.path, parentConfig.length];
+      const config = createDefaultItemForSchema(props.rootSchema, itemSchema, listDefinition, path, true);
       parentConfig.push(config);
       if (props.serverControlled) {
         setState({ shown: true, index: null, path, rootConfig, config, parentConfig: undefined });
@@ -317,6 +317,7 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
       {state.config !== undefined && (
         <AnySectionContainer
           rootConfig={state.rootConfig}
+          parentSchema={props.parentSchema}
           rootSchema={props.rootSchema}
           schema={itemSchema}
           parentConfig={state.parentConfig}

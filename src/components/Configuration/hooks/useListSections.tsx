@@ -241,11 +241,11 @@ function useListSections(
         category: itemCategory,
         description: '',
         elements: [{
-          type: 'element',
           key: itemKey,
           schema: itemSchema,
           config: item,
           parentConfig: item,
+          parentSchema: listSchema,
           path: itemPath,
         }],
         buttons,
