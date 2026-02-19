@@ -97,7 +97,16 @@ function InlineSectionContainerList(props: AnySchemaProps): React.JSX.Element | 
                     data-index={index}
                     className="mt-2.5 flex items-center justify-between group-first:mt-0"
                   >
-                    {value.title}
+                    <span className="flex gap-x-1.5">
+                      {value.title}
+                      {value.category && (
+                        <span className="self-center text-xs opacity-65">
+                          (
+                          {value.category}
+                          )
+                        </span>
+                      )}
+                    </span>
                     <div className="flex gap-x-3">
                       <Button onClick={onModalOpen} tooltip="Edit Item" disabled={!canAdd}>
                         <Icon className="text-panel-icon-action" path={mdiCircleEditOutline} size={1} />
