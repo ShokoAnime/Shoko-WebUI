@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { applyPatch } from 'fast-json-patch';
 import { cloneDeep, get, set, unset } from 'lodash';
 
@@ -55,8 +55,11 @@ type State = {
   rootConfig: unknown;
 };
 
+const HideAnimationTime = 500; // ms
+
 function PopOutModal({ show, ...props }: PopOutModalProps) {
   const navigate = useNavigateVoid();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { itemSchema, listDefinition } = useMemo(() => {
     const schema0 = resolveReference(props.rootSchema, props.parentSchema);
     const schema1 = resolveListReference(props.rootSchema, schema0);
@@ -240,11 +243,19 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
 
   const handleClose = useEventCallback(() => {
     setState(prevState => ({ ...prevState, shown: false, path: [] }));
+    timeoutRef.current = setTimeout(() => {
+      setState({ shown: false, path: [], index: undefined });
+      timeoutRef.current = null;
+    }, HideAnimationTime);
     props.onClose();
   });
 
   const handleSave = useEventCallback(() => {
-    setState({ shown: false, path: [], index: undefined });
+    setState(prevState => ({ ...prevState, shown: false, path: [] }));
+    timeoutRef.current = setTimeout(() => {
+      setState({ shown: false, path: [], index: undefined });
+      timeoutRef.current = null;
+    }, HideAnimationTime);
     props.setValue(state.config, state.index ?? undefined);
     props.onClose();
   });
@@ -252,6 +263,10 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
   useLayoutEffect(() => {
     if (!show) {
       if (state.shown) {
+        timeoutRef.current = setTimeout(() => {
+          setState({ shown: false, path: [], index: undefined });
+          timeoutRef.current = null;
+        }, HideAnimationTime);
         setState(prevState => ({ ...prevState, shown: false, path: [] }));
         props.onClose();
       }
@@ -260,6 +275,10 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
 
     if (props.index !== undefined && props.index === state.index && state.rootConfig && state.parentConfig && state.config) {
       if (!state.shown) {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
         const { config, parentConfig, rootConfig } = state;
         setState({ shown: true, path: [...props.path, parentConfig.length - 1], index: props.index, rootConfig, parentConfig, config });
       }
@@ -280,6 +299,10 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
       const path = [...props.path, parentConfig.length];
       const config = createDefaultItemForSchema(props.rootSchema, itemSchema, listDefinition, path, true);
       parentConfig.push(config);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       if (props.serverControlled) {
         setState({ shown: true, index: null, path, rootConfig, config, parentConfig: undefined });
         performReactiveAction(rootConfig, path);
@@ -295,6 +318,11 @@ function PopOutModal({ show, ...props }: PopOutModalProps) {
       setState(prevState => ({ ...prevState, shown: false, path: [], index: undefined }));
       props.onClose();
       return;
+    }
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
 
     const path = [...props.path, index];
