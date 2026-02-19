@@ -150,10 +150,10 @@ export function createDefaultItemForSchema(
       case 'integer':
       case 'number':
         if (
-          resolvedSchema.default != null && typeof resolvedSchema.default === 'number'
-          && (min == null || resolvedSchema.default >= min) && (max == null || resolvedSchema.default <= max)
+          schema.default != null && typeof schema.default === 'number'
+          && (min == null || schema.default >= min) && (max == null || schema.default <= max)
         ) {
-          return resolvedSchema.default;
+          return schema.default;
         }
         if (assertIsNullable(schema)) {
           return null;
@@ -166,8 +166,8 @@ export function createDefaultItemForSchema(
         }
         return 0;
       case 'string':
-        if (resolvedSchema.default != null && typeof resolvedSchema.default === 'string') {
-          return resolvedSchema.default;
+        if (schema.default != null && typeof schema.default === 'string') {
+          return schema.default;
         }
         if (assertIsNullable(schema)) {
           return null;
