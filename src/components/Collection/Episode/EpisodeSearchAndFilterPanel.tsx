@@ -59,11 +59,11 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
           onChange={onFilterChange}
         >
           <option value="">All</option>
-          <option value="Normal">Episodes</option>
+          <option value="Episode">Episodes</option>
           <option value="Special">Specials</option>
           <option value="Other">Others</option>
-          <option value="ThemeSong">Credits</option>
-          <option value="Unknown,Trailer,Parody,Extra">Misc.</option>
+          <option value="Credits">Credits</option>
+          <option value="Unknown,Trailer,Parody">Misc.</option>
         </Select>
 
         <Select
