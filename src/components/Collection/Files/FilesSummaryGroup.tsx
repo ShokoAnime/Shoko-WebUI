@@ -25,7 +25,7 @@ const Header = ({ ranges }: HeaderProps) => (
   <div className="flex gap-x-2">
     <HeaderFragment title={ranges?.Episode?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Episode?.Range} />
     <HeaderFragment title={ranges?.Special?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
-    {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item?.Range} />)}
+    {map(omit(ranges, ['Episode', 'Special']), (item, key) => <HeaderFragment title={key} range={item?.Range} />)}
   </div>
 );
 
@@ -38,21 +38,18 @@ const Row = ({ label, value }: RowProps) => (
     <div className="w-20 shrink-0 font-semibold">
       {label}
     </div>
-    <div className="max-w-[33rem] break-words">
+    <div className="max-w-132 wrap-break-word">
       {value}
     </div>
   </div>
 );
 
-type GroupProps = {
-  group: WebuiSeriesFileSummaryGroupType;
-};
-const Group = ({ group }: GroupProps) => {
+const Group = ({ group }: { group: WebuiSeriesFileSummaryGroupType }) => {
   const sizes = useMemo(() => {
     const sizeMap: Record<string, { size: number, count: number }> = {};
-    forEach(group.RangeByType, (item, key) => {
+    forEach(group.RangeByType, (item, key: keyof WebuiSeriesFileSummaryGroupRangeByType) => {
       let idx = 'Other';
-      if (key === 'Normal') {
+      if (key === 'Episode') {
         idx = item.Count > 1 ? 'Episodes' : 'Episode';
       } else if (key === 'Special') {
         idx = item.Count > 1 ? 'Specials' : 'Special';
@@ -70,9 +67,8 @@ const Group = ({ group }: GroupProps) => {
     )).join(' | ');
   }, [group]);
 
-  const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [
-    group,
-  ]);
+  const groupDetails = group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-';
+
   const videoDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.FileSource) {
@@ -92,6 +88,7 @@ const Group = ({ group }: GroupProps) => {
     }
     return conditions.length ? conditions.join(' | ') : '-';
   }, [group]);
+
   const audioDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.AudioCodecs) {
@@ -106,6 +103,7 @@ const Group = ({ group }: GroupProps) => {
     }
     return conditions.length ? conditions.join(' | ') : '-';
   }, [group]);
+
   const subtitleDetails = useMemo(() => {
     const conditions: string[] = [];
     if (group.SubtitleCodecs) {
@@ -120,6 +118,7 @@ const Group = ({ group }: GroupProps) => {
     }
     return conditions.length ? conditions.join(' | ') : '-';
   }, [group]);
+
   const locationDetails = group.FileLocation ?? '-';
 
   return (
@@ -127,7 +126,7 @@ const Group = ({ group }: GroupProps) => {
       <div className="flex text-xl font-semibold">
         <Header ranges={group.RangeByType} />
       </div>
-      <div className="flex gap-x-[4.5rem]">
+      <div className="flex gap-x-18">
         <div className="flex flex-col gap-y-2">
           <Row label="Group" value={groupDetails} />
           <Row label="Video" value={videoDetails} />
@@ -146,10 +145,11 @@ const Group = ({ group }: GroupProps) => {
 type Props = {
   groups?: WebuiSeriesFileSummaryGroupType[];
 };
-// eslint-disable-next-line react/prop-types
-const FilesSummaryGroups = React.memo(({ groups = [] }: Props) => (
-  // eslint-disable-next-line react/no-array-index-key
-  groups.map((group, index) => <Group key={index} group={group} />)
-));
+
+const FilesSummaryGroups = ({ groups }: Props) =>
+  map(
+    groups,
+    (group, index) => <Group key={index} group={group} />,
+  );
 
 export default FilesSummaryGroups;
