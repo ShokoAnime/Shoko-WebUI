@@ -18,7 +18,7 @@ const themes: Record<DisplayColorTheme, string> = {
 
 function CustomBadge(props: BadgeProps): React.JSX.Element {
   return (
-    <span className={`self-center rounded-full border px-1 py-0.5 text-2xs ${themes[props.theme]}`}>
+    <span className={`self-center rounded-full border px-1 py-0.5 text-xs ${themes[props.theme]}`}>
       {props.name}
     </span>
   );
