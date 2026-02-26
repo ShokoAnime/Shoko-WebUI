@@ -42,7 +42,6 @@ function ConfigurationModal(props: Props) {
       subHeader={description ?? undefined}
       size="md"
       shouldCloseOnEsc={false}
-      overlayClassName="!z-[90]"
     >
       <DynamicConfiguration configGuid={configGuid} onSave={onClose} />
     </ModalPanel>
