@@ -138,10 +138,10 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                       <div className="flex flex-wrap text-sm opacity-65">
                         {group.Episodes?.length}
                         &nbsp;Episodes
-                        {group.RangeByType.Normal && (
+                        {group.RangeByType.Episode && (
                           <>
                             &nbsp;(
-                            {group.RangeByType.Normal.Range}
+                            {group.RangeByType.Episode.Range}
                             )
                           </>
                         )}
@@ -156,10 +156,10 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                         &nbsp;-&nbsp;
                         {group.Episodes?.length}
                         &nbsp;Episodes
-                        {group.RangeByType.Normal && (
+                        {group.RangeByType.Episode && (
                           <>
                             &nbsp;(
-                            {group.RangeByType.Normal.Range}
+                            {group.RangeByType.Episode.Range}
                             )
                           </>
                         )}

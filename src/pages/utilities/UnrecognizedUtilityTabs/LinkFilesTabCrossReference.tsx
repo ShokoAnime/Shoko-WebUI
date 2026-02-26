@@ -14,11 +14,11 @@ export type LinkFilesTab2CrossReferenceProps = {
 
 function episodeNumber(episode: AniDBEpisodeType): string {
   switch (episode.Type) {
-    case EpisodeTypeEnum.Normal:
+    case EpisodeTypeEnum.Episode:
       return `${episode.EpisodeNumber.toString().padStart(2, '0')}`;
     case EpisodeTypeEnum.Special:
       return `S${episode.EpisodeNumber}`;
-    case EpisodeTypeEnum.ThemeSong:
+    case EpisodeTypeEnum.Credits:
       return `C${episode.EpisodeNumber}`;
     case EpisodeTypeEnum.Trailer:
       return `T${episode.EpisodeNumber}`;

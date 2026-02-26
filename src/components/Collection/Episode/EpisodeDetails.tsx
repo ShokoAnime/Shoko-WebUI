@@ -22,7 +22,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
     <div className="flex max-h-52 grow flex-col gap-y-4 overflow-hidden">
       <div className="flex justify-between font-semibold">
         <div className="opacity-65">
-          {episode.AniDB?.Type.replace('Normal', 'Episode').replace('ThemeSong', 'Credit') ?? 'Episode'}
+          {episode.AniDB?.Type ?? 'Episode'}
           &nbsp;
           {episode.AniDB?.EpisodeNumber}
         </div>

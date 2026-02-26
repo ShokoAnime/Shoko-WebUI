@@ -47,7 +47,7 @@ const detectEpisodeType = (matchGroups: Record<string, string | undefined>): Epi
   }
 
   if (matchGroups.isThemeSong) {
-    return EpisodeTypeEnum.ThemeSong;
+    return EpisodeTypeEnum.Credits;
   }
 
   if (matchGroups.isOther) {
@@ -58,7 +58,7 @@ const detectEpisodeType = (matchGroups: Record<string, string | undefined>): Epi
     return EpisodeTypeEnum.Trailer;
   }
 
-  return EpisodeTypeEnum.Normal;
+  return EpisodeTypeEnum.Episode;
 };
 
 export function detectShow(filePath: string | undefined | null): PathDetails | null {
@@ -106,7 +106,7 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       // The user is responsible if they link it without checking. We even show
       // a notification telling them to verify the matches before saving.
       let episodeType = detectEpisodeType(match.groups);
-      if (episodeType === EpisodeTypeEnum.Normal && episodeStart === episodeEnd && !Number.isInteger(episodeStart)) {
+      if (episodeType === EpisodeTypeEnum.Episode && episodeStart === episodeEnd && !Number.isInteger(episodeStart)) {
         episodeType = EpisodeTypeEnum.Special;
         episodeStart = 0;
         episodeEnd = 0;

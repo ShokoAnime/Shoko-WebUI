@@ -73,16 +73,13 @@ export type WebuiSeriesFileSummaryGroupType = {
 };
 
 export type WebuiSeriesFileSummaryGroupRangeByType = {
+  Unknown: WebuiSeriesFileSummaryRangeByType;
   Other: WebuiSeriesFileSummaryRangeByType;
-  Normal: WebuiSeriesFileSummaryRangeByType;
+  Episode: WebuiSeriesFileSummaryRangeByType;
   Special: WebuiSeriesFileSummaryRangeByType;
   Trailer: WebuiSeriesFileSummaryRangeByType;
-  ThemeSong: WebuiSeriesFileSummaryRangeByType;
-  OpeningSong: WebuiSeriesFileSummaryRangeByType;
-  EndingSong: WebuiSeriesFileSummaryRangeByType;
+  Credits: WebuiSeriesFileSummaryRangeByType;
   Parody: WebuiSeriesFileSummaryRangeByType;
-  Interview: WebuiSeriesFileSummaryRangeByType;
-  Extra: WebuiSeriesFileSummaryRangeByType;
 };
 
 export type WebuiSeriesFileSummaryRangeByType = {
