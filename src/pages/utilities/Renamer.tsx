@@ -31,7 +31,7 @@ import RenamerScript from '@/components/Utilities/Renamer/RenamerScript';
 import RenamerSettings from '@/components/Utilities/Renamer/RenamerSettings';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { useManagedFoldersQuery as useImportFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import {
   useRenamerDeleteConfigMutation,
   useRenamerPreviewMutation,
@@ -47,7 +47,7 @@ import useRowSelection from '@/hooks/useRowSelection';
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
-import type { ImportFolderType } from '@/core/types/api/import-folder';
+import type { ManagedFolderType as ImportFolderType } from '@/core/types/api/managed-folder';
 import type { RenamerConfigSettingsType, RenamerConfigType, RenamerResultType } from '@/core/types/api/renamer';
 
 const getFileColumn = (importFolders: ImportFolderType[]) => ({
@@ -60,7 +60,7 @@ const getFileColumn = (importFolders: ImportFolderType[]) => ({
     const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
     const importFolder = find(
       importFolders,
-      { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+      { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
     )?.Name ?? '<Unknown>';
     return (
       <div
@@ -190,7 +190,7 @@ const getStatusColumn = (
       const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
       const importFolder = find(
         importFolders,
-        { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+        { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
       )?.Name ?? '<Unknown>';
 
       const newPath = result.RelativePath ?? '';
@@ -437,7 +437,7 @@ const Renamer = () => {
     const newSettings = produce(settings, (draftState) => {
       draftState.Plugins.Renamer.DefaultRenamer = selectedConfig.Name;
     });
-    patchSettings({ newSettings }, {
+    patchSettings(newSettings, {
       onSuccess: () => {
         toast.success(`"${selectedConfig.Name}" set as default renamer!`);
       },

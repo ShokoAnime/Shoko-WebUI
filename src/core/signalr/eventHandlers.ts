@@ -14,8 +14,8 @@ const invalidateFiles = debounce(
   1000,
 );
 
-const invalidateImportFolders = debounce(
-  () => invalidateQueries(['import-folder']),
+const invalidateManagedFolders = debounce(
+  () => invalidateQueries(['managed-folder']),
   1000,
 );
 
@@ -46,12 +46,12 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
     case 'FileMatched':
       invalidateDashboard();
       invalidateFiles();
-      invalidateImportFolders();
+      invalidateManagedFolders();
       invalidateReleaseManagement();
       break;
     case 'FileMoved':
       invalidateFiles();
-      invalidateImportFolders();
+      invalidateManagedFolders();
       break;
     case 'FileRenamed':
       invalidateFiles();
@@ -61,7 +61,7 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
       break;
     case 'SeriesUpdated':
       invalidateDashboard();
-      invalidateImportFolders();
+      invalidateManagedFolders();
       if (data?.ShokoSeriesIDs) invalidateSeries(data.ShokoSeriesIDs);
       break;
     default:

@@ -7,12 +7,12 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useDeleteFileLocationsMutation, useDeleteFilesMutation } from '@/core/react-query/file/mutations';
-import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
-import type { ImportFolderType } from '@/core/types/api/import-folder';
+import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
 type Props = {
   show: boolean;
@@ -26,8 +26,8 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
     seriesId,
     {
       groupBy: type === ReleaseManagementItemType.MultipleReleases
-        ? 'GroupName,FileSource,FileVersion,ImportFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters'
-        : 'ImportFolder,FileLocation,MultipleLocations',
+        ? 'GroupName,FileSource,FileVersion,ManagedFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters'
+        : 'ManagedFolder,FileLocation,MultipleLocations',
       includeEpisodeDetails: true,
       includeLocationDetails: type === ReleaseManagementItemType.DuplicateFiles,
     },
@@ -35,16 +35,16 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
   );
   const fileSummary = fileSummaryQuery.data;
 
-  const importFoldersQuery = useImportFoldersQuery();
-  const importFolders = useMemo<Record<number, ImportFolderType>>(() => {
+  const managedFoldersQuery = useManagedFoldersQuery();
+  const managedFolders = useMemo<Record<number, ManagedFolderType>>(() => {
     const result = {};
 
-    forEach(importFoldersQuery.data, (folder) => {
+    forEach(managedFoldersQuery.data, (folder) => {
       result[folder.ID] = folder;
     });
 
     return result;
-  }, [importFoldersQuery]);
+  }, [managedFoldersQuery]);
 
   const { isPending: isDeletingFiles, mutate: deleteFiles } = useDeleteFilesMutation();
   const { isPending: isDeletingLocations, mutate: deleteLocations } = useDeleteFileLocationsMutation();
@@ -119,7 +119,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
         map(
           fileSummary?.Groups,
           (group, index) => {
-            const importFolder = importFolders[group.ImportFolder!];
+            const managedFolder = managedFolders[group.ManagedFolder!];
 
             return (
               <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
@@ -127,12 +127,12 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                   {type === ReleaseManagementItemType.DuplicateFiles && (
                     <>
                       <div className="font-semibold">
-                        Import Folder:&nbsp;
-                        {`${importFolder.Name} (ID: ${importFolder.ID})`}
+                        Managed Folder:&nbsp;
+                        {`${managedFolder.Name} (ID: ${managedFolder.ID})`}
                       </div>
                       <div className="flex flex-wrap break-all text-sm opacity-65">
                         Location:&nbsp;
-                        {group.FileLocation?.replace(importFolder.Path, '')}
+                        {group.FileLocation?.replace(managedFolder.Path, '')}
                       </div>
                       <div className="flex flex-wrap text-sm opacity-65">
                         {group.Episodes?.length}
@@ -166,8 +166,8 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                         {`v${group.FileVersion}`}
                       </div>
                       <div className="flex flex-wrap text-sm opacity-65">
-                        Import Folder:&nbsp;
-                        {`${importFolder.Name} (ID: ${importFolder.ID})`}
+                        Managed Folder:&nbsp;
+                        {`${managedFolder.Name} (ID: ${managedFolder.ID})`}
                       </div>
                       <div className="flex flex-wrap text-sm opacity-65">
                         {group.FileSource}

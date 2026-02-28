@@ -18,7 +18,7 @@ export type UtilityHeaderType<T extends EpisodeType | FileType | SeriesType | Re
 export type ReleaseManagementOptionsType = Record<number, 'keep' | 'variation' | 'delete'>;
 
 export const criteriaMap = {
-  importFolder: FileSortCriteriaEnum.ImportFolderName,
+  managedFolder: FileSortCriteriaEnum.ManagedFolderName,
   filename: FileSortCriteriaEnum.FileName,
   crc32: FileSortCriteriaEnum.CRC32,
   size: FileSortCriteriaEnum.FileSize,
@@ -56,7 +56,7 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
     id: 'crc32',
     name: 'CRC32',
     className: 'w-32',
-    item: file => file.Hashes.CRC32,
+    item: file => file.Hashes.find(hash => hash.Type === 'CRC32')?.Value,
   },
   {
     id: 'size',

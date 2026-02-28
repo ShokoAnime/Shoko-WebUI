@@ -406,7 +406,7 @@ export type WebUISettingsType = {
     hideRecentlyImported: boolean;
     hideCollectionStats: boolean;
     hideMediaType: boolean;
-    hideImportFolders: boolean;
+    hideManagedFolders: boolean;
     hideShokoNews: boolean;
     hideContinueWatching: boolean;
     hideNextUp: boolean;

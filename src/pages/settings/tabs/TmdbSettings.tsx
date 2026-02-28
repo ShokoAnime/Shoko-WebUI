@@ -4,14 +4,14 @@ import TMDBDownloadSettings from '@/components/Settings/MetadataSitesSettings/TM
 import TMDBSettings from '@/components/Settings/MetadataSitesSettings/TMDBSettings';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
-const MetadataSitesSettings = () => {
+const TmdbSettings = () => {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
   return (
     <>
-      <title>Settings &gt; Metadata Sites | Shoko</title>
+      <title>Settings &gt; TMDB | Shoko</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Metadata Sites</div>
+        <div className="text-xl font-semibold">TMDB</div>
         <div>
           Customize the information and images that Shoko downloads for the series in your collection
         </div>
@@ -40,4 +40,4 @@ const MetadataSitesSettings = () => {
   );
 };
 
-export default MetadataSitesSettings;
+export default TmdbSettings;

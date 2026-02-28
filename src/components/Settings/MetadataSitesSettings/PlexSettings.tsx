@@ -52,13 +52,11 @@ const PlexLinkButton = () => {
         // Cleanup libraries and server from settings because server won't do so.
         const { Plex: plexSettings } = settings;
         patchSettings({
-          newSettings: {
-            ...settings,
-            Plex: {
-              ...plexSettings,
-              Libraries: [],
-              Server: '',
-            },
+          ...settings,
+          Plex: {
+            ...plexSettings,
+            Libraries: [],
+            Server: '',
           },
         });
       },

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiAccountPlus, mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { find, isEqual, map, remove } from 'lodash';
 import { useImmer } from 'use-immer';
@@ -10,36 +9,44 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
+import AddUserModal from '@/components/Settings/AddUserModal';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
 import toast from '@/components/Toast';
-import Events from '@/core/events';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
-import {
-  useChangePasswordMutation,
-  useDeleteUserMutation,
-  usePutUserMutation,
-} from '@/core/react-query/user/mutations';
+import { useDeleteUserMutation, usePutUserMutation } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
 
 import type { UserType } from '@/core/types/api/user';
 
 const UserManagementSettings = () => {
-  const dispatch = useDispatch();
-
   const currentUserQuery = useCurrentUserQuery();
   const usersQuery = useUsersQuery();
   const { isPending: editUserPending, mutate: editUser } = usePutUserMutation();
   const { mutate: deleteUser } = useDeleteUserMutation();
-  const { isPending: isChangePasswordPending, mutate: changePassword } = useChangePasswordMutation();
 
   const [selectedUser, setSelectedUser] = useImmer<UserType | undefined>(undefined);
-  const [newPassword, setNewPassword] = useState('');
-  const [logoutOthers, toggleLogoutOthers, setLogoutOthers] = useToggle(false);
   const [tagSearch, setTagSearch] = useState('');
   const [avatarFile, setAvatarFile] = useState<File>();
   const [showAvatarModal, toggleAvatarModal] = useToggle(false);
+  const [addUserModalState, setAddUserModalState] = useState<{ show: boolean, userId: number | null }>(() => ({
+    show: false,
+    userId: null,
+  }));
 
   const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
+
+  const handleAddUserButton = () => {
+    setAddUserModalState({ show: true, userId: null });
+  };
+
+  const handleEditUserPasswordButton = () => {
+    if (!selectedUser?.ID) return;
+    setAddUserModalState({ show: true, userId: selectedUser.ID });
+  };
+
+  const handleAddUserModalClose = () => {
+    setAddUserModalState({ ...addUserModalState, show: false });
+  };
 
   useEffect(() => {
     if (!usersQuery.data || !!selectedUser) return;
@@ -80,41 +87,7 @@ const UserManagementSettings = () => {
     });
   };
 
-  useEffect(() => {
-    if (newPassword) {
-      toast.info('Password field changed!', 'Click on the "Change" button to save your new password', {
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        toastId: 'password-changed',
-      });
-    } else {
-      toast.dismiss('password-changed');
-    }
-  }, [newPassword]);
-
-  const handlePasswordChange = () => {
-    if (!selectedUser) return;
-    changePassword({
-      Password: newPassword,
-      RevokeAPIKeys: logoutOthers,
-      userId: selectedUser.ID,
-    }, {
-      onSuccess: () => {
-        setNewPassword('');
-        if (currentUserQuery.data?.ID === selectedUser.ID && logoutOthers) {
-          toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
-          setTimeout(() => {
-            dispatch({ type: Events.AUTH_LOGOUT });
-          }, 6000);
-        } else toast.success('Password changed successfully!');
-      },
-    });
-  };
-
   const handleCancel = () => {
-    setNewPassword('');
-    setLogoutOthers(false);
     setSelectedUser(find(usersQuery.data, user => user.ID === selectedUser?.ID));
   };
 
@@ -186,7 +159,16 @@ const UserManagementSettings = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Current Users</div>
+        <div className="flex items-center justify-between">
+          <span className="font-semibold">Current Users</span>
+          <Button onClick={handleAddUserButton} tooltip="Add User">
+            <Icon
+              className="text-panel-icon-action"
+              path={mdiAccountPlus}
+              size={0.85}
+            />
+          </Button>
+        </div>
         <div className="flex flex-col gap-y-1">
           {map(usersQuery.data, user => (
             <div className="flex h-8 justify-between" key={`user-${user.ID}`}>
@@ -212,7 +194,7 @@ const UserManagementSettings = () => {
           <div className="flex gap-x-2">
             <label
               htmlFor="avatar"
-              className="flex cursor-pointer items-center rounded-lg border border-panel-border bg-button-secondary px-4 py-1 text-sm font-semibold drop-shadow-md hover:bg-button-secondary-hover"
+              className="flex cursor-pointer items-center rounded-lg border border-panel-border bg-button-secondary px-4 py-1 text-sm font-semibold hover:bg-button-secondary-hover"
             >
               Pick Avatar
               <input
@@ -228,6 +210,13 @@ const UserManagementSettings = () => {
                 Remove Avatar
               </Button>
             )}
+            <Button
+              onClick={handleEditUserPasswordButton}
+              buttonType="primary"
+              buttonSize="small"
+            >
+              Change Password
+            </Button>
           </div>
         </div>
         <div className="flex flex-col gap-y-1">
@@ -273,46 +262,6 @@ const UserManagementSettings = () => {
               type="text"
               onChange={handleInputChange}
               className="w-48 px-3 py-1"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="border-b border-panel-border" />
-
-      <div className="flex flex-col">
-        <div className="mb-4 flex justify-between">
-          <div className="flex items-center font-semibold">Password</div>
-          <Button
-            onClick={handlePasswordChange}
-            loading={isChangePasswordPending}
-            disabled={newPassword === ''}
-            buttonType="primary"
-            buttonSize="small"
-          >
-            Change
-          </Button>
-        </div>
-        <div className="flex flex-col gap-y-1">
-          <div className="flex h-8 justify-between">
-            <div className="mx-0 my-auto">New Password</div>
-            <InputSmall
-              id="new-password"
-              value={newPassword}
-              type="password"
-              onChange={event => setNewPassword(event.target.value)}
-              className="w-36 px-3 py-1"
-              autoComplete="new-password"
-            />
-          </div>
-          <div className="h-8">
-            <Checkbox
-              justify
-              label="Logout all sessions"
-              id="logout-all"
-              isChecked={logoutOthers}
-              onChange={toggleLogoutOthers}
-              className="justify-between"
             />
           </div>
         </div>
@@ -391,6 +340,7 @@ const UserManagementSettings = () => {
         </Button>
       </div>
 
+      <AddUserModal show={addUserModalState.show} userId={addUserModalState.userId} onClose={handleAddUserModalClose} />
       <AvatarEditorModal
         show={showAvatarModal}
         onClose={toggleAvatarModal}

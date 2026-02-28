@@ -7,12 +7,12 @@ import prettyBytes from 'pretty-bytes';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
-import { useRescanImportFolderMutation } from '@/core/react-query/import-folder/mutations';
-import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
-import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
+import { useRescanManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
+import { setEdit, setStatus } from '@/core/slices/modals/managedFolder';
 
 import type { RootState } from '@/core/store';
-import type { ImportFolderType } from '@/core/types/api/import-folder';
+import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
 const Options = ({ onClick }: { onClick: () => void }) => (
   <Button
@@ -23,24 +23,24 @@ const Options = ({ onClick }: { onClick: () => void }) => (
   </Button>
 );
 
-const ImportFolders = () => {
+const ManagedFolders = () => {
   const dispatch = useDispatch();
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const { mutate: rescanImportFolder } = useRescanImportFolderMutation();
-  const importFolderQuery = useImportFoldersQuery();
-  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
+  const { mutate: rescanManagedFolder } = useRescanManagedFolderMutation();
+  const managedFolderQuery = useManagedFoldersQuery();
+  const managedFolders = managedFolderQuery?.data ?? [] as ManagedFolderType[];
 
   const rescanFolder = (ID: number, name: string) => {
-    rescanImportFolder(ID, {
-      onSuccess: () => toast.success('Scan Import Folder Success', `Import Folder ${name} queued for scanning.`),
+    rescanManagedFolder(ID, {
+      onSuccess: () => toast.success('Scan Managed Folder Success', `Managed Folder ${name} queued for scanning.`),
     });
   };
-  const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
-  const openImportFolderModalEdit = (ID: number) => dispatch(setEdit(ID));
+  const setManagedFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
+  const openManagedFolderModalEdit = (ID: number) => dispatch(setEdit(ID));
 
-  const renderFolder = (folder: ImportFolderType) => {
+  const renderFolder = (folder: ManagedFolderType) => {
     let flags = '';
 
     if (folder.DropFolderType === 'Both') flags = 'Source, Destination';
@@ -63,7 +63,7 @@ const ImportFolders = () => {
                 rotate={180}
               />
             </Button>
-            <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
+            <Button onClick={() => openManagedFolderModalEdit(folder.ID)} tooltip="Edit Folder">
               <Icon
                 className="text-panel-icon-action"
                 path={mdiDatabaseEditOutline}
@@ -98,17 +98,17 @@ const ImportFolders = () => {
 
   return (
     <ShokoPanel
-      title="Import Folders"
-      options={<Options onClick={() => setImportFolderModalStatus(true)} />}
-      isFetching={importFolderQuery.isPending}
+      title="Managed Folders"
+      options={<Options onClick={() => setManagedFolderModalStatus(true)} />}
+      isFetching={managedFolderQuery.isPending}
       editMode={layoutEditMode}
-      contentClassName={importFolders.length > 2 && ('pr-4')}
+      contentClassName={managedFolders.length > 2 && ('pr-4')}
     >
-      {importFolders.length === 0
-        ? <div className="mt-4 flex justify-center font-semibold" key="no-folders">No Import Folders Added!</div>
-        : importFolders.map(importFolder => renderFolder(importFolder))}
+      {managedFolders.length === 0
+        ? <div className="mt-4 flex justify-center font-semibold" key="no-folders">No Managed Folders Added!</div>
+        : managedFolders.map(folder => renderFolder(folder))}
     </ShokoPanel>
   );
 };
 
-export default ImportFolders;
+export default ManagedFolders;

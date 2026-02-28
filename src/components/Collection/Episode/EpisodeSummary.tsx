@@ -95,7 +95,7 @@ const EpisodeSummary = React.memo(
 
     const episodeFilesQuery = useEpisodeFilesQuery(
       episodeId,
-      { includeDataFrom: ['AniDB'], include: ['AbsolutePaths', 'MediaInfo'] },
+      { include: ['AbsolutePaths', 'ReleaseInfo', 'MediaInfo'] },
       open,
     );
     const { isPending: markWatchedPending, mutate: markWatched } = useWatchEpisodeMutation(seriesId, page, nextUp);

@@ -9,7 +9,7 @@ import {
   mdiTrashCanOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { get, map } from 'lodash';
+import { map } from 'lodash';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import FileInfo from '@/components/FileInfo';
@@ -91,8 +91,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
   return (
     <div className="flex flex-col gap-y-6 p-6 pt-4">
       {map(episodeFiles, (file) => {
-        const ReleaseGroupID = get(file, 'AniDB.ReleaseGroup.ID', 0);
-        const ReleaseGroupName = get(file, 'AniDB.ReleaseGroup.Name', null);
+        const releaseGroup = file.Release?.Group;
 
         return (
           <div className="flex flex-col gap-y-6" key={file.ID}>
@@ -140,8 +139,8 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                   />
                   Copy ShokoID
                 </div>
-                {file.AniDB && (
-                  <a href={`https://anidb.net/file/${file.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
+                {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
+                  <a href={file.Release.ReleaseURI} target="_blank" rel="noopener noreferrer">
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
                       AniDB
@@ -149,15 +148,15 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                     </div>
                   </a>
                 )}
-                {ReleaseGroupID > 0 && (
+                {releaseGroup?.Source === 'AniDB' && (
                   <a
-                    href={`https://anidb.net/group/${ReleaseGroupID}/anime/${anidbSeriesId}`}
+                    href={`https://anidb.net/group/${releaseGroup.ID}/anime/${anidbSeriesId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
-                      {ReleaseGroupName ?? 'Unknown'}
+                      {releaseGroup.Name}
                       &nbsp;(AniDB)
                       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                     </div>

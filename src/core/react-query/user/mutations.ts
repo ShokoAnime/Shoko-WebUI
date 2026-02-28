@@ -4,8 +4,14 @@ import { identity, map, pickBy } from 'lodash';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type { ChangePasswordRequestType } from '@/core/react-query/user/types';
+import type { ChangePasswordRequestType, CreateUserRequestType } from '@/core/react-query/user/types';
 import type { UserType } from '@/core/types/api/user';
+
+export const useAddUserMutation = () =>
+  useMutation({
+    mutationFn: (user: CreateUserRequestType) => axios.post('User', user),
+    onSuccess: () => invalidateQueries(['user']),
+  });
 
 export const useChangePasswordMutation = () =>
   useMutation({

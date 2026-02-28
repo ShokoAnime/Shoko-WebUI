@@ -45,5 +45,17 @@ export const webuiSettingsPatches = {
     webuiSettings.collection.anidb.filterDescription = false;
     return { ...webuiSettings, settingsRevision: 10 };
   },
+  11: (oldWebuiSettings) => {
+    const webuiSettings = oldWebuiSettings;
+    webuiSettings.dashboard.hideManagedFolders = webuiSettings.dashboard.hideImportFolders;
+    delete webuiSettings.dashboard.hideImportFolders;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    let layoutItem = webuiSettings.layout.dashboard.lg.find(item => item.i === 'importFolders');
+    if (layoutItem) layoutItem.i = 'managedFolders';
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    layoutItem = webuiSettings.layout.dashboard.md.find(item => item.i === 'importFolders');
+    if (layoutItem) layoutItem.i = 'managedFolders';
+    return { ...webuiSettings, settingsRevision: 11 };
+  },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

@@ -9,7 +9,7 @@ type XRefsType = {
 type FileTypeLocation = {
   ID: number;
   FileID: number;
-  ImportFolderID: number;
+  ManagedFolderID: number;
   RelativePath: string;
   AbsolutePath?: string;
   IsAccessible: boolean;
@@ -18,12 +18,7 @@ type FileTypeLocation = {
 export type FileType = {
   ID: number;
   Size: number;
-  Hashes: {
-    ED2K: string;
-    SHA1: string;
-    CRC32: string;
-    MD5: string;
-  };
+  Hashes: FileHashDigestType[];
   Locations: FileTypeLocation[];
   Duration: string;
   ResumePosition: string | null;
@@ -34,30 +29,70 @@ export type FileType = {
   Imported?: string;
   IsVariation: boolean;
   SeriesIDs?: XRefsType[];
-  AniDB?: FileAniDBType;
+  Release?: ReleaseInfoType;
   MediaInfo?: FileMediaInfoType;
   AVDump: FileAVDumpType;
 };
 
-export type FileAniDBType = {
-  ID: number;
-  Source: FileSourceEnum;
-  ReleaseGroup: FileAniDBReleaseGroupType;
-  ReleaseDate: string | null;
+export type ReleaseInfoType = {
+  ID: string | null;
+  ProviderName: string;
+  ReleaseURI: string | null;
   Version: number;
-  IsDeprecated: boolean;
-  IsCensored: boolean;
-  OriginalFileName: string;
-  FileSize: bigint;
-  Duration: string;
-  Resolution: string;
-  Description: string;
-  AudioCodecs: string[];
-  AudioLanguages: string[];
-  SubLanguages: string[];
-  VideoCodec: string;
-  Chaptered: boolean;
+  FileSize: number | null;
+  Comment: string | null;
+  OriginalFilename: string | null;
+  IsCensored: boolean | null;
+  IsCreditless: boolean | null;
+  IsChaptered: boolean | null;
+  IsCorrupted: boolean;
+  Source: ReleaseSource;
+  Group: ReleaseGroupType | null;
+  Hashes: FileHashDigestType[] | null;
+  MediaInfo: ReleaseMediaInfoType | null;
+  CrossReferences: ReleaseCrossReferenceType[];
+  Metadata: string | null;
+  Released: string | null;
   Updated: string;
+  Created: string;
+};
+
+export const enum ReleaseSource {
+  Unknown = 'Unknown',
+  Other = 'Other',
+  TV = 'TV',
+  DVD = 'DVD',
+  BluRay = 'BluRay',
+  Web = 'Web',
+  VHS = 'VHS',
+  VCD = 'VCD',
+  LaserDisc = 'LaserDisc',
+  Camera = 'Camera',
+}
+
+export type ReleaseGroupType = {
+  ID: string;
+  Name: string;
+  ShortName: string;
+  Source: string;
+};
+
+export type ReleaseCrossReferenceType = {
+  AnidbEpisodeID: number;
+  AnidbAnimeID: number | null;
+  PercentageStart: number;
+  PercentageEnd: number;
+};
+
+export type ReleaseMediaInfoType = {
+  AudioLanguages: string[];
+  SubtitleLanguages: string[];
+};
+
+export type FileHashDigestType = {
+  Type: string;
+  Value: string;
+  Metadata?: string;
 };
 
 export type FileAVDumpType = {
@@ -213,8 +248,8 @@ export type FileMediaInfoChapterType = {
 
 export enum FileSortCriteriaEnum {
   None = 0,
-  ImportFolderName = 1,
-  ImportFolderID = 2,
+  ManagedFolderName = 1,
+  ManagedFolderID = 2,
   AbsolutePath = 3,
   RelativePath = 4,
   FileSize = 5,

@@ -41,7 +41,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
   };
 
   const handleSave = () => {
-    patchSettings({ newSettings }, {
+    patchSettings(newSettings, {
       onSuccess: () => onClose(),
     });
   };
