@@ -1,4 +1,4 @@
-type ExpressionType =
+export type ExpressionType =
   | 'And'
   | 'Not'
   | 'Or'
@@ -56,7 +56,7 @@ export type FilterCondition = {
 };
 
 export type FilterExpression = {
-  Expression: string;
+  Expression: ExpressionType;
   Name: string;
   Description: string;
   Group: string;
@@ -81,12 +81,24 @@ export type SortingCriteria = {
   IsInverted: boolean;
 };
 
-export type FilterType = {
-  Name?: string;
-  ParentID?: number;
+type BaseFilterType = {
+  ApplyAtSeriesLevel?: boolean;
   IsDirectory?: boolean;
   IsHidden?: boolean;
-  ApplyAtSeriesLevel?: boolean;
+  Name?: string;
   Expression?: FilterCondition;
   Sorting?: SortingCriteria;
 };
+
+export type CreateOrUpdateFilterType = {
+  ParentID?: number;
+} & BaseFilterType;
+
+export type FilterType = {
+  IDs: {
+    ParentFilter: number | null;
+    ID: number;
+  };
+  IsLocked: boolean;
+  Size: number;
+} & BaseFilterType;

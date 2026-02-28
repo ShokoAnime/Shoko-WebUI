@@ -6,7 +6,7 @@ import queryClient from '@/core/react-query/queryClient';
 import { addFilterCriteria } from '@/core/slices/collection';
 import store from '@/core/store';
 
-import type { FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
+import type { ExpressionType, FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
 
 export const buildFilter = (filters: FilterCondition[]): FilterCondition => {
   if (filters.length > 1) {
@@ -21,11 +21,11 @@ export const buildFilter = (filters: FilterCondition[]): FilterCondition => {
 
 const buildTagCondition = (
   condition: FilterTag,
-  type: string,
-) => (condition.isExcluded
+  type: ExpressionType,
+): FilterCondition => (condition.isExcluded
   ? { Type: 'Not', Left: { Type: type, Parameter: condition.Name } }
   : { Type: type, Parameter: condition.Name });
-const buildSidebarFilterConditionTag = (conditionValues: FilterTag[], type: string): object => {
+const buildSidebarFilterConditionTag = (conditionValues: FilterTag[], type: ExpressionType): FilterCondition => {
   if (conditionValues.length > 1) {
     return {
       Type: 'And',
@@ -37,9 +37,9 @@ const buildSidebarFilterConditionTag = (conditionValues: FilterTag[], type: stri
 };
 const buildSidebarFilterConditionMultivalue = (
   conditionValues: string[],
-  type: string,
+  type: ExpressionType,
   operator: 'Or' | 'And' = 'And',
-): object => {
+): FilterCondition => {
   if (conditionValues.length > 1) {
     return {
       Type: operator,
@@ -52,9 +52,9 @@ const buildSidebarFilterConditionMultivalue = (
 
 const buildSidebarFilterConditionMultivaluePair = (
   conditionValues: string[][],
-  type: string,
+  type: ExpressionType,
   operator: 'Or' | 'And' = 'And',
-): object => {
+): FilterCondition => {
   if (conditionValues.length > 1) {
     return {
       Type: operator,
@@ -65,7 +65,7 @@ const buildSidebarFilterConditionMultivaluePair = (
   return { Type: type, Parameter: conditionValues[0][0], SecondParameter: conditionValues[0][1] };
 };
 
-const buildSidebarFilterCondition = (currentFilter: FilterExpression) => {
+const buildSidebarFilterCondition = (currentFilter: FilterExpression): FilterCondition => {
   if (currentFilter.Expression === 'HasCustomTag' || currentFilter.Expression === 'HasTag') {
     const tagValues = store.getState().collection.filterTags[currentFilter.Expression];
     return buildSidebarFilterConditionTag(tagValues, currentFilter.Expression);
@@ -89,7 +89,7 @@ const buildSidebarFilterCondition = (currentFilter: FilterExpression) => {
   return value ? { Type: currentFilter.Expression } : { Type: 'Not', Left: { Type: currentFilter.Expression } };
 };
 
-export const buildSidebarFilter = (filters: FilterExpression[]): object => {
+export const buildSidebarFilter = (filters: FilterExpression[]): FilterCondition => {
   if (filters.length > 1) {
     return {
       Type: 'And',
@@ -110,6 +110,6 @@ export const addFilterCriteriaToStore = async (newCriteria: string) => {
       },
     ),
   );
-  const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
+  const filterExpression = filter(allCriteria, { Expression: newCriteria })[0] as FilterExpression;
   store.dispatch(addFilterCriteria(filterExpression));
 };

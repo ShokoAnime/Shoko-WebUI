@@ -8,6 +8,8 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilterExpressionsQuery } from '@/core/react-query/filter/queries';
 import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
 
+import type { FilterExpression } from '@/core/types/api/filter';
+
 type Props = {
   show: boolean;
   onClose: () => void;
@@ -29,7 +31,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
   };
 
   const handleSave = () => {
-    const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
+    const filterExpression = filter(allCriteria, { Expression: newCriteria })[0] as FilterExpression;
     dispatch(addFilterCriteria(filterExpression));
     handleClose();
   };

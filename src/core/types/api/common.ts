@@ -53,19 +53,6 @@ export type RatingType = {
   Type: 'Permanent' | 'Temporary';
 };
 
-export type FilterType = {
-  IDs: {
-    ParentFilter: number;
-    ID: number;
-  };
-  Locked: boolean;
-  ApplyAtSeriesLevel: boolean;
-  Directory: boolean;
-  HideInAPI: boolean;
-  Name: string;
-  Size: number;
-};
-
 export type LogLineType = {
   TimeStamp: string;
   Message: string;
