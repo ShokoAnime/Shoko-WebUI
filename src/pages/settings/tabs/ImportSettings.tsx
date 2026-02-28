@@ -1,18 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline, mdiFolderPlusOutline } from '@mdi/js';
+import { mdiFolderPlusOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { produce } from 'immer';
-import prettyBytes from 'pretty-bytes';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import toast from '@/components/Toast';
-import { useRescanManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
+import ManagedFolder from '@/components/Settings/ManagedFolder';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
-import { setEdit, setStatus } from '@/core/slices/modals/managedFolder';
-import useEventCallback from '@/hooks/useEventCallback';
+import { setStatus } from '@/core/slices/modals/managedFolder';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
@@ -20,30 +17,12 @@ import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 const ImportSettings = () => {
   const dispatch = useDispatch();
   const { newSettings, updateSetting } = useSettingsContext();
-  const { mutate: rescanManagedFolder } = useRescanManagedFolderMutation();
   const managedFolderQuery = useManagedFoldersQuery();
   const managedFolders = managedFolderQuery?.data ?? [] as ManagedFolderType[];
 
-  const handleAddButton = useEventCallback(() => {
+  const handleAddButton = () => {
     dispatch(setStatus(true));
-  });
-
-  const handleRescanButton = useEventCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    const id = parseInt(event.currentTarget.id.slice(0, -'-rescan'.length), 10);
-    const folder = managedFolders.find(fold => fold.ID === id);
-    rescanManagedFolder(id, {
-      onSuccess: () =>
-        toast.success(
-          'Scan Managed Folder Success',
-          `Managed Folder ${folder?.Name ?? '<unknown>'} queued for scanning.`,
-        ),
-    });
-  });
-
-  const handleEditButton = useEventCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    const id = parseInt(event.currentTarget.id.slice(0, -'-edit'.length), 10);
-    dispatch(setEdit(id));
-  });
+  };
 
   const {
     AutomaticallyDeleteDuplicatesOnImport,
@@ -155,65 +134,7 @@ const ImportSettings = () => {
         </div>
         <div className="flex flex-col gap-y-1">
           {managedFolders.map((folder, index) => (
-            <React.Fragment key={folder.ID}>
-              {index !== 0 && <div className="border-b border-panel-border" />}
-
-              <div className="flex flex-col py-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="font-semibold">{folder.Name}</span>
-                  <div className="flex">
-                    <Button
-                      id={`${folder.ID}-rescan`}
-                      onClick={handleRescanButton}
-                      tooltip="Rescan Folder"
-                      className="mr-2"
-                    >
-                      <Icon
-                        className="text-panel-icon-action"
-                        path={mdiDatabaseSearchOutline}
-                        size={1}
-                        horizontal
-                        vertical
-                        rotate={180}
-                      />
-                    </Button>
-                    <Button id={`${folder.ID}-edit`} onClick={handleEditButton} tooltip="Edit Folder">
-                      <Icon
-                        className="text-panel-icon-action"
-                        path={mdiDatabaseEditOutline}
-                        size={1}
-                        horizontal
-                        vertical
-                        rotate={180}
-                      />
-                    </Button>
-                  </div>
-                </div>
-                <div className="mb-1 flex">
-                  <div className="grow">Location</div>
-                  <div title={folder.Path} className="line-clamp-1 pl-2">{folder.Path}</div>
-                </div>
-                <div className="mb-1 flex">
-                  <div className="grow">Type</div>
-                  <div>
-                    {[
-                      folder.DropFolderType === 'Both' ? 'Source, Destination' : '',
-                      folder.DropFolderType !== 'Both' && folder.DropFolderType !== 'None' ? folder.DropFolderType : '',
-                      folder.WatchForNewFiles ? 'Watch' : '',
-                    ].filter(part => part).join(', ') || 'None'}
-                  </div>
-                </div>
-                <div className="flex">
-                  <div className="grow">Size</div>
-                  <div>
-                    {prettyBytes(folder.FileSize ?? 0, { binary: true })}
-                    &nbsp;(
-                    {(folder.Size ?? 0).toLocaleString('en-US')}
-                    &nbsp;Series)
-                  </div>
-                </div>
-              </div>
-            </React.Fragment>
+            <ManagedFolder key={folder.ID} index={index} folder={folder} className="py-4" />
           ))}
         </div>
       </div>

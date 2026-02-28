@@ -90,9 +90,8 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
   </div>
 );
 
-const QueueItems = () => {
+const QueueItems = () => { // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
   const currentlyExecuting = useSelector((state: RootState) => state.mainpage.queueStatus.CurrentlyExecuting);
-  // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
   const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
   const list = useMemo(() => {
     if (!queueItemsQuery.data?.Total) return currentlyExecuting;

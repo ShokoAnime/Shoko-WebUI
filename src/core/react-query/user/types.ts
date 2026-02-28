@@ -1,4 +1,4 @@
-import type { CommunitySitesType } from '@/core/types/api/user';
+import type { ApiUserType } from '@/core/types/api/user';
 
 export type ChangePasswordRequestType = {
   Password: string;
@@ -6,12 +6,4 @@ export type ChangePasswordRequestType = {
   userId?: number;
 };
 
-export type CreateUserRequestType = {
-  Username?: string;
-  IsAdmin?: boolean;
-  CommunitySites?: CommunitySitesType[];
-  RestrictedTags?: number[];
-  Avatar?: string | null;
-  PlexUsernames?: string;
-  Password?: string;
-};
+export type CreateUserRequestType = Partial<Omit<ApiUserType, 'ID'>>;
