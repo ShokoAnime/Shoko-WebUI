@@ -35,6 +35,7 @@ export function isDebug() {
 }
 
 export const parseServerVersion = (version: string) => {
+  if (semver.valid(version)) return version;
   const semverVersion = semver.coerce(version)?.raw;
   const prereleaseVersion = version.split('.').pop();
 
