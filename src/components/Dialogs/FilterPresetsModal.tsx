@@ -12,7 +12,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
 
-import type { CollectionFilterType } from '@/core/types/api/collection';
+import type { FilterType } from '@/core/types/api/filter';
 
 type Props = {
   show: boolean;
@@ -34,7 +34,7 @@ const TabButton = (
   );
 };
 
-const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => {
+const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
   const dispatch = useDispatch();
 
   const handleClose = () => {
@@ -73,7 +73,7 @@ const SidePanel = (
     if (subFiltersQuery.isSuccess) {
       return subFiltersQuery.data.List.filter(
         item => (!item.IsDirectory
-          && (debouncedSearch === '' || item.Name.toLowerCase().includes(debouncedSearch.toLowerCase()))),
+          && (debouncedSearch === '' || item.Name?.toLowerCase().includes(debouncedSearch.toLowerCase()))),
       );
     }
     return [];
@@ -174,7 +174,7 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
                 activeTab={activeTab}
                 filterId={item.IDs.ID}
                 onTabChange={onTabChange}
-                title={item.Name}
+                title={item.Name!}
               />
             ))}
         </div>
@@ -203,7 +203,7 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
                 filterId={item.IDs.ID}
                 activeFilter={activeFilter}
                 activeTab={activeTab}
-                title={item.Name}
+                title={item.Name!}
                 onClose={onClose}
               />
             ),

@@ -28,14 +28,14 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
-import type { FilterCondition, FilterType, SortingCriteria } from '@/core/types/api/filter';
+import type { CreateOrUpdateFilterType, FilterCondition, SortingCriteria } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
 const getFilter = (
   query: string,
   filterConditions: (FilterCondition | undefined)[],
   sortingCriteria?: SortingCriteria,
-): FilterType => {
+): CreateOrUpdateFilterType => {
   let finalCondition: FilterCondition | undefined;
   const cleanFilterConditions = filterConditions.filter(condition => !!condition);
   if (query) {
@@ -114,9 +114,9 @@ const Collection = () => {
   const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
 
-  const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
+  const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter);
   const activeFilter = useMemo(() => {
-    if (!filterId) return undefined;
+    if (!filterId || !activeFilterFromStore) return undefined;
     return activeFilterFromStore;
   }, [activeFilterFromStore, filterId]);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && !isLiveFilter);

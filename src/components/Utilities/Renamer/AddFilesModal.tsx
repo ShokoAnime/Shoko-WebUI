@@ -19,7 +19,7 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { ListResultType } from '@/core/types/api';
 import type { FileType } from '@/core/types/api/file';
-import type { FilterCondition, FilterType } from '@/core/types/api/filter';
+import type { CreateOrUpdateFilterType, FilterCondition } from '@/core/types/api/filter';
 
 type Props = {
   show: boolean;
@@ -51,7 +51,7 @@ const addRecentlyImportedFiles = (pageSize: number) => {
     .catch(console.error);
 };
 
-const getSearchFilter = (query: string, isSeries: boolean): FilterType => {
+const getSearchFilter = (query: string, isSeries: boolean): CreateOrUpdateFilterType => {
   if (!query) return {};
 
   let searchCondition: FilterCondition = {

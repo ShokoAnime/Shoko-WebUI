@@ -2,7 +2,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { filter, keys } from 'lodash';
 
 import type { RootState } from '@/core/store';
-import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
+import type { FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 /*
@@ -26,7 +26,7 @@ type State = {
   filterValues: Record<string, string[]>;
   filterTags: Record<string, FilterTag[]>;
   filterMatch: Record<string, 'Or' | 'And'>;
-  activeFilter: object | null;
+  activeFilter: FilterCondition | null;
 };
 
 const initialState = {
@@ -77,7 +77,7 @@ const collectionSlice = createSlice({
     setFilterMatch(sliceState, action: PayloadAction<Record<string, 'Or' | 'And'>>) {
       sliceState.filterMatch = { ...sliceState.filterMatch, ...action.payload };
     },
-    setActiveFilter(sliceState, action: PayloadAction<object>) {
+    setActiveFilter(sliceState, action: PayloadAction<FilterCondition>) {
       sliceState.activeFilter = action.payload;
     },
     resetActiveFilter(sliceState) {

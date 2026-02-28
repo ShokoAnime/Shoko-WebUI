@@ -9,12 +9,12 @@ import type {
   FilteredSeriesRequestType,
 } from '@/core/react-query/filter/types';
 import type { ListResultType } from '@/core/types/api';
-import type { CollectionFilterType, CollectionGroupType } from '@/core/types/api/collection';
+import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { FilterExpression, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
 export const useFiltersQuery = (enabled = false) =>
-  useQuery<ListResultType<CollectionFilterType>>({
+  useQuery<ListResultType<FilterType>>({
     queryKey: ['filter', 'all'],
     queryFn: () => axios.get('Filter', { params: { includeEmpty: true, pageSize: 0 } }),
     enabled,
@@ -28,7 +28,7 @@ export const useFilterQuery = (filterId: number, enabled = true) =>
   });
 
 export const useSubFiltersQuery = (filterId: number, enabled = false) =>
-  useQuery<ListResultType<CollectionFilterType>>({
+  useQuery<ListResultType<FilterType>>({
     queryKey: ['filter', 'sub', filterId],
     queryFn: () => axios.get(`Filter/${filterId}/Filter`, { params: { pageSize: 0 } }),
     enabled,
