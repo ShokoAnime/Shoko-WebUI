@@ -35,24 +35,24 @@ export type FileType = {
 };
 
 export type ReleaseInfoType = {
-  ID?: string;
+  ID: string | null;
   ProviderName: string;
-  ReleaseURI?: string;
+  ReleaseURI: string | null;
   Version: number;
-  FileSize?: number;
-  Comment?: string;
-  OriginalFilename?: string;
-  IsCensored?: boolean;
-  IsCreditless?: boolean;
-  IsChaptered?: boolean;
+  FileSize: number | null;
+  Comment: string | null;
+  OriginalFilename: string | null;
+  IsCensored: boolean | null;
+  IsCreditless: boolean | null;
+  IsChaptered: boolean | null;
   IsCorrupted: boolean;
   Source: ReleaseSource;
-  Group?: ReleaseGroupType;
-  Hashes?: FileHashDigestType[];
-  MediaInfo?: ReleaseMediaInfoType;
+  Group: ReleaseGroupType | null;
+  Hashes: FileHashDigestType[] | null;
+  MediaInfo: ReleaseMediaInfoType | null;
   CrossReferences: ReleaseCrossReferenceType[];
-  Metadata?: string;
-  Released?: string;
+  Metadata: string | null;
+  Released: string | null;
   Updated: string;
   Created: string;
 };
@@ -80,7 +80,7 @@ export type ReleaseGroupType = {
 
 export type ReleaseCrossReferenceType = {
   AnidbEpisodeID: number;
-  AnidbAnimeID?: number;
+  AnidbAnimeID: number | null;
   PercentageStart: number;
   PercentageEnd: number;
 };

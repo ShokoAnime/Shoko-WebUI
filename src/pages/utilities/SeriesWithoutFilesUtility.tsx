@@ -27,7 +27,7 @@ import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { episodeOrSeriesIdSelector } from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { SeriesType } from '@/core/types/api/series';
@@ -160,7 +160,7 @@ const SeriesWithoutFilesUtility = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<SeriesType>(series);
+  } = useRowSelection(series, episodeOrSeriesIdSelector);
 
   return (
     <>

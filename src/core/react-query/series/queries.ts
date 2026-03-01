@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
+import queryClient from '@/core/react-query/queryClient';
 
 import type {
   SeriesAniDBEpisodesRequestType,
@@ -19,6 +21,7 @@ import type { ImagesType } from '@/core/types/api/common';
 import type { AniDBEpisodeType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
+  AniDBSeriesType,
   SeriesAniDBRelatedType,
   SeriesAniDBSearchResult,
   SeriesAniDBSimilarType,
@@ -45,6 +48,43 @@ export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
     queryFn: () => axios.get(`Series/AniDB/${anidbId}`),
     enabled,
   });
+
+const animePlaceholderKey = ['series', 'anidb', 'bulk', 'placeholder'] as const;
+
+export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = true) => {
+  useEffect(() => () => {
+    queryClient.removeQueries({ queryKey: animePlaceholderKey });
+  }, []);
+
+  return useQuery<Record<number, AniDBSeriesType | null>>({
+    queryKey: ['series', 'anidb', 'bulk', anidbIds],
+    queryFn: async () => {
+      const existingPlaceholder = queryClient.getQueryData<Record<number, AniDBSeriesType | null>>(animePlaceholderKey)
+        ?? {};
+      const existingEntries = Object.entries(existingPlaceholder)
+        .map(([key, value]) => [Number(key), value] as const)
+        .filter(([key, value]) => !Number.isNaN(key) && Number.isInteger(key) && value != null);
+      const existingKeys = new Map(existingEntries);
+      const missingKeys = anidbIds.filter((key): key is number =>
+        // eslint-disable-next-line @stylistic/comma-dangle -- ESLint and DPrint are fighting about the formatting here.
+        key != null && !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key)
+        // eslint-disable-next-line @stylistic/function-paren-newline -- ESLint and DPrint are fighting about the formatting here.
+      );
+      const responses = await Promise.all(
+        missingKeys.map(anidbId => axios.get<unknown, AniDBSeriesType>(`Series/AniDB/${anidbId}`).catch(() => null)),
+      );
+      const entries = Object.fromEntries([
+        ...existingEntries,
+        ...responses.map((episode, index) => [missingKeys[index], episode] as const),
+      ]);
+      queryClient.setQueryData(animePlaceholderKey, entries);
+      return entries;
+    },
+    placeholderData: queryClient.getQueryData<Record<number, AniDBSeriesType | null>>(animePlaceholderKey)
+      ?? {},
+    enabled,
+  });
+};
 
 export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDBEpisodesRequestType, enabled = true) =>
   useQuery<ListResultType<AniDBEpisodeType>, unknown, AniDBEpisodeType[]>({

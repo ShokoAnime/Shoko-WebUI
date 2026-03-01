@@ -47,7 +47,7 @@ import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { FileType } from '@/core/types/api/file';
@@ -354,7 +354,7 @@ const FileSearch = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(files);
+  } = useRowSelection(files, fileIdSelector);
 
   const [viewIndex, setViewIndex] = useState(0);
 

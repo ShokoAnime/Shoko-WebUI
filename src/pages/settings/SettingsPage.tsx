@@ -19,6 +19,7 @@ import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 const items = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
+  { name: 'Hashing & Release', path: 'hashing-release' },
   { name: 'AniDB', path: 'anidb' },
   { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
@@ -57,6 +58,13 @@ const SettingsPage = () => {
   );
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
+  const isSpecialPage = useMemo(() => {
+    const path = pathname.split('/').pop();
+    if (!path) return false;
+    if (pathname.includes('settings/dynamic/')) return true;
+    return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
+  }, [pathname]);
+
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
   useEffect(() => {
     if (!debouncedUnsavedChanges) {
@@ -65,8 +73,8 @@ const SettingsPage = () => {
     }
 
     toastId.current = toast.info(
-      'Unsaved Changes',
-      'Please save before leaving this page.',
+      'Unsaved Changes for Core Settings',
+      'Please save before leaving the settings.',
       { autoClose: false, position: 'top-right' },
       true,
     );
@@ -91,12 +99,6 @@ const SettingsPage = () => {
       dispatch(setMiscItem({ webuiPreviewTheme: value }));
     }
   };
-
-  const isShowFooter = useMemo(() => {
-    const path = pathname.split('/').pop();
-    if (!path) return true;
-    return !['user-management', 'api-keys'].includes(path);
-  }, [pathname]);
 
   const settingContext = {
     newSettings,
@@ -151,7 +153,9 @@ const SettingsPage = () => {
     <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
       <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
         <div className="sticky top-6">
-          <div className="mb-8 text-center text-xl opacity-100">Settings</div>
+          <div className="mb-8 text-center text-xl">
+            Core Settings
+          </div>
           <div className="flex flex-col items-center gap-y-2">
             {items.map(item => (
               <NavLink
@@ -179,7 +183,7 @@ const SettingsPage = () => {
               <Outlet
                 context={settingContext}
               />
-              {isShowFooter && (
+              {!isSpecialPage && (
                 <div className="flex justify-end gap-x-3 font-semibold">
                   <Button
                     onClick={handleCancel}
