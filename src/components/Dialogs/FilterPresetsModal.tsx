@@ -44,11 +44,7 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
 
   return (
     <div
-      // TODO: Disable selecting empty filter presets for now. Remove the disable condition once editing presets is possible
-      className={cx(
-        'flex justify-between pb-1 pr-4 font-semibold',
-        item.Size === 0 && 'pointer-events-none opacity-65',
-      )}
+      className="flex justify-between pb-1 pr-4 font-semibold"
       key={item.IDs.ID}
     >
       <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
@@ -62,7 +58,9 @@ const SidePanel = (
 ) => {
   const { activeFilter, activeTab, filterId, onClose, title } = props;
 
-  const subFiltersQuery = useSubFiltersQuery(filterId, activeFilter === filterId);
+  const allFiltersQuery = useFiltersQuery(filterId === -1);
+  const subFiltersQuery = useSubFiltersQuery(filterId, filterId !== -1 && activeFilter === filterId);
+  const filtersQuery = filterId === -1 ? allFiltersQuery : subFiltersQuery;
 
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
@@ -70,14 +68,15 @@ const SidePanel = (
   useEffect(() => () => setSearch(''), []);
 
   const filteredList = useMemo(() => {
-    if (subFiltersQuery.isSuccess) {
-      return subFiltersQuery.data.List.filter(
-        item => (!item.IsDirectory
-          && (debouncedSearch === '' || item.Name?.toLowerCase().includes(debouncedSearch.toLowerCase()))),
+    if (filtersQuery.isSuccess) {
+      return filtersQuery.data.List.filter(
+        item =>
+          !item.IsDirectory
+          && (debouncedSearch === '' || item.Name?.toLowerCase().includes(debouncedSearch.toLowerCase())),
       );
     }
     return [];
-  }, [debouncedSearch, subFiltersQuery.data, subFiltersQuery.isSuccess]);
+  }, [debouncedSearch, filtersQuery]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -96,13 +95,13 @@ const SidePanel = (
         hidden: activeTab !== title || filterId === 0,
       })}
     >
-      {!subFiltersQuery.isSuccess && (
+      {!filtersQuery.isSuccess && (
         <div className="flex grow items-center justify-center">
           <Icon path={mdiLoading} spin size={3} className="text-panel-text-primary" />
         </div>
       )}
 
-      {subFiltersQuery.isSuccess && (
+      {filtersQuery.isSuccess && (
         <>
           <Input
             type="text"
@@ -150,7 +149,7 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
   const [activeTab, setActiveTab] = useState('Filters');
-  const [activeFilter, setActiveFilter] = useState(0);
+  const [activeFilter, setActiveFilter] = useState(-1);
 
   const onTabChange = (filterId: number, title: string) => {
     setActiveTab(title);
@@ -166,7 +165,7 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
     >
       <div className="flex">
         <div className="flex min-h-96 min-w-32 flex-col gap-y-4 border-r-2 border-panel-border">
-          <TabButton activeTab={activeTab} filterId={0} onTabChange={onTabChange} title="Filters" />
+          <TabButton activeTab={activeTab} filterId={-1} onTabChange={onTabChange} title="Filters" />
           {filters.filter(item => item.IsDirectory)
             .map(item => (
               <TabButton
@@ -186,11 +185,13 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
         )}
 
         {filtersQuery.isSuccess && activeTab === 'Filters' && (
-          <div className="flex max-h-96 grow flex-col gap-y-1 overflow-y-auto pl-8">
-            {filters.filter(item => !item.IsDirectory).map(item => (
-              <Item key={item.IDs.ID} item={item} onClose={onClose} />
-            ))}
-          </div>
+          <SidePanel
+            filterId={-1}
+            activeFilter={activeFilter}
+            activeTab={activeTab}
+            title="Filters"
+            onClose={onClose}
+          />
         )}
 
         {filtersQuery.isSuccess && activeTab !== 'Filters' && filters
