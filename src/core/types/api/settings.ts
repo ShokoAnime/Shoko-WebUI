@@ -375,6 +375,10 @@ export type WebUISettingsType = {
   layout: {
     dashboard: Partial<Record<string, Layout>>;
   };
+  linking: {
+    enabledReleaseProviders: string[];
+    releaseProviderOrder: string[];
+  };
   collection: {
     view: 'poster' | 'list';
     poster: {

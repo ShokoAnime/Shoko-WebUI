@@ -2,16 +2,18 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useMeasure from 'react-use-measure';
 import {
+  mdiBeta,
   mdiCloseCircleOutline,
+  mdiCreation,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
   mdiDumpTruck,
   mdiEyeOffOutline,
   mdiFileDocumentEditOutline,
+  mdiLinkVariantPlus,
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
-  mdiOpenInNew,
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -48,7 +50,7 @@ import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -313,7 +315,7 @@ const UnrecognizedTab = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(files);
+  } = useRowSelection(files, fileIdSelector);
 
   const isAvdumpFinished = useMemo(
     () => (selectedRows.length > 0
@@ -392,11 +394,28 @@ const UnrecognizedTab = () => {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  className="flex flex-row flex-wrap items-center gap-x-2"
+                  tooltip="Manual Link (Legacy)"
+                  className="flex flex-row flex-wrap items-center gap-x-2 rounded-r-none"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
-                  <Icon path={mdiOpenInNew} size={1} />
+                  <Icon path={mdiLinkVariantPlus} size={1} />
                   <span>Manual Link</span>
+                </Button>
+                <Button
+                  buttonType="primary"
+                  buttonSize="normal"
+                  tooltip="Link With Providers (β)"
+                  className="group flex flex-row flex-wrap items-center gap-x-2 -ml-3 border-l-0 rounded-l-none"
+                  onClick={() => navigate('link-with-providers', { state: { selectedRows } })}
+                >
+                  <div className="relative">
+                    <Icon path={mdiCreation} size={1} />
+                    <Icon
+                      path={mdiBeta}
+                      size={0.5}
+                      className="absolute -bottom-1 -right-1.5 [paint-order:stroke] [stroke-width:8px] stroke-button-primary group-hover:stroke-button-primary-hover transition-[stroke] ease-in-out"
+                    />
+                  </div>
                 </Button>
                 <Button
                   buttonType="primary"
