@@ -347,7 +347,7 @@ const HashingAndReleaseSettings = () => {
                               id={`${definition.ID}-config`}
                               type="button"
                               disabled
-                              className="text-button-primary"
+                              className="text-button-primary opacity-65 cursor-default"
                             >
                               <Icon path={mdiCog} size={1} />
                             </button>
@@ -445,7 +445,7 @@ const HashingAndReleaseSettings = () => {
                               id={`${definition.ID}-config`}
                               type="button"
                               disabled
-                              className="text-button-primary"
+                              className="text-button-primary opacity-65 cursor-default"
                             >
                               <Icon path={mdiCog} size={1} />
                             </button>
@@ -509,7 +509,7 @@ const HashingAndReleaseSettings = () => {
                               id={`${definition.ID}-config`}
                               type="button"
                               disabled
-                              className="text-button-primary"
+                              className="text-button-primary opacity-65 cursor-default"
                             >
                               <Icon path={mdiCog} size={1} />
                             </button>
