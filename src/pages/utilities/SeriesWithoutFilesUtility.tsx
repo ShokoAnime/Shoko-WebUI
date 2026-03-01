@@ -120,12 +120,17 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
           />
         </TransitionDiv>
         <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-          <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
+          <MenuButton
+            onClick={() => handleDeleteSeries()}
+            icon={mdiMinusCircleOutline}
+            name="Delete"
+            highlightType="danger"
+          />
           <MenuButton
             onClick={() => setSelectedRows([])}
             icon={mdiCloseCircleOutline}
             name="Cancel Selection"
-            highlight
+            highlightType="primary"
           />
         </TransitionDiv>
       </div>

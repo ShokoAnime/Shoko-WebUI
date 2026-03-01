@@ -1,16 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router';
-import { mdiLoading, mdiMagnify } from '@mdi/js';
+import { Link, useParams } from 'react-router';
+import { mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { useDebounceValue } from 'usehooks-ts';
 
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
+import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import toast from '@/components/Toast';
+import { useDeleteFilterMutation } from '@/core/react-query/filter/mutations';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FilterType } from '@/core/types/api/filter';
 
@@ -35,25 +40,69 @@ const TabButton = (
 };
 
 const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
+  const navigate = useNavigateVoid();
+  const { filterId } = useParams();
+
   const dispatch = useDispatch();
+  const { mutateAsync: deleteFilter } = useDeleteFilterMutation();
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleClose = () => {
     dispatch(resetFilter());
     onClose();
   };
 
+  const handleDelete = async () => {
+    if (filterId === item.IDs.ID.toString()) {
+      navigate('/webui/collection');
+    }
+
+    // Without the delay, the webui will try to reload the filter after it's deleted.
+    await new Promise((resolve) => {
+      setTimeout(resolve, 100);
+    });
+    await deleteFilter(item.IDs.ID.toString())
+      .then(() => toast.success('Preset deleted successfully.'))
+      .catch(() => toast.error('Preset could not be deleted.'));
+  };
+
   return (
-    <div
-      // TODO: Disable selecting empty filter presets for now. Remove the disable condition once editing presets is possible
-      className={cx(
-        'flex justify-between pb-1 pr-4 font-semibold',
-        item.Size === 0 && 'pointer-events-none opacity-65',
-      )}
-      key={item.IDs.ID}
-    >
-      <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
-      <span className="text-panel-text-important">{item.Size}</span>
-    </div>
+    <>
+      <div
+        className="flex justify-between pb-1 pr-4 font-semibold"
+        key={item.IDs.ID}
+      >
+        <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
+        <div className="flex gap-4">
+          <span className="text-panel-text-important">{item.Size}</span>
+          <Button
+            onClick={() => setShowConfirmModal(true)}
+            disabled={item.IsLocked}
+            className="text-panel-text-danger"
+            tooltip={item.IsLocked ? '' : 'Delete preset'}
+            tooltipPlace="right"
+          >
+            <Icon path={mdiMinusCircleOutline} size={1} />
+          </Button>
+        </div>
+      </div>
+      <ConfirmationPromptModal
+        show={showConfirmModal}
+        title="Confirm Delete Preset"
+        content={
+          <p>
+            Are you sure you want to delete the preset&nbsp;
+            <span className="font-semibold text-panel-text-important">{item.Name}</span>
+            ?
+          </p>
+        }
+        onConfirm={handleDelete}
+        onClose={() => setShowConfirmModal(false)}
+        confirmText="Delete"
+        confirmButtonType="danger"
+      />
+    </>
   );
 };
 
@@ -62,7 +111,9 @@ const SidePanel = (
 ) => {
   const { activeFilter, activeTab, filterId, onClose, title } = props;
 
-  const subFiltersQuery = useSubFiltersQuery(filterId, activeFilter === filterId);
+  const allFiltersQuery = useFiltersQuery(filterId === -1);
+  const subFiltersQuery = useSubFiltersQuery(filterId, filterId !== -1 && activeFilter === filterId);
+  const filtersQuery = filterId === -1 ? allFiltersQuery : subFiltersQuery;
 
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
@@ -70,14 +121,15 @@ const SidePanel = (
   useEffect(() => () => setSearch(''), []);
 
   const filteredList = useMemo(() => {
-    if (subFiltersQuery.isSuccess) {
-      return subFiltersQuery.data.List.filter(
-        item => (!item.IsDirectory
-          && (debouncedSearch === '' || item.Name?.toLowerCase().includes(debouncedSearch.toLowerCase()))),
+    if (filtersQuery.isSuccess) {
+      return filtersQuery.data.List.filter(
+        item =>
+          !item.IsDirectory
+          && (debouncedSearch === '' || item.Name?.toLowerCase().includes(debouncedSearch.toLowerCase())),
       );
     }
     return [];
-  }, [debouncedSearch, subFiltersQuery.data, subFiltersQuery.isSuccess]);
+  }, [debouncedSearch, filtersQuery]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -96,13 +148,13 @@ const SidePanel = (
         hidden: activeTab !== title || filterId === 0,
       })}
     >
-      {!subFiltersQuery.isSuccess && (
+      {!filtersQuery.isSuccess && (
         <div className="flex grow items-center justify-center">
           <Icon path={mdiLoading} spin size={3} className="text-panel-text-primary" />
         </div>
       )}
 
-      {subFiltersQuery.isSuccess && (
+      {filtersQuery.isSuccess && (
         <>
           <Input
             type="text"
@@ -116,9 +168,13 @@ const SidePanel = (
           <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
             {filteredList.length === 0 && (
               <div className="flex grow items-center justify-center">
-                Your search for&nbsp;
-                <span className="font-semibold text-panel-text-important">{search}</span>
-                &nbsp;returned zero results.
+                {debouncedSearch === '' ? 'No filters available under this directory' : (
+                  <>
+                    Your search for&nbsp;
+                    <span className="font-semibold text-panel-text-important">{search}</span>
+                    &nbsp;returned zero results.
+                  </>
+                )}
               </div>
             )}
 
@@ -150,7 +206,7 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
   const [activeTab, setActiveTab] = useState('Filters');
-  const [activeFilter, setActiveFilter] = useState(0);
+  const [activeFilter, setActiveFilter] = useState(-1);
 
   const onTabChange = (filterId: number, title: string) => {
     setActiveTab(title);
@@ -166,7 +222,7 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
     >
       <div className="flex">
         <div className="flex min-h-96 min-w-32 flex-col gap-y-4 border-r-2 border-panel-border">
-          <TabButton activeTab={activeTab} filterId={0} onTabChange={onTabChange} title="Filters" />
+          <TabButton activeTab={activeTab} filterId={-1} onTabChange={onTabChange} title="Filters" />
           {filters.filter(item => item.IsDirectory)
             .map(item => (
               <TabButton
@@ -186,11 +242,13 @@ const FilterPresetsModal = ({ onClose, show }: Props) => {
         )}
 
         {filtersQuery.isSuccess && activeTab === 'Filters' && (
-          <div className="flex max-h-96 grow flex-col gap-y-1 overflow-y-auto pl-8">
-            {filters.filter(item => !item.IsDirectory).map(item => (
-              <Item key={item.IDs.ID} item={item} onClose={onClose} />
-            ))}
-          </div>
+          <SidePanel
+            filterId={-1}
+            activeFilter={activeFilter}
+            activeTab={activeTab}
+            title="Filters"
+            onClose={onClose}
+          />
         )}
 
         {filtersQuery.isSuccess && activeTab !== 'Filters' && filters

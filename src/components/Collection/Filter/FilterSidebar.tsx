@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { mdiContentSaveOutline, mdiFilterPlusOutline, mdiTrashCanOutline } from '@mdi/js';
-import { keys, map, toNumber, values } from 'lodash';
+import { mdiContentSaveOutline, mdiFilterPlusOutline } from '@mdi/js';
+import { keys, map, values } from 'lodash';
 
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
@@ -12,9 +12,6 @@ import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import Button from '@/components/Input/Button';
 import IconButton from '@/components/Input/IconButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
-import { useDeleteFilterMutation } from '@/core/react-query/filter/mutations';
-import { useFilterQuery } from '@/core/react-query/filter/queries';
 import {
   resetActiveFilter,
   resetFilter,
@@ -22,7 +19,6 @@ import {
   setActiveFilter,
 } from '@/core/slices/collection';
 import { buildSidebarFilter } from '@/core/utilities/filter';
-import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { ButtonType } from '@/components/Input/Button.utils';
 import type { RootState } from '@/core/store';
@@ -63,40 +59,15 @@ type OptionsProps = {
 };
 
 const Options = ({ showCriteriaModal, showSavePresetModal }: OptionsProps) => {
-  const navigate = useNavigateVoid();
   const { filterId } = useParams();
 
   const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
 
-  const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && filterId !== 'live');
-
-  const { mutate: deleteFilter } = useDeleteFilterMutation();
-
   const saveDisabled = filterId !== 'live' || keys(activeCriteriaWithValues).length === 0;
   const saveDisabledReason = filterId !== 'live' ? 'Editing presets is currently unsupported' : '';
 
-  const deleteDisabled = filterId === 'live' || filterQuery.data?.IsLocked;
-  const deleteDisabledReason = filterQuery.data?.IsLocked ? 'System presets cannot be deleted' : '';
-
-  const handleDelete = () => {
-    navigate('/webui/collection');
-    // Without the delay, the webui will try to reload the filter after it's deleted.
-    setTimeout(() =>
-      deleteFilter(filterId!, {
-        onSuccess: () => toast.success('Filter preset deleted successfully!'),
-        onError: () => toast.error('Filter preset could not be deleted!'),
-      }), 100);
-  };
-
   return (
     <div className="flex gap-2">
-      <OptionButton
-        onClick={handleDelete}
-        icon={mdiTrashCanOutline}
-        tooltip={deleteDisabled ? deleteDisabledReason : 'Delete preset'}
-        disabled={deleteDisabled}
-        buttonType="danger"
-      />
       <OptionButton
         onClick={showSavePresetModal}
         icon={mdiContentSaveOutline}
