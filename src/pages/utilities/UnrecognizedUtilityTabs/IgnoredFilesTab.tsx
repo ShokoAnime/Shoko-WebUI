@@ -133,7 +133,7 @@ const IgnoredFilesTab = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(files);
+  } = useRowSelection(files);
 
   return (
     <>
