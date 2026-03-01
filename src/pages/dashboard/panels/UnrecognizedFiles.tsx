@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mdiDatabaseSearchOutline } from '@mdi/js';
+import { mdiBeta, mdiCreation, mdiDatabaseSearchOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import Button from '@/components/Input/Button';
@@ -11,11 +11,13 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
 
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
+  const navigate = useNavigateVoid();
   const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
   const { mutate: rescanFile } = useRescanFileMutation();
   const handleRescan = (id: number) =>
@@ -48,9 +50,23 @@ const FileItem = ({ file }: { file: FileType }) => {
           className="text-panel-icon-action"
           path={mdiDatabaseSearchOutline}
           size={1}
-          horizontal
-          vertical
-          rotate={180}
+        />
+      </Button>
+      <Button
+        tooltip="Link With Providers (β)"
+        className="relative ml-3"
+        onClick={() =>
+          navigate('../utilities/unrecognized/files/link-with-providers', { state: { selectedRows: [file] } })}
+      >
+        <Icon
+          path={mdiCreation}
+          className="text-panel-icon-action"
+          size={1}
+        />
+        <Icon
+          path={mdiBeta}
+          size={0.5}
+          className="text-panel-icon-action absolute -bottom-1 -right-1.5 [paint-order:stroke] [stroke-width:8px] group-odd:stroke-panel-background group-even:stroke-panel-background-alt ease-in-out"
         />
       </Button>
       <AVDumpFileIcon truck file={file} />
