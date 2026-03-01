@@ -7,7 +7,6 @@ import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
 import { reduce, toNumber } from 'lodash';
-import semver from 'semver';
 
 import toast from '@/components/Toast';
 
@@ -26,25 +25,9 @@ enableMapSet();
 
 const { DEV, VITE_APPVERSION, VITE_GITHASH, VITE_MIN_SERVER_VERSION } = import.meta.env;
 
-export function uiVersion() {
-  return DEV ? VITE_GITHASH : VITE_APPVERSION;
-}
-
-export function isDebug() {
-  return DEV;
-}
-
-export const parseServerVersion = (version: string) => {
-  if (semver.valid(version)) return version;
-  const semverVersion = semver.coerce(version)?.raw;
-  const prereleaseVersion = version.split('.').pop();
-
-  if (!semverVersion || !prereleaseVersion) return null;
-
-  return `${semverVersion}-dev.${prereleaseVersion}`;
-};
-
-export const getParsedSupportedServerVersion = () => parseServerVersion(VITE_MIN_SERVER_VERSION)!;
+export const isDebug = () => DEV;
+export const getMinimumServerVersion = () => VITE_MIN_SERVER_VERSION;
+export const getUiVersion = () => (DEV ? VITE_GITHASH : VITE_APPVERSION);
 
 export const formatThousand = (num: number) => formatThousands(num, ',');
 

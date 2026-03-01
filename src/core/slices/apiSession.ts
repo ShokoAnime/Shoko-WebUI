@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { getUiVersion } from '@/core/util';
+
 import type { ApiSessionState } from '@/core/types/api';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-const { VITE_APPVERSION } = import.meta.env;
 
 const apiSessionSlice = createSlice({
   name: 'apiSession',
@@ -11,7 +11,7 @@ const apiSessionSlice = createSlice({
     apikey: '',
     username: '',
     rememberUser: false,
-    version: VITE_APPVERSION,
+    version: getUiVersion(),
   } as ApiSessionState,
   reducers: {
     setDetails(sliceState, action: PayloadAction<ApiSessionState>) {

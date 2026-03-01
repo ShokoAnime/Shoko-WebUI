@@ -1,15 +1,17 @@
 /* global globalThis */
+import { getUiVersion } from '@/core/util';
+
 import type { RootState } from './store';
 import type { ApiSessionState } from '@/core/types/api';
 
-const { VITE_APPVERSION } = import.meta.env;
+const UI_VERSION = getUiVersion();
 
 export const loadState = (): RootState => {
   try {
     const serializedState = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}') as RootState;
 
     // If the version is the same, we can return the state as is from session storage.
-    if (serializedState.apiSession?.version === VITE_APPVERSION) {
+    if (serializedState.apiSession?.version === UI_VERSION) {
       return serializedState;
     }
 
@@ -18,7 +20,7 @@ export const loadState = (): RootState => {
       return {
         apiSession: {
           ...serializedState.apiSession,
-          version: VITE_APPVERSION,
+          version: UI_VERSION,
         },
       } as RootState;
     }
@@ -33,7 +35,7 @@ export const loadState = (): RootState => {
     return {
       apiSession: {
         ...apiSession,
-        version: VITE_APPVERSION,
+        version: UI_VERSION,
       },
     } as RootState;
   } catch (_) {
