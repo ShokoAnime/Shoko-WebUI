@@ -103,9 +103,7 @@ const LoginPage = () => {
     }
 
     if (versionQuery.data.Server.ReleaseChannel !== 'Stable') {
-      return `${versionQuery.data.Server.Version}-${versionQuery.data.Server.ReleaseChannel} (${
-        versionQuery.data.Server.Commit?.slice(0, 7)
-      })`;
+      return `${versionQuery.data.Server.Version} (${versionQuery.data.Server.Commit?.slice(0, 7)})`;
     }
 
     return versionQuery.data.Server.Version;
@@ -118,13 +116,13 @@ const LoginPage = () => {
         position="bottom-right"
         autoClose={4000}
         transition={Slide}
-        className="mt-20 !w-[29.5rem]"
+        className="mt-20 w-118!"
         closeButton={false}
         icon={false}
       />
       <div className="relative flex h-screen w-screen flex-col items-center justify-center gap-y-2">
         {loginError && (
-          <div className="flex w-full max-w-[50rem] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
+          <div className="flex w-full max-w-200 justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
             <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
             <div className="font-semibold text-panel-text-danger">
               Invalid Username or Password. Try again.
@@ -132,7 +130,7 @@ const LoginPage = () => {
           </div>
         )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
-          <div className="flex w-[50rem] flex-row items-center gap-x-6 p-6">
+          <div className="flex w-200 flex-row items-center gap-x-6 p-6">
             <div className="flex w-80 flex-col items-center gap-y-6 py-6">
               <ShokoIcon className="size-32" />
               <div className="flex flex-col gap-y-1 text-center font-semibold">
@@ -238,7 +236,7 @@ const LoginPage = () => {
             <div className="flex gap-x-2">
               <div
                 className={cx(
-                  'flex gap-x-2 items-center font-semibold max-w-[23rem]',
+                  'flex gap-x-2 items-center font-semibold max-w-92',
                   seriesId && 'cursor-pointer text-panel-text-primary',
                 )}
                 onClick={setRedirect}
