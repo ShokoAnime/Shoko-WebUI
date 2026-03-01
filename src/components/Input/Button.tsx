@@ -7,6 +7,7 @@ import cx from 'classnames';
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
 
 type Props = {
+  id?: string;
   buttonType?: string;
   buttonSize?: string;
   className?: string;
@@ -28,6 +29,7 @@ const Button = React.memo(
       children,
       className,
       disabled,
+      id,
       loading,
       loadingSize,
       onClick,
@@ -37,6 +39,7 @@ const Button = React.memo(
     }: Props,
   ) => (
     <button
+      id={id}
       type={submit ? 'submit' : 'button'}
       className={cx([
         className,

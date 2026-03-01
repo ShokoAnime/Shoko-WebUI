@@ -77,7 +77,7 @@ const FirstRunPage = () => {
   };
 
   const saveSettings = async () => {
-    await patchSettings({ newSettings, skipValidation: true });
+    await patchSettings(newSettings);
   };
 
   const parsedVersion = useMemo(() => {
@@ -112,7 +112,7 @@ const FirstRunPage = () => {
             <MenuItem text="AniDB Account" id="anidb-account" />
             <MenuItem text="Metadata Sources" id="metadata-sources" />
             <MenuItem text="Start Server" id="start-server" />
-            <MenuItem text="Import Folders" id="import-folders" />
+            <MenuItem text="Managed Folders" id="managed-folders" />
             <MenuItem text="Data Collection" id="data-collection" />
           </div>
 

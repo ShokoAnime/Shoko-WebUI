@@ -36,7 +36,7 @@ const UpcomingAnime = () => {
     const newSettings = produce(settings, (draftState) => {
       draftState.WebUI_Settings.dashboard.upcomingAnimeView = newTab;
     });
-    patchSettings({ newSettings });
+    patchSettings(newSettings);
   };
 
   return (

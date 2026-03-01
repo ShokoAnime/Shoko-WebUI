@@ -42,7 +42,7 @@ const StartServer = () => {
         rememberUser: false,
       },
       {
-        onSuccess: () => navigate('../import-folders'),
+        onSuccess: () => navigate('../managed-folders'),
       },
     );
   };
@@ -66,7 +66,7 @@ const StartServer = () => {
         <div className="text-xl font-semibold">Start Server</div>
         <div className="text-justify">
           On this page you can try and start the server, startup progress will be reported below. After the startup and
-          database creation process is complete you will be able to setup import folders.
+          database creation process is complete you will be able to setup managed folders.
         </div>
         <div className="flex flex-col">
           <div className="flex gap-x-2">

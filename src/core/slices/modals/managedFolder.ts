@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-const importFolderSlice = createSlice({
-  name: 'importFolder',
+const managedFolderSlice = createSlice({
+  name: 'managedFolder',
   initialState: {
     status: false,
     edit: false,
@@ -23,6 +23,6 @@ const importFolderSlice = createSlice({
   },
 });
 
-export const { setEdit, setStatus } = importFolderSlice.actions;
+export const { setEdit, setStatus } = managedFolderSlice.actions;
 
-export default importFolderSlice.reducer;
+export default managedFolderSlice.reducer;

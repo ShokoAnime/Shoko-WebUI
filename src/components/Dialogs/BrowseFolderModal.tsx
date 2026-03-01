@@ -32,7 +32,7 @@ const BrowseFolderModal = ({ onSelect }: Props) => {
     <ModalPanel
       show={status}
       onRequestClose={() => handleClose()}
-      header="Select Import Folder"
+      header="Select Managed Folder"
       size="sm"
       overlayClassName="!z-[90]"
     >

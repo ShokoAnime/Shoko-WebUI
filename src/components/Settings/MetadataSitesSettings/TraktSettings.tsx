@@ -40,7 +40,7 @@ const TraktSettings = () => {
     ).catch(console.error);
   };
 
-  const handleTraktClear = () => patchSettings({ newSettings: { ...settings, TraktTv: initialSettings.TraktTv } });
+  const handleTraktClear = () => patchSettings({ ...settings, TraktTv: initialSettings.TraktTv });
 
   const handleCopy = () => {
     if (!traktQuery.data?.usercode) return;

@@ -227,7 +227,7 @@ const Collection = () => {
     }
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
-    patchSettings({ newSettings });
+    patchSettings(newSettings);
   };
 
   return (

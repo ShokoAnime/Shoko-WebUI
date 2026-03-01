@@ -16,7 +16,7 @@ import WelcomeModal from '@/pages/dashboard/components/WelcomeModal';
 
 import CollectionStats from './panels/CollectionStats';
 import ContinueWatching from './panels/ContinueWatching';
-import ImportFolders from './panels/ImportFolders';
+import ManagedFolders from './panels/ManagedFolders';
 import MediaType from './panels/MediaType';
 import NextUp from './panels/NextUp';
 import QueueProcessor from './panels/QueueProcessor';
@@ -66,7 +66,7 @@ const DashboardPage = () => {
     combineContinueWatching,
     hideCollectionStats,
     hideContinueWatching,
-    hideImportFolders,
+    hideManagedFolders,
     hideMediaType,
     hideNextUp,
     hideQueueProcessor,
@@ -102,7 +102,7 @@ const DashboardPage = () => {
           : currentLayout,
       );
     });
-    patchSettings({ newSettings }, {
+    patchSettings(newSettings, {
       onSuccess: () => {
         dispatch(setLayoutEditMode(false));
         toast.dismiss('layoutEditMode');
@@ -193,9 +193,9 @@ const DashboardPage = () => {
               <MediaType />
             </div>
           )}
-          {!hideImportFolders && (
-            <div key="importFolders">
-              <ImportFolders />
+          {!hideManagedFolders && (
+            <div key="managedFolders">
+              <ManagedFolders />
             </div>
           )}
           {!hideShokoNews && (

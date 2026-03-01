@@ -32,4 +32,5 @@ export type GroupSizesSeriesTypesType = {
   Web: number;
   Movie: number;
   OVA: number;
+  MusicVideo: number;
 };

@@ -74,6 +74,7 @@ export const enum SeriesTypeEnum {
   Web = 'Web',
   Movie = 'Movie',
   OVA = 'OVA',
+  MusicVideo = 'MusicVideo',
 }
 
 export const enum SeriesRelationTypeEnum {

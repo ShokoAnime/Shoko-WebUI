@@ -1,12 +1,28 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { mdiFolderPlusOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 import { produce } from 'immer';
 
+import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
+import ManagedFolder from '@/components/Settings/ManagedFolder';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
+import { setStatus } from '@/core/slices/modals/managedFolder';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
+import type { ManagedFolderType } from '@/core/types/api/managed-folder';
+
 const ImportSettings = () => {
+  const dispatch = useDispatch();
   const { newSettings, updateSetting } = useSettingsContext();
+  const managedFolderQuery = useManagedFoldersQuery();
+  const managedFolders = managedFolderQuery?.data ?? [] as ManagedFolderType[];
+
+  const handleAddButton = () => {
+    dispatch(setStatus(true));
+  };
 
   const {
     AutomaticallyDeleteDuplicatesOnImport,
@@ -101,6 +117,25 @@ const ImportSettings = () => {
               className="w-64 px-3 py-1"
             />
           </div>
+        </div>
+      </div>
+      <div className="border-b border-panel-border" />
+
+      <div className="mt-0.5 flex flex-col gap-y-6">
+        <div className="flex items-center justify-between">
+          <div className="font-semibold">Managed Folders</div>
+          <Button onClick={handleAddButton} tooltip="Add Folder">
+            <Icon
+              className="text-panel-icon-action"
+              path={mdiFolderPlusOutline}
+              size={0.85}
+            />
+          </Button>
+        </div>
+        <div className="flex flex-col gap-y-1">
+          {managedFolders.map((folder, index) => (
+            <ManagedFolder key={folder.ID} index={index} folder={folder} className="py-4" />
+          ))}
         </div>
       </div>
       <div className="border-b border-panel-border" />
