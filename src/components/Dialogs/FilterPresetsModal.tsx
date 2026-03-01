@@ -1,16 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router';
-import { mdiLoading, mdiMagnify } from '@mdi/js';
+import { Link, useParams } from 'react-router';
+import { mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { useDebounceValue } from 'usehooks-ts';
 
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
+import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import toast from '@/components/Toast';
+import { useDeleteFilterMutation } from '@/core/react-query/filter/mutations';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FilterType } from '@/core/types/api/filter';
 
@@ -35,21 +40,69 @@ const TabButton = (
 };
 
 const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
+  const navigate = useNavigateVoid();
+  const { filterId } = useParams();
+
   const dispatch = useDispatch();
+  const { mutateAsync: deleteFilter } = useDeleteFilterMutation();
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleClose = () => {
     dispatch(resetFilter());
     onClose();
   };
 
+  const handleDelete = async () => {
+    if (filterId === item.IDs.ID.toString()) {
+      navigate('/webui/collection');
+    }
+
+    // Without the delay, the webui will try to reload the filter after it's deleted.
+    await new Promise((resolve) => {
+      setTimeout(resolve, 100);
+    });
+    await deleteFilter(item.IDs.ID.toString())
+      .then(() => toast.success('Preset deleted successfully.'))
+      .catch(() => toast.error('Preset could not be deleted.'));
+  };
+
   return (
-    <div
-      className="flex justify-between pb-1 pr-4 font-semibold"
-      key={item.IDs.ID}
-    >
-      <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
-      <span className="text-panel-text-important">{item.Size}</span>
-    </div>
+    <>
+      <div
+        className="flex justify-between pb-1 pr-4 font-semibold"
+        key={item.IDs.ID}
+      >
+        <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
+        <div className="flex gap-4">
+          <span className="text-panel-text-important">{item.Size}</span>
+          <Button
+            onClick={() => setShowConfirmModal(true)}
+            disabled={item.IsLocked}
+            className="text-panel-text-danger"
+            tooltip={item.IsLocked ? '' : 'Delete preset'}
+            tooltipPlace="right"
+          >
+            <Icon path={mdiMinusCircleOutline} size={1} />
+          </Button>
+        </div>
+      </div>
+      <ConfirmationPromptModal
+        show={showConfirmModal}
+        title="Confirm Delete Preset"
+        content={
+          <p>
+            Are you sure you want to delete the preset&nbsp;
+            <span className="font-semibold text-panel-text-important">{item.Name}</span>
+            ?
+          </p>
+        }
+        onConfirm={handleDelete}
+        onClose={() => setShowConfirmModal(false)}
+        confirmText="Delete"
+        confirmButtonType="danger"
+      />
+    </>
   );
 };
 
@@ -115,9 +168,13 @@ const SidePanel = (
           <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
             {filteredList.length === 0 && (
               <div className="flex grow items-center justify-center">
-                Your search for&nbsp;
-                <span className="font-semibold text-panel-text-important">{search}</span>
-                &nbsp;returned zero results.
+                {debouncedSearch === '' ? 'No filters available under this directory' : (
+                  <>
+                    Your search for&nbsp;
+                    <span className="font-semibold text-panel-text-important">{search}</span>
+                    &nbsp;returned zero results.
+                  </>
+                )}
               </div>
             )}
 
