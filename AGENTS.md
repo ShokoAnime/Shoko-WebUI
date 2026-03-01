@@ -108,6 +108,7 @@ graph TD
 
 ## Agent Guardrails
 
+*   **Type Inference**: Leverage TypeScript's inference capabilities. Do not add explicit type annotations where the compiler can automatically and accurately infer the type.
 *   **Restricted Files**:
     *   Do NOT modify `pnpm-lock.yaml` manually.
     *   Do NOT modify `eslint.config.mjs` or `.dprint.json` unless explicitly tasked to update toolchains.
