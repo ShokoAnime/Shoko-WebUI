@@ -14,7 +14,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { countBy, filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
+import { countBy, filter, find, findIndex, forEach, groupBy, map, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -255,9 +255,17 @@ const LinkFilesTab = () => {
 
   const episodes = useMemo(() => anidbEpisodesQuery?.data ?? [], [anidbEpisodesQuery.data]);
   const orderedLinks = useMemo(() =>
-    orderBy<ManualLink>(links, (item) => {
-      const file = find(selectedRows, ['ID', item.FileID]);
-      return file?.Locations?.[0]?.RelativePath ?? item.FileID;
+    links.toSorted((linkA, linkB) => {
+      let locationA = find(selectedRows, ['ID', linkA.FileID])?.Locations[0]?.RelativePath ?? '';
+      let locationB = find(selectedRows, ['ID', linkB.FileID])?.Locations[0]?.RelativePath ?? '';
+      if (locationA.startsWith('dot')) locationA = `.${locationA.substring(3)}`;
+      if (locationB.startsWith('dot')) locationB = `.${locationA.substring(3)}`;
+
+      return locationA.localeCompare(locationB, 'en-US', {
+        numeric: true,
+        ignorePunctuation: true,
+        sensitivity: 'base',
+      });
     }), [links, selectedRows]);
 
   const episodeOptions = useMemo(() => (
