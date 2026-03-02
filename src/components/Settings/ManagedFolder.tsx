@@ -9,6 +9,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useRescanManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
 import { setEdit } from '@/core/slices/modals/managedFolder';
+import { formatThousand } from '@/core/util';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
@@ -30,20 +31,14 @@ const ManagedFolder = (props: ManagedFolderProps) => {
 
   if (folder.WatchForNewFiles) flags += flags ? ', Watch' : 'Watch';
 
-  const handleRescanButton = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const id = parseInt(event.currentTarget.id.slice(0, -'-rescan'.length), 10);
-    rescanManagedFolder(id, {
+  const handleRescan = () => {
+    rescanManagedFolder(folder.ID, {
       onSuccess: () =>
         toast.success(
           'Scan Managed Folder Success',
           `Managed Folder ${folder.Name} queued for scanning.`,
         ),
     });
-  };
-
-  const handleEditButton = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const id = parseInt(event.currentTarget.id.slice(0, -'-edit'.length), 10);
-    dispatch(setEdit(id));
   };
 
   return (
@@ -54,7 +49,7 @@ const ManagedFolder = (props: ManagedFolderProps) => {
         <div className="mb-3 flex items-center justify-between">
           <span className="font-semibold">{folder.Name}</span>
           <div className="flex gap-2">
-            <Button onClick={handleRescanButton} tooltip="Rescan Folder">
+            <Button onClick={handleRescan} tooltip="Rescan Folder">
               <Icon
                 className="text-panel-icon-action"
                 path={mdiDatabaseSearchOutline}
@@ -64,7 +59,7 @@ const ManagedFolder = (props: ManagedFolderProps) => {
                 rotate={180}
               />
             </Button>
-            <Button onClick={handleEditButton} tooltip="Edit Folder">
+            <Button onClick={() => dispatch(setEdit(folder.ID))} tooltip="Edit Folder">
               <Icon
                 className="text-panel-icon-action"
                 path={mdiDatabaseEditOutline}
@@ -89,7 +84,7 @@ const ManagedFolder = (props: ManagedFolderProps) => {
           <div>
             {prettyBytes(folder.FileSize ?? 0, { binary: true })}
             &nbsp;(
-            {(folder.Size ?? 0).toLocaleString('en-US')}
+            {formatThousand(folder.Size ?? 0)}
             &nbsp;Series)
           </div>
         </div>

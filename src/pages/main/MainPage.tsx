@@ -45,7 +45,7 @@ const MainPage = () => {
         position={toastPosition}
         autoClose={4000}
         transition={Slide}
-        className="mt-32 w-118!"
+        className="mt-36 w-118!"
         closeButton={false}
         icon={false}
       />

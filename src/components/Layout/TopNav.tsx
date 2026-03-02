@@ -44,13 +44,12 @@ import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
+import { getUiVersion, isDebug } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
 import type { RootState } from '@/core/store';
-
-const { DEV, VITE_APPVERSION } = import.meta.env;
 
 const QueueCount = () => {
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
@@ -84,7 +83,7 @@ const TopNav = () => {
 
   const checkWebuiUpdate = useWebuiUpdateCheckQuery(
     { channel: webuiSettings.updateChannel, force: false },
-    !DEV && settingsQuery.isSuccess,
+    !isDebug() && settingsQuery.isSuccess,
   );
   const {
     isPending: isUpdateWebuiPending,
@@ -266,7 +265,7 @@ const TopNav = () => {
                   isHighlighted={layoutEditMode || showDashboardSettingsModal}
                 />
               )}
-              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, VITE_APPVERSION))
+              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, getUiVersion()))
                 || checkWebuiUpdate.isFetching) && !isUpdateWebuiSuccess && (
                 <div
                   className="flex cursor-pointer items-center gap-x-2.5 font-semibold"

@@ -5,7 +5,7 @@ import semver from 'semver';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useVersionQuery } from '@/core/react-query/init/queries';
-import { getParsedSupportedServerVersion, isDebug, parseServerVersion } from '@/core/util';
+import { getMinimumServerVersion, isDebug } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const SentryErrorBoundaryWrapper = () => {
@@ -20,22 +20,16 @@ const SentryErrorBoundaryWrapper = () => {
   useEffect(() => {
     if (isDebug()) return;
 
-    if (!versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
+    if (!versionQuery.isSuccess || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
 
-    const serverData = versionQuery.data?.Server;
-
-    let isServerSupported = true;
-
-    const semverVersion = parseServerVersion(serverData.Version);
-    const minimumVersion = getParsedSupportedServerVersion();
-    if (semverVersion && semver.lt(semverVersion, minimumVersion)) isServerSupported = false;
+    const isServerSupported = semver.gte(versionQuery.data.Server.Version, getMinimumServerVersion());
 
     if (!isServerSupported) {
       navigate('/webui/unsupported');
     } else if (pathname === '/webui/unsupported') {
       navigate('/webui');
     }
-  }, [navigate, pathname, versionQuery.data]);
+  }, [navigate, pathname, versionQuery]);
 
   return (
     <Sentry.ErrorBoundary
