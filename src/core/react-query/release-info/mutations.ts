@@ -11,37 +11,35 @@ import type {
 import type { ReleaseInfoType } from '@/core/types/api/file';
 
 export const useUpdateReleaseInfoSettingsMutation = () =>
-  useMutation({
+  useMutation<void, unknown, UpdateReleaseInfoSettingsType>({
     mutationKey: ['release-info', 'settings'],
-    mutationFn: (settings: UpdateReleaseInfoSettingsType) => axios.post('/ReleaseInfo/Settings', settings),
+    mutationFn: settings => axios.post('/ReleaseInfo/Settings', settings),
     onSuccess: () => invalidateQueries(['release-info', 'summary']),
   });
 
 export const useUpdateManyReleaseInfoProvidersMutation = () =>
-  useMutation({
+  useMutation<void, unknown, UpdateManyReleaseInfoProviderType[]>({
     mutationKey: ['release-info', 'providers'],
-    mutationFn: (providers: UpdateManyReleaseInfoProviderType[]) => axios.post('/ReleaseInfo/Provider', providers),
+    mutationFn: providers => axios.post('/ReleaseInfo/Provider', providers),
     onSuccess: () => invalidateQueries(['release-info', 'providers']),
   });
 
 export const useUpdateReleaseInfoProviderMutation = (providerGuid: string) =>
-  useMutation({
+  useMutation<void, unknown, UpdateOneReleaseInfoProviderType>({
     mutationKey: ['release-info', 'providers', providerGuid],
-    mutationFn: (provider: UpdateOneReleaseInfoProviderType) =>
-      axios.put(`/ReleaseInfo/Provider/${providerGuid}`, provider),
+    mutationFn: provider => axios.put(`/ReleaseInfo/Provider/${providerGuid}`, provider),
     onSuccess: () => invalidateQueries(['release-info', 'providers']),
   });
 
 export const useSubmitReleaseInfoForFileByIdMutation = () =>
-  useMutation({
-    mutationFn: ({ fileId, release }: { fileId: number, release: ReleaseInfoType }) =>
-      axios.post<unknown, void>(`/ReleaseInfo/File/${fileId}`, release),
+  useMutation<void, unknown, { fileId: number, release: ReleaseInfoType }>({
+    mutationFn: ({ fileId, release }) => axios.post(`/ReleaseInfo/File/${fileId}`, release),
   });
 
 export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
-  useMutation({
-    mutationFn: ({ fileId, providerIDs = [] }: { fileId: number, providerIDs?: string[] }) =>
-      axios.post<unknown, ReleaseInfoType | null>(`/ReleaseInfo/File/${fileId}/AutoPreview`, undefined, {
+  useMutation<ReleaseInfoType | null, unknown, { fileId: number, providerIDs?: string[] }>({
+    mutationFn: ({ fileId, providerIDs = [] }) =>
+      axios.post(`/ReleaseInfo/File/${fileId}/AutoPreview`, undefined, {
         params: { providerIDs },
       }),
   });
