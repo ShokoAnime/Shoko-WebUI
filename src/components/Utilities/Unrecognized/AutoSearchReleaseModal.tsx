@@ -153,8 +153,14 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
         </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Cancel</Button>
-        <Button onClick={handleSearch} buttonType="primary" className="px-5 py-2" disabled={!debouncedCanSearch}>
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2" keybinding="Esc">Cancel</Button>
+        <Button
+          onClick={handleSearch}
+          buttonType="primary"
+          className="px-5 py-2"
+          disabled={!debouncedCanSearch}
+          keybinding="Enter"
+        >
           Search
         </Button>
       </div>

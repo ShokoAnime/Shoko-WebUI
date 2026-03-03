@@ -4,6 +4,9 @@ import { useEffect, useEffectEvent } from 'react';
 
 export type KeyboardEventHandler = (event: KeyboardEvent) => void;
 
+// Assume a keyboard is attached if we can detect a "fine" pointer (AKA a non-touch primary pointer).
+export const keybindingsEnabled = window.matchMedia('(pointer: fine)').matches;
+
 function useKeyboardBindings(
   enabled: boolean,
   ...eventHandlers: (
@@ -12,7 +15,7 @@ function useKeyboardBindings(
   )[]
 ): void {
   const onKeyboard = useEffectEvent((event: KeyboardEvent) => {
-    if (!enabled) return;
+    if (!enabled || !keybindingsEnabled) return;
     for (const eHr of eventHandlers) {
       const iterable = Symbol.iterator in eHr
         ? eHr
@@ -38,7 +41,7 @@ function useKeyboardBindings(
   });
 
   useEffect(() => {
-    if (enabled) {
+    if (keybindingsEnabled && enabled) {
       window.addEventListener('keydown', onKeyboard);
     }
     return () => {

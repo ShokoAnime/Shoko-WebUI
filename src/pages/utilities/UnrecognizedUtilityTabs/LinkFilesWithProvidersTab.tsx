@@ -723,21 +723,24 @@ const LinkFilesWithProvidersTab = () => {
                 <MenuButton
                   onClick={openSearchDialog}
                   icon={mdiMagnify}
-                  name="Search for Release Info (S)"
+                  name="Search for Release Info"
+                  keybinding="S"
                   disabled={state.isLoading
                     || !selectedLinks.some(link => link.state === 'pending' || link.state === 'init')}
                 />
                 <MenuButton
                   onClick={openEditDialog}
                   icon={mdiPencil}
-                  name="Edit Release Info (E)"
+                  name="Edit Release Info"
+                  keybinding="E"
                   disabled={state.isLoading
                     || !selectedLinks.some(link => link.state === 'pending' || link.state === 'init')}
                 />
                 <MenuButton
                   onClick={toggleAllSelectedLinks}
                   icon={selectedLinks.length === state.links.length ? mdiSelection : mdiSelectAll}
-                  name={selectedLinks.length === state.links.length ? 'Unselect All (A)' : 'Select All (A)'}
+                  name={selectedLinks.length === state.links.length ? 'Unselect All' : 'Select All'}
+                  keybinding="A"
                   disabled={state.isLoading}
                 />
                 {(selectedLinks.some(link => link.state !== 'searching' && link.state !== 'submitting')
@@ -747,7 +750,8 @@ const LinkFilesWithProvidersTab = () => {
                   <MenuButton
                     onClick={removeLinksFromPage}
                     icon={mdiSelectionRemove}
-                    name={selectedLinks.length > 0 ? 'Remove Selected (D)' : 'Remove Focused (D)'}
+                    name={selectedLinks.length > 0 ? 'Remove Selected' : 'Remove Focused'}
+                    keybinding="D"
                     disabled={state.isLoading}
                   />
                 )}
@@ -755,7 +759,8 @@ const LinkFilesWithProvidersTab = () => {
                   <MenuButton
                     onClick={removeLinksFromSearchQueue}
                     icon={mdiTrayMinus}
-                    name={selectedLinks.length > 0 ? 'Remove from Search Queue (R)' : 'Clear Search Queue (R)'}
+                    name={selectedLinks.length > 0 ? 'Remove from Search Queue' : 'Clear Search Queue'}
+                    keybinding="R"
                     disabled={state.isLoading}
                   />
                 )}
@@ -763,7 +768,8 @@ const LinkFilesWithProvidersTab = () => {
                   <MenuButton
                     onClick={removeLinksFromSubmitQueue}
                     icon={mdiTrayMinus}
-                    name={selectedLinks.length > 0 ? 'Remove from Submit Queue (R)' : 'Clear Submit Queue (R)'}
+                    name={selectedLinks.length > 0 ? 'Remove from Submit Queue' : 'Clear Submit Queue'}
+                    keybinding="R"
                     disabled={state.isLoading}
                   />
                 )}
@@ -771,22 +777,30 @@ const LinkFilesWithProvidersTab = () => {
                   <MenuButton
                     onClick={addLinksToSubmitQueue}
                     icon={mdiTrayPlus}
-                    name="Add to Submit Queue (Q)"
+                    name="Add to Submit Queue"
+                    keybinding="Q"
                     disabled={state.isLoading}
                   />
                 )}
               </div>
               <div className="flex gap-x-3 whitespace-nowrap font-semibold">
-                <Button onClick={handleCancel} buttonType="secondary" className="px-4 py-3" disabled={state.isLoading}>
-                  Cancel (Esc)
+                <Button
+                  onClick={handleCancel}
+                  buttonType="secondary"
+                  className="px-4 py-3"
+                  disabled={state.isLoading}
+                  keybinding="Esc"
+                >
+                  Cancel
                 </Button>
                 <Button
                   onClick={submitPending}
                   buttonType="primary"
                   className="px-4 py-3"
                   disabled={!canSubmit}
+                  keybinding="Enter"
                 >
-                  Submit Pending (Enter)
+                  Submit Pending
                 </Button>
               </div>
             </div>

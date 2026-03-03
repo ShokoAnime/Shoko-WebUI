@@ -57,14 +57,15 @@ const ConfirmationPromptModal = ({
         {children}
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2" keybinding="Esc">
           {cancel}
         </Button>
         <Button
           onClick={handleConfirm}
           buttonType={confirmButtonType}
-          className="px-6 py-2"
+          className="px-5 py-2"
           loading={isConfirmPending}
+          keybinding="Enter"
         >
           {confirm}
         </Button>
