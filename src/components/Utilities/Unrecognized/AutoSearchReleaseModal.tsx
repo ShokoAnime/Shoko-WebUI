@@ -9,7 +9,7 @@ import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import useEventCallback from '@/hooks/useEventCallback';
+import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 
 import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
 import type { DropResult } from '@hello-pangea/dnd';
@@ -23,24 +23,24 @@ type AutoSearchReleaseModalProps = {
 
 const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
   const { onClose, onUpdateProviders, providers: initialProviders, show } = props;
-  const [info, setInfo] = useState<{ show: boolean, provider: ReleaseProviderInfoType | null }>(
-    () => ({ show: false, provider: null }),
+  const [info, setInfo] = useState<{ show: boolean, provider?: ReleaseProviderInfoType | undefined }>(
+    () => ({ show: false }),
   );
   const [providers, setProviders] = useState(() => initialProviders);
   const canSearch = useMemo(() => providers.some(pro => pro.IsEnabled), [providers]);
   const [debouncedCanSearch] = useDebounceValue(canSearch, 100);
 
-  const handleToggleReleaseInfoProvider = useEventCallback(
-    (event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>) => {
-      const id = event.currentTarget.id.slice(0, 36);
-      const { checked } = event.currentTarget;
-      const clonedProviders = cloneDeep(providers);
-      clonedProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
-      setProviders(clonedProviders);
-    },
-  );
+  const handleToggleReleaseInfoProvider = (
+    event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>,
+  ) => {
+    const id = event.currentTarget.id.slice(0, 36);
+    const { checked } = event.currentTarget;
+    const clonedProviders = cloneDeep(providers);
+    clonedProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
+    setProviders(clonedProviders);
+  };
 
-  const handleDrag = useEventCallback((result: DropResult) => {
+  const handleDrag = (result: DropResult) => {
     if (!result.destination || result.destination.index === result.source.index) {
       return;
     }
@@ -52,47 +52,28 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
       clonedProviders[priority].Priority = priority;
     }
     setProviders(clonedProviders);
-  });
+  };
 
-  const handleOpenInfo = useEventCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenInfo = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id.slice(0, -'-info'.length);
     const provider = providers.find(item => item.ID === id)!;
     setInfo({ show: true, provider });
-  });
+  };
 
-  const handleCloseInfo = useEventCallback(() => {
+  const handleCloseInfo = () => {
     setInfo(prev => ({ ...prev, show: false }));
-  });
+  };
 
-  const handleSearch = useEventCallback(() => {
+  const handleSearch = () => {
     if (!canSearch) return;
     onUpdateProviders(providers);
     onClose();
+  };
+
+  useKeyboardBindings(show && !info.show, {
+    Escape: onClose,
+    Enter: handleSearch,
   });
-
-  const onKeyUp = useEventCallback((event: KeyboardEvent) => {
-    if (!show || info.show) return;
-
-    if (event.key === 'Escape') {
-      event.stopPropagation();
-      event.preventDefault();
-      onClose();
-    } else if (event.key === 'Enter') {
-      event.stopPropagation();
-      event.preventDefault();
-      handleSearch();
-    }
-  });
-
-  useEffect(() => {
-    if (show) {
-      window.addEventListener('keydown', onKeyUp);
-    }
-    return () => {
-      if (!show) return;
-      window.removeEventListener('keydown', onKeyUp);
-    };
-  }, [onKeyUp, show]);
 
   useEffect(() => {
     setProviders(initialProviders);

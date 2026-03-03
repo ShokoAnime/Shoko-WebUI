@@ -38,7 +38,7 @@ const Checkbox = memo((props: Props) => {
     readOnly = false,
   } = props;
   const bodyVisible = useBodyVisibleContext();
-  const inputRef = useAutoFocusRef(autoFocus, bodyVisible);
+  const inputRef = useAutoFocusRef(autoFocus && !(disabled || readOnly), bodyVisible);
   const [focused, setFocused] = useState(false);
 
   return (
@@ -60,8 +60,8 @@ const Checkbox = memo((props: Props) => {
         checked={isChecked}
         disabled={disabled}
         readOnly={readOnly}
-        onChange={disabled || readOnly ? undefined : onChange}
-        onClick={disabled || readOnly ? undefined : onClick}
+        onChange={onChange}
+        onClick={onClick}
         className="absolute size-0 overflow-hidden whitespace-nowrap border-0 p-0"
         style={{
           clip: 'rect(0 0 0 0)',

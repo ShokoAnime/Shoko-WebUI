@@ -1,38 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
-import useEventCallback from '@/hooks/useEventCallback';
+import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 
 import type { HashProviderInfoType } from '@/core/types/api/hashing';
 import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
 
 type Props = {
   show: boolean;
-  provider: HashProviderInfoType | ReleaseProviderInfoType | null;
+  provider: HashProviderInfoType | ReleaseProviderInfoType | undefined;
   onClose: () => void;
 };
 
 const ProviderInfoModal = (props: Props) => {
   const { onClose, provider, show } = props;
 
-  const onKeyboard = useEventCallback((event: KeyboardEvent) => {
-    if (!show) return;
-    if (event.key === 'Escape' || event.key === 'Enter') {
-      event.stopPropagation();
-      event.preventDefault();
-      onClose();
-    }
-  });
-
-  useEffect(() => {
-    if (show) {
-      window.addEventListener('keydown', onKeyboard);
-    }
-    return () => {
-      if (!show) return;
-      window.removeEventListener('keydown', onKeyboard);
-    };
-  }, [onKeyboard, show]);
+  useKeyboardBindings(show, { Escape: onClose, Enter: onClose });
 
   return (
     <ModalPanel

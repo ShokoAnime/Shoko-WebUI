@@ -22,15 +22,16 @@ import {
 import { useReleaseInfoProvidersQuery, useReleaseInfoSummaryQuery } from '@/core/react-query/release-info/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { HashProviderInfoType } from '@/core/types/api/hashing';
 import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
 import type { DropResult } from '@hello-pangea/dnd';
 
 const HashingAndReleaseSettings = () => {
-  const [info, setInfo] = useState<{ show: boolean, provider: HashProviderInfoType | ReleaseProviderInfoType | null }>(
-    () => ({ show: false, provider: null }),
+  const [info, setInfo] = useState<
+    { show: boolean, provider?: HashProviderInfoType | ReleaseProviderInfoType | undefined }
+  >(
+    () => ({ show: false }),
   );
   const hashingProviderSummaryQuery = useHashingSummaryQuery();
   const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
@@ -97,7 +98,7 @@ const HashingAndReleaseSettings = () => {
   const unsavedChanges = useMemo(() => JSON.stringify(state) !== JSON.stringify(initialState), [state, initialState]);
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
-  const handleToggleHashingProviderHash = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleHashingProviderHash = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.currentTarget.id.slice(0, 36);
     const sta = cloneDeep(state);
     const provider = sta.hashProviders.find(pro => pro.ID === id);
@@ -116,98 +117,96 @@ const HashingAndReleaseSettings = () => {
 
     sta.noEd2k = sta.hashProviders.length > 0 && !sta.hashProviders.some(pro => pro.EnabledHashTypes.includes('ED2K'));
     setState(sta);
-  });
+  };
 
-  const handleToggleParallelHashing = useEventCallback(() => {
+  const handleToggleParallelHashing = () => {
     const sta = cloneDeep(state);
     sta.hashSummary.ParallelMode = !sta.hashSummary.ParallelMode;
     setState(sta);
-  });
+  };
 
-  const handleToggleReleaseInfoProvider = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleReleaseInfoProvider = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.target.id.slice(0, 36);
     const { checked } = event.target;
     const sta = cloneDeep(state);
     sta.releaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
     setState(sta);
-  });
+  };
 
-  const handleToggleWebuiReleaseInfoProvider = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleWebuiReleaseInfoProvider = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.target.id.slice(0, 36);
     const { checked } = event.target;
     const sta = cloneDeep(state);
     sta.webuiReleaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
     setState(sta);
-  });
+  };
 
-  const handleToggleParallelRelease = useEventCallback(() => {
+  const handleToggleParallelRelease = () => {
     const sta = cloneDeep(state);
     sta.releaseSummary.ParallelMode = !sta.releaseSummary.ParallelMode;
     setState(sta);
-  });
+  };
 
-  const handleDragRelease = useEventCallback((result: DropResult) => {
+  const handleDragRelease = (result: DropResult) => {
     if (!result.destination || result.destination.index === result.source.index || !releaseProvidersQuery.isSuccess) {
       return;
     }
 
-    const sta = cloneDeep(state);
-    const [removed] = sta.releaseProviders.splice(result.source.index, 1);
-    sta.releaseProviders.splice(result.destination.index, 0, removed);
-    for (let priority = 0; priority < sta.releaseProviders.length; priority += 1) {
-      sta.releaseProviders[priority].Priority = priority;
+    const clonedState = cloneDeep(state);
+    const [removed] = clonedState.releaseProviders.splice(result.source.index, 1);
+    clonedState.releaseProviders.splice(result.destination.index, 0, removed);
+    for (let priority = 0; priority < clonedState.releaseProviders.length; priority += 1) {
+      clonedState.releaseProviders[priority].Priority = priority;
     }
-    setState(sta);
-  });
+    setState(clonedState);
+  };
 
-  const handleDragReleaseWebui = useEventCallback((result: DropResult) => {
+  const handleDragReleaseWebui = (result: DropResult) => {
     if (!result.destination || result.destination.index === result.source.index || !releaseProvidersQuery.isSuccess) {
       return;
     }
 
-    const sta = cloneDeep(state);
-    const [removed] = sta.webuiReleaseProviders.splice(result.source.index, 1);
-    sta.webuiReleaseProviders.splice(result.destination.index, 0, removed);
-    for (let priority = 0; priority < sta.webuiReleaseProviders.length; priority += 1) {
-      sta.webuiReleaseProviders[priority].Priority = priority;
+    const clonedState = cloneDeep(state);
+    const [removed] = clonedState.webuiReleaseProviders.splice(result.source.index, 1);
+    clonedState.webuiReleaseProviders.splice(result.destination.index, 0, removed);
+    for (let priority = 0; priority < clonedState.webuiReleaseProviders.length; priority += 1) {
+      clonedState.webuiReleaseProviders[priority].Priority = priority;
     }
-    setState(sta);
-  });
+    setState(clonedState);
+  };
 
-  const handleOpenInfo = useEventCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenInfo = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id.slice(0, -'-info'.length);
     const provider = state.releaseProviders.find(item => item.ID === id)
       ?? state.hashProviders.find(item => item.ID === id)!;
     setInfo({ show: true, provider });
-  });
+  };
 
-  const handleCloseInfo = useEventCallback(() => {
+  const handleCloseInfo = () => {
     setInfo(prev => ({ ...prev, show: false }));
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     setState(cloneDeep(initialState));
-  });
+  };
 
-  const updateWebuiReleaseInfoProviders = useEventCallback(
-    async (providers: ReleaseProviderInfoType[]): Promise<void> => {
-      const settings = cloneDeep(settingsQuery.data);
-      const { enabledReleaseProviders, releaseProviderOrder } = settings.WebUI_Settings.linking;
-      enabledReleaseProviders.length = 0;
-      releaseProviderOrder.length = 0;
+  const updateWebuiReleaseInfoProviders = async (providers: ReleaseProviderInfoType[]): Promise<void> => {
+    const settings = cloneDeep(settingsQuery.data);
+    const { enabledReleaseProviders, releaseProviderOrder } = settings.WebUI_Settings.linking;
+    enabledReleaseProviders.length = 0;
+    releaseProviderOrder.length = 0;
 
-      for (const provider of providers) {
-        releaseProviderOrder.push(provider.ID);
-        if (provider.IsEnabled) {
-          enabledReleaseProviders.push(provider.ID);
-        }
+    for (const provider of providers) {
+      releaseProviderOrder.push(provider.ID);
+      if (provider.IsEnabled) {
+        enabledReleaseProviders.push(provider.ID);
       }
+    }
 
-      await (patchSettings(settings) as unknown as Promise<unknown>);
-    },
-  );
+    await (patchSettings(settings) as unknown as Promise<unknown>);
+  };
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = () => {
     const promises: Promise<unknown>[] = [];
     if (JSON.stringify(initialState.hashSummary) !== JSON.stringify(state.hashSummary)) {
       promises.push(updateHashingSettings(state.hashSummary) as unknown as Promise<unknown>);
@@ -232,7 +231,7 @@ const HashingAndReleaseSettings = () => {
         console.error(error);
         toast.error(`Failed to save settings: ${error}`);
       });
-  });
+  };
 
   useEffect(() => {
     if (!debouncedUnsavedChanges) {

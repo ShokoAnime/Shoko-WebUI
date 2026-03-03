@@ -3,7 +3,7 @@
 /* eslint-disable @stylistic/function-paren-newline -- ESLint and DPrint are fighting about the formatting here. */
 /* eslint-disable @stylistic/comma-dangle -- ESLint and DPrint are fighting about the formatting here. */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
   mdiLoading,
@@ -18,12 +18,12 @@ import {
 import { Icon } from '@mdi/react';
 import { cloneDeep } from 'lodash';
 
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/AutoSearchReleaseModal';
-import ConfirmModal from '@/components/Utilities/Unrecognized/ConfirmModal';
 import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/EditReleaseInfoModal';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
@@ -37,7 +37,7 @@ import { useSeriesAniDbBulkQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
 import { detectShow } from '@/core/utilities/auto-match-logic';
-import useEventCallback from '@/hooks/useEventCallback';
+import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import LinkFilesTabVideo from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTabVideo';
@@ -112,40 +112,38 @@ const LinkFilesWithProvidersTab = () => {
   ).length;
   const submittedCount = state.links.filter(link => link.state === 'submitted').length;
 
-  const scrollToLink = useEventCallback((index: number) => {
+  const scrollToLink = useCallback((index: number) => {
     const { id } = state.links[index] ?? { id: -1 };
     const element = window.document.querySelector(`div[data-video-link-id="${id}"]`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  });
+  }, [state.links]);
 
-  const focusLinks = useEventCallback(
-    (initialIndexes: number[] | ((prev: number[]) => number[]), focusIndex?: number) => {
-      const indexes = typeof initialIndexes === 'function' ? initialIndexes(focusedLinks) : initialIndexes;
-      if (focusIndex != null || indexes.length > 0) {
-        const index = focusIndex ?? indexes[indexes.length - 1];
-        scrollToLink(index);
-      }
-      setFocusedLinks(indexes);
-    },
-  );
+  const focusLinks = (initialIndexes: number[] | ((prev: number[]) => number[]), focusIndex?: number) => {
+    const indexes = typeof initialIndexes === 'function' ? initialIndexes(focusedLinks) : initialIndexes;
+    if (focusIndex != null || indexes.length > 0) {
+      const index = focusIndex ?? indexes[indexes.length - 1];
+      scrollToLink(index);
+    }
+    setFocusedLinks(indexes);
+  };
 
-  const completeLinking = useEventCallback(() => {
+  const completeLinking = useCallback(() => {
     toast.info('Linking complete');
     navigate('/utilities/unrecognized/files', { replace: true });
-  });
+  }, [navigate]);
 
-  const onConfirmed = useEventCallback(() => {
+  const onConfirmed = () => {
     setShouldConfirm(false);
     navigate(-1);
-  });
+  };
 
-  const onConfirmClose = useEventCallback(() => {
+  const onConfirmClose = () => {
     setShouldConfirm(false);
-  });
+  };
 
-  const handleCancel = useEventCallback(() => {
+  const handleCancel = () => {
     if (focusedLinks.length > 0) {
       focusLinks([]);
     } else if (selectedLinks.length > 0) {
@@ -156,9 +154,9 @@ const LinkFilesWithProvidersTab = () => {
     } else {
       onConfirmed();
     }
-  });
+  };
 
-  const submitPending = useEventCallback(() => {
+  const submitPending = () => {
     const links = cloneDeep(state.links);
     for (const link of links) {
       if ((link.state !== 'pending' && link.state !== 'init') || link.release.CrossReferences.length === 0) {
@@ -167,15 +165,15 @@ const LinkFilesWithProvidersTab = () => {
       link.state = 'submit-queue';
     }
     setLoading(prev => ({ ...prev, links }));
-  });
+  };
 
-  const openSearchDialog = useEventCallback(() => {
+  const openSearchDialog = () => {
     if (selectedLinks.length === 0) return;
     const providers = cloneDeep(selectedLinks[0].providers);
     setAuto({ show: true, providers });
-  });
+  };
 
-  const onAutoSearchUpdateProviders = useEventCallback((providers: ReleaseProviderInfoType[]) => {
+  const onAutoSearchUpdateProviders = (providers: ReleaseProviderInfoType[]) => {
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
     for (
@@ -189,22 +187,22 @@ const LinkFilesWithProvidersTab = () => {
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
     lastSelectedLinkIndexRef.current = null;
-  });
+  };
 
-  const onAutoSearchClose = useEventCallback(() => {
+  const onAutoSearchClose = () => {
     setAuto(prev => ({ ...prev, show: false }));
-  });
+  };
 
-  const openEditDialog = useEventCallback(() => {
+  const openEditDialog = () => {
     if (selectedLinks.length === 0) return;
     const links = selectedLinks.filter(lin => lin.state === 'pending' || lin.state === 'init');
     const releases = Object.fromEntries(
       cloneDeep(links.map(link => link.release)).map((release, index) => [links[index].id, release]),
     );
     setEdit({ show: links.length > 0, releases });
-  });
+  };
 
-  const onEditUpdateReleases = useEventCallback((releases: Record<number, ReleaseInfoType>) => {
+  const onEditUpdateReleases = (releases: Record<number, ReleaseInfoType>) => {
     const links = cloneDeep(state.links);
     const entries = Object.entries(releases).map(([id, release]) => [Number(id), release] as const).filter(([id]) =>
       !Number.isNaN(id)
@@ -219,13 +217,13 @@ const LinkFilesWithProvidersTab = () => {
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
     lastSelectedLinkIndexRef.current = null;
-  });
+  };
 
-  const onEditClose = useEventCallback(() => {
+  const onEditClose = () => {
     setEdit(prev => ({ ...prev, show: false }));
-  });
+  };
 
-  const initializeLinks = useEventCallback(
+  const initializeLinks = useCallback(
     (
       files: FileType[],
       enabledReleaseProviders: string[],
@@ -312,9 +310,10 @@ const LinkFilesWithProvidersTab = () => {
 
       setLoading({ links, isLoading: false });
     },
+    [],
   );
 
-  const selectLinks = useEventCallback((selectedId: number, shiftKey = false, setFocus = true, preSelect?: boolean) => {
+  const selectLinks = (selectedId: number, shiftKey = false, setFocus = true, preSelect?: boolean) => {
     try {
       if (Number.isNaN(selectedId)) return;
       const manualLinkIndex = state.links.findIndex(link => link.id === selectedId);
@@ -349,9 +348,9 @@ const LinkFilesWithProvidersTab = () => {
     } catch (error) {
       console.error(error);
     }
-  });
+  };
 
-  const toggleAllSelectedLinks = useEventCallback(() => {
+  const toggleAllSelectedLinks = () => {
     if (selectedLinks.length !== state.links.length) {
       const tempRowSelection: Record<number, boolean> = {};
       for (const link of state.links) {
@@ -361,14 +360,14 @@ const LinkFilesWithProvidersTab = () => {
     } else {
       setLinkSelection({});
     }
-  });
+  };
 
-  const handleSelectLinks = useEventCallback((event: React.MouseEvent<HTMLElement>) => {
+  const handleSelectLinks = (event: React.MouseEvent<HTMLElement>) => {
     const selectedId = parseInt(event.currentTarget.dataset.id ?? '', 10);
     selectLinks(selectedId, event.shiftKey);
-  });
+  };
 
-  const addLinksToSubmitQueue = useEventCallback(() => {
+  const addLinksToSubmitQueue = () => {
     if (selectedLinks.length === 0) return;
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
@@ -380,27 +379,27 @@ const LinkFilesWithProvidersTab = () => {
       link.state = 'submit-queue';
     }
     setLoading(prev => ({ ...prev, links }));
-  });
+  };
 
-  const removeLinksFromSearchQueue = useEventCallback(() => {
+  const removeLinksFromSearchQueue = () => {
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
     for (const link of links.filter(lin => selectedIds.includes(lin.id) && lin.state === 'search-queue')) {
       link.state = 'pending';
     }
     setLoading(prev => ({ ...prev, links }));
-  });
+  };
 
-  const removeLinksFromSubmitQueue = useEventCallback(() => {
+  const removeLinksFromSubmitQueue = () => {
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
     for (const link of links.filter(lin => selectedIds.includes(lin.id) && lin.state === 'submit-queue')) {
       link.state = 'pending';
     }
     setLoading(prev => ({ ...prev, links }));
-  });
+  };
 
-  const removeLinksFromPage = useEventCallback(() => {
+  const removeLinksFromPage = () => {
     // eslint-disable-next-line no-nested-ternary
     const selectedIds = selectedLinks.length > 0
       ? selectedLinks.map(link => link.id)
@@ -414,9 +413,9 @@ const LinkFilesWithProvidersTab = () => {
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
     focusLinks([]);
-  });
+  };
 
-  const searchLink = useEventCallback((link: ManualLink) => {
+  const searchLink = useCallback((link: ManualLink) => {
     const enabledReleaseProviders = link.providers.filter(provider => provider.IsEnabled).map(provider => provider.ID);
     link.state = 'pending';
     if (enabledReleaseProviders.length > 0) {
@@ -482,9 +481,9 @@ const LinkFilesWithProvidersTab = () => {
         return { ...prev, links };
       });
     }
-  });
+  }, [autoLinkPreview]);
 
-  const submitLink = useEventCallback((link: ManualLink) => {
+  const submitLink = useCallback((link: ManualLink) => {
     if (link.release.CrossReferences.length > 0) {
       submitLinkRemote({ fileId: link.file.ID, release: link.release }, {
         onSettled(_, error) {
@@ -511,124 +510,103 @@ const LinkFilesWithProvidersTab = () => {
         return { ...prev, links };
       });
     }
-  });
+  }, [submitLinkRemote]);
 
-  const onKeyboard = useEventCallback((event: KeyboardEvent) => {
-    if (auto.show || edit.show || shouldConfirm) return;
-
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      event.stopPropagation();
-      event.preventDefault();
-      const isUp = event.key === 'ArrowUp';
-      if (focusedLinks.length === 0) {
-        if (selectedLinks.length > 0) {
-          const index = state.links.findIndex(link => link.id === selectedLinks[selectedLinks.length - 1].id);
-          if (index === -1) return;
-          focusLinks([index]);
-        } else {
-          focusLinks(isUp ? [state.links.length - 1] : [0]);
-        }
+  const navigateCursor = (event: KeyboardEvent) => {
+    const isUp = event.key === 'ArrowUp';
+    if (focusedLinks.length === 0) {
+      if (selectedLinks.length > 0) {
+        const index = state.links.findIndex(link => link.id === selectedLinks[selectedLinks.length - 1].id);
+        if (index === -1) return;
+        focusLinks([index]);
       } else {
-        const currentIndex = isUp
-          ? focusedLinks.reduceRight(
-            (cur, nex) => (nex === cur - 1 ? nex : cur),
-            focusedLinks[focusedLinks.length - 1] + 1,
-          )
-          : focusedLinks.reduce((cur, nex) => (nex === cur + 1 ? nex : cur), focusedLinks[0] - 1);
-        let nextIndex = currentIndex;
-        if (event.shiftKey || focusedLinks.length === 1) nextIndex += isUp ? -1 : +1;
-        if (nextIndex < 0) nextIndex = state.links.length - 1;
-        else if (nextIndex >= state.links.length) nextIndex = 0;
-        if (event.shiftKey) {
-          if (!focusedLinks.includes(nextIndex)) {
-            focusLinks(prev => [nextIndex, ...prev].sort((indexA, indexB) => indexA - indexB), nextIndex);
-          }
-        } else {
-          focusLinks([nextIndex], nextIndex);
-        }
+        focusLinks(isUp ? [state.links.length - 1] : [0]);
       }
-    } else if (event.key === 'PageUp' || event.key === 'PageDown') {
-      event.stopPropagation();
-      event.preventDefault();
-      const isUp = event.key === 'PageUp';
-      const nextIndex = isUp ? 0 : state.links.length - 1;
-      if (focusedLinks.length > 0 && event.shiftKey) {
-        const currentIndex = isUp
-          ? focusedLinks[0]
-          : focusedLinks[focusedLinks.length - 1];
-        const fromIndex = Math.min(currentIndex, nextIndex);
-        const toIndex = Math.max(currentIndex, nextIndex);
-        const range = Array.from({ length: toIndex - fromIndex + 1 }, (_, index) => fromIndex + index);
-        focusLinks(range, nextIndex);
+    } else {
+      const currentIndex = isUp
+        ? focusedLinks.reduceRight(
+          (cur, nex) => (nex === cur - 1 ? nex : cur),
+          focusedLinks[focusedLinks.length - 1] + 1,
+        )
+        : focusedLinks.reduce((cur, nex) => (nex === cur + 1 ? nex : cur), focusedLinks[0] - 1);
+      let nextIndex = currentIndex;
+      if (event.shiftKey || focusedLinks.length === 1) nextIndex += isUp ? -1 : +1;
+      if (nextIndex < 0) nextIndex = state.links.length - 1;
+      else if (nextIndex >= state.links.length) nextIndex = 0;
+      if (event.shiftKey) {
+        if (!focusedLinks.includes(nextIndex)) {
+          focusLinks(prev => [nextIndex, ...prev].sort((indexA, indexB) => indexA - indexB), nextIndex);
+        }
       } else {
         focusLinks([nextIndex], nextIndex);
       }
-    } else if (event.key === ' ') {
-      event.stopPropagation();
-      event.preventDefault();
-      if (focusedLinks.length === 0) {
-        if (selectedLinks.length === 0) {
-          focusLinks([0], 0);
-        } else {
-          const index = state.links.findIndex(link => link.id === selectedLinks[selectedLinks.length - 1].id);
-          if (index === -1) return;
-          focusLinks([index], index);
-        }
+    }
+  };
+
+  const navigatePage = (event: KeyboardEvent) => {
+    const isUp = event.key === 'PageUp';
+    const nextIndex = isUp ? 0 : state.links.length - 1;
+    if (focusedLinks.length > 0 && event.shiftKey) {
+      const currentIndex = isUp
+        ? focusedLinks[0]
+        : focusedLinks[focusedLinks.length - 1];
+      const fromIndex = Math.min(currentIndex, nextIndex);
+      const toIndex = Math.max(currentIndex, nextIndex);
+      const range = Array.from({ length: toIndex - fromIndex + 1 }, (_, index) => fromIndex + index);
+      focusLinks(range, nextIndex);
+    } else {
+      focusLinks([nextIndex], nextIndex);
+    }
+  };
+
+  const toggleFocused = () => {
+    if (focusedLinks.length === 0) {
+      if (selectedLinks.length === 0) {
+        focusLinks([0], 0);
       } else {
-        const isFocused = selectedLinkDict[state.links[focusedLinks[focusedLinks.length - 1]].id] ?? false;
-        for (const index of focusedLinks) {
-          selectLinks(state.links[index].id, false, false, !isFocused);
-        }
+        const index = state.links.findIndex(link => link.id === selectedLinks[selectedLinks.length - 1].id);
+        if (index === -1) return;
+        focusLinks([index], index);
       }
-    } else if (
-      (event.key === 'd' || event.key === 'Delete' || event.key === 'Backspace') && !event.altKey && !event.metaKey
-      && !event.shiftKey
-    ) {
-      event.stopPropagation();
-      event.preventDefault();
-      if (selectedLinks.length > 0 || focusedLinks.length > 0) {
-        removeLinksFromPage();
+    } else {
+      const isFocused = selectedLinkDict[state.links[focusedLinks[focusedLinks.length - 1]].id] ?? false;
+      for (const index of focusedLinks) {
+        selectLinks(state.links[index].id, false, false, !isFocused);
       }
-    } else if (event.key === 'q' && !event.altKey && !event.metaKey && !event.shiftKey) {
-      event.stopPropagation();
-      event.preventDefault();
-      addLinksToSubmitQueue();
-    } else if (event.key === 'r' && !event.altKey && !event.metaKey && !event.shiftKey) {
-      event.stopPropagation();
-      event.preventDefault();
+    }
+  };
+
+  const deleteSelected = () => {
+    if (selectedLinks.length > 0 || focusedLinks.length > 0) {
+      removeLinksFromPage();
+    }
+  };
+
+  useKeyboardBindings(!(auto.show || edit.show || shouldConfirm), {
+    ' ': toggleFocused,
+    d: deleteSelected,
+    Delete: deleteSelected,
+    Backspace: deleteSelected,
+    q: addLinksToSubmitQueue,
+    r: () => {
       removeLinksFromSubmitQueue();
       removeLinksFromSearchQueue();
-    } else if (event.key === 'a' && !event.altKey && !event.metaKey && !event.shiftKey) {
-      event.stopPropagation();
-      event.preventDefault();
-      toggleAllSelectedLinks();
-    } else if (event.key === 's' && !event.altKey && !event.metaKey && !event.shiftKey) {
-      event.stopPropagation();
-      event.preventDefault();
-      openSearchDialog();
-    } else if (event.key === 'e' && !event.altKey && !event.metaKey && !event.shiftKey) {
-      event.stopPropagation();
-      event.preventDefault();
-      openEditDialog();
-    } else if (event.key === 'Escape') {
-      event.stopPropagation();
-      event.preventDefault();
-      handleCancel();
-    } else if (event.key === 'Enter') {
-      event.stopPropagation();
-      event.preventDefault();
+    },
+    a: toggleAllSelectedLinks,
+    s: openSearchDialog,
+    e: openEditDialog,
+    Escape: handleCancel,
+    Enter: () => {
       if (canSubmit) {
         submitPending();
       }
-    }
-  });
-
-  useEffect(() => {
-    window.addEventListener('keydown', onKeyboard);
-    return () => {
-      window.removeEventListener('keydown', onKeyboard);
-    };
-  }, [onKeyboard]);
+    },
+  }, [
+    [{ key: 'ArrowUp' }, navigateCursor],
+    [{ key: 'ArrowDown' }, navigateCursor],
+    [{ key: 'PageUp' }, navigatePage],
+    [{ key: 'PageDown' }, navigatePage],
+  ]);
 
   useEffect(() => {
     if (!state.isLoading) {
@@ -850,7 +828,7 @@ const LinkFilesWithProvidersTab = () => {
         onClose={onEditClose}
         onUpdateReleases={onEditUpdateReleases}
       />
-      <ConfirmModal
+      <ConfirmationPromptModal
         title="Abort linking"
         confirm="Yes"
         cancel="No"
@@ -859,7 +837,7 @@ const LinkFilesWithProvidersTab = () => {
         show={shouldConfirm}
       >
         Are you sure you want to abort the linking with unsubmitted changes?
-      </ConfirmModal>
+      </ConfirmationPromptModal>
     </>
   );
 };

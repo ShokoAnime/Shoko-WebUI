@@ -29,13 +29,13 @@ const TabPills = (props: TabPillsProps) => {
           className={cx(
             'whitespace-nowrap group relative min-w-0 grow overflow-hidden shrink-0 px-4 py-4 text-center text-sm font-medium focus:z-10',
             tab.current
-              ? '!bg-panel-toggle-background text-panel-toggle-text'
+              ? 'bg-panel-toggle-background! text-panel-toggle-text'
               : 'bg-panel-background hover:bg-panel-toggle-background-hover text-panel-toggle-text-alt',
             tabIdx === 0 ? 'rounded-l-lg' : '',
             tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
           )}
         >
-          <span>{tab.name}</span>
+          {tab.name}
         </button>
       ))}
     </nav>

@@ -18,7 +18,18 @@ export type LinkFilesTabVideoProps = {
   focusedLink: boolean;
 };
 
-function parseProviderName(providerName: string, state: ManualLink['state'] | 'can-submit'): React.ReactNode {
+const notSelectedLinkStateClasses: Record<ManualLink['state'] | 'can-submit', string> = {
+  init: 'bg-panel-background cursor-pointer',
+  pending: 'bg-panel-background cursor-pointer',
+  'can-submit': 'bg-panel-background-alt cursor-pointer',
+  'search-queue': 'opacity-65 bg-panel-background-alt cursor-pointer animate-pulse',
+  searching: 'bg-panel-background-alt cursor-progress',
+  'submit-queue': 'opacity-65 bg-panel-background-alt cursor-wait',
+  submitting: 'bg-panel-background-alt cursor-progress',
+  submitted: 'bg-panel-background',
+};
+
+function parseProviderName(providerName: string, state: ManualLink['state'] | 'can-submit') {
   if (providerName === 'User' || state === 'search-queue' || state === 'searching') {
     return null;
   }
@@ -37,7 +48,7 @@ function parseProviderName(providerName: string, state: ManualLink['state'] | 'c
   );
 }
 
-function parseLinkState(state: ManualLink['state'] | 'can-submit'): React.ReactNode {
+function parseLinkState(state: ManualLink['state'] | 'can-submit') {
   switch (state) {
     case 'can-submit':
       return (
@@ -148,20 +159,8 @@ const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => 
       className={cx(
         'col-start-1 flex w-full flex-col gap-y-2 rounded-lg p-4 border leading-5 transition-colors',
         border,
-        isSelected && !(linkState === 'submitting' || linkState === 'searching' || linkState === 'submitted')
-          && 'bg-panel-background-selected-row cursor-pointer',
-        isSelected && (linkState === 'submitting' || linkState === 'searching')
-          && 'bg-panel-background-selected-row cursor-pointer',
-        isSelected && linkState === 'submitted' && 'bg-panel-background-selected-row cursor-pointer',
-        !isSelected && linkState === 'init' && 'bg-panel-background cursor-pointer',
-        !isSelected && linkState === 'pending' && 'bg-panel-background cursor-pointer',
-        !isSelected && linkState === 'can-submit' && 'bg-panel-background-alt cursor-pointer',
-        !isSelected && linkState === 'search-queue'
-          && 'opacity-65 bg-panel-background-alt cursor-pointer animate-pulse',
-        !isSelected && linkState === 'searching' && 'bg-panel-background-alt cursor-progress',
-        !isSelected && linkState === 'submit-queue' && 'opacity-65 bg-panel-background-alt cursor-wait',
-        !isSelected && linkState === 'submitting' && 'bg-panel-background-alt cursor-progress',
-        !isSelected && linkState === 'submitted' && 'bg-panel-background',
+        isSelected && 'bg-panel-background-selected-row cursor-pointer',
+        !isSelected && notSelectedLinkStateClasses[linkState],
       )}
       onClick={selectLink}
       data-id={link.id}

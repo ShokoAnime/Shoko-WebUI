@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { cloneDeep } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import useEventCallback from '@/hooks/useEventCallback';
+import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 
 import type { ReleaseInfoType } from '@/core/types/api/file';
 
@@ -25,33 +25,13 @@ const EditReleaseInfoModal = (props: EditReleasesModalProps): React.JSX.Element 
   ]);
   const [debouncedCanSave] = useDebounceValue(canSave, 100);
 
-  const handleSave = useEventCallback(() => {
+  const handleSave = useCallback(() => {
     if (!canSave) return;
     onUpdateReleases(releases);
     onClose();
-  });
+  }, [canSave, onClose, onUpdateReleases, releases]);
 
-  const onKeyUp = useEventCallback((event: KeyboardEvent) => {
-    if (!show) return;
-    event.stopPropagation();
-    event.preventDefault();
-
-    if (event.key === 'Escape') {
-      onClose();
-    } else if (event.key === 'Enter') {
-      handleSave();
-    }
-  });
-
-  useEffect(() => {
-    if (show) {
-      window.addEventListener('keydown', onKeyUp);
-    }
-    return () => {
-      if (!show) return;
-      window.removeEventListener('keydown', onKeyUp);
-    };
-  }, [onKeyUp, show]);
+  useKeyboardBindings(show, { Escape: onClose, Enter: handleSave });
 
   useEffect(() => {
     setReleases(cloneDeep(initialReleases));
