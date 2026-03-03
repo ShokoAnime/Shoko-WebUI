@@ -2,6 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 
 export type TabType = {
+  id: string;
   name: React.ReactNode;
   onClick: () => void;
   current: boolean;
@@ -20,8 +21,7 @@ const TabPills = (props: TabPillsProps) => {
     >
       {tabs.map((tab, tabIdx) => (
         <button
-          // eslint-disable-next-line react/no-array-index-key
-          key={`tab-${tabIdx}`}
+          key={tab.id}
           type="button"
           onClick={tab.onClick}
           disabled={tab.current || tabs.length <= 1}

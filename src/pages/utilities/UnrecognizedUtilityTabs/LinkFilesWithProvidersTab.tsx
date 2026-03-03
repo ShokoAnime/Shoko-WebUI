@@ -62,8 +62,6 @@ const generateLinkID = () => {
   return lastLinkId;
 };
 
-const linkIdSelector = (link: ManualLink) => link.id;
-
 const LinkFilesWithProvidersTab = () => {
   const { selectedRows } = (useLocation().state ?? { selectedRows: [] }) as { selectedRows: FileType[] };
   const [state, setLoading] = useState({
@@ -75,7 +73,7 @@ const LinkFilesWithProvidersTab = () => {
     rowSelection: selectedLinkDict,
     selectedRows: selectedLinks,
     setRowSelection: setLinkSelection,
-  } = useRowSelection(state.links, linkIdSelector);
+  } = useRowSelection(state.links);
   const episodeIds = useMemo(
     () =>
       Array.from(new Set(state.links.flatMap(link => link.release.CrossReferences.map(xref => xref.AnidbEpisodeID)))),
@@ -543,7 +541,7 @@ const LinkFilesWithProvidersTab = () => {
     }
   };
 
-  const navigatePage = (event: KeyboardEvent) => {
+  const navigateCursorToBoundary = (event: KeyboardEvent) => {
     const isUp = event.key === 'PageUp';
     const nextIndex = isUp ? 0 : state.links.length - 1;
     if (focusedLinks.length > 0 && event.shiftKey) {
@@ -576,7 +574,7 @@ const LinkFilesWithProvidersTab = () => {
     }
   };
 
-  const deleteSelected = () => {
+  const deleteSelectedOrFocused = () => {
     if (selectedLinks.length > 0 || focusedLinks.length > 0) {
       removeLinksFromPage();
     }
@@ -584,9 +582,9 @@ const LinkFilesWithProvidersTab = () => {
 
   useKeyboardBindings(!(auto.show || edit.show || shouldConfirm), {
     ' ': toggleFocused,
-    d: deleteSelected,
-    Delete: deleteSelected,
-    Backspace: deleteSelected,
+    d: deleteSelectedOrFocused,
+    Delete: deleteSelectedOrFocused,
+    Backspace: deleteSelectedOrFocused,
     q: addLinksToSubmitQueue,
     r: () => {
       removeLinksFromSubmitQueue();
@@ -604,8 +602,8 @@ const LinkFilesWithProvidersTab = () => {
   }, [
     [{ key: 'ArrowUp' }, navigateCursor],
     [{ key: 'ArrowDown' }, navigateCursor],
-    [{ key: 'PageUp' }, navigatePage],
-    [{ key: 'PageDown' }, navigatePage],
+    [{ key: 'PageUp' }, navigateCursorToBoundary],
+    [{ key: 'PageDown' }, navigateCursorToBoundary],
   ]);
 
   useEffect(() => {

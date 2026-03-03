@@ -287,10 +287,16 @@ const HashingAndReleaseSettings = () => {
 
         <TabPills
           tabs={[{
+            id: 'sequential',
             name: 'Sequential Mode',
             current: !state.hashSummary.ParallelMode,
             onClick: handleToggleParallelHashing,
-          }, { name: 'Parallel Mode', current: state.hashSummary.ParallelMode, onClick: handleToggleParallelHashing }]}
+          }, {
+            id: 'parallel',
+            name: 'Parallel Mode',
+            current: state.hashSummary.ParallelMode,
+            onClick: handleToggleParallelHashing,
+          }]}
         />
 
         <div className="flex flex-row gap-x-1">
@@ -380,10 +386,12 @@ const HashingAndReleaseSettings = () => {
 
         <TabPills
           tabs={[{
+            id: 'sequential',
             name: 'Sequential Mode',
             current: !state.releaseSummary.ParallelMode,
             onClick: handleToggleParallelRelease,
           }, {
+            id: 'parallel',
             name: 'Parallel Mode',
             current: state.releaseSummary.ParallelMode,
             onClick: handleToggleParallelRelease,

@@ -50,7 +50,7 @@ import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
+import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -315,7 +315,7 @@ const UnrecognizedTab = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection(files, fileIdSelector);
+  } = useRowSelection(files);
 
   const isAvdumpFinished = useMemo(
     () => (selectedRows.length > 0
