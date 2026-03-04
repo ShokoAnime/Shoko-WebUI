@@ -23,7 +23,7 @@ type AutoSearchReleaseModalProps = {
 
 const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
   const { onClose, onUpdateProviders, providers: initialProviders, show } = props;
-  const [info, setInfo] = useState<{ show: boolean, provider?: ReleaseProviderInfoType | undefined }>(
+  const [info, setInfo] = useState<{ show: boolean, provider?: ReleaseProviderInfoType }>(
     () => ({ show: false }),
   );
   const [providers, setProviders] = useState(() => initialProviders);
@@ -36,7 +36,7 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
     const id = event.currentTarget.id.slice(0, 36);
     const { checked } = event.currentTarget;
     const clonedProviders = cloneDeep(providers);
-    clonedProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
+    clonedProviders.find(provider => provider.ID === id)!.IsEnabled = checked;
     setProviders(clonedProviders);
   };
 

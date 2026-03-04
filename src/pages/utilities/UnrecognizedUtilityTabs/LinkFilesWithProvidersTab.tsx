@@ -1,8 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-continue */
-/* eslint-disable @stylistic/function-paren-newline -- ESLint and DPrint are fighting about the formatting here. */
-/* eslint-disable @stylistic/comma-dangle -- ESLint and DPrint are fighting about the formatting here. */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
@@ -104,9 +99,11 @@ const LinkFilesWithProvidersTab = () => {
   const anyLinks = selectedLinks.length > 0 ? selectedLinks : state.links;
   const canSubmit = !state.isLoading && state.links.length > 0
     && state.links.some(link => link.state === 'pending' && link.release.CrossReferences.length > 0);
-  const submitCount = state.links.filter(link =>
-    link.state === 'submitting' || link.state === 'submit-queue'
-    || (link.state === 'pending' && link.release.CrossReferences.length > 0)
+  const submitCount = state.links.filter(
+    link =>
+      link.state === 'submitting'
+      || link.state === 'submit-queue'
+      || (link.state === 'pending' && link.release.CrossReferences.length > 0),
   ).length;
   const submittedCount = state.links.filter(link => link.state === 'submitted').length;
 
@@ -133,7 +130,6 @@ const LinkFilesWithProvidersTab = () => {
   }, [navigate]);
 
   const onConfirmed = () => {
-    setShouldConfirm(false);
     navigate(-1);
   };
 
@@ -157,10 +153,14 @@ const LinkFilesWithProvidersTab = () => {
   const submitPending = () => {
     const links = cloneDeep(state.links);
     for (const link of links) {
-      if ((link.state !== 'pending' && link.state !== 'init') || link.release.CrossReferences.length === 0) {
-        continue;
+      if (
+        link.release.CrossReferences.length > 0 && (
+          link.state === 'pending'
+          || link.state === 'init'
+        )
+      ) {
+        link.state = 'submit-queue';
       }
-      link.state = 'submit-queue';
     }
     setLoading(prev => ({ ...prev, links }));
   };
@@ -175,12 +175,12 @@ const LinkFilesWithProvidersTab = () => {
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
     for (
-      const link of links.filter(lin =>
-        selectedIds.includes(lin.id) && (lin.state === 'pending' || lin.state === 'init')
-      )
+      const link of links
     ) {
-      link.providers = cloneDeep(providers);
-      link.state = 'search-queue';
+      if (selectedIds.includes(link.id) && (link.state === 'pending' || link.state === 'init')) {
+        link.providers = cloneDeep(providers);
+        link.state = 'search-queue';
+      }
     }
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
@@ -202,15 +202,14 @@ const LinkFilesWithProvidersTab = () => {
 
   const onEditUpdateReleases = (releases: Record<number, ReleaseInfoType>) => {
     const links = cloneDeep(state.links);
-    const entries = Object.entries(releases).map(([id, release]) => [Number(id), release] as const).filter(([id]) =>
-      !Number.isNaN(id)
-    );
+    const entries = Object.entries(releases)
+      .map(([id, release]) => [Number(id), release] as const).filter(([id]) => !Number.isNaN(id));
     for (const [linkId, release] of entries) {
       const link = links.find(lin => lin.id === linkId);
-      if (!link) continue;
-
-      link.release = release;
-      link.state = 'pending';
+      if (link) {
+        link.release = release;
+        link.state = 'pending';
+      }
     }
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
@@ -242,27 +241,19 @@ const LinkFilesWithProvidersTab = () => {
           });
         })
       ) {
+        const now = new Date().toISOString();
         const release: ReleaseInfoType = {
-          ID: null,
-          ReleaseURI: null,
-          MediaInfo: null,
-          OriginalFilename: file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? null,
+          OriginalFilename: file.Locations?.[0].RelativePath.split(/[/\\]/g).pop(),
           ProviderName: 'User',
           Version: 1,
           Source: ReleaseSource.Unknown,
-          Comment: null,
           CrossReferences: [],
           FileSize: file.Size,
           Hashes: file.Hashes,
-          IsChaptered: null,
-          IsCensored: null,
-          IsCreditless: null,
           IsCorrupted: false,
-          Group: null,
-          Metadata: null,
           Released: file.MediaInfo?.Encoded?.slice(0, 10) ?? file.Created?.slice(0, 10),
-          Created: new Date().toISOString(),
-          Updated: new Date().toISOString(),
+          Created: now,
+          Updated: now,
         };
         const providers = releaseProviders
           .sort((providerA, providerB) => {
@@ -370,11 +361,11 @@ const LinkFilesWithProvidersTab = () => {
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
     for (
-      const link of links.filter(lin =>
-        selectedIds.includes(lin.id) && lin.state === 'pending' && lin.release.CrossReferences.length > 0
-      )
+      const link of links
     ) {
-      link.state = 'submit-queue';
+      if (selectedIds.includes(link.id) && link.state === 'pending' && link.release.CrossReferences.length > 0) {
+        link.state = 'submit-queue';
+      }
     }
     setLoading(prev => ({ ...prev, links }));
   };
@@ -404,16 +395,16 @@ const LinkFilesWithProvidersTab = () => {
       : focusedLinks.length > 0
       ? focusedLinks.map(index => state.links[index].id)
       : [];
-    const links = cloneDeep(state.links).filter(lin =>
-      lin.state === 'searching' || lin.state === 'submitting' || !selectedIds.includes(lin.id)
-    );
+    const links = cloneDeep(state.links)
+      .filter(link => link.state === 'searching' || link.state === 'submitting' || !selectedIds.includes(link.id));
     lastSelectedLinkIndexRef.current = null;
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
     focusLinks([]);
   };
 
-  const searchLink = useCallback((link: ManualLink) => {
+  const searchLink = useCallback((originalLink: ManualLink) => {
+    const link = cloneDeep(originalLink);
     const enabledReleaseProviders = link.providers.filter(provider => provider.IsEnabled).map(provider => provider.ID);
     link.state = 'pending';
     if (enabledReleaseProviders.length > 0) {
@@ -481,7 +472,8 @@ const LinkFilesWithProvidersTab = () => {
     }
   }, [autoLinkPreview]);
 
-  const submitLink = useCallback((link: ManualLink) => {
+  const submitLink = useCallback((originalLink: ManualLink) => {
+    const link = cloneDeep(originalLink);
     if (link.release.CrossReferences.length > 0) {
       submitLinkRemote({ fileId: link.file.ID, release: link.release }, {
         onSettled(_, error) {
@@ -618,7 +610,7 @@ const LinkFilesWithProvidersTab = () => {
       ) {
         const firstWaiting = links.find(link => link.state === 'search-queue')!;
         firstWaiting.state = 'searching';
-        searchLink(cloneDeep(firstWaiting));
+        searchLink(firstWaiting);
       }
 
       if (
@@ -627,7 +619,7 @@ const LinkFilesWithProvidersTab = () => {
       ) {
         const firstWaiting = links.findIndex(link => link.state === 'submit-queue');
         links[firstWaiting].state = 'submitting';
-        submitLink(cloneDeep(links[firstWaiting]));
+        submitLink(links[firstWaiting]);
         if (!focusedLinks.length) {
           scrollToLink(firstWaiting);
         }
@@ -743,10 +735,14 @@ const LinkFilesWithProvidersTab = () => {
                   keybinding="A"
                   disabled={state.isLoading}
                 />
-                {(selectedLinks.some(link => link.state !== 'searching' && link.state !== 'submitting')
+                {(
+                  selectedLinks.some(link => link.state !== 'searching' && link.state !== 'submitting')
                   || focusedLinks.some(index =>
+                    // eslint-disable-next-line @stylistic/comma-dangle
                     state.links[index].state !== 'searching' && state.links[index].state !== 'submitting'
-                  )) && (
+                    // eslint-disable-next-line @stylistic/function-paren-newline
+                  )
+                ) && (
                   <MenuButton
                     onClick={removeLinksFromPage}
                     icon={mdiSelectionRemove}
@@ -842,8 +838,8 @@ const LinkFilesWithProvidersTab = () => {
       />
       <ConfirmationPromptModal
         title="Abort linking"
-        confirm="Yes"
-        cancel="No"
+        confirmText="Yes"
+        cancelText="No"
         onClose={onConfirmClose}
         onConfirm={onConfirmed}
         show={shouldConfirm}

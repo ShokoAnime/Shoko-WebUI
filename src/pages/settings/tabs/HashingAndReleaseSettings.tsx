@@ -28,10 +28,9 @@ import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
 import type { DropResult } from '@hello-pangea/dnd';
 
 const HashingAndReleaseSettings = () => {
-  const [info, setInfo] = useState<
-    { show: boolean, provider?: HashProviderInfoType | ReleaseProviderInfoType | undefined }
-  >(
-    () => ({ show: false }),
+  const [infoShow, setInfoShow] = useState(false);
+  const [infoProvider, setInfoProvider] = useState<HashProviderInfoType | ReleaseProviderInfoType | undefined>(
+    undefined,
   );
   const hashingProviderSummaryQuery = useHashingSummaryQuery();
   const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
@@ -100,51 +99,53 @@ const HashingAndReleaseSettings = () => {
 
   const handleToggleHashingProviderHash = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.currentTarget.id.slice(0, 36);
-    const sta = cloneDeep(state);
-    const provider = sta.hashProviders.find(pro => pro.ID === id);
+    const clonedState = cloneDeep(state);
+    const provider = clonedState.hashProviders.find(pro => pro.ID === id);
     if (!provider) return;
     const hash = event.currentTarget.id.slice(37);
     if (provider.EnabledHashTypes.includes(hash)) {
       provider.EnabledHashTypes.splice(provider.EnabledHashTypes.indexOf(hash), 1);
     } else provider.EnabledHashTypes.push(hash);
 
-    const otherProviders = sta.hashProviders.filter(pro => pro.EnabledHashTypes.includes(hash) && pro.ID !== id);
+    const otherProviders = clonedState.hashProviders
+      .filter(otherProvider => otherProvider.EnabledHashTypes.includes(hash) && otherProvider.ID !== id);
     if (otherProviders.length > 0) {
       for (const pro of otherProviders) {
         pro.EnabledHashTypes.splice(pro.EnabledHashTypes.indexOf(hash), 1);
       }
     }
 
-    sta.noEd2k = sta.hashProviders.length > 0 && !sta.hashProviders.some(pro => pro.EnabledHashTypes.includes('ED2K'));
-    setState(sta);
+    clonedState.noEd2k = clonedState.hashProviders.length > 0
+      && !clonedState.hashProviders.some(pro => pro.EnabledHashTypes.includes('ED2K'));
+    setState(clonedState);
   };
 
   const handleToggleParallelHashing = () => {
-    const sta = cloneDeep(state);
-    sta.hashSummary.ParallelMode = !sta.hashSummary.ParallelMode;
-    setState(sta);
+    const clonedState = cloneDeep(state);
+    clonedState.hashSummary.ParallelMode = !clonedState.hashSummary.ParallelMode;
+    setState(clonedState);
   };
 
   const handleToggleReleaseInfoProvider = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.target.id.slice(0, 36);
     const { checked } = event.target;
-    const sta = cloneDeep(state);
-    sta.releaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
-    setState(sta);
+    const clonedState = cloneDeep(state);
+    clonedState.releaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
+    setState(clonedState);
   };
 
   const handleToggleWebuiReleaseInfoProvider = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.target.id.slice(0, 36);
     const { checked } = event.target;
-    const sta = cloneDeep(state);
-    sta.webuiReleaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
-    setState(sta);
+    const clonedState = cloneDeep(state);
+    clonedState.webuiReleaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
+    setState(clonedState);
   };
 
   const handleToggleParallelRelease = () => {
-    const sta = cloneDeep(state);
-    sta.releaseSummary.ParallelMode = !sta.releaseSummary.ParallelMode;
-    setState(sta);
+    const clonedState = cloneDeep(state);
+    clonedState.releaseSummary.ParallelMode = !clonedState.releaseSummary.ParallelMode;
+    setState(clonedState);
   };
 
   const handleDragRelease = (result: DropResult) => {
@@ -179,11 +180,12 @@ const HashingAndReleaseSettings = () => {
     const id = event.currentTarget.id.slice(0, -'-info'.length);
     const provider = state.releaseProviders.find(item => item.ID === id)
       ?? state.hashProviders.find(item => item.ID === id)!;
-    setInfo({ show: true, provider });
+    setInfoShow(true);
+    setInfoProvider(provider);
   };
 
   const handleCloseInfo = () => {
-    setInfo(prev => ({ ...prev, show: false }));
+    setInfoShow(false);
   };
 
   const handleCancel = () => {
@@ -563,7 +565,7 @@ const HashingAndReleaseSettings = () => {
           Save
         </Button>
       </div>
-      <ProviderInfoModal show={info.show} provider={info.provider} onClose={handleCloseInfo} />
+      <ProviderInfoModal show={infoShow} provider={infoProvider} onClose={handleCloseInfo} />
     </>
   );
 };

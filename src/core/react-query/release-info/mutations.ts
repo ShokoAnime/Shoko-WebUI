@@ -11,29 +11,31 @@ import type {
 import type { ReleaseInfoType } from '@/core/types/api/file';
 
 export const useUpdateReleaseInfoSettingsMutation = () =>
-  useMutation<void, unknown, UpdateReleaseInfoSettingsType>({
+  useMutation({
     mutationKey: ['release-info', 'settings'],
-    mutationFn: settings => axios.post('/ReleaseInfo/Settings', settings),
+    mutationFn: (settings: UpdateReleaseInfoSettingsType) => axios.post('/ReleaseInfo/Settings', settings),
     onSuccess: () => invalidateQueries(['release-info', 'summary']),
   });
 
 export const useUpdateManyReleaseInfoProvidersMutation = () =>
-  useMutation<void, unknown, UpdateManyReleaseInfoProviderType[]>({
+  useMutation({
     mutationKey: ['release-info', 'providers'],
-    mutationFn: providers => axios.post('/ReleaseInfo/Provider', providers),
+    mutationFn: (providers: UpdateManyReleaseInfoProviderType[]) => axios.post('/ReleaseInfo/Provider', providers),
     onSuccess: () => invalidateQueries(['release-info', 'providers']),
   });
 
 export const useUpdateReleaseInfoProviderMutation = (providerGuid: string) =>
-  useMutation<void, unknown, UpdateOneReleaseInfoProviderType>({
+  useMutation({
     mutationKey: ['release-info', 'providers', providerGuid],
-    mutationFn: provider => axios.put(`/ReleaseInfo/Provider/${providerGuid}`, provider),
+    mutationFn: (provider: UpdateOneReleaseInfoProviderType) =>
+      axios.put(`/ReleaseInfo/Provider/${providerGuid}`, provider),
     onSuccess: () => invalidateQueries(['release-info', 'providers']),
   });
 
 export const useSubmitReleaseInfoForFileByIdMutation = () =>
-  useMutation<void, unknown, { fileId: number, release: ReleaseInfoType }>({
-    mutationFn: ({ fileId, release }) => axios.post(`/ReleaseInfo/File/${fileId}`, release),
+  useMutation({
+    mutationFn: ({ fileId, release }: { fileId: number, release: ReleaseInfoType }) =>
+      axios.post(`/ReleaseInfo/File/${fileId}`, release),
   });
 
 export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>

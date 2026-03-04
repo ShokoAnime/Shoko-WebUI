@@ -12,8 +12,8 @@ type Props = {
   onClose: () => void;
   show: boolean;
   title: string;
-  cancel?: React.ReactNode;
-  confirm?: React.ReactNode;
+  cancelText?: string;
+  confirmText?: string;
   confirmButtonType?: ButtonType;
 };
 
@@ -23,8 +23,8 @@ const ConfirmationPromptModal = ({
   onConfirm,
   show,
   title,
-  cancel = 'Cancel',
-  confirm = 'Confirm',
+  cancelText: cancel = 'Cancel',
+  confirmText: confirm = 'Confirm',
   confirmButtonType = 'primary',
 }: Props) => {
   const [isConfirmPending, setIsConfirmPending] = useState(false);
@@ -34,10 +34,8 @@ const ConfirmationPromptModal = ({
     Promise.resolve()
       .then(() => onConfirm())
       .then(() => setIsConfirmPending(false))
-      .catch((err) => {
-        console.error(err);
-        onClose();
-      });
+      .catch(console.error)
+      .finally(() => onClose());
   };
 
   useKeyboardBindings(show && !isConfirmPending, {

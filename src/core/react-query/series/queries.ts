@@ -51,7 +51,7 @@ export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
 
 const animePlaceholderKey = ['series', 'anidb', 'bulk', 'placeholder'] as const;
 
-export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = true) => {
+export const useSeriesAniDbBulkQuery = (anidbIds: (number | null | undefined)[], enabled = true) => {
   useEffect(() => () => {
     queryClient.removeQueries({ queryKey: animePlaceholderKey });
   }, []);
@@ -65,11 +65,8 @@ export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = t
         .map(([key, value]) => [Number(key), value] as const)
         .filter(([key, value]) => !Number.isNaN(key) && Number.isInteger(key) && value != null);
       const existingKeys = new Map(existingEntries);
-      const missingKeys = anidbIds.filter((key): key is number =>
-        // eslint-disable-next-line @stylistic/comma-dangle -- ESLint and DPrint are fighting about the formatting here.
-        key != null && !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key)
-        // eslint-disable-next-line @stylistic/function-paren-newline -- ESLint and DPrint are fighting about the formatting here.
-      );
+      const missingKeys = anidbIds
+        .filter((key): key is number => key != null && Number.isInteger(key) && !existingKeys.has(key));
       const responses = await Promise.all(
         missingKeys.map(anidbId => axios.get<unknown, AniDBSeriesType>(`Series/AniDB/${anidbId}`).catch(() => null)),
       );

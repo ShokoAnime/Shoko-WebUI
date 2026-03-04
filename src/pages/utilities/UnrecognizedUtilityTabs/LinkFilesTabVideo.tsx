@@ -29,93 +29,6 @@ const notSelectedLinkStateClasses: Record<ManualLink['state'] | 'can-submit', st
   submitted: 'bg-panel-background',
 };
 
-function parseProviderName(providerName: string, state: ManualLink['state'] | 'can-submit') {
-  if (providerName === 'User' || state === 'search-queue' || state === 'searching') {
-    return null;
-  }
-  if (/\+User\b/.exec(providerName)) {
-    return (
-      <span className="text-sm font-semibold">
-        {providerName.replace(/\+User\b/, '').replace(/\+/g, ' & ')}
-        <span className="opacity-65">(Edited by User)</span>
-      </span>
-    );
-  }
-  return (
-    <span className="text-sm font-semibold">
-      {providerName}
-    </span>
-  );
-}
-
-function parseLinkState(state: ManualLink['state'] | 'can-submit') {
-  switch (state) {
-    case 'can-submit':
-      return (
-        <span className="text-panel-text-important">
-          Ready for Submission
-        </span>
-      );
-    case 'init':
-      return (
-        <span className="opacity-65">
-          Initial State
-        </span>
-      );
-    case 'pending':
-      return (
-        <span className="text-panel-text-warning">
-          Missing Episodes
-        </span>
-      );
-    case 'search-queue':
-      return (
-        <span className="opacity-65">
-          In Search Queue
-        </span>
-      );
-    case 'searching':
-      return (
-        <span className="text-panel-text-primary">
-          Searching for a Match
-        </span>
-      );
-    case 'submit-queue':
-      return (
-        <span className="opacity-65">
-          In Submit Queue
-        </span>
-      );
-    case 'submitting':
-      return (
-        <span className="text-panel-text-primary">
-          Submitting Match
-        </span>
-      );
-    case 'submitted':
-      return (
-        <span className="text-panel-text-important">
-          Completed
-        </span>
-      );
-    default:
-      return (
-        <span className="text-panel-text-warning">
-          {state}
-        </span>
-      );
-  }
-}
-
-function parseReleaseSource(releaseSource: ReleaseSource): string {
-  switch (releaseSource) {
-    case ReleaseSource.BluRay:
-      return 'Blu-Ray';
-    default:
-      return releaseSource;
-  }
-}
-
 const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => {
   const {
     animeRecord: animeDict,
@@ -274,3 +187,90 @@ const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => 
 };
 
 export default LinkFilesTabVideo;
+
+function parseProviderName(providerName: string, state: ManualLink['state'] | 'can-submit') {
+  if (providerName === 'User' || state === 'search-queue' || state === 'searching') {
+    return null;
+  }
+  if (/\+User\b|^User\+/.exec(providerName)) {
+    return (
+      <span className="text-sm font-semibold">
+        {providerName.replace(/\+User\b|^User\+/, '').replace(/\+/g, ' & ')}
+        <span className="opacity-65">(Edited by User)</span>
+      </span>
+    );
+  }
+  return (
+    <span className="text-sm font-semibold">
+      {providerName}
+    </span>
+  );
+}
+
+function parseLinkState(state: ManualLink['state'] | 'can-submit') {
+  switch (state) {
+    case 'can-submit':
+      return (
+        <span className="text-panel-text-important">
+          Ready for Submission
+        </span>
+      );
+    case 'init':
+      return (
+        <span className="opacity-65">
+          Initial State
+        </span>
+      );
+    case 'pending':
+      return (
+        <span className="text-panel-text-warning">
+          Missing Episodes
+        </span>
+      );
+    case 'search-queue':
+      return (
+        <span className="opacity-65">
+          In Search Queue
+        </span>
+      );
+    case 'searching':
+      return (
+        <span className="text-panel-text-primary">
+          Searching for a Match
+        </span>
+      );
+    case 'submit-queue':
+      return (
+        <span className="opacity-65">
+          In Submit Queue
+        </span>
+      );
+    case 'submitting':
+      return (
+        <span className="text-panel-text-primary">
+          Submitting Match
+        </span>
+      );
+    case 'submitted':
+      return (
+        <span className="text-panel-text-important">
+          Completed
+        </span>
+      );
+    default:
+      return (
+        <span className="text-panel-text-warning">
+          {state}
+        </span>
+      );
+  }
+}
+
+function parseReleaseSource(releaseSource: ReleaseSource): string {
+  switch (releaseSource) {
+    case ReleaseSource.BluRay:
+      return 'Blu-Ray';
+    default:
+      return releaseSource;
+  }
+}

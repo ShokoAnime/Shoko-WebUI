@@ -47,11 +47,8 @@ export const useEpisodeAniDbBulkQuery = (anidbIds: number[], enabled = true) => 
       const existingKeys = new Map(existingEntries);
       const missingKeys = anidbIds.filter(key => !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key));
       const responses = await Promise.all(
-        missingKeys.map(episodeId =>
-          // eslint-disable-next-line @stylistic/comma-dangle -- ESLint and DPrint are fighting about the formatting here.
-          axios.get<unknown, AniDBEpisodeType>(`Episode/AniDB/${episodeId}`).catch(() => null)
-          // eslint-disable-next-line @stylistic/function-paren-newline -- ESLint and DPrint are fighting about the formatting here.
-        ),
+        missingKeys
+          .map(episodeId => axios.get<unknown, AniDBEpisodeType>(`Episode/AniDB/${episodeId}`).catch(() => null)),
       );
       const entries = Object.fromEntries([
         ...existingEntries,

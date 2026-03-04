@@ -64,7 +64,6 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
     });
     await deleteFilter(item.IDs.ID.toString())
       .then(() => toast.success('Preset deleted successfully.'))
-      .then(() => setShowConfirmModal(false))
       .catch(() => toast.error('Preset could not be deleted.'));
   };
 
@@ -93,7 +92,7 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
         title="Confirm Delete Preset"
         onConfirm={handleDelete}
         onClose={() => setShowConfirmModal(false)}
-        confirm="Delete"
+        confirmText="Delete"
         confirmButtonType="danger"
       >
         <p>

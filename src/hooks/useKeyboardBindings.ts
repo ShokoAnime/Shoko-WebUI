@@ -16,10 +16,10 @@ function useKeyboardBindings(
 ): void {
   const onKeyboard = useEffectEvent((event: KeyboardEvent) => {
     if (!enabled || !keybindingsEnabled) return;
-    for (const eHr of eventHandlers) {
-      const iterable = Symbol.iterator in eHr
-        ? eHr
-        : Object.entries(eHr);
+    for (const maybeIterable of eventHandlers) {
+      const iterable = Symbol.iterator in maybeIterable
+        ? maybeIterable
+        : Object.entries(maybeIterable);
       eventLoop: for (const [eventShape, eventHandler] of iterable) {
         if (typeof eventShape === 'string') {
           if (event.key !== eventShape || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
