@@ -22,6 +22,7 @@ import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/AutoSear
 import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/EditReleaseInfoModal';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
+import UnrecognizedVideo from '@/components/Utilities/Unrecognized/UnrecognizedVideo';
 import { useEpisodeAniDbBulkQuery } from '@/core/react-query/episode/queries';
 import {
   useAutoPreviewReleaseInfoForFileByIdMutation,
@@ -35,7 +36,6 @@ import { detectShow } from '@/core/utilities/auto-match-logic';
 import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
-import LinkFilesTabVideo from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTabVideo';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
@@ -421,7 +421,7 @@ const LinkFilesWithProvidersTab = () => {
               edited = true;
               editedData.Version = 1;
             }
-            if (editedData.FileSize === null && link.release.FileSize !== null) {
+            if (editedData.FileSize == null && link.release.FileSize != null) {
               edited = true;
               editedData.FileSize = link.release.FileSize;
             }
@@ -432,15 +432,15 @@ const LinkFilesWithProvidersTab = () => {
               edited = true;
               editedData.OriginalFilename = link.release.OriginalFilename;
             }
-            if (editedData.IsChaptered === null && link.release.IsChaptered !== null) {
+            if (editedData.IsChaptered == null && link.release.IsChaptered != null) {
               edited = true;
               editedData.IsChaptered = link.release.IsChaptered;
             }
-            if (editedData.IsCensored === null && link.release.IsCensored !== null) {
+            if (editedData.IsCensored == null && link.release.IsCensored != null) {
               edited = true;
               editedData.IsCensored = link.release.IsCensored;
             }
-            if (editedData.IsCreditless === null && link.release.IsCreditless !== null) {
+            if (editedData.IsCreditless == null && link.release.IsCreditless != null) {
               edited = true;
               editedData.IsCreditless = link.release.IsCreditless;
             }
@@ -811,7 +811,7 @@ const LinkFilesWithProvidersTab = () => {
           )}
           {!state.isLoading && (
             state.links.map((link, index) => (
-              <LinkFilesTabVideo
+              <UnrecognizedVideo
                 key={link.id}
                 animeRecord={animeQuery.data!}
                 episodeRecord={episodeQuery.data!}

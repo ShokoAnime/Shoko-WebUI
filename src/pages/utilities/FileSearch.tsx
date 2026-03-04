@@ -307,7 +307,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
             <span className="font-semibold">Series Name</span>
-            <Link to={`/collection/series/${seriesId}`}>
+            <Link to={`/webui/collection/series/${seriesId}`}>
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                 <ShokoIcon className="size-6" />
                 Shoko

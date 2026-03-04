@@ -6,7 +6,7 @@ import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
 import type { AniDBSeriesType } from '@/core/types/api/series';
 
-export type LinkFilesTabCrossReferenceProps = {
+export type UnrecognizedVideoCrossReferenceProps = {
   xref: ReleaseCrossReferenceType;
   episode: AniDBEpisodeType | null;
   anime: AniDBSeriesType | null;
@@ -35,7 +35,7 @@ function noPropagate(event: React.MouseEvent): void {
   event.stopPropagation();
 }
 
-const LinkFilesTabCrossReference = (props: LinkFilesTabCrossReferenceProps): React.JSX.Element => {
+const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceProps): React.JSX.Element => {
   const { anime, episode, xref } = props;
   return (
     <span className="text-sm font-semibold">
@@ -125,4 +125,4 @@ const LinkFilesTabCrossReference = (props: LinkFilesTabCrossReferenceProps): Rea
   );
 };
 
-export default LinkFilesTabCrossReference;
+export default UnrecognizedVideoCrossReference;

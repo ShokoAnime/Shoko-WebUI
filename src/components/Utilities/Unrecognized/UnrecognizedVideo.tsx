@@ -3,13 +3,14 @@ import cx from 'classnames';
 
 import { ReleaseSource } from '@/core/types/api/file';
 
-import LinkFilesTabCrossReference from './LinkFilesTabCrossReference';
+import UnrecognizedVideoCrossReference from './UnrecognizedVideoCrossReference';
+import UnrecognizedVideoProviderName from './UnrecognizedVideoProviderName';
 
 import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { AniDBSeriesType } from '@/core/types/api/series';
 import type { ManualLink } from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProvidersTab';
 
-export type LinkFilesTabVideoProps = {
+export type UnrecognizedVideoProps = {
   link: ManualLink;
   animeRecord: Record<number, AniDBSeriesType | null>;
   episodeRecord: Record<number, AniDBEpisodeType | null>;
@@ -29,7 +30,7 @@ const notSelectedLinkStateClasses: Record<ManualLink['state'] | 'can-submit', st
   submitted: 'bg-panel-background',
 };
 
-const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => {
+const UnrecognizedVideo = (props: UnrecognizedVideoProps): React.JSX.Element => {
   const {
     animeRecord: animeDict,
     episodeRecord: episodeDict,
@@ -81,15 +82,7 @@ const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => 
       <div className="grid grid-cols-2 gap-2">
         <div className="col-span-2 -ml-1 flex w-full flex-row place-items-center gap-x-2 border-b border-panel-border pb-1">
           <div className="flex grow flex-col">
-            <span className="line-clamp-1">
-              {[
-                parseLinkState(linkState),
-                parseProviderName(link.release.ProviderName, linkState),
-              ].filter(node => node != null).flatMap((node, index) => [
-                index > 0 ? ' - ' : null,
-                node,
-              ])}
-            </span>
+            <UnrecognizedVideoProviderName link={link} />
           </div>
         </div>
         <div className="col-span-2 flex w-full flex-row place-items-center gap-x-2 lg:col-span-1">
@@ -167,7 +160,7 @@ const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => 
           {link.release.CrossReferences.length > 0
             ? (
               link.release.CrossReferences.map(xref => (
-                <LinkFilesTabCrossReference
+                <UnrecognizedVideoCrossReference
                   key={`${xref.AnidbEpisodeID}-${xref.AnidbAnimeID}-${xref.PercentageStart}-${xref.PercentageEnd}`}
                   xref={xref}
                   anime={animeDict[xref.AnidbAnimeID ?? -1] ?? null}
@@ -186,85 +179,7 @@ const LinkFilesTabVideo = (props: LinkFilesTabVideoProps): React.JSX.Element => 
   );
 };
 
-export default LinkFilesTabVideo;
-
-function parseProviderName(providerName: string, state: ManualLink['state'] | 'can-submit') {
-  if (providerName === 'User' || state === 'search-queue' || state === 'searching') {
-    return null;
-  }
-  if (/\+User\b|^User\+/.exec(providerName)) {
-    return (
-      <span className="text-sm font-semibold">
-        {providerName.replace(/\+User\b|^User\+/, '').replace(/\+/g, ' & ')}
-        <span className="opacity-65">(Edited by User)</span>
-      </span>
-    );
-  }
-  return (
-    <span className="text-sm font-semibold">
-      {providerName}
-    </span>
-  );
-}
-
-function parseLinkState(state: ManualLink['state'] | 'can-submit') {
-  switch (state) {
-    case 'can-submit':
-      return (
-        <span className="text-panel-text-important">
-          Ready for Submission
-        </span>
-      );
-    case 'init':
-      return (
-        <span className="opacity-65">
-          Initial State
-        </span>
-      );
-    case 'pending':
-      return (
-        <span className="text-panel-text-warning">
-          Missing Episodes
-        </span>
-      );
-    case 'search-queue':
-      return (
-        <span className="opacity-65">
-          In Search Queue
-        </span>
-      );
-    case 'searching':
-      return (
-        <span className="text-panel-text-primary">
-          Searching for a Match
-        </span>
-      );
-    case 'submit-queue':
-      return (
-        <span className="opacity-65">
-          In Submit Queue
-        </span>
-      );
-    case 'submitting':
-      return (
-        <span className="text-panel-text-primary">
-          Submitting Match
-        </span>
-      );
-    case 'submitted':
-      return (
-        <span className="text-panel-text-important">
-          Completed
-        </span>
-      );
-    default:
-      return (
-        <span className="text-panel-text-warning">
-          {state}
-        </span>
-      );
-  }
-}
+export default UnrecognizedVideo;
 
 function parseReleaseSource(releaseSource: ReleaseSource): string {
   switch (releaseSource) {
