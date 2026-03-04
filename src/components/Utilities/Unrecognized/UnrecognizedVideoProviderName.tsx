@@ -76,6 +76,14 @@ const UnrecognizedVideoProviderName = (props: UnrecognizedVideoProviderNameProps
     if (link.release.ProviderName === 'User' || linkState === 'search-queue' || linkState === 'searching') {
       return null;
     }
+    if (/\+User\b|^User\+/.exec(link.release.ProviderName)) {
+      return (
+        <span className="text-sm font-semibold">
+          {link.release.ProviderName.replace(/\+User\b|^User\+/, '').replace(/\+/g, ' & ')}
+          <span className="opacity-65">(Edited by User)</span>
+        </span>
+      );
+    }
     return (
       <span className="text-sm font-semibold">
         {link.release.ProviderName}
