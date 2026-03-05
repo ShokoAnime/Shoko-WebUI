@@ -38,7 +38,7 @@ const Checkbox = memo((props: Props) => {
     readOnly = false,
   } = props;
   const bodyVisible = useBodyVisibleContext();
-  const inputRef = useAutoFocusRef(autoFocus && !(disabled || readOnly), bodyVisible);
+  const inputRef = useAutoFocusRef(autoFocus && !(disabled || readOnly) && bodyVisible);
   const [focused, setFocused] = useState(false);
 
   return (

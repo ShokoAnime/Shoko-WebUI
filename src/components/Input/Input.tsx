@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -25,7 +25,6 @@ type Props = {
   className?: string;
   inputClassName?: string;
   autoFocus?: boolean;
-  autoFocusHook?: boolean;
   disabled?: boolean;
   center?: boolean;
   endIcons?: EndIcon[];
@@ -45,7 +44,6 @@ type TooltipAttributes = {
 const Input = React.memo((props: Props) => {
   const {
     autoFocus = false,
-    autoFocusHook = false,
     center,
     className,
     disabled,
@@ -67,15 +65,8 @@ const Input = React.memo((props: Props) => {
   } = props;
 
   const bodyVisible = useBodyVisibleContext();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const inputRefHook = useAutoFocusRef(autoFocusHook, bodyVisible);
+  const inputRef = useAutoFocusRef(autoFocus && !disabled && bodyVisible);
   const [isShow, setIsShow] = React.useState(false);
-
-  useLayoutEffect(() => {
-    if (autoFocus && bodyVisible && inputRef?.current) {
-      inputRef.current.focus();
-    }
-  }, [autoFocus, bodyVisible, inputRef]);
 
   useEffect(() => {
     if (isOverlay) return;
@@ -142,7 +133,7 @@ const Input = React.memo((props: Props) => {
             onKeyUp={onKeyUp}
             onKeyDown={onKeyDown}
             disabled={disabled}
-            ref={autoFocusHook ? inputRefHook : inputRef}
+            ref={inputRef}
           />
           {endIcons?.length && (
             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
