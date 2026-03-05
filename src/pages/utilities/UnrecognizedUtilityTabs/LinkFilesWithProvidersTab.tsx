@@ -19,7 +19,6 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/AutoSearchReleaseModal';
-import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/EditReleaseInfoModal';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UnrecognizedVideo from '@/components/Utilities/Unrecognized/UnrecognizedVideo';
@@ -90,9 +89,6 @@ const LinkFilesWithProvidersTab = () => {
 
   const [auto, setAuto] = useState<{ show: boolean, providers: ReleaseProviderInfoType[] }>(
     () => ({ show: false, providers: [] }),
-  );
-  const [edit, setEdit] = useState<{ show: boolean, releases: Record<number, ReleaseInfoType> }>(
-    () => ({ show: false, releases: [] }),
   );
   const [shouldConfirm, setShouldConfirm] = useState(false);
 
@@ -189,35 +185,6 @@ const LinkFilesWithProvidersTab = () => {
 
   const onAutoSearchClose = () => {
     setAuto(prev => ({ ...prev, show: false }));
-  };
-
-  const openEditDialog = () => {
-    if (selectedLinks.length === 0) return;
-    const links = selectedLinks.filter(lin => lin.state === 'pending' || lin.state === 'init');
-    const releases = Object.fromEntries(
-      cloneDeep(links.map(link => link.release)).map((release, index) => [links[index].id, release]),
-    );
-    setEdit({ show: links.length > 0, releases });
-  };
-
-  const onEditUpdateReleases = (releases: Record<number, ReleaseInfoType>) => {
-    const links = cloneDeep(state.links);
-    const entries = Object.entries(releases)
-      .map(([id, release]) => [Number(id), release] as const).filter(([id]) => !Number.isNaN(id));
-    for (const [linkId, release] of entries) {
-      const link = links.find(lin => lin.id === linkId);
-      if (link) {
-        link.release = release;
-        link.state = 'pending';
-      }
-    }
-    setLoading(prev => ({ ...prev, links }));
-    setLinkSelection({});
-    lastSelectedLinkIndexRef.current = null;
-  };
-
-  const onEditClose = () => {
-    setEdit(prev => ({ ...prev, show: false }));
   };
 
   const initializeLinks = useCallback(
@@ -426,8 +393,7 @@ const LinkFilesWithProvidersTab = () => {
               editedData.FileSize = link.release.FileSize;
             }
             if (
-              editedData.OriginalFilename == null && link.release.OriginalFilename != null
-              && link.release.OriginalFilename !== ''
+              editedData.OriginalFilename == null && !!link.release.OriginalFilename
             ) {
               edited = true;
               editedData.OriginalFilename = link.release.OriginalFilename;
@@ -572,7 +538,7 @@ const LinkFilesWithProvidersTab = () => {
     }
   };
 
-  useKeyboardBindings(!(auto.show || edit.show || shouldConfirm), {
+  useKeyboardBindings(!(auto.show || shouldConfirm), {
     ' ': toggleFocused,
     d: deleteSelectedOrFocused,
     Delete: deleteSelectedOrFocused,
@@ -584,7 +550,6 @@ const LinkFilesWithProvidersTab = () => {
     },
     a: toggleAllSelectedLinks,
     s: openSearchDialog,
-    e: openEditDialog,
     Escape: handleCancel,
     Enter: () => {
       if (canSubmit) {
@@ -721,12 +686,10 @@ const LinkFilesWithProvidersTab = () => {
                     || !selectedLinks.some(link => link.state === 'pending' || link.state === 'init')}
                 />
                 <MenuButton
-                  onClick={openEditDialog}
                   icon={mdiPencil}
                   name="Edit Release Info"
                   keybinding="E"
-                  disabled={state.isLoading
-                    || !selectedLinks.some(link => link.state === 'pending' || link.state === 'init')}
+                  disabled
                 />
                 <MenuButton
                   onClick={toggleAllSelectedLinks}
@@ -829,12 +792,6 @@ const LinkFilesWithProvidersTab = () => {
         providers={auto.providers}
         onClose={onAutoSearchClose}
         onUpdateProviders={onAutoSearchUpdateProviders}
-      />
-      <EditReleaseInfoModal
-        show={edit.show}
-        releases={edit.releases}
-        onClose={onEditClose}
-        onUpdateReleases={onEditUpdateReleases}
       />
       <ConfirmationPromptModal
         title="Abort linking"
