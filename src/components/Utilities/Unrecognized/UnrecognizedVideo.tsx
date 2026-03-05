@@ -30,6 +30,15 @@ const notSelectedLinkStateClasses: Record<ManualLink['state'] | 'can-submit', st
   submitted: 'bg-panel-background',
 };
 
+function parseReleaseSource(releaseSource: ReleaseSource): string {
+  switch (releaseSource) {
+    case ReleaseSource.BluRay:
+      return 'Blu-Ray';
+    default:
+      return releaseSource;
+  }
+}
+
 const UnrecognizedVideo = (props: UnrecognizedVideoProps): React.JSX.Element => {
   const {
     animeRecord: animeDict,
@@ -180,12 +189,3 @@ const UnrecognizedVideo = (props: UnrecognizedVideoProps): React.JSX.Element => 
 };
 
 export default UnrecognizedVideo;
-
-function parseReleaseSource(releaseSource: ReleaseSource): string {
-  switch (releaseSource) {
-    case ReleaseSource.BluRay:
-      return 'Blu-Ray';
-    default:
-      return releaseSource;
-  }
-}

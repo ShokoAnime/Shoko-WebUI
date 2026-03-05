@@ -8,7 +8,7 @@ import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
 
 type Props = {
   show: boolean;
-  provider: HashProviderInfoType | ReleaseProviderInfoType | undefined;
+  provider?: HashProviderInfoType | ReleaseProviderInfoType;
   onClose: () => void;
 };
 
@@ -19,7 +19,7 @@ const ProviderInfoModal = (props: Props) => {
 
   return (
     <ModalPanel
-      show={provider != null && show}
+      show={!!provider && show}
       onRequestClose={onClose}
       header={provider?.Name}
       shouldCloseOnEsc={false}

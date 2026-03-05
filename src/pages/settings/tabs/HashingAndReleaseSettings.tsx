@@ -29,9 +29,7 @@ import type { DropResult } from '@hello-pangea/dnd';
 
 const HashingAndReleaseSettings = () => {
   const [infoShow, setInfoShow] = useState(false);
-  const [infoProvider, setInfoProvider] = useState<HashProviderInfoType | ReleaseProviderInfoType | undefined>(
-    undefined,
-  );
+  const [infoProvider, setInfoProvider] = useState<HashProviderInfoType | ReleaseProviderInfoType | undefined>();
   const hashingProviderSummaryQuery = useHashingSummaryQuery();
   const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
   const settingsQuery = useSettingsQuery();
@@ -42,19 +40,18 @@ const HashingAndReleaseSettings = () => {
   const { mutate: updateHashingProviders } = useUpdateManyHashingProvidersMutation();
   const { mutate: updateReleaseInfoSettings } = useUpdateReleaseInfoSettingsMutation();
   const { mutate: updateReleaseInfoProviders } = useUpdateManyReleaseInfoProvidersMutation();
-  const initialState = useMemo(() => ({
-    noEd2k: hashingProvidersQuery.data != null && hashingProvidersQuery.data.length > 0
-      && !hashingProvidersQuery.data.some(provider => provider.EnabledHashTypes.includes('ED2K')),
-    hashSummary: hashingProviderSummaryQuery.data ?? { ParallelMode: false },
-    hashProviders: hashingProvidersQuery.data ?? [],
-    releaseSummary: releaseProviderSummaryQuery.data ?? { ParallelMode: false },
-    releaseProviders: releaseProvidersQuery.data ?? [],
-    webuiReleaseProviders: (() => {
-      const releaseProviders = releaseProvidersQuery.data?.slice() ?? [];
-      const webuiProviders = settingsQuery.data?.WebUI_Settings.linking.enabledReleaseProviders ?? [];
-      const webuiProviderOrder = settingsQuery.data?.WebUI_Settings.linking.releaseProviderOrder ?? [];
-
-      return releaseProviders
+  const initialState = useMemo(() => {
+    const releaseProviders = releaseProvidersQuery.data?.slice() ?? [];
+    const webuiProviders = settingsQuery.data?.WebUI_Settings.linking.enabledReleaseProviders ?? [];
+    const webuiProviderOrder = settingsQuery.data?.WebUI_Settings.linking.releaseProviderOrder ?? [];
+    return {
+      noEd2k: hashingProvidersQuery.data != null && hashingProvidersQuery.data.length > 0
+        && !hashingProvidersQuery.data.some(provider => provider.EnabledHashTypes.includes('ED2K')),
+      hashSummary: hashingProviderSummaryQuery.data ?? { ParallelMode: false },
+      hashProviders: hashingProvidersQuery.data ?? [],
+      releaseSummary: releaseProviderSummaryQuery.data ?? { ParallelMode: false },
+      releaseProviders: releaseProvidersQuery.data ?? [],
+      webuiReleaseProviders: releaseProviders
         .sort((providerA, providerB) => {
           const idA = providerA.ID;
           const idB = providerB.ID;
@@ -69,9 +66,9 @@ const HashingAndReleaseSettings = () => {
           ...provider,
           IsEnabled: webuiProviders.includes(provider.ID),
           Priority: index,
-        }));
-    })(),
-  }), [
+        })),
+    };
+  }, [
     settingsQuery.data,
     hashingProviderSummaryQuery.data,
     releaseProviderSummaryQuery.data,

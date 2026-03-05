@@ -23,9 +23,8 @@ type AutoSearchReleaseModalProps = {
 
 const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
   const { onClose, onUpdateProviders, providers: initialProviders, show } = props;
-  const [info, setInfo] = useState<{ show: boolean, provider?: ReleaseProviderInfoType }>(
-    () => ({ show: false }),
-  );
+  const [infoShow, setInfoShow] = useState(false);
+  const [infoProvider, setInfoProvider] = useState<ReleaseProviderInfoType | undefined>();
   const [providers, setProviders] = useState(() => initialProviders);
   const canSearch = useMemo(() => providers.some(pro => pro.IsEnabled), [providers]);
   const [debouncedCanSearch] = useDebounceValue(canSearch, 100);
@@ -57,11 +56,12 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
   const handleOpenInfo = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id.slice(0, -'-info'.length);
     const provider = providers.find(item => item.ID === id)!;
-    setInfo({ show: true, provider });
+    setInfoShow(true);
+    setInfoProvider(provider);
   };
 
   const handleCloseInfo = () => {
-    setInfo(prev => ({ ...prev, show: false }));
+    setInfoShow(false);
   };
 
   const handleSearch = () => {
@@ -70,7 +70,7 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
     onClose();
   };
 
-  useKeyboardBindings(show && !info.show, {
+  useKeyboardBindings(show && !infoShow, {
     Escape: onClose,
     Enter: handleSearch,
   });
@@ -164,7 +164,7 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
           Search
         </Button>
       </div>
-      <ProviderInfoModal show={info.show} provider={info.provider} onClose={handleCloseInfo} />
+      <ProviderInfoModal show={infoShow} provider={infoProvider} onClose={handleCloseInfo} />
     </ModalPanel>
   );
 };
