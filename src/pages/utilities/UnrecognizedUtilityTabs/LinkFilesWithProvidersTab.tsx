@@ -122,7 +122,7 @@ const LinkFilesWithProvidersTab = () => {
 
   const completeLinking = useCallback(() => {
     toast.info('Linking complete');
-    navigate('/utilities/unrecognized/files', { replace: true });
+    navigate('/webui/utilities/unrecognized/files', { replace: true });
   }, [navigate]);
 
   const onConfirmed = () => {
@@ -607,7 +607,7 @@ const LinkFilesWithProvidersTab = () => {
 
   useEffect(() => {
     if (state.links.length === 0 && !state.isLoading) {
-      navigate('/utilities/unrecognized/files', { replace: true });
+      navigate('/webui/utilities/unrecognized/files', { replace: true });
     }
   }, [state.links, navigate, state.isLoading]);
 
