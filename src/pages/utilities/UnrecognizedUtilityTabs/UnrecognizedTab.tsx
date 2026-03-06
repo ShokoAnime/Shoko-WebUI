@@ -266,6 +266,7 @@ const UnrecognizedTab = () => {
   const filesQuery = useFilesInfiniteQuery(
     {
       pageSize: 200,
+      include: ['AbsolutePaths'],
       include_only: ['Unrecognized'],
       sortOrder,
     },

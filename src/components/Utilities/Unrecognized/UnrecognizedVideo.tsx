@@ -12,15 +12,17 @@ import type { ManualLink } from '@/pages/utilities/UnrecognizedUtilityTabs/LinkF
 
 export type UnrecognizedVideoProps = {
   link: ManualLink;
-  animeRecord: Record<number, AniDBSeriesType | null>;
-  episodeRecord: Record<number, AniDBEpisodeType | null>;
+  animeDict: Record<number, AniDBSeriesType | null>;
+  episodeDict: Record<number, AniDBEpisodeType | null>;
   selectLink: (event: React.MouseEvent<HTMLElement>) => void;
   selectedLinkDict: Record<number, boolean>;
   focusedLink: boolean;
 };
 
 const notSelectedLinkStateClasses: Record<ManualLink['state'] | 'can-submit', string> = {
+  'pre-init': 'opacity-65 bg-panel-background cursor-pointer',
   init: 'bg-panel-background cursor-pointer',
+  initializing: 'opacity-65 bg-panel-background cursor-wait',
   pending: 'bg-panel-background cursor-pointer',
   'can-submit': 'bg-panel-background-alt cursor-pointer',
   'search-queue': 'opacity-65 bg-panel-background-alt cursor-pointer animate-pulse',
@@ -41,8 +43,8 @@ function parseReleaseSource(releaseSource: ReleaseSource): string {
 
 const UnrecognizedVideo = (props: UnrecognizedVideoProps): React.JSX.Element => {
   const {
-    animeRecord: animeDict,
-    episodeRecord: episodeDict,
+    animeDict,
+    episodeDict,
     focusedLink: isInFocus,
     link,
     selectLink,

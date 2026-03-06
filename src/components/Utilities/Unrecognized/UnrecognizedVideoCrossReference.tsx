@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
@@ -11,25 +12,6 @@ export type UnrecognizedVideoCrossReferenceProps = {
   episode: AniDBEpisodeType | null;
   anime: AniDBSeriesType | null;
 };
-
-function episodeNumber(episode: AniDBEpisodeType): string {
-  switch (episode.Type) {
-    case EpisodeTypeEnum.Episode:
-      return episode.EpisodeNumber.toString().padStart(2, '0');
-    case EpisodeTypeEnum.Special:
-      return `S${episode.EpisodeNumber}`;
-    case EpisodeTypeEnum.Credits:
-      return `C${episode.EpisodeNumber}`;
-    case EpisodeTypeEnum.Trailer:
-      return `T${episode.EpisodeNumber}`;
-    case EpisodeTypeEnum.Parody:
-      return `P${episode.EpisodeNumber}`;
-    case EpisodeTypeEnum.Other:
-      return `O ${episode.EpisodeNumber}`;
-    default:
-      return '??';
-  }
-}
 
 function noPropagate(event: React.MouseEvent): void {
   event.stopPropagation();
@@ -42,7 +24,10 @@ const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceP
       {episode && (
         <>
           <span className="text-panel-text-important">
-            {episodeNumber(episode)}
+            {getEpisodePrefix(episode.Type)}
+            {episode.Type === EpisodeTypeEnum.Episode
+              ? episode.EpisodeNumber.toString().padStart(2, '0')
+              : episode.EpisodeNumber}
           </span>
           &nbsp;-&nbsp;
           <span>

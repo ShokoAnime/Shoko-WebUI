@@ -21,16 +21,23 @@ const UnrecognizedVideoProviderName = (props: UnrecognizedVideoProviderNameProps
             Ready for Submission
           </span>
         );
-      case 'init':
+      case 'pre-init':
         return (
           <span className="opacity-65">
-            Initial State
+            In Initial Metadata Queue
           </span>
         );
+      case 'initializing':
+        return (
+          <span className="opacity-65">
+            Initializing Metadata
+          </span>
+        );
+      case 'init':
       case 'pending':
         return (
           <span className="text-panel-text-warning">
-            Missing Episodes
+            Waiting For User Action
           </span>
         );
       case 'search-queue':
@@ -66,7 +73,7 @@ const UnrecognizedVideoProviderName = (props: UnrecognizedVideoProviderNameProps
       default:
         return (
           <span className="text-panel-text-warning">
-            {state}
+            {linkState}
           </span>
         );
     }

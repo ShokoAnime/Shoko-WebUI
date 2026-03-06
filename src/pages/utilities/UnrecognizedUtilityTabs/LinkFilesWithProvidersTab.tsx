@@ -25,26 +25,61 @@ import UnrecognizedVideo from '@/components/Utilities/Unrecognized/UnrecognizedV
 import { useEpisodeAniDbBulkQuery } from '@/core/react-query/episode/queries';
 import {
   useAutoPreviewReleaseInfoForFileByIdMutation,
+  usePreviewReleaseInfoByProviderIdMutation,
   useSubmitReleaseInfoForFileByIdMutation,
 } from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSeriesAniDbBulkQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
-import { detectShow } from '@/core/utilities/auto-match-logic';
 import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 
+import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
+import type { SeriesTypeEnum } from '@/core/types/api/series';
+
+export type RemoteMetadataDetails = {
+  Success: boolean;
+  FilePath: string;
+  FileExtension?: string;
+  ReleaseGroup?: string;
+  SeriesName?: string;
+  SeriesType?: SeriesTypeEnum;
+  Year?: number;
+  SeasonNumber?: number;
+  EpisodeName?: string;
+  EpisodeStart?: number;
+  EpisodeEnd?: number;
+  EpisodeText?: string;
+  Creditless?: boolean;
+  Censored?: boolean;
+  EpisodeType?: EpisodeTypeEnum;
+  Source?: ReleaseSource;
+  Version?: number;
+  AnidbAnimeId?: number;
+  AnidbEpisodeId?: number;
+  RuleName: string;
+};
 
 export type ManualLink = {
   id: number;
   file: FileType;
   providers: ReleaseProviderInfoType[];
-  state: 'init' | 'pending' | 'search-queue' | 'searching' | 'submit-queue' | 'submitting' | 'submitted';
+  state:
+    | 'pre-init'
+    | 'initializing'
+    | 'init'
+    | 'search-queue'
+    | 'searching'
+    | 'submit-queue'
+    | 'submitting'
+    | 'pending'
+    | 'submitted';
   release: ReleaseInfoType;
+  metadata?: RemoteMetadataDetails;
 };
 
 let lastLinkId = 0;
@@ -57,7 +92,7 @@ const generateLinkID = () => {
 };
 
 const LinkFilesWithProvidersTab = () => {
-  const { selectedRows } = (useLocation().state ?? { selectedRows: [] }) as { selectedRows: FileType[] };
+  const { selectedRows } = (useLocation().state ?? {}) as { selectedRows?: FileType[] };
   const [state, setLoading] = useState({
     isLoading: true,
     links: new Array<ManualLink>(),
@@ -85,6 +120,7 @@ const LinkFilesWithProvidersTab = () => {
   const animeQuery = useSeriesAniDbBulkQuery(animeIds);
   const { mutate: submitLinkRemote } = useSubmitReleaseInfoForFileByIdMutation();
   const { mutate: autoLinkPreview } = useAutoPreviewReleaseInfoForFileByIdMutation();
+  const { mutate: lookupFile } = usePreviewReleaseInfoByProviderIdMutation();
   const navigate = useNavigateVoid();
 
   const [auto, setAuto] = useState<{ show: boolean, providers: ReleaseProviderInfoType[] }>(
@@ -242,24 +278,9 @@ const LinkFilesWithProvidersTab = () => {
           id: generateLinkID(),
           file,
           providers,
-          state: providers.length > 0 && providers.some(provider => provider.IsEnabled) ? 'search-queue' : 'init',
+          state: 'pre-init',
           release,
         };
-        const path = file?.Locations?.[0]?.RelativePath || '';
-        const showData = detectShow(path);
-        if (showData) {
-          if (showData.releaseGroup) {
-            release.Group = {
-              ID: showData.releaseGroup,
-              Name: showData.releaseGroup,
-              ShortName: showData.releaseGroup,
-              Source: 'User',
-            };
-          }
-          if (showData.version != null && showData.version > 0) {
-            release.Version = showData.version;
-          }
-        }
 
         links.push(link);
       }
@@ -370,6 +391,71 @@ const LinkFilesWithProvidersTab = () => {
     focusLinks([]);
   };
 
+  const initLink = useCallback((originalLink: ManualLink) => {
+    const link = cloneDeep(originalLink);
+    if (link.providers.length > 0 && link.providers.some(provider => provider.IsEnabled)) {
+      link.state = 'search-queue';
+    } else {
+      link.state = 'init';
+    }
+    const offlineProvider = link.providers.find(provider => provider.Name === 'Offline Importer')?.ID;
+    if (!offlineProvider) {
+      setLoading((prev) => {
+        const links = cloneDeep(prev.links);
+        const index = links.findIndex(lin => lin.id === link.id);
+        if (index !== -1) {
+          links[index] = link;
+        }
+        return { ...prev, links };
+      });
+      return;
+    }
+
+    const path = link.file.Locations.find(location => location.AbsolutePath)?.AbsolutePath
+      ?? link.file.Locations?.[0]?.RelativePath ?? '';
+    lookupFile({ id: `match://${path}`, providerID: offlineProvider }, {
+      onSettled(release, error) {
+        if (!error && release) {
+          const metadata = JSON.parse(release.Metadata ?? 'null') as RemoteMetadataDetails | null;
+          if (metadata?.Success) {
+            link.metadata = metadata;
+            if (release.OriginalFilename !== link.release.OriginalFilename) {
+              link.release.OriginalFilename = release.OriginalFilename;
+            }
+            if (release.Version !== link.release.Version) {
+              link.release.Version = release.Version;
+            }
+            if (release.IsCensored != null) {
+              link.release.IsCensored = release.IsCensored;
+            }
+            if (release.IsCreditless != null) {
+              link.release.IsCreditless = release.IsCreditless;
+            }
+            if (release.IsChaptered != null) {
+              link.release.IsChaptered = release.IsCreditless;
+            }
+            link.release.IsCorrupted = release.IsCorrupted;
+            if (release.Source !== link.release.Source) {
+              link.release.Source = release.Source;
+            }
+            if (release.Group) {
+              link.release.Group = release.Group;
+            }
+          }
+        }
+
+        setLoading((prev) => {
+          const links = cloneDeep(prev.links);
+          const index = links.findIndex(lin => lin.id === link.id);
+          if (index !== -1) {
+            links[index] = link;
+          }
+          return { ...prev, links };
+        });
+      },
+    });
+  }, [lookupFile]);
+
   const searchLink = useCallback((originalLink: ManualLink) => {
     const link = cloneDeep(originalLink);
     const enabledReleaseProviders = link.providers.filter(provider => provider.IsEnabled).map(provider => provider.ID);
@@ -409,6 +495,10 @@ const LinkFilesWithProvidersTab = () => {
             if (editedData.IsCreditless == null && link.release.IsCreditless != null) {
               edited = true;
               editedData.IsCreditless = link.release.IsCreditless;
+            }
+            if (!editedData.Group && link.release.Group) {
+              edited = true;
+              editedData.Group = link.release.Group;
             }
             if (edited && editedData.ProviderName !== 'User' && !/\+User\b/.test(editedData.ProviderName)) {
               editedData.ProviderName += '+User';
@@ -571,6 +661,14 @@ const LinkFilesWithProvidersTab = () => {
       }
 
       if (
+        !state.links.some(link => link.state === 'initializing') && state.links.some(link => link.state === 'pre-init')
+      ) {
+        const firstWaiting = links.find(link => link.state === 'pre-init')!;
+        firstWaiting.state = 'initializing';
+        initLink(firstWaiting);
+      }
+
+      if (
         !state.links.some(link => link.state === 'searching') && state.links.some(link => link.state === 'search-queue')
       ) {
         const firstWaiting = links.find(link => link.state === 'search-queue')!;
@@ -597,6 +695,7 @@ const LinkFilesWithProvidersTab = () => {
   }, [
     state.links,
     state.isLoading,
+    initLink,
     searchLink,
     submitLink,
     completeLinking,
@@ -616,7 +715,7 @@ const LinkFilesWithProvidersTab = () => {
       const enabledReleaseProviders = settingsQuery.data.WebUI_Settings.linking.enabledReleaseProviders.slice() ?? [];
       const releaseProviderOrder = settingsQuery.data.WebUI_Settings.linking.releaseProviderOrder.slice() ?? [];
       const releaseProviders = releaseProvidersQuery.data?.slice() ?? [];
-      initializeLinks(selectedRows, enabledReleaseProviders, releaseProviderOrder, releaseProviders);
+      initializeLinks(selectedRows ?? [], enabledReleaseProviders, releaseProviderOrder, releaseProviders);
     }
   }, [
     state.isLoading,
@@ -776,8 +875,8 @@ const LinkFilesWithProvidersTab = () => {
             state.links.map((link, index) => (
               <UnrecognizedVideo
                 key={link.id}
-                animeRecord={animeQuery.data!}
-                episodeRecord={episodeQuery.data!}
+                animeDict={animeQuery.data!}
+                episodeDict={episodeQuery.data!}
                 link={link}
                 selectLink={handleSelectLinks}
                 selectedLinkDict={selectedLinkDict}

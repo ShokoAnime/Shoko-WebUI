@@ -70,7 +70,7 @@ const CollectionStats = () => {
     />,
     <Item
       key="unrecognized-files"
-      title="Unknown Files"
+      title="Unrecognized Files"
       value={statsQuery.data?.UnrecognizedFiles}
       link="/webui/utilities/unrecognized"
     />,

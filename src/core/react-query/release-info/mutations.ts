@@ -45,3 +45,9 @@ export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
         params: { providerIDs },
       }),
   });
+
+export const usePreviewReleaseInfoByProviderIdMutation = () =>
+  useMutation<ReleaseInfoType, unknown, { id: string, providerID: string }>({
+    mutationFn: async ({ id, providerID }) =>
+      axios.get(`/ReleaseInfo/Provider/${providerID}/Preview/By-Release`, { params: { id } }),
+  });

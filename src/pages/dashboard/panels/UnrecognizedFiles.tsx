@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { mdiBeta, mdiCreation, mdiDatabaseSearchOutline } from '@mdi/js';
+import { NavLink } from 'react-router';
+import { mdiBeta, mdiChevronRight, mdiCreation, mdiDatabaseSearchOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import Button from '@/components/Input/Button';
@@ -98,8 +99,11 @@ const UnrecognizedFiles = () => {
   return (
     <ShokoPanel
       title={
-        <div className="flex w-full flex-row justify-between">
-          <div>Unrecognized Files</div>
+        <div className="flex w-full flex-row items-center gap-x-2">
+          <span>Unrecognized Files</span>
+          <NavLink to="/webui/utilities/unrecognized">
+            <Icon className="text-panel-icon-action" path={mdiChevronRight} size={1} />
+          </NavLink>
         </div>
       }
       options={
