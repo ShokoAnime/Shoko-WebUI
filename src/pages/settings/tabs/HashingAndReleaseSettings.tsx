@@ -23,12 +23,12 @@ import { useReleaseInfoProvidersQuery, useReleaseInfoSummaryQuery } from '@/core
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-import type { HashProviderInfoType } from '@/core/types/api/hashing';
-import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
+import type { HashProviderInfoType } from '@/core/react-query/hashing/types';
+import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
 import type { DropResult } from '@hello-pangea/dnd';
 
 const HashingAndReleaseSettings = () => {
-  const [infoShow, setInfoShow] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoProvider, setInfoProvider] = useState<HashProviderInfoType | ReleaseProviderInfoType | undefined>();
   const hashingProviderSummaryQuery = useHashingSummaryQuery();
   const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
@@ -177,12 +177,12 @@ const HashingAndReleaseSettings = () => {
     const id = event.currentTarget.id.slice(0, -'-info'.length);
     const provider = state.releaseProviders.find(item => item.ID === id)
       ?? state.hashProviders.find(item => item.ID === id)!;
-    setInfoShow(true);
+    setShowInfoModal(true);
     setInfoProvider(provider);
   };
 
   const handleCloseInfo = () => {
-    setInfoShow(false);
+    setShowInfoModal(false);
   };
 
   const handleCancel = () => {
@@ -562,7 +562,7 @@ const HashingAndReleaseSettings = () => {
           Save
         </Button>
       </div>
-      <ProviderInfoModal show={infoShow} provider={infoProvider} onClose={handleCloseInfo} />
+      <ProviderInfoModal show={showInfoModal} provider={infoProvider} onClose={handleCloseInfo} />
     </>
   );
 };

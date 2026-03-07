@@ -2,8 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 
-import type { HashingSummaryType } from '@/core/react-query/hashing/types';
-import type { HashProviderInfoType } from '@/core/types/api/hashing';
+import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
 
 export const useHashingSummaryQuery = () =>
   useQuery<HashingSummaryType>({

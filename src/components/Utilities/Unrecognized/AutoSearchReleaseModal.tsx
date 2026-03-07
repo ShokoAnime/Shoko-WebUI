@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiCog, mdiInformationVariantCircle } from '@mdi/js';
 import Icon from '@mdi/react';
 import { cloneDeep } from 'lodash';
@@ -11,7 +11,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 
-import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
+import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
 import type { DropResult } from '@hello-pangea/dnd';
 
 type AutoSearchReleaseModalProps = {
@@ -23,11 +23,11 @@ type AutoSearchReleaseModalProps = {
 
 const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
   const { onClose, onUpdateProviders, providers: initialProviders, show } = props;
-  const [infoShow, setInfoShow] = useState(false);
-  const [infoProvider, setInfoProvider] = useState<ReleaseProviderInfoType | undefined>();
-  const [providers, setProviders] = useState(() => initialProviders);
-  const canSearch = useMemo(() => providers.some(pro => pro.IsEnabled), [providers]);
-  const [debouncedCanSearch] = useDebounceValue(canSearch, 100);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoProvider, setInfoProvider] = useState<ReleaseProviderInfoType>();
+  const [providers, setProviders] = useState(initialProviders);
+  const searchEnabled = providers.some(provider => provider.IsEnabled);
+  const [debouncedSearchEnabled] = useDebounceValue(searchEnabled, 100);
 
   const handleToggleReleaseInfoProvider = (
     event: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>,
@@ -56,21 +56,21 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
   const handleOpenInfo = (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id.slice(0, -'-info'.length);
     const provider = providers.find(item => item.ID === id)!;
-    setInfoShow(true);
+    setShowInfoModal(true);
     setInfoProvider(provider);
   };
 
   const handleCloseInfo = () => {
-    setInfoShow(false);
+    setShowInfoModal(false);
   };
 
   const handleSearch = () => {
-    if (!canSearch) return;
+    if (!searchEnabled) return;
     onUpdateProviders(providers);
     onClose();
   };
 
-  useKeyboardBindings(show && !infoShow, {
+  useKeyboardBindings(show && !showInfoModal, {
     Escape: onClose,
     Enter: handleSearch,
   });
@@ -153,18 +153,25 @@ const AutoSearchReleaseModal = (props: AutoSearchReleaseModalProps) => {
         </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2" keybinding="Esc">Cancel</Button>
+        <Button
+          onClick={onClose}
+          buttonType="secondary"
+          className="px-5 py-2"
+          keybinding="Esc"
+        >
+          Cancel
+        </Button>
         <Button
           onClick={handleSearch}
           buttonType="primary"
           className="px-5 py-2"
-          disabled={!debouncedCanSearch}
+          disabled={!debouncedSearchEnabled}
           keybinding="Enter"
         >
           Search
         </Button>
       </div>
-      <ProviderInfoModal show={infoShow} provider={infoProvider} onClose={handleCloseInfo} />
+      <ProviderInfoModal show={showInfoModal} provider={infoProvider} onClose={handleCloseInfo} />
     </ModalPanel>
   );
 };

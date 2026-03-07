@@ -23,8 +23,8 @@ const ConfirmationPromptModal = ({
   onConfirm,
   show,
   title,
-  cancelText: cancel = 'Cancel',
-  confirmText: confirm = 'Confirm',
+  cancelText = 'Cancel',
+  confirmText = 'Confirm',
   confirmButtonType = 'primary',
 }: Props) => {
   const [isConfirmPending, setIsConfirmPending] = useState(false);
@@ -56,7 +56,7 @@ const ConfirmationPromptModal = ({
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={onClose} buttonType="secondary" className="px-5 py-2" keybinding="Esc">
-          {cancel}
+          {cancelText}
         </Button>
         <Button
           onClick={handleConfirm}
@@ -65,7 +65,7 @@ const ConfirmationPromptModal = ({
           loading={isConfirmPending}
           keybinding="Enter"
         >
-          {confirm}
+          {confirmText}
         </Button>
       </div>
     </ModalPanel>

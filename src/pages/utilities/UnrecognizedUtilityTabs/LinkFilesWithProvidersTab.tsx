@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
   mdiLoading,
@@ -22,23 +22,21 @@ import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/AutoSear
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UnrecognizedVideo from '@/components/Utilities/Unrecognized/UnrecognizedVideo';
-import { useEpisodeAniDbBulkQuery } from '@/core/react-query/episode/queries';
 import {
   useAutoPreviewReleaseInfoForFileByIdMutation,
   usePreviewReleaseInfoByProviderIdMutation,
   useSubmitReleaseInfoForFileByIdMutation,
 } from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
-import { useSeriesAniDbBulkQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
 import useKeyboardBindings from '@/hooks/useKeyboardBindings';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 
+import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
 import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
-import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
 import type { SeriesTypeEnum } from '@/core/types/api/series';
 
 export type RemoteMetadataDetails = {
@@ -103,21 +101,10 @@ const LinkFilesWithProvidersTab = () => {
     selectedRows: selectedLinks,
     setRowSelection: setLinkSelection,
   } = useRowSelection(state.links);
-  const episodeIds = useMemo(
-    () =>
-      Array.from(new Set(state.links.flatMap(link => link.release.CrossReferences.map(xref => xref.AnidbEpisodeID)))),
-    [state.links],
-  );
-  const animeIds = useMemo(
-    () => Array.from(new Set(state.links.flatMap(link => link.release.CrossReferences.map(xref => xref.AnidbAnimeID)))),
-    [state.links],
-  );
   const [focusedLinks, setFocusedLinks] = useState<number[]>(() => []);
   const lastSelectedLinkIndexRef = useRef<number | null>(null);
   const releaseProvidersQuery = useReleaseInfoProvidersQuery();
   const settingsQuery = useSettingsQuery();
-  const episodeQuery = useEpisodeAniDbBulkQuery(episodeIds);
-  const animeQuery = useSeriesAniDbBulkQuery(animeIds);
   const { mutate: submitLinkRemote } = useSubmitReleaseInfoForFileByIdMutation();
   const { mutate: autoLinkPreview } = useAutoPreviewReleaseInfoForFileByIdMutation();
   const { mutate: lookupFile } = usePreviewReleaseInfoByProviderIdMutation();
@@ -875,8 +862,6 @@ const LinkFilesWithProvidersTab = () => {
             state.links.map((link, index) => (
               <UnrecognizedVideo
                 key={link.id}
-                animeDict={animeQuery.data!}
-                episodeDict={episodeQuery.data!}
                 link={link}
                 selectLink={handleSelectLinks}
                 selectedLinkDict={selectedLinkDict}

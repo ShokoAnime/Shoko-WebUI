@@ -6,14 +6,10 @@ import { ReleaseSource } from '@/core/types/api/file';
 import UnrecognizedVideoCrossReference from './UnrecognizedVideoCrossReference';
 import UnrecognizedVideoProviderName from './UnrecognizedVideoProviderName';
 
-import type { AniDBEpisodeType } from '@/core/types/api/episode';
-import type { AniDBSeriesType } from '@/core/types/api/series';
 import type { ManualLink } from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProvidersTab';
 
 export type UnrecognizedVideoProps = {
   link: ManualLink;
-  animeDict: Record<number, AniDBSeriesType | null>;
-  episodeDict: Record<number, AniDBEpisodeType | null>;
   selectLink: (event: React.MouseEvent<HTMLElement>) => void;
   selectedLinkDict: Record<number, boolean>;
   focusedLink: boolean;
@@ -41,10 +37,8 @@ function parseReleaseSource(releaseSource: ReleaseSource): string {
   }
 }
 
-const UnrecognizedVideo = (props: UnrecognizedVideoProps): React.JSX.Element => {
+const UnrecognizedVideo = (props: UnrecognizedVideoProps) => {
   const {
-    animeDict,
-    episodeDict,
     focusedLink: isInFocus,
     link,
     selectLink,
@@ -174,8 +168,6 @@ const UnrecognizedVideo = (props: UnrecognizedVideoProps): React.JSX.Element => 
                 <UnrecognizedVideoCrossReference
                   key={`${xref.AnidbEpisodeID}-${xref.AnidbAnimeID}-${xref.PercentageStart}-${xref.PercentageEnd}`}
                   xref={xref}
-                  anime={animeDict[xref.AnidbAnimeID ?? -1] ?? null}
-                  episode={episodeDict[xref.AnidbEpisodeID] ?? null}
                 />
               ))
             )

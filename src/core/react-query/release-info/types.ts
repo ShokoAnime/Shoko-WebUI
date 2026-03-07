@@ -1,9 +1,11 @@
+import type { PluginInfoType } from '@/core/types/api/plugin';
+
 export type ReleaseInfoSummaryType = {
   ParallelMode: boolean;
 };
 
 export type UpdateReleaseInfoSettingsType = {
-  ParallelMode?: boolean | null;
+  ParallelMode?: boolean;
 };
 
 export type UpdateManyReleaseInfoProviderType = UpdateOneReleaseInfoProviderType & {
@@ -11,6 +13,17 @@ export type UpdateManyReleaseInfoProviderType = UpdateOneReleaseInfoProviderType
 };
 
 export type UpdateOneReleaseInfoProviderType = {
-  Priority?: number | null;
-  IsEnabled?: boolean | null;
+  Priority?: number;
+  IsEnabled?: boolean;
+};
+
+export type ReleaseProviderInfoType = {
+  ID: string;
+  Version: string;
+  Name: string;
+  Description?: string;
+  Priority: number;
+  IsEnabled: boolean;
+  Configuration?: object;
+  Plugin: PluginInfoType;
 };

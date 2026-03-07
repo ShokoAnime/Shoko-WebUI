@@ -95,11 +95,9 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
         confirmText="Delete"
         confirmButtonType="danger"
       >
-        <p>
-          Are you sure you want to delete the preset&nbsp;
-          <span className="font-semibold text-panel-text-important">{item.Name}</span>
-          ?
-        </p>
+        Are you sure you want to delete the preset&nbsp;
+        <span className="font-semibold text-panel-text-important">{item.Name}</span>
+        ?
       </ConfirmationPromptModal>
     </>
   );

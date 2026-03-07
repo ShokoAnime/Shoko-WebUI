@@ -1,41 +1,39 @@
 import React from 'react';
 
+import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
+import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
-import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
-import type { AniDBSeriesType } from '@/core/types/api/series';
-
-export type UnrecognizedVideoCrossReferenceProps = {
-  xref: ReleaseCrossReferenceType;
-  episode: AniDBEpisodeType | null;
-  anime: AniDBSeriesType | null;
-};
 
 function noPropagate(event: React.MouseEvent): void {
   event.stopPropagation();
 }
 
-const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceProps): React.JSX.Element => {
-  const { anime, episode, xref } = props;
+const UnrecognizedVideoCrossReference = ({ xref }: { xref: ReleaseCrossReferenceType }) => {
+  const { AnidbAnimeID, AnidbEpisodeID } = xref;
+
+  const animeQuery = useSeriesAniDBQuery(AnidbAnimeID!, !!AnidbAnimeID);
+  const episodeQuery = useEpisodeAniDBQuery(AnidbEpisodeID);
+
   return (
     <span className="text-sm font-semibold">
-      {episode && (
+      {episodeQuery.isSuccess && (
         <>
           <span className="text-panel-text-important">
-            {getEpisodePrefix(episode.Type)}
-            {episode.Type === EpisodeTypeEnum.Episode
-              ? episode.EpisodeNumber.toString().padStart(2, '0')
-              : episode.EpisodeNumber}
+            {getEpisodePrefix(episodeQuery.data.Type)}
+            {episodeQuery.data.Type === EpisodeTypeEnum.Episode
+              ? episodeQuery.data.EpisodeNumber.toString().padStart(2, '0')
+              : episodeQuery.data.EpisodeNumber}
           </span>
           &nbsp;-&nbsp;
           <span>
-            {episode.Title}
+            {episodeQuery.data.Title}
           </span>
         </>
       )}
-      {!episode && (
+      {!episodeQuery.isSuccess && (
         <>
           <span className="text-panel-text-important">
             ??
@@ -66,25 +64,26 @@ const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceP
         {xref.AnidbEpisodeID}
         )
       </a>
-      {xref.AnidbAnimeID != null && xref.AnidbAnimeID > 0 && (
+      {xref.AnidbAnimeID && (
         <>
           &nbsp;|&nbsp;
-          {anime
+          {animeQuery.isSuccess
             ? (
               <>
                 <span>
-                  {anime.Title}
+                  {animeQuery.data.Title}
                 </span>
-                {anime.AirDate && !anime.Title.endsWith(` (${anime.AirDate.slice(0, 4)})`) && (
-                  <>
-                    &nbsp;
-                    <span className="opacity-65">
-                      (
-                      {anime.AirDate.slice(0, 4)}
-                      )
-                    </span>
-                  </>
-                )}
+                {animeQuery.data.AirDate && !animeQuery.data.Title.endsWith(` (${animeQuery.data.AirDate.slice(0, 4)})`)
+                  && (
+                    <>
+                      &nbsp;
+                      <span className="opacity-65">
+                        (
+                        {animeQuery.data.AirDate.slice(0, 4)}
+                        )
+                      </span>
+                    </>
+                  )}
               </>
             )
             : (

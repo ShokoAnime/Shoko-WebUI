@@ -421,7 +421,7 @@ const UnrecognizedTab = () => {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  className="flex h-13 flex-row flex-wrap items-center gap-x-2"
+                  className="flex min-h-13 flex-row flex-wrap items-center gap-x-2"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
