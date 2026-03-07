@@ -11,7 +11,7 @@ import toast from '@/components/Toast';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { getUiVersion } from '@/core/util';
+import { getUiVersion, isDebug } from '@/core/util';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
@@ -143,7 +143,7 @@ const GeneralSettings = () => {
               <a
                 className="flex gap-x-2 text-panel-text-primary"
                 target="_blank"
-                href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${UI_VERSION}...master`}
+                href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${isDebug() ? '' : 'v'}${UI_VERSION}...master`}
                 rel="noreferrer"
               >
                 {`(${UI_VERSION})`}
