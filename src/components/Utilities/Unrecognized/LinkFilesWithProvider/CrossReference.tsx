@@ -1,41 +1,40 @@
 import React from 'react';
 
+import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
+import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
-import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
-import type { AniDBSeriesType } from '@/core/types/api/series';
 
-export type UnrecognizedVideoCrossReferenceProps = {
-  xref: ReleaseCrossReferenceType;
-  episode: AniDBEpisodeType | null;
-  anime: AniDBSeriesType | null;
+const stopPropagation = (event: React.MouseEvent) => {
+  event.stopPropagation();
 };
 
-function noPropagate(event: React.MouseEvent): void {
-  event.stopPropagation();
-}
+const CrossReference = ({ xref }: { xref: ReleaseCrossReferenceType }) => {
+  const { AnidbAnimeID, AnidbEpisodeID } = xref;
 
-const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceProps): React.JSX.Element => {
-  const { anime, episode, xref } = props;
+  const animeQuery = useSeriesAniDBQuery(AnidbAnimeID!, !!AnidbAnimeID);
+  const episodeQuery = useEpisodeAniDBQuery(AnidbEpisodeID);
+
   return (
     <span className="text-sm font-semibold">
-      {episode && (
+      {episodeQuery.isLoading && <span>Loading...</span>}
+      {episodeQuery.isSuccess && (
         <>
           <span className="text-panel-text-important">
-            {getEpisodePrefix(episode.Type)}
-            {episode.Type === EpisodeTypeEnum.Episode
-              ? episode.EpisodeNumber.toString().padStart(2, '0')
-              : episode.EpisodeNumber}
+            {getEpisodePrefix(episodeQuery.data.Type)}
+            {episodeQuery.data.Type === EpisodeTypeEnum.Episode
+              ? episodeQuery.data.EpisodeNumber.toString().padStart(2, '0')
+              : episodeQuery.data.EpisodeNumber}
           </span>
           &nbsp;-&nbsp;
           <span>
-            {episode.Title}
+            {episodeQuery.data.Title}
           </span>
         </>
       )}
-      {!episode && (
+      {episodeQuery.isError && (
         <>
           <span className="text-panel-text-important">
             ??
@@ -58,47 +57,50 @@ const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceP
       <a
         className="text-panel-text-primary"
         href={`https://anidb.net/episode/${xref.AnidbEpisodeID}`}
-        onClick={noPropagate}
+        onClick={stopPropagation}
         target="_blank"
         rel="noreferrer noopener"
+        tabIndex={-1}
       >
         (e
         {xref.AnidbEpisodeID}
         )
       </a>
-      {xref.AnidbAnimeID != null && xref.AnidbAnimeID > 0 && (
+      {xref.AnidbAnimeID && (
         <>
           &nbsp;|&nbsp;
-          {anime
-            ? (
-              <>
-                <span>
-                  {anime.Title}
-                </span>
-                {anime.AirDate && !anime.Title.endsWith(` (${anime.AirDate.slice(0, 4)})`) && (
+          {animeQuery.isLoading && <span>Loading...</span>}
+          {animeQuery.isSuccess && (
+            <>
+              <span>
+                {animeQuery.data.Title}
+              </span>
+              {animeQuery.data.AirDate && !animeQuery.data.Title.endsWith(` (${animeQuery.data.AirDate.slice(0, 4)})`)
+                && (
                   <>
                     &nbsp;
                     <span className="opacity-65">
                       (
-                      {anime.AirDate.slice(0, 4)}
+                      {animeQuery.data.AirDate.slice(0, 4)}
                       )
                     </span>
                   </>
                 )}
-              </>
-            )
-            : (
-              <span className="opacity-65">
-                &lt;unknown&gt;
-              </span>
-            )}
+            </>
+          )}
+          {animeQuery.isError && (
+            <span className="opacity-65">
+              &lt;unknown&gt;
+            </span>
+          )}
           &nbsp;
           <a
             className="text-panel-text-primary"
             href={`https://anidb.net/anime/${xref.AnidbAnimeID}`}
-            onClick={noPropagate}
+            onClick={stopPropagation}
             target="_blank"
             rel="noreferrer noopener"
+            tabIndex={-1}
           >
             (a
             {xref.AnidbAnimeID}
@@ -110,4 +112,4 @@ const UnrecognizedVideoCrossReference = (props: UnrecognizedVideoCrossReferenceP
   );
 };
 
-export default UnrecognizedVideoCrossReference;
+export default CrossReference;

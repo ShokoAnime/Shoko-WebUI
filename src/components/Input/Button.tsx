@@ -5,7 +5,6 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
-import { keybindingsEnabled } from '@/hooks/useKeyboardBindings';
 
 import type { ButtonType, SizeType } from '@/components/Input/Button.utils';
 
@@ -32,21 +31,21 @@ const Button = ({
   className,
   disabled,
   id,
+  keybinding,
   loading,
   loadingSize,
   onClick,
   submit,
   tooltip,
   tooltipPlace,
-  keybinding,
 }: Props) => (
   <button
     id={id}
     type={submit ? 'submit' : 'button'}
     className={cx([
       className,
-      keybinding && keybindingsEnabled && 'flex items-center gap-x-2',
-      'relative text-sm font-semibold transition ease-in-out rounded-lg outline-hidden',
+      keybinding && 'flex items-center gap-x-2',
+      'relative text-sm font-semibold transition ease-in-out rounded-lg',
       buttonType && buttonTypeClasses[buttonType],
       buttonSize && buttonSizeClasses[buttonSize],
       (loading || disabled) && 'opacity-65 cursor-default',
@@ -57,7 +56,7 @@ const Button = ({
     data-tooltip-content={tooltip}
     data-tooltip-place={tooltipPlace ?? 'top'}
   >
-    {keybinding && keybindingsEnabled
+    {keybinding
       ? (
         <>
           {children}

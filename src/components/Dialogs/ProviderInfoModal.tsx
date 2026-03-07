@@ -1,36 +1,32 @@
 import React from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
-import useKeyboardBindings from '@/hooks/useKeyboardBindings';
+import { hideProviderInfo } from '@/core/slices/modals/providerInfo';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { HashProviderInfoType } from '@/core/types/api/hashing';
-import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
+import type { RootState } from '@/core/store';
 
-type Props = {
-  show: boolean;
-  provider?: HashProviderInfoType | ReleaseProviderInfoType;
-  onClose: () => void;
-};
+const ProviderInfoModal = () => {
+  const dispatch = useDispatch();
+  const { provider, show } = useSelector((state: RootState) => state.modals.providerInfo);
 
-const ProviderInfoModal = (props: Props) => {
-  const { onClose, provider, show } = props;
+  const onClose = () => dispatch(hideProviderInfo());
 
-  useKeyboardBindings(show, { Escape: onClose, Enter: onClose });
+  useToggleModalKeybinds(true, show);
+  useHotkeys(['escape', 'enter'], onClose, { scopes: 'nested-modal' });
 
   return (
     <ModalPanel
-      show={!!provider && show}
+      show={show}
       onRequestClose={onClose}
       header={provider?.Name}
-      shouldCloseOnEsc={false}
       subHeader={`v${provider?.Version}`}
-      size="md"
+      size="sm"
       overlayClassName="!z-[90]"
     >
-      {provider?.Description?.split(/\r\n|\n|\r/g).map((line, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <p key={index}>{line}</p>
-      ))}
+      <div className="whitespace-pre-wrap">{provider?.Description?.replaceAll('\n', '\n\n')}</div>
     </ModalPanel>
   );
 };

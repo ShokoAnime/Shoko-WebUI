@@ -116,7 +116,7 @@ const IgnoredFilesTab = () => {
       {
         id: 'managedFolder',
         name: 'Managed Folder',
-        className: 'w-40',
+        className: 'w-46',
         item: file =>
           find(
             managedFolders,

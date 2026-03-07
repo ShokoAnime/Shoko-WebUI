@@ -13,7 +13,7 @@ type Props = {
   subtitle: string;
 };
 
-const DashboardEpisode = ({ episodeId, shokoId, thumbnail, title, subtitle }: Props) => (
+const DashboardEpisode = ({ episodeId, shokoId, subtitle, thumbnail, title }: Props) => (
   <Link
     className="group w-[28.75rem] flex flex-col shrink-0 justify-center"
     to={`/webui/collection/series/${shokoId}`}

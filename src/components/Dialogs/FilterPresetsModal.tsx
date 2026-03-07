@@ -44,7 +44,7 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
   const { filterId } = useParams();
 
   const dispatch = useDispatch();
-  const { mutateAsync: deleteFilter } = useDeleteFilterMutation();
+  const { isPending: deletePending, mutateAsync: deleteFilter } = useDeleteFilterMutation();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -54,6 +54,8 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
   };
 
   const handleDelete = async () => {
+    if (!showConfirmModal || deletePending || item.IsLocked) return;
+
     if (filterId === item.IDs.ID.toString()) {
       navigate('/webui/collection');
     }
@@ -95,11 +97,11 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
         confirmText="Delete"
         confirmButtonType="danger"
       >
-        <p>
+        <div>
           Are you sure you want to delete the preset&nbsp;
           <span className="font-semibold text-panel-text-important">{item.Name}</span>
           ?
-        </p>
+        </div>
       </ConfirmationPromptModal>
     </>
   );

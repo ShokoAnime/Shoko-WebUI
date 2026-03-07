@@ -20,7 +20,6 @@ const WelcomeModal = (props: Props) => {
     <Modal
       isOpen={show}
       onRequestClose={onClose}
-      shouldCloseOnEsc={false}
       overlayClassName="fixed inset-0 bg-black/50 z-[110]"
       shouldCloseOnOverlayClick={false}
       className="flex h-full items-center justify-center"

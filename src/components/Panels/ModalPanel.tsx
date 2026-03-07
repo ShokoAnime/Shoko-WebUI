@@ -35,7 +35,7 @@ const ModalPanel = (props: Props) => {
     onAfterOpen,
     onRequestClose,
     overlayClassName,
-    shouldCloseOnEsc,
+    shouldCloseOnEsc = false,
     show,
     size,
     subHeader,

@@ -1,89 +1,35 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useLocation } from 'react-router';
-import {
-  mdiLoading,
-  mdiMagnify,
-  mdiPencil,
-  mdiSelectAll,
-  mdiSelection,
-  mdiSelectionRemove,
-  mdiTrayMinus,
-  mdiTrayPlus,
-} from '@mdi/js';
+import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { cloneDeep } from 'lodash';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { forEach } from 'lodash';
+import { useImmer } from 'use-immer';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/AutoSearchReleaseModal';
-import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/AutoSearchReleaseModal';
+import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
+import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
+import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
 import Title from '@/components/Utilities/Unrecognized/Title';
-import UnrecognizedVideo from '@/components/Utilities/Unrecognized/UnrecognizedVideo';
-import { useEpisodeAniDbBulkQuery } from '@/core/react-query/episode/queries';
-import {
-  useAutoPreviewReleaseInfoForFileByIdMutation,
-  usePreviewReleaseInfoByProviderIdMutation,
-  useSubmitReleaseInfoForFileByIdMutation,
-} from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
-import { useSeriesAniDbBulkQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
-import useKeyboardBindings from '@/hooks/useKeyboardBindings';
+import { LinkState } from '@/core/types/utilities/unrecognized-utility';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 
-import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
-import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
-import type { SeriesTypeEnum } from '@/core/types/api/series';
+import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
-export type RemoteMetadataDetails = {
-  Success: boolean;
-  FilePath: string;
-  FileExtension?: string;
-  ReleaseGroup?: string;
-  SeriesName?: string;
-  SeriesType?: SeriesTypeEnum;
-  Year?: number;
-  SeasonNumber?: number;
-  EpisodeName?: string;
-  EpisodeStart?: number;
-  EpisodeEnd?: number;
-  EpisodeText?: string;
-  Creditless?: boolean;
-  Censored?: boolean;
-  EpisodeType?: EpisodeTypeEnum;
-  Source?: ReleaseSource;
-  Version?: number;
-  AnidbAnimeId?: number;
-  AnidbEpisodeId?: number;
-  RuleName: string;
-};
-
-export type ManualLink = {
-  id: number;
-  file: FileType;
-  providers: ReleaseProviderInfoType[];
-  state:
-    | 'pre-init'
-    | 'initializing'
-    | 'init'
-    | 'search-queue'
-    | 'searching'
-    | 'submit-queue'
-    | 'submitting'
-    | 'pending'
-    | 'submitted';
-  release: ReleaseInfoType;
-  metadata?: RemoteMetadataDetails;
-};
+export type LinksType = Record<number, ManualLinkType>;
 
 let lastLinkId = 0;
-const generateLinkID = () => {
+const generateLinkId = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
     lastLinkId = 0;
   }
@@ -92,813 +38,298 @@ const generateLinkID = () => {
 };
 
 const LinkFilesWithProvidersTab = () => {
-  const { selectedRows } = (useLocation().state ?? {}) as { selectedRows?: FileType[] };
-  const [state, setLoading] = useState({
-    isLoading: true,
-    links: new Array<ManualLink>(),
-  });
-  const {
-    handleRowSelect: handleLinkSelect,
-    rowSelection: selectedLinkDict,
-    selectedRows: selectedLinks,
-    setRowSelection: setLinkSelection,
-  } = useRowSelection(state.links);
-  const episodeIds = useMemo(
-    () =>
-      Array.from(new Set(state.links.flatMap(link => link.release.CrossReferences.map(xref => xref.AnidbEpisodeID)))),
-    [state.links],
-  );
-  const animeIds = useMemo(
-    () => Array.from(new Set(state.links.flatMap(link => link.release.CrossReferences.map(xref => xref.AnidbAnimeID)))),
-    [state.links],
-  );
-  const [focusedLinks, setFocusedLinks] = useState<number[]>(() => []);
-  const lastSelectedLinkIndexRef = useRef<number | null>(null);
-  const releaseProvidersQuery = useReleaseInfoProvidersQuery();
-  const settingsQuery = useSettingsQuery();
-  const episodeQuery = useEpisodeAniDbBulkQuery(episodeIds);
-  const animeQuery = useSeriesAniDbBulkQuery(animeIds);
-  const { mutate: submitLinkRemote } = useSubmitReleaseInfoForFileByIdMutation();
-  const { mutate: autoLinkPreview } = useAutoPreviewReleaseInfoForFileByIdMutation();
-  const { mutate: lookupFile } = usePreviewReleaseInfoByProviderIdMutation();
   const navigate = useNavigateVoid();
+  const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
 
-  const [auto, setAuto] = useState<{ show: boolean, providers: ReleaseProviderInfoType[] }>(
-    () => ({ show: false, providers: [] }),
-  );
-  const [shouldConfirm, setShouldConfirm] = useState(false);
+  const releaseProvidersQuery = useReleaseInfoProvidersQuery();
+  const settings = useSettingsQuery().data;
 
-  const anyLinks = selectedLinks.length > 0 ? selectedLinks : state.links;
-  const canSubmit = !state.isLoading && state.links.length > 0
-    && state.links.some(link => link.state === 'pending' && link.release.CrossReferences.length > 0);
-  const submitCount = state.links.filter(
-    link =>
-      link.state === 'submitting'
-      || link.state === 'submit-queue'
-      || (link.state === 'pending' && link.release.CrossReferences.length > 0),
-  ).length;
-  const submittedCount = state.links.filter(link => link.state === 'submitted').length;
+  const [linksDict, setLinks] = useImmer<LinksType>({});
+  const links = Object.values(linksDict);
+  const [initialized, setInitialized] = useState(false);
+  const [showAutoSearchModal, setShowAutoSearchModal] = useState(false);
+  const [autoSearchProviders, setAutoSearchProviders] = useState<ManualLinkProviderType[]>([]);
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
-  const scrollToLink = useCallback((index: number) => {
-    const { id } = state.links[index] ?? { id: -1 };
-    const element = window.document.querySelector(`div[data-video-link-id="${id}"]`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [state.links]);
+  const initializeLinks = useEffectEvent(() => {
+    if (!releaseProvidersQuery.data) return;
 
-  const focusLinks = (initialIndexes: number[] | ((prev: number[]) => number[]), focusIndex?: number) => {
-    const indexes = typeof initialIndexes === 'function' ? initialIndexes(focusedLinks) : initialIndexes;
-    if (focusIndex != null || indexes.length > 0) {
-      const index = focusIndex ?? indexes[indexes.length - 1];
-      scrollToLink(index);
-    }
-    setFocusedLinks(indexes);
-  };
+    const sortedFiles = selectedFiles.toSorted((fileA, fileB) => {
+      let locationA = (fileA.Locations.find(loc => loc.IsAccessible) ?? fileA.Locations[0])?.RelativePath ?? '';
+      let locationB = (fileB.Locations.find(loc => loc.IsAccessible) ?? fileB.Locations[0])?.RelativePath ?? '';
+      if (locationA.startsWith('dot')) locationA = `.${locationA.substring(3)}`;
+      if (locationB.startsWith('dot')) locationB = `.${locationB.substring(3)}`;
+      return locationA.localeCompare(locationB, 'en-US', {
+        numeric: true,
+        ignorePunctuation: true,
+        sensitivity: 'base',
+      });
+    });
 
-  const completeLinking = useCallback(() => {
-    toast.info('Linking complete');
-    navigate('/webui/utilities/unrecognized/files', { replace: true });
-  }, [navigate]);
+    const newLinks: LinksType = {};
+    sortedFiles.forEach((file) => {
+      const now = new Date().toISOString();
+      const release: ReleaseInfoType = {
+        OriginalFilename: file.Locations?.[0].RelativePath.split(/[/\\]/g).pop(),
+        ProviderName: 'User',
+        Version: 1,
+        Source: ReleaseSource.Unknown,
+        CrossReferences: [],
+        FileSize: file.Size,
+        Hashes: file.Hashes,
+        IsCorrupted: false,
+        Released: file.MediaInfo?.Encoded?.slice(0, 10) ?? file.Created?.slice(0, 10),
+        Created: now,
+        Updated: now,
+      };
 
-  const onConfirmed = () => {
+      const linkId = generateLinkId();
+      newLinks[linkId] = {
+        id: linkId,
+        file,
+        providers: settings.WebUI_Settings.releaseInfoProviders ?? [],
+        state: LinkState.PreInit,
+        release,
+      };
+    });
+
+    setLinks(newLinks);
+    setInitialized(true);
+  });
+
+  useEffect(() => {
+    if (!links.length && initialized) navigate('/webui/utilities/unrecognized/files', { replace: true });
+  }, [initialized, links, navigate]);
+
+  useEffect(() => {
+    if (!releaseProvidersQuery.isSuccess) return;
+    initializeLinks();
+  }, [releaseProvidersQuery.isSuccess]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: links.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 209,
+    overscan: 5,
+    gap: 16,
+  });
+  const virtualItems = virtualizer.getVirtualItems();
+
+  const {
+    handleRowSelect,
+    rowSelection,
+    selectedRows,
+    setRowSelection,
+  } = useRowSelection(links);
+
+  const canSubmit = initialized
+    && links.some(link => link.state === LinkState.Ready);
+
+  const navigateBack = () => {
+    setRowSelection({});
     navigate(-1);
   };
 
-  const onConfirmClose = () => {
-    setShouldConfirm(false);
-  };
-
   const handleCancel = () => {
-    if (focusedLinks.length > 0) {
-      focusLinks([]);
-    } else if (selectedLinks.length > 0) {
-      setLinkSelection({});
-      lastSelectedLinkIndexRef.current = null;
-    } else if (canSubmit) {
-      setShouldConfirm(true);
-    } else {
-      onConfirmed();
-    }
-  };
-
-  const submitPending = () => {
-    const links = cloneDeep(state.links);
-    for (const link of links) {
-      if (
-        link.release.CrossReferences.length > 0 && (
-          link.state === 'pending'
-          || link.state === 'init'
-        )
-      ) {
-        link.state = 'submit-queue';
-      }
-    }
-    setLoading(prev => ({ ...prev, links }));
-  };
-
-  const openSearchDialog = () => {
-    if (selectedLinks.length === 0) return;
-    const providers = cloneDeep(selectedLinks[0].providers);
-    setAuto({ show: true, providers });
-  };
-
-  const onAutoSearchUpdateProviders = (providers: ReleaseProviderInfoType[]) => {
-    const links = cloneDeep(state.links);
-    const selectedIds = selectedLinks.map(link => link.id);
-    for (
-      const link of links
-    ) {
-      if (selectedIds.includes(link.id) && (link.state === 'pending' || link.state === 'init')) {
-        link.providers = cloneDeep(providers);
-        link.state = 'search-queue';
-      }
-    }
-    setLoading(prev => ({ ...prev, links }));
-    setLinkSelection({});
-    lastSelectedLinkIndexRef.current = null;
-  };
-
-  const onAutoSearchClose = () => {
-    setAuto(prev => ({ ...prev, show: false }));
-  };
-
-  const initializeLinks = useCallback(
-    (
-      files: FileType[],
-      enabledReleaseProviders: string[],
-      releaseProviderOrder: string[],
-      releaseProviders: ReleaseProviderInfoType[],
-    ) => {
-      const links: ManualLink[] = [];
-      for (
-        const file of files.slice().sort((fileA, fileB) => {
-          let locationA = (fileA.Locations.find(loc => loc.IsAccessible) ?? fileA.Locations[0])?.RelativePath ?? '';
-          let locationB = (fileB.Locations.find(loc => loc.IsAccessible) ?? fileB.Locations[0])?.RelativePath ?? '';
-          if (locationA.startsWith('dot')) locationA = `.${locationA.substring(3)}`;
-          if (locationB.startsWith('dot')) locationB = `.${locationB.substring(3)}`;
-          return locationA.localeCompare(locationB, 'en-US', {
-            numeric: true,
-            ignorePunctuation: true,
-            sensitivity: 'base',
-          });
-        })
-      ) {
-        const now = new Date().toISOString();
-        const release: ReleaseInfoType = {
-          OriginalFilename: file.Locations?.[0].RelativePath.split(/[/\\]/g).pop(),
-          ProviderName: 'User',
-          Version: 1,
-          Source: ReleaseSource.Unknown,
-          CrossReferences: [],
-          FileSize: file.Size,
-          Hashes: file.Hashes,
-          IsCorrupted: false,
-          Released: file.MediaInfo?.Encoded?.slice(0, 10) ?? file.Created?.slice(0, 10),
-          Created: now,
-          Updated: now,
-        };
-        const providers = releaseProviders
-          .sort((providerA, providerB) => {
-            const idA = providerA.ID;
-            const idB = providerB.ID;
-            const indexA = releaseProviderOrder.indexOf(idA);
-            const indexB = releaseProviderOrder.indexOf(idB);
-            if (indexA === -1 && indexB === -1) return 0;
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
-          })
-          .map<ReleaseProviderInfoType>((provider, index) => ({
-            ...provider,
-            IsEnabled: enabledReleaseProviders.includes(provider.ID),
-            Priority: index,
-          }));
-        const link: ManualLink = {
-          id: generateLinkID(),
-          file,
-          providers,
-          state: 'pre-init',
-          release,
-        };
-
-        links.push(link);
-      }
-
-      setLoading({ links, isLoading: false });
-    },
-    [],
-  );
-
-  const selectLinks = (selectedId: number, shiftKey = false, setFocus = true, preSelect?: boolean) => {
-    try {
-      if (Number.isNaN(selectedId)) return;
-      const manualLinkIndex = state.links.findIndex(link => link.id === selectedId);
-      let isSelected = false;
-      if (shiftKey) {
-        window?.getSelection()?.removeAllRanges();
-        const lrIndex = lastSelectedLinkIndexRef.current ?? manualLinkIndex;
-        const fromIndex = Math.min(lrIndex, manualLinkIndex);
-        const toIndex = Math.max(lrIndex, manualLinkIndex);
-        isSelected = preSelect ?? (
-          lastSelectedLinkIndexRef.current != null
-            ? selectedLinkDict[state.links[lastSelectedLinkIndexRef.current].id]
-            : true
-        );
-        const tempRowSelection: Record<number, boolean> = {};
-        for (let index = fromIndex; index <= toIndex; index += 1) {
-          tempRowSelection[state.links[index].id] = isSelected;
-        }
-        setLinkSelection(tempRowSelection);
-      } else if (!setFocus || window?.getSelection()?.type !== 'Range') {
-        isSelected = preSelect ?? !selectedLinkDict[selectedId];
-        handleLinkSelect(selectedId, isSelected);
-      }
-      if (
-        setFocus
-        && (focusedLinks.length === 0
-          || (focusedLinks.length === 1 && focusedLinks[0] === lastSelectedLinkIndexRef.current))
-      ) {
-        focusLinks(isSelected ? [manualLinkIndex] : [], -1);
-      }
-      lastSelectedLinkIndexRef.current = manualLinkIndex;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const toggleAllSelectedLinks = () => {
-    if (selectedLinks.length !== state.links.length) {
-      const tempRowSelection: Record<number, boolean> = {};
-      for (const link of state.links) {
-        tempRowSelection[link.id] = true;
-      }
-      setLinkSelection(tempRowSelection);
-    } else {
-      setLinkSelection({});
-    }
-  };
-
-  const handleSelectLinks = (event: React.MouseEvent<HTMLElement>) => {
-    const selectedId = parseInt(event.currentTarget.dataset.id ?? '', 10);
-    selectLinks(selectedId, event.shiftKey);
-  };
-
-  const addLinksToSubmitQueue = () => {
-    if (selectedLinks.length === 0) return;
-    const links = cloneDeep(state.links);
-    const selectedIds = selectedLinks.map(link => link.id);
-    for (
-      const link of links
-    ) {
-      if (selectedIds.includes(link.id) && link.state === 'pending' && link.release.CrossReferences.length > 0) {
-        link.state = 'submit-queue';
-      }
-    }
-    setLoading(prev => ({ ...prev, links }));
-  };
-
-  const removeLinksFromSearchQueue = () => {
-    const links = cloneDeep(state.links);
-    const selectedIds = selectedLinks.map(link => link.id);
-    for (const link of links.filter(lin => selectedIds.includes(lin.id) && lin.state === 'search-queue')) {
-      link.state = 'pending';
-    }
-    setLoading(prev => ({ ...prev, links }));
-  };
-
-  const removeLinksFromSubmitQueue = () => {
-    const links = cloneDeep(state.links);
-    const selectedIds = selectedLinks.map(link => link.id);
-    for (const link of links.filter(lin => selectedIds.includes(lin.id) && lin.state === 'submit-queue')) {
-      link.state = 'pending';
-    }
-    setLoading(prev => ({ ...prev, links }));
-  };
-
-  const removeLinksFromPage = () => {
-    // eslint-disable-next-line no-nested-ternary
-    const selectedIds = selectedLinks.length > 0
-      ? selectedLinks.map(link => link.id)
-      : focusedLinks.length > 0
-      ? focusedLinks.map(index => state.links[index].id)
-      : [];
-    const links = cloneDeep(state.links)
-      .filter(link => link.state === 'searching' || link.state === 'submitting' || !selectedIds.includes(link.id));
-    lastSelectedLinkIndexRef.current = null;
-    setLoading(prev => ({ ...prev, links }));
-    setLinkSelection({});
-    focusLinks([]);
-  };
-
-  const initLink = useCallback((originalLink: ManualLink) => {
-    const link = cloneDeep(originalLink);
-    if (link.providers.length > 0 && link.providers.some(provider => provider.IsEnabled)) {
-      link.state = 'search-queue';
-    } else {
-      link.state = 'init';
-    }
-    const offlineProvider = link.providers.find(provider => provider.Name === 'Offline Importer')?.ID;
-    if (!offlineProvider) {
-      setLoading((prev) => {
-        const links = cloneDeep(prev.links);
-        const index = links.findIndex(lin => lin.id === link.id);
-        if (index !== -1) {
-          links[index] = link;
-        }
-        return { ...prev, links };
+    if (links.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))) {
+      setLinks((draft) => {
+        forEach(draft, (draft2) => {
+          if (draft2.state === LinkState.Submitting) draft2.state = LinkState.Ready;
+          else if (draft2.state === LinkState.Searching) draft2.state = LinkState.Init;
+        });
       });
       return;
     }
 
-    const path = link.file.Locations.find(location => location.AbsolutePath)?.AbsolutePath
-      ?? link.file.Locations?.[0]?.RelativePath ?? '';
-    lookupFile({ id: `match://${path}`, providerID: offlineProvider }, {
-      onSettled(release, error) {
-        if (!error && release) {
-          const metadata = JSON.parse(release.Metadata ?? 'null') as RemoteMetadataDetails | null;
-          if (metadata?.Success) {
-            link.metadata = metadata;
-            if (release.OriginalFilename !== link.release.OriginalFilename) {
-              link.release.OriginalFilename = release.OriginalFilename;
-            }
-            if (release.Version !== link.release.Version) {
-              link.release.Version = release.Version;
-            }
-            if (release.IsCensored != null) {
-              link.release.IsCensored = release.IsCensored;
-            }
-            if (release.IsCreditless != null) {
-              link.release.IsCreditless = release.IsCreditless;
-            }
-            if (release.IsChaptered != null) {
-              link.release.IsChaptered = release.IsCreditless;
-            }
-            link.release.IsCorrupted = release.IsCorrupted;
-            if (release.Source !== link.release.Source) {
-              link.release.Source = release.Source;
-            }
-            if (release.Group) {
-              link.release.Group = release.Group;
-            }
-          }
-        }
+    if (canSubmit) {
+      setConfirmCancel(true);
+      return;
+    }
 
-        setLoading((prev) => {
-          const links = cloneDeep(prev.links);
-          const index = links.findIndex(lin => lin.id === link.id);
-          if (index !== -1) {
-            links[index] = link;
-          }
-          return { ...prev, links };
-        });
-      },
+    navigateBack();
+  };
+
+  const handleSubmit = () => {
+    if (!canSubmit) return;
+
+    setLinks((draft) => {
+      forEach(draft, (draft2) => {
+        if (draft2.state === LinkState.Ready) {
+          draft2.state = LinkState.Submitting;
+        }
+      });
     });
-  }, [lookupFile]);
+  };
 
-  const searchLink = useCallback((originalLink: ManualLink) => {
-    const link = cloneDeep(originalLink);
-    const enabledReleaseProviders = link.providers.filter(provider => provider.IsEnabled).map(provider => provider.ID);
-    link.state = 'pending';
-    if (enabledReleaseProviders.length > 0) {
-      autoLinkPreview({ fileId: link.file.ID, providerIDs: enabledReleaseProviders }, {
-        onSettled(data, error) {
-          if (!error && data) {
-            let edited = false;
-            const editedData = cloneDeep(data);
-            if (editedData.Source === ReleaseSource.Unknown && link.release.Source !== ReleaseSource.Unknown) {
-              edited = true;
-              editedData.Source = link.release.Source;
-            }
-            if (editedData.Version < 1) {
-              edited = true;
-              editedData.Version = 1;
-            }
-            if (editedData.FileSize == null && link.release.FileSize != null) {
-              edited = true;
-              editedData.FileSize = link.release.FileSize;
-            }
-            if (
-              editedData.OriginalFilename == null && !!link.release.OriginalFilename
-            ) {
-              edited = true;
-              editedData.OriginalFilename = link.release.OriginalFilename;
-            }
-            if (editedData.IsChaptered == null && link.release.IsChaptered != null) {
-              edited = true;
-              editedData.IsChaptered = link.release.IsChaptered;
-            }
-            if (editedData.IsCensored == null && link.release.IsCensored != null) {
-              edited = true;
-              editedData.IsCensored = link.release.IsCensored;
-            }
-            if (editedData.IsCreditless == null && link.release.IsCreditless != null) {
-              edited = true;
-              editedData.IsCreditless = link.release.IsCreditless;
-            }
-            if (!editedData.Group && link.release.Group) {
-              edited = true;
-              editedData.Group = link.release.Group;
-            }
-            if (edited && editedData.ProviderName !== 'User' && !/\+User\b/.test(editedData.ProviderName)) {
-              editedData.ProviderName += '+User';
-            }
-            link.release = editedData;
-          }
-
-          setLoading((prev) => {
-            const links = cloneDeep(prev.links);
-            const index = links.findIndex(lin => lin.id === link.id);
-            if (index !== -1) {
-              links[index] = link;
-            }
-            return { ...prev, links };
-          });
-        },
-      });
+  const toggleAllSelectedLinks = () => {
+    if (selectedRows.length === links.length) {
+      setRowSelection({});
     } else {
-      setLoading((prev) => {
-        const links = cloneDeep(prev.links);
-        const index = links.findIndex(lin => lin.id === link.id);
-        if (index !== -1) {
-          links[index] = link;
-        }
-        return { ...prev, links };
-      });
-    }
-  }, [autoLinkPreview]);
-
-  const submitLink = useCallback((originalLink: ManualLink) => {
-    const link = cloneDeep(originalLink);
-    if (link.release.CrossReferences.length > 0) {
-      submitLinkRemote({ fileId: link.file.ID, release: link.release }, {
-        onSettled(_, error) {
-          link.state = error ? 'pending' : 'submitted';
-
-          setLoading((prev) => {
-            const links = cloneDeep(prev.links);
-            const index = links.findIndex(lin => lin.id === link.id);
-            if (index !== -1) {
-              links[index] = link;
-            }
-            return { ...prev, links };
-          });
-        },
-      });
-    } else {
-      link.state = 'pending';
-      setLoading((prev) => {
-        const links = cloneDeep(prev.links);
-        const index = links.findIndex(lin => lin.id === link.id);
-        if (index !== -1) {
-          links[index] = link;
-        }
-        return { ...prev, links };
-      });
-    }
-  }, [submitLinkRemote]);
-
-  const navigateCursor = (event: KeyboardEvent) => {
-    const isUp = event.key === 'ArrowUp';
-    if (focusedLinks.length === 0) {
-      if (selectedLinks.length > 0) {
-        const index = state.links.findIndex(link => link.id === selectedLinks[selectedLinks.length - 1].id);
-        if (index === -1) return;
-        focusLinks([index]);
-      } else {
-        focusLinks(isUp ? [state.links.length - 1] : [0]);
-      }
-    } else {
-      const currentIndex = isUp
-        ? focusedLinks.reduceRight(
-          (cur, nex) => (nex === cur - 1 ? nex : cur),
-          focusedLinks[focusedLinks.length - 1] + 1,
+      if (
+        links.some(
+          link => [LinkState.PreInit, LinkState.Searching, LinkState.Submitting].includes(link.state),
         )
-        : focusedLinks.reduce((cur, nex) => (nex === cur + 1 ? nex : cur), focusedLinks[0] - 1);
-      let nextIndex = currentIndex;
-      if (event.shiftKey || focusedLinks.length === 1) nextIndex += isUp ? -1 : +1;
-      if (nextIndex < 0) nextIndex = state.links.length - 1;
-      else if (nextIndex >= state.links.length) nextIndex = 0;
-      if (event.shiftKey) {
-        if (!focusedLinks.includes(nextIndex)) {
-          focusLinks(prev => [nextIndex, ...prev].sort((indexA, indexB) => indexA - indexB), nextIndex);
+      ) {
+        return;
+      }
+
+      const allSelected = Object.fromEntries(links.map(link => [link.id, true]));
+      setRowSelection(allSelected);
+    }
+  };
+
+  const removeLinks = () => {
+    if (
+      !selectedRows.length
+      || selectedRows.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))
+    ) return;
+
+    setLinks((draft) => {
+      selectedRows.forEach((link) => {
+        delete draft[link.id];
+      });
+    });
+    setRowSelection({});
+  };
+
+  const onUpdateProviders = (providers: ManualLinkProviderType[]) => {
+    if (!providers.some(provider => provider.enabled)) return;
+    setLinks((draft) => {
+      selectedRows.forEach((link) => {
+        if ([LinkState.Ready, LinkState.Init].includes(link.state)) {
+          draft[link.id].providers = providers;
+          draft[link.id].state = LinkState.Searching;
         }
-      } else {
-        focusLinks([nextIndex], nextIndex);
-      }
-    }
+      });
+    });
+    setRowSelection({});
   };
 
-  const navigateCursorToBoundary = (event: KeyboardEvent) => {
-    const isUp = event.key === 'PageUp';
-    const nextIndex = isUp ? 0 : state.links.length - 1;
-    if (focusedLinks.length > 0 && event.shiftKey) {
-      const currentIndex = isUp
-        ? focusedLinks[0]
-        : focusedLinks[focusedLinks.length - 1];
-      const fromIndex = Math.min(currentIndex, nextIndex);
-      const toIndex = Math.max(currentIndex, nextIndex);
-      const range = Array.from({ length: toIndex - fromIndex + 1 }, (_, index) => fromIndex + index);
-      focusLinks(range, nextIndex);
-    } else {
-      focusLinks([nextIndex], nextIndex);
-    }
-  };
+  const submitSelectedLinks = () => {
+    if (!selectedRows.length || !selectedRows.some(link => link.state === LinkState.Ready)) return;
 
-  const toggleFocused = () => {
-    if (focusedLinks.length === 0) {
-      if (selectedLinks.length === 0) {
-        focusLinks([0], 0);
-      } else {
-        const index = state.links.findIndex(link => link.id === selectedLinks[selectedLinks.length - 1].id);
-        if (index === -1) return;
-        focusLinks([index], index);
-      }
-    } else {
-      const isFocused = selectedLinkDict[state.links[focusedLinks[focusedLinks.length - 1]].id] ?? false;
-      for (const index of focusedLinks) {
-        selectLinks(state.links[index].id, false, false, !isFocused);
-      }
-    }
-  };
-
-  const deleteSelectedOrFocused = () => {
-    if (selectedLinks.length > 0 || focusedLinks.length > 0) {
-      removeLinksFromPage();
-    }
-  };
-
-  useKeyboardBindings(!(auto.show || shouldConfirm), {
-    ' ': toggleFocused,
-    d: deleteSelectedOrFocused,
-    Delete: deleteSelectedOrFocused,
-    Backspace: deleteSelectedOrFocused,
-    q: addLinksToSubmitQueue,
-    r: () => {
-      removeLinksFromSubmitQueue();
-      removeLinksFromSearchQueue();
-    },
-    a: toggleAllSelectedLinks,
-    s: openSearchDialog,
-    Escape: handleCancel,
-    Enter: () => {
-      if (canSubmit) {
-        submitPending();
-      }
-    },
-  }, [
-    [{ key: 'ArrowUp' }, navigateCursor],
-    [{ key: 'ArrowDown' }, navigateCursor],
-    [{ key: 'PageUp' }, navigateCursorToBoundary],
-    [{ key: 'PageDown' }, navigateCursorToBoundary],
-  ]);
-
-  useEffect(() => {
-    if (!state.isLoading) {
-      const links = cloneDeep(state.links);
-      if (state.links.length > 0 && state.links.every(link => link.state === 'submitted')) {
-        completeLinking();
-      }
-
-      if (
-        !state.links.some(link => link.state === 'initializing') && state.links.some(link => link.state === 'pre-init')
-      ) {
-        const firstWaiting = links.find(link => link.state === 'pre-init')!;
-        firstWaiting.state = 'initializing';
-        initLink(firstWaiting);
-      }
-
-      if (
-        !state.links.some(link => link.state === 'searching') && state.links.some(link => link.state === 'search-queue')
-      ) {
-        const firstWaiting = links.find(link => link.state === 'search-queue')!;
-        firstWaiting.state = 'searching';
-        searchLink(firstWaiting);
-      }
-
-      if (
-        !state.links.some(link => link.state === 'submitting')
-        && state.links.some(link => link.state === 'submit-queue')
-      ) {
-        const firstWaiting = links.findIndex(link => link.state === 'submit-queue');
-        links[firstWaiting].state = 'submitting';
-        submitLink(links[firstWaiting]);
-        if (!focusedLinks.length) {
-          scrollToLink(firstWaiting);
+    setLinks((draft) => {
+      selectedRows.forEach((link) => {
+        if (link.state === LinkState.Ready) {
+          draft[link.id].state = LinkState.Submitting;
         }
-      }
+      });
+    });
+    setRowSelection({});
+  };
 
-      if (JSON.stringify(state.links) !== JSON.stringify(links)) {
-        setLoading(prev => ({ ...prev, links }));
-      }
+  const openAutoSearch = () => {
+    if (!selectedRows.length || !selectedRows.some(link => [LinkState.Ready, LinkState.Init].includes(link.state))) {
+      return;
     }
-  }, [
-    state.links,
-    state.isLoading,
-    initLink,
-    searchLink,
-    submitLink,
-    completeLinking,
-    setLoading,
-    focusedLinks.length,
-    scrollToLink,
-  ]);
+    setShowAutoSearchModal(true);
+    setAutoSearchProviders(selectedRows[0].providers);
+  };
 
-  useEffect(() => {
-    if (state.links.length === 0 && !state.isLoading) {
-      navigate('/webui/utilities/unrecognized/files', { replace: true });
-    }
-  }, [state.links, navigate, state.isLoading]);
-
-  useEffect(() => {
-    if (settingsQuery.isSuccess && releaseProvidersQuery.isSuccess && state.isLoading) {
-      const enabledReleaseProviders = settingsQuery.data.WebUI_Settings.linking.enabledReleaseProviders.slice() ?? [];
-      const releaseProviderOrder = settingsQuery.data.WebUI_Settings.linking.releaseProviderOrder.slice() ?? [];
-      const releaseProviders = releaseProvidersQuery.data?.slice() ?? [];
-      initializeLinks(selectedRows ?? [], enabledReleaseProviders, releaseProviderOrder, releaseProviders);
-    }
-  }, [
-    state.isLoading,
-    initializeLinks,
-    selectedRows,
-    settingsQuery.isSuccess,
-    settingsQuery.data,
-    releaseProvidersQuery.isSuccess,
-    releaseProvidersQuery.data,
-  ]);
+  useHotkeys('s', openAutoSearch, { scopes: 'primary' });
+  useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
+  useHotkeys('d', removeLinks, { scopes: 'primary' });
+  useHotkeys('q', submitSelectedLinks, { scopes: 'primary' });
+  useHotkeys('escape', handleCancel, { scopes: 'primary' });
+  useHotkeys('enter', handleSubmit, { scopes: 'primary' });
 
   return (
     <>
       <TransitionDiv className="flex size-full grow flex-col">
-        <div className="sticky -top-6 z-10">
-          <ShokoPanel
-            title={<Title />}
-            options={
-              <div className="text-lg font-semibold">
-                {(submitCount + submittedCount) > 0 && (
-                  <>
-                    <span>
-                      <span className="text-panel-text-important">
-                        {submittedCount}
-                        &nbsp;
-                      </span>
-                      / &nbsp;
-                      <span className="text-panel-text-important">
-                        {submitCount + submittedCount}
-                        &nbsp;
-                      </span>
-                      Submitted
-                    </span>
-                    <span>&nbsp;|&nbsp;</span>
-                  </>
-                )}
-                <span>
-                  <span className="text-panel-text-important">
-                    {state.links.length}
-                    &nbsp;
-                  </span>
-                  {state.links.length === 1 ? 'File' : 'Files'}
-                </span>
-                {selectedLinks.length > 0 && (
-                  <>
-                    <span>&nbsp;|&nbsp;</span>
-                    <span>
-                      <span className="text-panel-text-important">
-                        {selectedLinks.length}
-                        &nbsp;
-                      </span>
-                      Selected
-                    </span>
-                  </>
-                )}
-              </div>
-            }
-          >
-            <div className="flex items-center gap-x-3">
-              <div className="relative box-border flex grow items-center gap-x-4 overflow-auto whitespace-nowrap rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
-                <MenuButton
-                  onClick={openSearchDialog}
-                  icon={mdiMagnify}
-                  name="Search for Release Info"
-                  keybinding="S"
-                  disabled={state.isLoading
-                    || !selectedLinks.some(link => link.state === 'pending' || link.state === 'init')}
-                />
-                <MenuButton
-                  icon={mdiPencil}
-                  name="Edit Release Info"
-                  keybinding="E"
-                  disabled
-                />
-                <MenuButton
-                  onClick={toggleAllSelectedLinks}
-                  icon={selectedLinks.length === state.links.length ? mdiSelection : mdiSelectAll}
-                  name={selectedLinks.length === state.links.length ? 'Unselect All' : 'Select All'}
-                  keybinding="A"
-                  disabled={state.isLoading}
-                />
-                {(
-                  selectedLinks.some(link => link.state !== 'searching' && link.state !== 'submitting')
-                  || focusedLinks.some(index =>
-                    // eslint-disable-next-line @stylistic/comma-dangle
-                    state.links[index].state !== 'searching' && state.links[index].state !== 'submitting'
-                    // eslint-disable-next-line @stylistic/function-paren-newline
-                  )
-                ) && (
-                  <MenuButton
-                    onClick={removeLinksFromPage}
-                    icon={mdiSelectionRemove}
-                    name={selectedLinks.length > 0 ? 'Remove Selected' : 'Remove Focused'}
-                    keybinding="D"
-                    disabled={state.isLoading}
-                  />
-                )}
-                {anyLinks.some(link => link.state === 'search-queue') && (
-                  <MenuButton
-                    onClick={removeLinksFromSearchQueue}
-                    icon={mdiTrayMinus}
-                    name={selectedLinks.length > 0 ? 'Remove from Search Queue' : 'Clear Search Queue'}
-                    keybinding="R"
-                    disabled={state.isLoading}
-                  />
-                )}
-                {anyLinks.some(link => link.state === 'submit-queue') && (
-                  <MenuButton
-                    onClick={removeLinksFromSubmitQueue}
-                    icon={mdiTrayMinus}
-                    name={selectedLinks.length > 0 ? 'Remove from Submit Queue' : 'Clear Submit Queue'}
-                    keybinding="R"
-                    disabled={state.isLoading}
-                  />
-                )}
-                {selectedLinks.some(link => link.state === 'pending' && link.release.CrossReferences.length > 0) && (
-                  <MenuButton
-                    onClick={addLinksToSubmitQueue}
-                    icon={mdiTrayPlus}
-                    name="Add to Submit Queue"
-                    keybinding="Q"
-                    disabled={state.isLoading}
-                  />
-                )}
-              </div>
-              <div className="flex gap-x-3 whitespace-nowrap font-semibold">
-                <Button
-                  onClick={handleCancel}
-                  buttonType="secondary"
-                  className="px-4 py-3"
-                  disabled={state.isLoading}
-                  keybinding="Esc"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={submitPending}
-                  buttonType="primary"
-                  className="px-4 py-3"
-                  disabled={!canSubmit}
-                  keybinding="Enter"
-                >
-                  Submit Pending
-                </Button>
-              </div>
-            </div>
-          </ShokoPanel>
-        </div>
+        <ShokoPanel
+          title={<Title />}
+          options={<TitleOptions links={links} selectedCount={selectedRows.length} />}
+        >
+          <div className="flex items-center gap-x-3">
+            <Menu
+              linkCount={links.length}
+              selectedLinks={selectedRows}
+              openSearchDialog={openAutoSearch}
+              removeLinks={removeLinks}
+              toggleAllSelectedLinks={toggleAllSelectedLinks}
+              addLinksToSubmitQueue={submitSelectedLinks}
+            />
 
-        <div className="mt-8 flex size-full w-full grow auto-rows-min flex-col gap-y-2 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
-          {state.isLoading && (
-            <div className="flex grow items-center gap-x-2 place-self-center">
+            <div className="flex gap-x-3 whitespace-nowrap font-semibold">
+              <Button
+                onClick={handleCancel}
+                buttonType="secondary"
+                className="px-4 py-3"
+                disabled={!initialized}
+                keybinding="Esc"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                buttonType="primary"
+                className="px-4 py-3"
+                disabled={!canSubmit}
+                keybinding="Enter"
+              >
+                Submit Pending
+              </Button>
+            </div>
+          </div>
+        </ShokoPanel>
+
+        <div className="flex mt-8 grow rounded-lg border border-panel-border bg-panel-background p-6 justify-center">
+          {!links.length && (
+            <div className="flex grow justify-center items-center">
               <Icon className="text-panel-text-primary" path={mdiLoading} size={4} spin={0.5} />
             </div>
           )}
-          {!state.isLoading && (
-            state.links.map((link, index) => (
-              <UnrecognizedVideo
-                key={link.id}
-                animeDict={animeQuery.data!}
-                episodeDict={episodeQuery.data!}
-                link={link}
-                selectLink={handleSelectLinks}
-                selectedLinkDict={selectedLinkDict}
-                focusedLink={focusedLinks.includes(index)}
-              />
-            ))
+          {links.length && (
+            <div
+              className="grow overflow-y-auto pr-4"
+              ref={scrollRef}
+            >
+              <div className="relative grow">
+                <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
+                  <div className="relative w-full">
+                    {virtualItems.map((virtualItem) => {
+                      const link = links[virtualItem.index];
+
+                      return (
+                        <div
+                          key={virtualItem.key}
+                          className="absolute left-0 top-0 w-full"
+                          data-index={virtualItem.index}
+                          style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
+                          ref={virtualizer.measureElement}
+                        >
+                          <UnrecognizedVideo
+                            link={link}
+                            setLinks={setLinks}
+                            toggleSelect={handleRowSelect}
+                            selected={rowSelection[link.id]}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </TransitionDiv>
+
       <AutoSearchReleaseModal
-        show={auto.show}
-        providers={auto.providers}
-        onClose={onAutoSearchClose}
-        onUpdateProviders={onAutoSearchUpdateProviders}
+        show={showAutoSearchModal}
+        initialProviders={autoSearchProviders}
+        onUpdateProviders={onUpdateProviders}
+        onClose={() => setShowAutoSearchModal(false)}
       />
+
       <ConfirmationPromptModal
+        onConfirm={navigateBack}
+        onClose={() => setConfirmCancel(false)}
+        show={confirmCancel}
         title="Abort linking"
-        confirmText="Yes"
         cancelText="No"
-        onClose={onConfirmClose}
-        onConfirm={onConfirmed}
-        show={shouldConfirm}
+        confirmText="Yes"
       >
         Are you sure you want to abort the linking with unsubmitted changes?
       </ConfirmationPromptModal>

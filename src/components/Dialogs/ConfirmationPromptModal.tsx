@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import useKeyboardBindings from '@/hooks/useKeyboardBindings';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ButtonType } from '@/components/Input/Button.utils';
 
@@ -18,14 +19,14 @@ type Props = {
 };
 
 const ConfirmationPromptModal = ({
+  cancelText = 'Cancel',
   children,
+  confirmButtonType = 'primary',
+  confirmText = 'Confirm',
   onClose,
   onConfirm,
   show,
   title,
-  cancelText: cancel = 'Cancel',
-  confirmText: confirm = 'Confirm',
-  confirmButtonType = 'primary',
 }: Props) => {
   const [isConfirmPending, setIsConfirmPending] = useState(false);
 
@@ -38,16 +39,14 @@ const ConfirmationPromptModal = ({
       .finally(() => onClose());
   };
 
-  useKeyboardBindings(show && !isConfirmPending, {
-    Escape: onClose,
-    Enter: handleConfirm,
-  });
+  useToggleModalKeybinds(show);
+  useHotkeys('escape', onClose, { scopes: 'modal' });
+  useHotkeys('enter', handleConfirm, { scopes: 'modal' });
 
   return (
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      shouldCloseOnEsc={false}
       size="sm"
       header={<div className="text-xl font-semibold">{title}</div>}
     >
@@ -55,17 +54,16 @@ const ConfirmationPromptModal = ({
         {children}
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2" keybinding="Esc">
-          {cancel}
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">
+          {cancelText}
         </Button>
         <Button
           onClick={handleConfirm}
           buttonType={confirmButtonType}
           className="px-5 py-2"
           loading={isConfirmPending}
-          keybinding="Enter"
         >
-          {confirm}
+          {confirmText}
         </Button>
       </div>
     </ModalPanel>

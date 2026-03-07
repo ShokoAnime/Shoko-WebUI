@@ -5,7 +5,7 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 
 const MenuButton = (
-  { disabled, highlightType, icon, name, keybinding, onClick }: {
+  { disabled, highlightType, icon, keybinding, name, onClick }: {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     icon: string;
     name: string;

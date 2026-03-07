@@ -267,9 +267,10 @@ export const initialSettings: SettingsType = {
     toastPosition: 'bottom-right',
     updateChannel: semver.prerelease(getUiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
+    releaseInfoProviders: [],
     linking: {
-      enabledReleaseProviders: [],
-      releaseProviderOrder: [],
+      enabledProviders: [],
+      providerOrder: [],
     },
     collection: {
       view: 'poster',

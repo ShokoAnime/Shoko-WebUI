@@ -1,35 +1,24 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type {
-  UpdateManyReleaseInfoProviderType,
-  UpdateOneReleaseInfoProviderType,
-  UpdateReleaseInfoSettingsType,
-} from '@/core/react-query/release-info/types';
+import type { ReleaseInfoSettingsType, UpdateReleaseInfoProvidersType } from '@/core/react-query/release-info/types';
 import type { ReleaseInfoType } from '@/core/types/api/file';
 
 export const useUpdateReleaseInfoSettingsMutation = () =>
   useMutation({
-    mutationKey: ['release-info', 'settings'],
-    mutationFn: (settings: UpdateReleaseInfoSettingsType) => axios.post('/ReleaseInfo/Settings', settings),
+    mutationFn: (settings: ReleaseInfoSettingsType) => axios.post('/ReleaseInfo/Settings', settings),
     onSuccess: () => invalidateQueries(['release-info', 'summary']),
   });
 
-export const useUpdateManyReleaseInfoProvidersMutation = () =>
+export const useUpdateReleaseInfoProvidersMutation = () =>
   useMutation({
-    mutationKey: ['release-info', 'providers'],
-    mutationFn: (providers: UpdateManyReleaseInfoProviderType[]) => axios.post('/ReleaseInfo/Provider', providers),
-    onSuccess: () => invalidateQueries(['release-info', 'providers']),
-  });
-
-export const useUpdateReleaseInfoProviderMutation = (providerGuid: string) =>
-  useMutation({
-    mutationKey: ['release-info', 'providers', providerGuid],
-    mutationFn: (provider: UpdateOneReleaseInfoProviderType) =>
-      axios.put(`/ReleaseInfo/Provider/${providerGuid}`, provider),
-    onSuccess: () => invalidateQueries(['release-info', 'providers']),
+    mutationFn: (providers: UpdateReleaseInfoProvidersType[]) => axios.post('/ReleaseInfo/Provider', providers),
+    onSuccess: (_, providers) => {
+      queryClient.setQueryData(['release-info', 'providers'], providers);
+      invalidateQueries(['release-info', 'providers']);
+    },
   });
 
 export const useSubmitReleaseInfoForFileByIdMutation = () =>
@@ -44,10 +33,16 @@ export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
       axios.post(`/ReleaseInfo/File/${fileId}/AutoPreview`, undefined, {
         params: { providerIDs },
       }),
+    scope: {
+      id: 'release-info',
+    },
   });
 
 export const usePreviewReleaseInfoByProviderIdMutation = () =>
-  useMutation<ReleaseInfoType, unknown, { id: string, providerID: string }>({
-    mutationFn: async ({ id, providerID }) =>
-      axios.get(`/ReleaseInfo/Provider/${providerID}/Preview/By-Release`, { params: { id } }),
+  useMutation<ReleaseInfoType, unknown, { id: string, providerId: string }>({
+    mutationFn: ({ id, providerId }) =>
+      axios.get(`/ReleaseInfo/Provider/${providerId}/Preview/By-Release`, { params: { id } }),
+    scope: {
+      id: 'release-info',
+    },
   });

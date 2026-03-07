@@ -38,7 +38,6 @@ export const useHideEpisodeMutation = (seriesId?: number, nextUp = false) =>
 
 export const useWatchEpisodeMutation = (seriesId: number, pageNumber?: number, nextUp = false) =>
   useMutation({
-    mutationKey: ['episode', 'watched'],
     mutationFn: ({ episodeId, watched }: WatchEpisodeRequestType) =>
       axios.post(`Episode/${episodeId}/Watched/${watched}`),
     onSuccess: async (_, { episodeId }) => {

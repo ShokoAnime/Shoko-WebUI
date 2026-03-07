@@ -26,10 +26,10 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     contain,
     hidePlaceholderOnHover,
     image,
+    inCollection,
     linkToImage,
     overlayOnHover,
     zoomOnHover,
-    inCollection,
   } = props;
   const fit = contain ? 'contain' : 'cover';
   const settings = useSettingsQuery().data;
