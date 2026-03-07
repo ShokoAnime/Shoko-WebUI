@@ -23,6 +23,6 @@ export const useEpisodeFilesQuery = (
 export const useEpisodeAniDBQuery = (episodeId: number, enabled = true) =>
   useQuery<AniDBEpisodeType>({
     queryKey: ['episode', 'anidb', episodeId],
-    queryFn: () => axios.get(`Episode/${episodeId}/AniDB`),
+    queryFn: () => axios.get(`Episode/AniDB/${episodeId}`),
     enabled,
   });

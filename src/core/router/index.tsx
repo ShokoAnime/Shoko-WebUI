@@ -34,6 +34,7 @@ import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
+import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
@@ -45,6 +46,7 @@ import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
+import LinkFilesWithProvidersTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProvidersTab';
 import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
 import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
 
@@ -87,6 +89,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized" element={<Navigate to="files" replace />} />
             <Route path="unrecognized/files" element={<UnrecognizedTab />} />
             <Route path="unrecognized/files/link" element={<LinkFilesTab />} />
+            <Route path="unrecognized/files/link-with-providers" element={<LinkFilesWithProvidersTab />} />
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
             <Route path="release-management" element={<Navigate to="multiples" replace />} />
@@ -117,6 +120,7 @@ const router = sentryCreateBrowserRouter(
             <Route index element={<Navigate to="general" replace />} />
             <Route path="general" element={<GeneralSettings />} />
             <Route path="import" element={<ImportSettings />} />
+            <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />

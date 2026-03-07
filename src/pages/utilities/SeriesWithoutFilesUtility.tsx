@@ -160,7 +160,7 @@ const SeriesWithoutFilesUtility = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<SeriesType>(series);
+  } = useRowSelection(series);
 
   return (
     <>

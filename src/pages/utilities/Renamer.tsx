@@ -469,7 +469,7 @@ const Renamer = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(addedFiles);
+  } = useRowSelection(addedFiles);
 
   const columns = useMemo(() => {
     const importFolders = importFolderQuery?.data ?? [];

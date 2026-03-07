@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
+import { keybindingsEnabled } from '@/hooks/useKeyboardBindings';
 
 import type { ButtonType, SizeType } from '@/components/Input/Button.utils';
 
@@ -21,6 +22,7 @@ type Props = {
   submit?: boolean;
   tooltip?: string;
   tooltipPlace?: PlacesType;
+  keybinding?: string;
 };
 
 const Button = ({
@@ -36,12 +38,14 @@ const Button = ({
   submit,
   tooltip,
   tooltipPlace,
+  keybinding,
 }: Props) => (
   <button
     id={id}
     type={submit ? 'submit' : 'button'}
     className={cx([
       className,
+      keybinding && keybindingsEnabled && 'flex items-center gap-x-2',
       'relative text-sm font-semibold transition ease-in-out rounded-lg outline-hidden',
       buttonType && buttonTypeClasses[buttonType],
       buttonSize && buttonSizeClasses[buttonSize],
@@ -53,7 +57,18 @@ const Button = ({
     data-tooltip-content={tooltip}
     data-tooltip-place={tooltipPlace ?? 'top'}
   >
-    {children}
+    {keybinding && keybindingsEnabled
+      ? (
+        <>
+          {children}
+          <span className="-ml-1 self-center text-xs opacity-65">
+            (
+            {keybinding}
+            )
+          </span>
+        </>
+      )
+      : children}
     {loading && (
       <div className="absolute inset-0 flex items-center justify-center">
         <Icon path={mdiLoading} spin size={loadingSize ?? 1} />

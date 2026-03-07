@@ -1,23 +1,50 @@
 import type React from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
-import useEventCallback from './useEventCallback';
+type TimeoutType = ReturnType<typeof globalThis.setTimeout>;
 
-function useAutoFocusRef(autoFocus: boolean, bodyVisible: boolean): React.MutableRefObject<HTMLInputElement | null> {
-  // eslint-disable-next-line no-undef
-  const ref: React.MutableRefObject<HTMLInputElement | null> & { timeout?: NodeJS.Timeout } = useEventCallback(
-    (element: HTMLInputElement | null) => {
-      ref.current = element;
-      if (autoFocus && bodyVisible && element) {
-        if (ref.timeout) clearTimeout(ref.timeout);
-        ref.timeout = setTimeout(() => {
-          if (ref.timeout) delete ref.timeout;
+function useAutoFocusRef(autoFocus: boolean): React.RefObject<HTMLInputElement | null> {
+  const elementRef = useRef<HTMLInputElement | null>(null) as React.RefObject<HTMLInputElement | null> & {
+    timeout?: TimeoutType;
+  };
+  const autoFocusRef = useRef(autoFocus);
+
+  // Focus the element when auto-focus changes.
+  useEffect(() => {
+    autoFocusRef.current = autoFocus;
+    if (autoFocus && elementRef.current) {
+      const element = elementRef.current;
+      const timeout = setTimeout(() => {
+        if (elementRef.timeout !== timeout) return;
+        delete elementRef.timeout;
+        if (elementRef.current === element) {
           element.focus();
-        }, 0);
-      }
-    },
-    // eslint-disable-next-line no-undef
-  ) as unknown as React.MutableRefObject<HTMLInputElement> & { timeout?: NodeJS.Timeout };
-  return ref;
+        }
+      }, 0);
+      if (elementRef.timeout) clearTimeout(elementRef.timeout);
+      elementRef.timeout = timeout;
+    }
+  }, [autoFocus]);
+
+  // Focus the element when the ref is set.
+  return useMemo(() =>
+    new Proxy(elementRef, {
+      apply(_, __, argArray: [element: HTMLInputElement | null]) {
+        const [element] = argArray;
+        elementRef.current = element;
+        if (autoFocusRef.current && element) {
+          const timeout = setTimeout(() => {
+            if (elementRef.timeout !== timeout) return;
+            delete elementRef.timeout;
+            if (elementRef.current === element) {
+              element.focus();
+            }
+          }, 0);
+          if (elementRef.timeout) clearTimeout(elementRef.timeout);
+          elementRef.timeout = timeout;
+        }
+      },
+    }), []) as unknown as React.RefObject<HTMLInputElement | null>;
 }
 
 export default useAutoFocusRef;
