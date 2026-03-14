@@ -100,7 +100,7 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
                 <div
                   className={cx(
                     'shrink-0',
-                    isMainSeries ? 'text-panel-icon-warning opacity-65' : 'text-panel-icon-action cursor-pointer',
+                    isMainSeries ? 'text-panel-icon-warning opacity-65' : 'cursor-pointer text-panel-icon-action',
                   )}
                   {...mainSeriesTooltip}
                   onClick={() => setMainSeries(series.IDs.ID)}

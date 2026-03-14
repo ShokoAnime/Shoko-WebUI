@@ -61,7 +61,7 @@ const detectEpisodeType = (matchGroups: Record<string, string | undefined>): Epi
   return EpisodeTypeEnum.Episode;
 };
 
-export function detectShow(filePath: string | undefined | null): PathDetails | null {
+export const detectShow = (filePath: string | undefined | null) => {
   if (!filePath) return null;
 
   let [fileName = null, parentDir = null, grandParentDir = null] = filePath.trim().split(/[/\\]+/).filter(item => item)
@@ -163,9 +163,25 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
     }
   }
   return null;
-}
+};
 
-export function findMostCommonShowName(showList: (PathDetails | null)[]): string {
+const findSharedShowName = (showNames: string[]) => {
+  if (!showNames.length) {
+    return '';
+  }
+
+  let lastMatchingIndex = 0;
+  const sortedArr = showNames.slice().sort();
+  const firstName = sortedArr[0];
+  const lastName = sortedArr[sortedArr.length - 1];
+  while (lastMatchingIndex < firstName.length && firstName[lastMatchingIndex] === lastName[lastMatchingIndex]) {
+    lastMatchingIndex += 1;
+  }
+
+  return firstName.slice(0, lastMatchingIndex).trim();
+};
+
+export const findMostCommonShowName = (showList: (PathDetails | null)[]) => {
   if (showList.length === 0) {
     return '';
   }
@@ -201,20 +217,4 @@ export function findMostCommonShowName(showList: (PathDetails | null)[]): string
     (result, showName) => (showNameMap.get(result)! > showNameMap.get(showName)! ? result : showName),
     showNames[0],
   );
-}
-
-function findSharedShowName(showNames: string[]): string {
-  if (!showNames.length) {
-    return '';
-  }
-
-  let lastMatchingIndex = 0;
-  const sortedArr = showNames.slice().sort();
-  const firstName = sortedArr[0];
-  const lastName = sortedArr[sortedArr.length - 1];
-  while (lastMatchingIndex < firstName.length && firstName[lastMatchingIndex] === lastName[lastMatchingIndex]) {
-    lastMatchingIndex += 1;
-  }
-
-  return firstName.slice(0, lastMatchingIndex).trim();
-}
+};

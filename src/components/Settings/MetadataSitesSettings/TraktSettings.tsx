@@ -87,7 +87,7 @@ const TraktSettings = () => {
         {TraktTv.TokenExpirationDate === '' && traktQuery.data?.usercode && (
           <div
             className={cx(
-              'flex h-8 justify-between items-center',
+              'flex h-8 items-center justify-between',
               !TraktTv.Enabled && 'pointer-events-none opacity-65',
             )}
           >
@@ -108,7 +108,7 @@ const TraktSettings = () => {
         {TraktTv.TokenExpirationDate === '' && !traktQuery.data?.usercode && (
           <div
             className={cx(
-              'flex justify-between items-center',
+              'flex items-center justify-between',
               !TraktTv.Enabled && 'pointer-events-none opacity-65',
             )}
           >

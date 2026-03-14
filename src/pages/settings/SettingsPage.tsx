@@ -151,7 +151,7 @@ const SettingsPage = () => {
 
   return (
     <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
-      <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+      <div className="relative top-0 z-10 flex w-87.5 flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
         <div className="sticky top-6">
           <div className="mb-8 text-center text-xl">
             Core Settings
@@ -171,7 +171,7 @@ const SettingsPage = () => {
           </div>
         </div>
       </div>
-      <div className="flex min-h-full w-[43.75rem] flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+      <div className="flex min-h-full w-175 flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent p-6">
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
@@ -208,7 +208,7 @@ const SettingsPage = () => {
       </div>
       <div
         id="settings-background"
-        className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-20"
+        className="fixed top-0 left-0 -z-10 w-full bg-cover bg-fixed opacity-20"
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
         style={{

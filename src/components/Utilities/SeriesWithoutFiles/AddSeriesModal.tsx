@@ -71,7 +71,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
             disabled={isRefreshPending}
           />
           <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
-            <div className="flex h-60 flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-lg bg-panel-input pr-2 ">
+            <div className="flex h-60 flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-lg bg-panel-input pr-2">
               {searchQuery.isError || searchQuery.isFetching
                 ? (
                   <div className="flex h-full items-center justify-center">

@@ -50,7 +50,7 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
         <div className="z-20 flex h-full max-w-225.75 flex-col items-center justify-center gap-y-4 overflow-y-auto md:gap-y-6">
           <div className="text-4xl text-panel-text md:text-5xl">Congratulations!</div>
           <div className="text-2xl text-panel-text md:text-2xl">You Broke The Web UI!</div>
-          <pre className="flex max-h-100 max-w-full flex-col overflow-y-auto whitespace-pre-wrap rounded-lg border border-panel-border bg-panel-input p-4 md:p-6">
+          <pre className="flex max-h-100 max-w-full flex-col overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4 whitespace-pre-wrap md:p-6">
             {routeError?.status === 404
               ? (
                 <>
@@ -139,7 +139,7 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
         <img
           src={ShokoMascot}
           alt="mascot"
-          className="absolute -bottom-40 -right-36 z-10 opacity-30"
+          className="absolute -right-36 -bottom-40 z-10 opacity-30"
         />
       </div>
     </>

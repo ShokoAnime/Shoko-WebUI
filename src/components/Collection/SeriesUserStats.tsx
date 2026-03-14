@@ -82,7 +82,7 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
     </div>
 
     <div className="flex items-center justify-between">
-      <div className="font-semibold ">
+      <div className="font-semibold">
         Series Rating&nbsp;
         {series.UserRating?.Type === 'Temporary' && '(Temp)'}
       </div>

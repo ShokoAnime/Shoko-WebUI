@@ -95,7 +95,7 @@ const Input = React.memo((props: Props) => {
     <div
       className={cx([
         className ?? '',
-        isOverlay && 'flex-row gap-x-2 flex',
+        isOverlay && 'flex flex-row gap-x-2',
       ])}
     >
       <label
@@ -104,9 +104,9 @@ const Input = React.memo((props: Props) => {
       >
         {label && (
           <div
-            className={cx('font-semibold text-base', {
+            className={cx('text-base font-semibold', {
               'mb-2': !inline,
-              'flex items-center mr-3 whitespace-nowrap': inline,
+              'mr-3 flex items-center whitespace-nowrap': inline,
             })}
           >
             {label}
@@ -114,16 +114,16 @@ const Input = React.memo((props: Props) => {
         )}
         <div className="relative">
           {startIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+            <div className="absolute top-1/2 left-3 -translate-y-1/2">
               <Icon path={startIcon} size={1} />
             </div>
           )}
           <input
             className={cx([
               inputClassName ?? '',
-              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-hidden px-4 py-3 rounded-lg transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
+              'w-full appearance-none rounded-lg border border-panel-border bg-panel-input px-4 py-3 transition ease-in-out focus:shadow-none focus:ring-2 focus:ring-panel-icon-action focus:outline-hidden focus:ring-inset',
               center && 'text-center',
-              startIcon && '!pl-11',
+              startIcon && 'pl-11!',
             ])}
             id={id}
             type={type}
@@ -136,7 +136,7 @@ const Input = React.memo((props: Props) => {
             ref={inputRef}
           />
           {endIcons?.length && (
-            <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
+            <div className="absolute top-1/2 right-3 flex -translate-y-1/2 flex-row gap-x-2">
               {endIcons.map((icon) => {
                 let tooltipAttributes: TooltipAttributes | null = null;
                 if (icon.tooltip) {

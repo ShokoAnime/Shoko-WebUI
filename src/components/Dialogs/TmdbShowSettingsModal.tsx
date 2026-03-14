@@ -72,13 +72,13 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
         <div className="h-60 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
           {orderingQuery.data
             ? (
-              <div className="flex flex-col grow overflow-y-auto gap-y-2 h-full">
+              <div className="flex h-full grow flex-col gap-y-2 overflow-y-auto">
                 {orderingQuery.data.map(ordering => (
                   <div
                     key={ordering.OrderingID}
                     onClick={() => setSelectedOrdering(ordering.OrderingID)}
                     className={cx(
-                      'flex justify-between transition-colors cursor-pointer',
+                      'flex cursor-pointer justify-between transition-colors',
                       selectedOrdering === ordering.OrderingID && 'text-panel-text-primary',
                     )}
                   >
@@ -93,7 +93,7 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
               </div>
             )
             : (
-              <div className="flex grow items-center justify-center h-full">
+              <div className="flex h-full grow items-center justify-center">
                 <Icon path={mdiLoading} size={3} spin className="text-panel-text-primary" />
               </div>
             )}

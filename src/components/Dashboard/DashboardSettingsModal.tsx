@@ -106,14 +106,14 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
       noPadding
       noGap
     >
-      <div className="flex h-[22rem] flex-row gap-x-6 p-6">
+      <div className="flex h-88 flex-row gap-x-6 p-6">
         <div className="flex shrink-0 flex-col gap-y-6 font-semibold">
           <div className="flex flex-col gap-y-1">
             <div
               className={cx(
                 activeTab === 'widgets'
-                  ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
+                  ? 'w-48 cursor-pointer rounded-lg bg-panel-menu-item-background p-3 text-center text-panel-menu-item-text'
+                  : 'w-48 cursor-pointer rounded-lg p-3 text-center transition-colors hover:bg-panel-menu-item-background-hover',
               )}
               key="widgets"
               onClick={() => setActiveTab('widgets')}
@@ -123,8 +123,8 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
             <div
               className={cx(
                 activeTab === 'options'
-                  ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
+                  ? 'w-48 cursor-pointer rounded-lg bg-panel-menu-item-background p-3 text-center text-panel-menu-item-text'
+                  : 'w-48 cursor-pointer rounded-lg p-3 text-center transition-colors hover:bg-panel-menu-item-background-hover',
               )}
               key="options"
               onClick={() => setActiveTab('options')}
@@ -137,7 +137,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
         <div className="flex w-full flex-col gap-y-6">
           {activeTab === 'widgets' && (
             <div className="overflow-y-scroll pr-4">
-              <div className="flex flex-col gap-y-2 ">
+              <div className="flex flex-col gap-y-2">
                 <Checkbox
                   justify
                   label="Hide Queue Processor"

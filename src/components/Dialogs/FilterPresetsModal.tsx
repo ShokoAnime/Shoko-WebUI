@@ -30,7 +30,7 @@ const TabButton = (
   const { activeTab, filterId, onTabChange, title } = props;
   return (
     <div
-      className={cx('font-semibold cursor-pointer', activeTab === title && 'text-panel-text-primary')}
+      className={cx('cursor-pointer font-semibold', activeTab === title && 'text-panel-text-primary')}
       key={filterId}
       onClick={() => onTabChange(filterId, title)}
     >
@@ -72,7 +72,7 @@ const Item = ({ item, onClose }: { item: FilterType, onClose: () => void }) => {
   return (
     <>
       <div
-        className="flex justify-between pb-1 pr-4 font-semibold"
+        className="flex justify-between pr-4 pb-1 font-semibold"
         key={item.IDs.ID}
       >
         <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
@@ -145,7 +145,7 @@ const SidePanel = (
 
   return (
     <div
-      className={cx('flex flex-col grow gap-y-2 pl-8', {
+      className={cx('flex grow flex-col gap-y-2 pl-8', {
         hidden: activeTab !== title || filterId === 0,
       })}
     >
@@ -184,7 +184,7 @@ const SidePanel = (
                 {/* This extra absolute div exists to make the height of this container fixed otherwise it overflows for some reason */}
                 <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
                   <div
-                    className="absolute left-0 top-0 w-full"
+                    className="absolute top-0 left-0 w-full"
                     style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
                   >
                     {virtualItems.map((virtualRow) => {

@@ -86,7 +86,7 @@ const UnsupportedPage = () => {
         <img
           src={ShokoMascot}
           alt="mascot"
-          className="absolute -bottom-40 -right-36 z-10 opacity-30"
+          className="absolute -right-36 -bottom-40 z-10 opacity-30"
         />
       </div>
     </>

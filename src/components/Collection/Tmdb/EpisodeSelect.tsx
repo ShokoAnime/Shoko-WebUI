@@ -82,8 +82,8 @@ const EpisodeSelect = React.memo((props: Props) => {
     >
       <ListboxButton
         className={cx(
-          'flex items-center grow basis-0 gap-x-6 rounded-lg border border-panel-border p-4',
-          'data-[open]:border-panel-text-primary',
+          'flex grow basis-0 items-center gap-x-6 rounded-lg border border-panel-border p-4',
+          'data-open:border-panel-text-primary',
           isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
           isDisabled && 'opacity-65',
         )}
@@ -133,7 +133,7 @@ const EpisodeSelect = React.memo((props: Props) => {
             padding: '1rem',
             gap: '0.5rem',
           }}
-          className="z-[110] w-[var(--button-width)] rounded-lg bg-panel-background focus:outline-hidden"
+          className="z-110 w-(--button-width) rounded-lg bg-panel-background focus:outline-hidden"
         >
           <Input
             autoFocus
@@ -174,7 +174,7 @@ const EpisodeSelect = React.memo((props: Props) => {
                       return (
                         <div
                           key={`loading-${key}`}
-                          className="absolute left-0 top-0 w-full"
+                          className="absolute top-0 left-0 w-full"
                           style={{
                             transform: `translateY(${start ?? 0}px)`,
                           }}
@@ -191,8 +191,8 @@ const EpisodeSelect = React.memo((props: Props) => {
                         key={episode?.ID ?? 'entry-not-linked'}
                         value={episode}
                         className={cx(
-                          'absolute left-0 top-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
-                          'hover:text-panel-text-primary data-[selected]:text-panel-text-primary group',
+                          'absolute top-0 left-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
+                          'group hover:text-panel-text-primary data-selected:text-panel-text-primary',
                         )}
                         style={{
                           transform: `translateY(${start ?? 0}px)`,
@@ -200,7 +200,7 @@ const EpisodeSelect = React.memo((props: Props) => {
                         ref={rowVirtualizer.measureElement}
                         data-index={index}
                       >
-                        <div className="w-24 text-panel-text-important group-data-[selected]:text-panel-text-primary">
+                        <div className="w-24 text-panel-text-important group-data-selected:text-panel-text-primary">
                           {!episode && 'XX'}
 
                           {episode && (episode.SeasonNumber === 0

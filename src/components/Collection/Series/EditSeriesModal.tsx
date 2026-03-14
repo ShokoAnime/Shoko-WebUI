@@ -60,15 +60,15 @@ const EditSeriesModal = () => {
 
   return (
     <ModalPanel show={seriesId !== -1} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
-      <div className="flex h-[26rem] flex-row gap-x-6 p-6">
+      <div className="flex h-104 flex-row gap-x-6 p-6">
         <div className="flex shrink-0 gap-y-6 font-semibold">
           <div className="flex flex-col gap-y-1">
             {map(tabs, (value, key) => (
               <div
                 className={cx(
                   activeTab === key
-                    ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                    : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
+                    ? 'w-48 cursor-pointer rounded-lg bg-panel-menu-item-background p-3 text-center text-panel-menu-item-text'
+                    : 'w-48 cursor-pointer rounded-lg p-3 text-center transition-colors hover:bg-panel-menu-item-background-hover',
                 )}
                 key={key}
                 onClick={() => setActiveTab(key)}

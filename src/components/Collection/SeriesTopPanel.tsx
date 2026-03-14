@@ -47,7 +47,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
     <div className="flex w-full gap-x-6">
       <BackgroundImagePlaceholderDiv
         image={poster}
-        className="aspect-[5/6] h-[32.1rem] min-w-[22rem] rounded-sm drop-shadow-md lg:aspect-[4/6]"
+        className="aspect-5/6 h-[32.1rem] min-w-88 rounded-sm drop-shadow-md lg:aspect-4/6"
       >
         {(series.AniDB?.Restricted ?? false) && (
           <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
@@ -55,10 +55,10 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
           </div>
         )}
       </BackgroundImagePlaceholderDiv>
-      <div className="flex w-full max-w-[56.25rem] flex-col gap-y-6">
+      <div className="flex w-full max-w-225 flex-col gap-y-6">
         <ShokoPanel
           title="Series Description"
-          className="!h-64"
+          className="h-64!"
           contentClassName="contain-strict"
           transparent
         >
@@ -70,7 +70,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
 
         <ShokoPanel
           title="Series Information"
-          className="!h-60"
+          className="h-60!"
           transparent
         >
           <div className="grid h-32 grid-cols-1 gap-x-12 gap-y-2 overflow-y-auto pr-2 text-base font-normal 2xl:grid-cols-2 2xl:pr-0">
@@ -81,7 +81,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       <div className="flex w-full flex-col gap-y-6">
         <ShokoPanel
           title="Top 10 Tags"
-          className="!h-64"
+          className="h-64!"
           contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
           transparent
@@ -100,7 +100,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
 
         <ShokoPanel
           title="User Stats"
-          className="!h-60"
+          className="h-60!"
           contentClassName="flex-wrap gap-3"
           transparent
         >

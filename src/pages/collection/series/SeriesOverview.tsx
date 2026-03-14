@@ -63,7 +63,7 @@ const SeriesOverview = () => {
         <div className="flex w-full gap-x-6">
           <ShokoPanel
             title="Metadata Sites"
-            className="flex w-full max-w-[37.5rem]"
+            className="flex w-full max-w-150"
             transparent
             disableOverflow
             options={
@@ -73,7 +73,7 @@ const SeriesOverview = () => {
             {series && currentTab === 'metadata' && (
               <div
                 className={cx(
-                  'flex h-[15.625rem] flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
+                  'flex h-62.5 flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
                   // TODO: The below needs to check for how many links are rendered, not how many types of links can exist
                   MetadataLinks.length > 4 ? 'pr-4' : '',
                 )}
@@ -119,13 +119,13 @@ const SeriesOverview = () => {
             {series && currentTab === 'links' && (
               <div
                 className={cx(
-                  'flex h-[15.625rem] flex-col gap-3 overflow-y-auto',
+                  'flex h-62.5 flex-col gap-3 overflow-y-auto',
                   series.Links.length > 4 ? 'pr-4' : '',
                 )}
               >
                 {series.Links.map(link => (
                   <a
-                    className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left !text-base !font-normal text-panel-icon-action hover:bg-panel-toggle-background-hover"
+                    className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left text-base! font-normal! text-panel-icon-action hover:bg-panel-toggle-background-hover"
                     key={link.URL}
                     href={link.URL}
                     rel="noopener noreferrer"
@@ -170,7 +170,7 @@ const SeriesOverview = () => {
           title="Related Anime"
           className="w-full"
           transparent
-          contentClassName={cx('!flex-row gap-x-6', relatedAnime.length > 7 && 'pb-4')}
+          contentClassName={cx('flex-row! gap-x-6', relatedAnime.length > 7 && 'pb-4')}
         >
           {map(relatedAnime, item => (
             <SeriesPoster
@@ -191,7 +191,7 @@ const SeriesOverview = () => {
           title="Similar Anime"
           className="w-full"
           transparent
-          contentClassName={cx('!flex-row gap-x-6', similarAnime.length > 7 && 'pb-4')}
+          contentClassName={cx('flex-row! gap-x-6', similarAnime.length > 7 && 'pb-4')}
         >
           {map(similarAnime, item => (
             <SeriesPoster
@@ -225,8 +225,8 @@ const SeriesOverview = () => {
                 />
               </div>
               <div className="flex flex-col items-center">
-                <span className="line-clamp-1 text-ellipsis text-xl font-semibold">{seiyuu.Character?.Name}</span>
-                <span className="line-clamp-1 text-ellipsis text-sm font-semibold opacity-65">
+                <span className="line-clamp-1 text-xl font-semibold text-ellipsis">{seiyuu.Character?.Name}</span>
+                <span className="line-clamp-1 text-sm font-semibold text-ellipsis opacity-65">
                   {seiyuu.Staff.Name}
                 </span>
               </div>

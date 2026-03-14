@@ -49,7 +49,7 @@ const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName
         <>
           <Icon className="flex-none" path={mdiChevronRight} size={1} />
           <span
-            className={cx('truncate', filterActive && 'text-panel-text-primary cursor-pointer')}
+            className={cx('truncate', filterActive && 'cursor-pointer text-panel-text-primary')}
             onClick={handlFilterReset}
           >
             {filterName}

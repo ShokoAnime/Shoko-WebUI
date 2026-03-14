@@ -57,7 +57,7 @@ const Row = (
   return (
     <div
       className={cx(
-        'relative cursor-pointer rounded-lg border p-4 text-left transition-colors border-panel-border',
+        'relative cursor-pointer rounded-lg border border-panel-border p-4 text-left transition-colors',
         virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
         selected ? 'bg-panel-background-selected-row' : '',
       )}
@@ -218,7 +218,7 @@ const UtilitiesTable = (props: Props) => {
 
   return (
     <div className="flex w-full grow flex-col overflow-y-auto pr-4" ref={parentRef}>
-      <div className="sticky top-0 z-[1] bg-panel-background-alt">
+      <div className="sticky top-0 z-1 bg-panel-background-alt">
         <div className="flex rounded-lg border border-panel-border bg-panel-table-header p-4 font-semibold">
           {columns.map(column => (
             <HeaderItem
@@ -236,7 +236,7 @@ const UtilitiesTable = (props: Props) => {
       <div className="relative grow">
         <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
           <div
-            className="absolute left-0 top-0 w-full"
+            className="absolute top-0 left-0 w-full"
             style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
           >
             {virtualItems.map((virtualRow) => {

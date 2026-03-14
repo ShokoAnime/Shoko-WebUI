@@ -12,21 +12,21 @@ const getThumbnailUrl = (item: SeriesCast, mode: CreditsModeType) => {
 };
 
 const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: CreditsModeType }) => (
-  <div className="flex w-full h-full flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+  <div className="flex size-full flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
     <div className="z-10 flex gap-x-2">
       {mode === 'Character' && (
         <CharacterImage
           imageSrc={getThumbnailUrl(cast, 'Character')}
-          className="relative h-[7.75rem] w-[6.063rem] rounded-lg"
+          className="relative h-31 w-[6.063rem] rounded-lg"
         />
       )}
       <CharacterImage
         imageSrc={getThumbnailUrl(cast, 'Staff')}
-        className="relative h-[7.75rem] w-[6.063rem] rounded-lg"
+        className="relative h-31 w-[6.063rem] rounded-lg"
       />
     </div>
     <div className="grow text-center">
-      <div className="line-clamp-2 text-base leading-8 xl:text-xl" title={cast[mode]?.Name}>
+      <div className="line-clamp-2 text-base/8 xl:text-xl" title={cast[mode]?.Name}>
         {cast[mode]?.Name}
       </div>
       {mode === 'Character' && <div className="opacity-65">{cast.Staff?.Name}</div>}

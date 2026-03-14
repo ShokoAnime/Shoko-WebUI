@@ -66,7 +66,7 @@ const SelectedStateButton = React.memo((
     ? (
       <div
         className={cx(
-          'flex flex-col items-center gap-y-6 rounded-br-lg rounded-tl-lg p-4',
+          'flex flex-col items-center gap-y-6 rounded-tl-lg rounded-br-lg p-4',
           shadow && 'shadow-md',
         )}
       >
@@ -111,7 +111,7 @@ const EpisodeSummary = React.memo(
         <div className={cx('z-10 flex items-center gap-x-6', !nextUp && 'p-6')}>
           <BackgroundImagePlaceholderDiv
             image={thumbnail}
-            className="group flex h-[16.25rem] min-w-[28.75rem] rounded-lg border border-panel-border"
+            className="group flex h-65 min-w-115 rounded-lg border border-panel-border"
             zoomOnHover
           >
             <div className="absolute flex w-full flex-row justify-between rounded-lg transition-opacity group-hover:opacity-0">
@@ -122,7 +122,7 @@ const EpisodeSummary = React.memo(
               </div>
               <div className="flex w-14 flex-col">
                 {(!!episode.Watched || episode.IsHidden) && (
-                  <div className="flex flex-col items-center gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-overlay p-4 text-panel-text-important shadow-md">
+                  <div className="flex flex-col items-center gap-y-6 rounded-tr-lg rounded-bl-lg bg-panel-background-overlay p-4 text-panel-text-important shadow-md">
                     <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
                     <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
                   </div>

@@ -51,7 +51,7 @@ const TopPanel = (props: Props) => {
         <div
           className={cx(
             'flex grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3',
-            !flatXrefs && 'opacity-50 pointer-events-none',
+            !flatXrefs && 'pointer-events-none opacity-50',
           )}
         >
           Match Type

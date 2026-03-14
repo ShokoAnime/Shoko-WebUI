@@ -25,11 +25,11 @@ const ToastComponent = (props: Props) => {
   const color = isColorClass(toastProps.type) ? toastProps?.type : 'info';
 
   return (
-    <div className="flex bg-panel-background w-full">
+    <div className="flex w-full bg-panel-background">
       <span>
         <Icon path={data.icon} size={1} className={colorClass[color]} />
       </span>
-      <div className="ml-4 mr-8 flex grow flex-col">
+      <div className="mr-8 ml-4 flex grow flex-col">
         <div className="font-semibold">{data.header}</div>
         <div className="text-panel-text">{data.message}</div>
       </div>

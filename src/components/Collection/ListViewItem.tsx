@@ -116,7 +116,7 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
         <Link to={routeLink}>
           <BackgroundImagePlaceholderDiv
             image={poster}
-            className="group h-[13.438rem] w-[9.25rem] shrink-0 rounded-lg drop-shadow-md"
+            className="group h-[13.438rem] w-37 shrink-0 rounded-lg drop-shadow-md"
             hidePlaceholderOnHover
             zoomOnHover
           >
@@ -184,7 +184,7 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
             <div className="flex flex-nowrap items-center gap-x-3">
               <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiFileDocumentMultipleOutline} size={1} />
-                <div className="flex gap-x-2 text-sm font-semibold ">
+                <div className="flex gap-x-2 text-sm font-semibold">
                   <div className="flex gap-x-1">
                     <span>EP:</span>
                     {formatThousand(item.Sizes.Local.Episodes)}
@@ -226,7 +226,7 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
                   )}
                 </div>
               </div>
-              <div className={cx('gap-x-2 flex align-middle items-center', missingEpisodesCount === 0 && 'hidden')}>
+              <div className={cx('flex items-center gap-x-2 align-middle', missingEpisodesCount === 0 && 'hidden')}>
                 <Icon className="text-panel-text-warning" path={mdiAlertCircleOutline} size={1} />
                 <div className="flex gap-x-2 text-sm font-semibold">
                   {item.Sizes.Total.Episodes - item.Sizes.Local.Episodes !== 0 && (

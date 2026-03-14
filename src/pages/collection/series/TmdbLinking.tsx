@@ -332,7 +332,7 @@ const TmdbLinking = () => {
         {(seriesQuery.data && episodesQuery.data) && (
           <div
             className={cx(
-              'grid gap-2 grid-rows-[auto_minmax(0,1fr)]',
+              'grid grid-rows-[auto_minmax(0,1fr)] gap-2',
               type === 'Show' ? 'grid-cols-[minmax(0,1fr)_3.5rem_minmax(0,1fr)]' : 'grid-cols-2',
             )}
           >
@@ -438,7 +438,7 @@ const TmdbLinking = () => {
               className={cx(
                 'relative w-full',
                 type === 'Movie' ? 'col-span-2' : 'col-span-3',
-                tmdbId === 0 && '!col-span-1',
+                tmdbId === 0 && 'col-span-1!',
               )}
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
@@ -459,7 +459,7 @@ const TmdbLinking = () => {
                 return (
                   <div
                     className={cx(
-                      'absolute left-0 top-0 flex w-full gap-x-2',
+                      'absolute top-0 left-0 flex w-full gap-x-2',
                       episode && type === 'Show' && 'flex-col gap-y-2',
                     )}
                     style={{
@@ -475,7 +475,7 @@ const TmdbLinking = () => {
                         (_, index) => (
                           <div
                             key={`episode-${episode.IDs.AniDB}-${index}`}
-                            className="relative left-0 top-0 flex w-full gap-x-2"
+                            className="relative top-0 left-0 flex w-full gap-x-2"
                           >
                             <EpisodeRow
                               episode={episode}

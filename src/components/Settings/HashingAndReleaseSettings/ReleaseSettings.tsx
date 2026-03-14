@@ -63,7 +63,7 @@ const ReleaseSettings = () => {
           justify
         />
 
-        <div className="text-xs opacity-65 w-[95%]">
+        <div className="w-[95%] text-xs opacity-65">
           {releaseInfoSettings.ParallelMode
             ? 'Run all enabled providers in parallel, and wait for the highest priority valid result.'
             : 'Run each provider in sequential order defined by the priority below until a valid result is found.'}

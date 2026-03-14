@@ -62,7 +62,7 @@ const StartServer = () => {
   return (
     <>
       <title>First Run &gt; Start Server | Shoko</title>
-      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6">
+      <TransitionDiv className="flex max-w-152 flex-col justify-center gap-y-6">
         <div className="text-xl font-semibold">Start Server</div>
         <div className="text-justify">
           On this page you can try and start the server, startup progress will be reported below. After the startup and

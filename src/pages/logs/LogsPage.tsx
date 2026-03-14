@@ -73,7 +73,7 @@ const LogsPage = () => {
               icon={mdiArrowVerticalLock}
               buttonType="secondary"
               buttonSize="normal"
-              className={cx(scrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
+              className={cx(scrollToBottom ? 'text-panel-text-primary' : 'text-panel-text!')}
               onClick={() => setScrollToBottom(prev => !prev)}
               tooltip={`${scrollToBottom ? 'Disable' : 'Enable'} scroll to bottom`}
             />
@@ -98,7 +98,7 @@ const LogsPage = () => {
                   style={{ height: rowVirtualizer.getTotalSize() }}
                 >
                   <div
-                    className="absolute left-4 top-0 w-[95%]"
+                    className="absolute top-0 left-4 w-[95%]"
                     style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
                   >
                     {virtualItems.map((virtualRow) => {

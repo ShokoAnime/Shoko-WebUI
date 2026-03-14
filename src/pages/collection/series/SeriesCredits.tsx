@@ -100,7 +100,7 @@ const SeriesCredits = () => {
         </div>
 
         <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
-          <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="text-xl font-semibold">
               Credits |&nbsp;
               {(search !== '' || roleFilter.size > 0) && (

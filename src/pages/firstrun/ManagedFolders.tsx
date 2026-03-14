@@ -79,7 +79,7 @@ const ManagedFolders = () => {
   return (
     <>
       <title>First Run &gt; Managed Folders | Shoko</title>
-      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
+      <TransitionDiv className="flex max-w-152 flex-col justify-center gap-y-6 overflow-y-auto">
         <div className="text-xl font-semibold">Managed Folders</div>
         <div className="text-justify">
           For Shoko to function correctly, at least one managed folder is required. However, you can add as many import

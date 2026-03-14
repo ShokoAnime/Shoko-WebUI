@@ -45,7 +45,7 @@ const Footer = (props: Props) => {
     <div className="flex flex-col text-lg">
       <div
         className={cx([
-          'flex items-center mb-5',
+          'mb-5 flex items-center',
           status?.type === 'error' ? 'text-panel-text-danger' : 'text-panel-text-important',
         ])}
       >

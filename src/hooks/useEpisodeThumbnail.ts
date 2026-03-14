@@ -5,10 +5,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
 
-function useEpisodeThumbnail(
-  episode: EpisodeType,
-  backdrop: ImageType | undefined,
-) {
+const useEpisodeThumbnail = (episode: EpisodeType, backdrop?: ImageType) => {
   const { useThumbnailFallback } = useSettingsQuery().data.WebUI_Settings.collection.image;
   return useMemo(() => {
     if (episode.Images.Thumbnails.length) {
@@ -22,6 +19,6 @@ function useEpisodeThumbnail(
     if (useThumbnailFallback && backdrop) return backdrop;
     return undefined;
   }, [episode, useThumbnailFallback, backdrop]);
-}
+};
 
 export default useEpisodeThumbnail;

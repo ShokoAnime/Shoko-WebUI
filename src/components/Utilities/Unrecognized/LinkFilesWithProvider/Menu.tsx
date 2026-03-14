@@ -26,7 +26,7 @@ const Menu = (props: Props) => {
   } = props;
 
   return (
-    <div className="relative box-border flex grow items-center gap-x-4 overflow-auto whitespace-nowrap rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex grow items-center gap-x-4 overflow-auto rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 whitespace-nowrap">
       <MenuButton
         onClick={openSearchDialog}
         icon={mdiMagnify}

@@ -67,7 +67,7 @@ const FileItem = ({ file }: { file: FileType }) => {
         <Icon
           path={mdiBeta}
           size={0.5}
-          className="text-panel-icon-action absolute -bottom-1 -right-1.5 [paint-order:stroke] [stroke-width:8px] group-odd:stroke-panel-background group-even:stroke-panel-background-alt ease-in-out"
+          className="absolute -right-1.5 -bottom-1 stroke-[8px] text-panel-icon-action ease-in-out [paint-order:stroke] group-odd:stroke-panel-background group-even:stroke-panel-background-alt"
         />
       </Button>
       <AVDumpFileIcon truck file={file} />

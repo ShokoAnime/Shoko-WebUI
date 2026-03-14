@@ -6,6 +6,7 @@ import { configs, plugins } from 'eslint-config-airbnb-extended';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import sortDestructureKeys from 'eslint-plugin-sort-destructure-keys';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import tailwind from 'eslint-plugin-better-tailwindcss';
 import tseslint from 'typescript-eslint';
 
 export const projectRoot = path.resolve('.');
@@ -62,6 +63,27 @@ export default [
   ...tseslintConfig,
   ...pluginQuery.configs['flat/recommended'],
   reactRefresh.configs.recommended,
+  tailwind.configs.recommended,
+  {
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: 'src/css/tailwind.css',
+      }
+    },
+    rules: {
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      'better-tailwindcss/no-unknown-classes': ['error', {
+        ignore: [
+          'login-image-default',
+          'metadata-link-icon',
+           'react-resizable-handle',
+           'scroll-gutter',
+           'scroll-no-gutter',
+           'AniDB'
+        ]
+      }]
+    }
+  },
   {
     plugins: {
       'sort-destructure-keys': sortDestructureKeys,
@@ -117,6 +139,10 @@ export default [
         {
           ignorePrimitives: { boolean: true }
         }
+      ],
+      'func-style': [
+        'error',
+        'expression',
       ],
       'id-length': [
         'error',

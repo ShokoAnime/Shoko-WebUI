@@ -8,7 +8,7 @@ type Props = {
   show: boolean;
   header?: React.ReactNode;
   subHeader?: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size: 'sm' | 'md' | 'lg';
   noPadding?: boolean;
   noGap?: boolean;
   className?: string;
@@ -48,7 +48,7 @@ const ModalPanel = (props: Props) => {
   return (
     <Modal
       isOpen={show}
-      overlayClassName={cx('fixed inset-0 bg-black/50 z-[80]', overlayClassName)}
+      overlayClassName={cx('fixed inset-0 z-80 bg-black/50', overlayClassName)}
       className="mt-20 flex h-full items-center justify-center"
       onAfterOpen={onAfterOpen}
       closeTimeoutMS={150}
@@ -57,8 +57,8 @@ const ModalPanel = (props: Props) => {
       <div className="flex size-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex flex-col rounded-lg border border-panel-border bg-panel-background drop-shadow-lg overflow-y-auto',
-            sizeClass[size ?? 'md'],
+            'flex flex-col overflow-y-auto rounded-lg border border-panel-border bg-panel-background drop-shadow-lg',
+            sizeClass[size],
             !noPadding && ('gap-y-6'),
             fullHeight ? 'h-[75%]' : 'max-h-[75%]',
             className,
@@ -75,7 +75,7 @@ const ModalPanel = (props: Props) => {
           </div>
           <div
             className={cx(
-              'flex flex-col grow',
+              'flex grow flex-col',
               !noGap && ('gap-y-6'),
               !noPadding && ('px-6 pb-8'),
             )}

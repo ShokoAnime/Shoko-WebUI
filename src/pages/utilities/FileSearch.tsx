@@ -425,7 +425,7 @@ const FileSearch = () => {
           </div>
           <div className="flex w-full flex-col lg:max-w-[25%]">
             {selectedRows?.length > 0 && (
-              <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
+              <div className="flex size-full flex-col overflow-x-hidden overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
                 <div className="flex w-full grow flex-col gap-y-6 overflow-y-auto pr-4">
                   <FilesSummary title="Selected Summary" items={selectedRows} />
                   <div className="flex w-full text-xl font-semibold">

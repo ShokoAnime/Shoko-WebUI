@@ -66,7 +66,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       />
       <div
         className={cx(
-          'flex justify-between transition-opacity items-center',
+          'flex items-center justify-between transition-opacity',
           !AutoDownloadBackdrops && 'pointer-events-none opacity-65',
         )}
       >
@@ -89,7 +89,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       />
       <div
         className={cx(
-          'flex justify-between transition-opacity items-center',
+          'flex items-center justify-between transition-opacity',
           !AutoDownloadPosters && 'pointer-events-none opacity-65',
         )}
       >
@@ -112,7 +112,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       />
       <div
         className={cx(
-          'flex justify-between transition-opacity items-center',
+          'flex items-center justify-between transition-opacity',
           !AutoDownloadLogos && 'pointer-events-none opacity-65',
         )}
       >
@@ -135,7 +135,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       />
       <div
         className={cx(
-          'flex justify-between transition-opacity items-center',
+          'flex items-center justify-between transition-opacity',
           !AutoDownloadThumbnails && 'pointer-events-none opacity-65',
         )}
       >
@@ -158,7 +158,7 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       />
       <div
         className={cx(
-          'flex justify-between transition-opacity items-center',
+          'flex items-center justify-between transition-opacity',
           !AutoDownloadStaffImages && 'pointer-events-none opacity-65',
         )}
       >

@@ -87,11 +87,11 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
               <div className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
                   <div className="flex">
-                    <div className="min-w-[9.375rem] font-semibold">File Name</div>
+                    <div className="min-w-37.5 font-semibold">File Name</div>
                     {fileName}
                   </div>
                   <div className="flex">
-                    <div className="min-w-[9.375rem] font-semibold">Location</div>
+                    <div className="min-w-37.5 font-semibold">Location</div>
                     {folderPath}
                   </div>
                 </div>

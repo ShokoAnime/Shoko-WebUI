@@ -29,7 +29,7 @@ type Props = {
 const SelectOption = ({ option }: { option: Option }) => (
   <ListboxOption
     value={option}
-    className="group relative cursor-pointer select-none px-2 py-0.5 text-panel-text transition-colors data-[focus]:text-panel-text-primary"
+    className="group relative cursor-pointer px-2 py-0.5 text-panel-text transition-colors select-none data-focus:text-panel-text-primary"
   >
     <div className="flex items-center justify-between">
       <div className="flex grow truncate">
@@ -47,7 +47,7 @@ const SelectOption = ({ option }: { option: Option }) => (
 const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: number, selected: Option }) => (
   <ListboxButton
     className={cx(
-      'relative w-full h-full border border-panel-border rounded-lg px-4 py-2 text-left focus:outline-hidden focus:border-panel-text-primary data-[open]:border-panel-text-primary transition-colors',
+      'relative size-full rounded-lg border border-panel-border px-4 py-2 text-left transition-colors focus:border-panel-text-primary focus:outline-hidden data-open:border-panel-text-primary',
       rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
     )}
   >
@@ -108,7 +108,7 @@ const SelectEpisodeList = React.memo((
                 padding: '1rem',
                 gap: '0.25rem',
               }}
-              className="z-[110] w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-hidden"
+              className="z-110 w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-hidden"
             >
               <Input
                 autoFocus

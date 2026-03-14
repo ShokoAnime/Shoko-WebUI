@@ -251,7 +251,7 @@ const LinkFilesWithProvidersTab = () => {
               addLinksToSubmitQueue={submitSelectedLinks}
             />
 
-            <div className="flex gap-x-3 whitespace-nowrap font-semibold">
+            <div className="flex gap-x-3 font-semibold whitespace-nowrap">
               <Button
                 onClick={handleCancel}
                 buttonType="secondary"
@@ -274,9 +274,9 @@ const LinkFilesWithProvidersTab = () => {
           </div>
         </ShokoPanel>
 
-        <div className="flex mt-8 grow rounded-lg border border-panel-border bg-panel-background p-6 justify-center">
+        <div className="mt-8 flex grow justify-center rounded-lg border border-panel-border bg-panel-background p-6">
           {!links.length && (
-            <div className="flex grow justify-center items-center">
+            <div className="flex grow items-center justify-center">
               <Icon className="text-panel-text-primary" path={mdiLoading} size={4} spin={0.5} />
             </div>
           )}
@@ -294,7 +294,7 @@ const LinkFilesWithProvidersTab = () => {
                       return (
                         <div
                           key={virtualItem.key}
-                          className="absolute left-0 top-0 w-full"
+                          className="absolute top-0 left-0 w-full"
                           data-index={virtualItem.index}
                           style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
                           ref={virtualizer.measureElement}
