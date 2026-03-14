@@ -20,7 +20,7 @@ const SentryErrorBoundaryWrapper = () => {
   useEffect(() => {
     if (isDebug()) return;
 
-    if (!versionQuery.isSuccess || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
+    if (!versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
 
     const isServerSupported = semver.gte(versionQuery.data.Server.Version, getMinimumServerVersion());
 
@@ -29,7 +29,7 @@ const SentryErrorBoundaryWrapper = () => {
     } else if (pathname === '/webui/unsupported') {
       navigate('/webui');
     }
-  }, [navigate, pathname, versionQuery]);
+  }, [navigate, pathname, versionQuery.data]);
 
   return (
     <Sentry.ErrorBoundary

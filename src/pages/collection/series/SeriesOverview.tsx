@@ -88,13 +88,17 @@ const SeriesOverview = () => {
                     return [
                       ...flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
                         ids.map(id => (
-                          <SeriesMetadata
-                            key={`${site}-${type}-${id}`}
-                            site={site}
-                            id={id}
-                            seriesId={series.IDs.ID}
-                            type={type}
-                          />
+                          id
+                            ? (
+                              <SeriesMetadata
+                                key={`${site}-${type}-${id}`}
+                                site={site}
+                                id={id}
+                                seriesId={series.IDs.ID}
+                                type={type}
+                              />
+                            )
+                            : null
                         ))),
                       /* Show row to add new TMDB links */
                       <SeriesMetadata key="TMDB-add-new" site="TMDB" seriesId={series.IDs.ID} />,

@@ -17,11 +17,11 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
 
   const onDeleteClick = () => {
     deleteToken(token.Device, {
-      onSuccess: (() => {
+      onSuccess: () => {
         toast.success('API Key Deleted', `API Key ${token.Device} has been deleted!`, {
           autoClose: 3000,
         });
-      }),
+      },
     });
   };
 
@@ -119,7 +119,7 @@ const ApiKeys = () => {
                 onClick: handleCopyToClipboard,
               }]
               : undefined}
-            className={cx(!isTokenGenerated ? 'w-full xl:w-[65%]' : 'w-[100%]')}
+            className={cx(!isTokenGenerated ? 'w-full xl:w-[65%]' : 'w-full')}
             disabled={!!createdToken}
             onChange={onDeviceNameChange}
             type="text"

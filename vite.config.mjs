@@ -5,8 +5,9 @@ import pkg from './package.json';
 
 import { defineConfig } from 'vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
 
 export default defineConfig(async () => {
   const isDebug = process.env.NODE_ENV !== 'production';
@@ -47,13 +48,24 @@ export default defineConfig(async () => {
     },
     build: {
       sourcemap: 'hidden',
-      chunkSizeWarningLimit: 2000
+      chunkSizeWarningLimit: 2000,
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'vendor',
+                test: /node_modules/,
+              },
+            ]
+          }
+        }
+      }
     },
     plugins: [
-      react({
-        babel: {
-          plugins: ['babel-plugin-react-compiler'],
-        },
+      react(),
+      babel({
+        presets: [reactCompilerPreset()]
       }),
       sentryPlugin,
       tailwindcss()

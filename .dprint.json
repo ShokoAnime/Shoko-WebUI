@@ -16,6 +16,6 @@
     "src/**"
   ],
   "plugins": [
-    "https://plugins.dprint.dev/typescript-0.91.6.wasm"
+    "https://plugins.dprint.dev/typescript-0.95.15.wasm"
   ]
 }
