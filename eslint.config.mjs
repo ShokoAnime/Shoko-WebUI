@@ -140,6 +140,10 @@ export default [
           ignorePrimitives: { boolean: true }
         }
       ],
+      'func-style': [
+        'error',
+        'expression',
+      ],
       'id-length': [
         'error',
         { min: 3, exceptions: ['cx', 'ID', 'id', '_', '__'], properties: 'never' },

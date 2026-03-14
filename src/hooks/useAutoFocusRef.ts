@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 type TimeoutType = ReturnType<typeof globalThis.setTimeout>;
 
-function useAutoFocusRef(autoFocus: boolean): React.RefObject<HTMLInputElement | null> {
+const useAutoFocusRef = (autoFocus: boolean) => {
   const elementRef = useRef<HTMLInputElement | null>(null) as React.RefObject<HTMLInputElement | null> & {
     timeout?: TimeoutType;
   };
@@ -45,6 +45,6 @@ function useAutoFocusRef(autoFocus: boolean): React.RefObject<HTMLInputElement |
         }
       },
     }), []) as unknown as React.RefObject<HTMLInputElement | null>;
-}
+};
 
 export default useAutoFocusRef;

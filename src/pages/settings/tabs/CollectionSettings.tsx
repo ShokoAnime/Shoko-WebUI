@@ -126,9 +126,7 @@ const CollectionSettings = () => {
     },
   };
 
-  function isExclusionKey(id: string): id is keyof typeof exclusionMapping {
-    return id in exclusionMapping;
-  }
+  const isExclusionKey = (id: string): id is keyof typeof exclusionMapping => id in exclusionMapping;
 
   const handleExclusionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!(event.target.id in exclusionMapping)) return;
