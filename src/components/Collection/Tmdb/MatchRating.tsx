@@ -33,7 +33,7 @@ type Props = {
 const MatchRating = React.memo(({ isDisabled, isOdd, rating }: Props) => (
   <div
     className={cx(
-      'flex justify-center items-center rounded-md border border-panel-border w-16 text-button-primary-text',
+      'flex w-16 items-center justify-center rounded-md border border-panel-border text-button-primary-text',
       {
         'bg-panel-text-important': rating === MatchRatingType.DateAndTitleMatches
           || rating === MatchRatingType.TitleMatches,

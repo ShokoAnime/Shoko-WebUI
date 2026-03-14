@@ -271,8 +271,8 @@ const Collection = () => {
               'flex items-start',
               !isSeries && 'transition-all',
               showFilterSidebar
-                ? 'w-[28rem] opacity-100'
-                : 'w-0 opacity-0 overflow-hidden ',
+                ? 'w-md opacity-100'
+                : 'w-0 overflow-hidden opacity-0',
             )}
           >
             <FilterSidebar />

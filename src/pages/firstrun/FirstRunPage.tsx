@@ -95,9 +95,9 @@ const FirstRunPage = () => {
   }, [versionQuery.data, versionQuery.isFetching]);
 
   return (
-    <div className=" flex w-full justify-center">
-      <div className="flex size-full max-w-[120rem] gap-x-6 p-6">
-        <div className="flex w-[31.25rem] flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+    <div className="flex w-full justify-center">
+      <div className="flex size-full max-w-480 gap-x-6 p-6">
+        <div className="flex w-125 flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
           <div className="flex flex-col items-center gap-y-4">
             <ShokoIcon className="size-32" />
             <div className="flex items-center gap-x-2 font-semibold">
@@ -149,7 +149,7 @@ const FirstRunPage = () => {
           />
         </div>
       </div>
-      <div className="login-image-default fixed left-0 top-0 -z-10 size-full opacity-20" />
+      <div className="login-image-default fixed top-0 left-0 -z-10 size-full opacity-20" />
     </div>
   );
 };

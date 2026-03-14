@@ -20,7 +20,7 @@ const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
   const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
 
   return (
-    <div className="flex flex-col gap-2 border-t border-b border-panel-border text-sm">
+    <div className="flex flex-col gap-2 border-y border-panel-border text-sm">
       <div className="flex items-center pt-2">
         <div
           className="flex flex-col"
@@ -37,7 +37,7 @@ const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 overflow-auto py-2 border-t border-panel-border gap-y-1">
+      <div className="grid grid-cols-2 gap-y-1 overflow-auto border-t border-panel-border py-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <div className="font-semibold">
           Group:&nbsp;
           {link.release.Group ? `${link.release.Group.Name} (${link.release.Group.Source})` : 'Unknown'}

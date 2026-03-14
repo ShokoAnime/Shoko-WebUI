@@ -23,7 +23,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
 
   return (
     <div className="flex flex-col gap-y-1" key={item.meta.title}>
-      <div className={cx('flex gap-x-4 justify-between font-semibold', shokoNewsPostsCount > 4 && ('mr-4'))}>
+      <div className={cx('flex justify-between gap-x-4 font-semibold', shokoNewsPostsCount > 4 && ('mr-4'))}>
         <p>{item.meta.date}</p>
         {newNewsCheck(item.meta.date) && <p className="text-panel-text-important">New!</p>}
       </div>

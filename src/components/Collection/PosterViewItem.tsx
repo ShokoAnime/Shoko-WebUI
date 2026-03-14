@@ -48,12 +48,12 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
       <Link to={routeLink}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="group h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
+          className="group h-76 rounded-lg border border-panel-border drop-shadow-md"
           hidePlaceholderOnHover
           zoomOnHover
         >
           {showUnwatchedCount && (
-            <div className="absolute right-0 top-0 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
+            <div className="absolute top-0 right-0 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
               {unwatchedCount || (
                 <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
               )}
@@ -77,7 +77,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         </BackgroundImagePlaceholderDiv>
       </Link>
       <div>
-        <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold">
+        <p className="line-clamp-1 text-center text-sm font-semibold text-ellipsis">
           <Link
             to={routeLink}
             className="transition-colors hover:text-panel-text-primary"
@@ -89,7 +89,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         </p>
         {showEpisodeCount && (
           <p
-            className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
+            className="line-clamp-1 text-center text-sm font-semibold text-ellipsis opacity-65"
             title={`${episodeCount.toString()} Episodes`}
           >
             {episodeCount}

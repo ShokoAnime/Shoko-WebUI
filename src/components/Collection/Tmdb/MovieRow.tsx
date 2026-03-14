@@ -102,7 +102,7 @@ const MovieRow = React.memo((props: Props) => {
             data-tooltip-id="tooltip"
             data-tooltip-content={lockMovie ? 'This episode is already linked to a different movie!' : ''}
           >
-            <div className={cx('flex gap-x-6 items-center', lockMovie && 'opacity-65 pointer-events-none')}>
+            <div className={cx('flex items-center gap-x-6', lockMovie && 'pointer-events-none opacity-65')}>
               Movie
               <div
                 className="flex grow flex-col text-left"

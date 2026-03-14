@@ -46,7 +46,7 @@ const Title = ({ count, step, stepCount }: { count: number, step: number, stepCo
 );
 
 const StepDescription = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex justify-start gap-x-2 ">
+  <div className="flex justify-start gap-x-2">
     <Icon className="shrink-0" path={mdiInformationOutline} size={1} />
     <div className="flex">
       {children}
@@ -135,7 +135,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
                 )}
             </StepDescription>
             <div className="flex grow rounded-lg border border-panel-border bg-panel-input p-4">
-              <div className="flex h-[14.5rem] flex-col gap-y-1 overflow-y-auto break-all rounded-lg bg-panel-input pr-4">
+              <div className="flex h-58 flex-col gap-y-1 overflow-y-auto rounded-lg bg-panel-input pr-4 break-all">
                 {links.length
                   ? links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)
                   : <div>No files selected.</div>}
@@ -187,7 +187,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
                 startIcon={mdiMagnify}
               />
               <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
-                <div className="flex h-[9.5rem] flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-lg bg-panel-input pr-2 ">
+                <div className="flex h-38 flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-lg bg-panel-input pr-2">
                   {searchQuery.isError || searchQuery.isFetching
                     ? (
                       <div className="flex h-full items-center justify-center">

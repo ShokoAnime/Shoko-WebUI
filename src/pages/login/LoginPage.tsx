@@ -200,7 +200,7 @@ const LoginPage = () => {
                   <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
                   <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
                   Check the error message below
-                  <div className="overflow-y-auto break-all text-lg font-semibold">
+                  <div className="overflow-y-auto text-lg font-semibold break-all">
                     {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
                   </div>
                 </div>
@@ -236,7 +236,7 @@ const LoginPage = () => {
             <div className="flex gap-x-2">
               <div
                 className={cx(
-                  'flex gap-x-2 items-center font-semibold max-w-92',
+                  'flex max-w-92 items-center gap-x-2 font-semibold',
                   seriesId && 'cursor-pointer text-panel-text-primary',
                 )}
                 onClick={setRedirect}
@@ -287,7 +287,7 @@ const LoginPage = () => {
         </div>
         <div
           className={cx(
-            'fixed left-0 top-0 -z-10 h-full w-full opacity-20',
+            'fixed top-0 left-0 -z-10 size-full opacity-20',
             imageUrl === 'default' && 'login-image-default',
           )}
           style={imageUrl !== '' && imageUrl !== 'default'

@@ -62,11 +62,9 @@ const HashTypesModal = ({ onClose, provider, show }: HashTypesModalProps) => {
       size="sm"
     >
       <div className="flex flex-col gap-y-4">
-        <div className="text-panel-text-muted">
-          Select which hash types to enable for this provider
-        </div>
+        Enabled Algorithms
 
-        <div className="flex flex-col min-h-10 rounded-lg border border-panel-border bg-panel-input p-4">
+        <div className="flex min-h-10 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
           {provider.AvailableHashTypes.map(hashType => (
             <Checkbox
               key={hashType}

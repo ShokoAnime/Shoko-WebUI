@@ -54,7 +54,7 @@ const AniDBAccount = () => {
   return (
     <>
       <title>First Run &gt; AniDB Account | Shoko</title>
-      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6">
+      <TransitionDiv className="flex max-w-152 flex-col justify-center gap-y-6">
         <div className="text-xl font-semibold">Adding Your AniDB Account</div>
         <div className="text-justify">
           Shoko utilizes AniDB to compare file hashes with its vast database, enabling a quick identification and

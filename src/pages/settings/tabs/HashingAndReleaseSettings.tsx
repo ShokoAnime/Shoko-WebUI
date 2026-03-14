@@ -176,7 +176,7 @@ const HashingAndReleaseSettings = () => {
             justify
           />
 
-          <div className="text-xs opacity-65 w-[95%]">
+          <div className="w-[95%] text-xs opacity-65">
             {hashingSettings.ParallelMode
               ? (
                 <>
@@ -197,7 +197,7 @@ const HashingAndReleaseSettings = () => {
             Hashing Providers
           </div>
 
-          <div className="flex flex-col min-h-10 rounded-lg border border-panel-border bg-panel-input p-4">
+          <div className="flex min-h-10 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
             {hashingProvidersQuery.data.map(provider => (
               <div key={provider.ID} className="flex justify-between">
                 {provider.Name}

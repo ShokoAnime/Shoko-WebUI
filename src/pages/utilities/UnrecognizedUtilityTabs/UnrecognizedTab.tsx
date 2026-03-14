@@ -204,7 +204,7 @@ const Menu = (
       <div
         className={cx(
           selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',
-          'box-border h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
+          'box-border h-13 grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3',
         )}
       >
         <MenuButton
@@ -224,7 +224,7 @@ const Menu = (
       </div>
 
       <div className={cx(selectedRows.length !== 0 ? 'flex' : 'hidden', '3xl:hidden')}>
-        <DropdownButton buttonTypes="secondary" content={<span>Options</span>}>
+        <DropdownButton buttonType="secondary" content={<span>Options</span>}>
           {renderSelectedRowActions}
         </DropdownButton>
       </div>
@@ -406,7 +406,7 @@ const UnrecognizedTab = () => {
                   buttonType="primary"
                   buttonSize="normal"
                   tooltip="Link With Providers (β)"
-                  className="group flex flex-row flex-wrap items-center gap-x-2 -ml-3 border-l-0 rounded-l-none"
+                  className="group -ml-3 flex flex-row flex-wrap items-center gap-x-2 rounded-l-none border-l-0"
                   onClick={() => navigate('link-with-providers', { state: { selectedRows } })}
                 >
                   <div className="relative">
@@ -414,7 +414,7 @@ const UnrecognizedTab = () => {
                     <Icon
                       path={mdiBeta}
                       size={0.5}
-                      className="absolute -bottom-1 -right-1.5 [paint-order:stroke] [stroke-width:8px] stroke-button-primary group-hover:stroke-button-primary-hover transition-[stroke] ease-in-out"
+                      className="absolute -right-1.5 -bottom-1 stroke-button-primary stroke-[8px] transition-[stroke] ease-in-out [paint-order:stroke] group-hover:stroke-button-primary-hover"
                     />
                   </div>
                 </Button>

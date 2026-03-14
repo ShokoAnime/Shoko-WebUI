@@ -230,7 +230,7 @@ const Menu = React.memo((props: MenuProps) => {
     <div
       className={cx(
         'flex h-13 grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 transition-opacity',
-        disable ? 'opacity-65 pointer-events-none' : '',
+        disable ? 'pointer-events-none opacity-65' : '',
       )}
     >
       <MenuButton
@@ -561,7 +561,7 @@ const Renamer = () => {
         </ShokoPanel>
 
         <AnimateHeight height={showSettings ? 'auto' : 0}>
-          <div className={cx('my-3 flex !h-[32rem] gap-x-6', relocatePending && 'opacity-65 pointer-events-none')}>
+          <div className={cx('my-3 flex h-128! gap-x-6', relocatePending && 'pointer-events-none opacity-65')}>
             {renamerConfigsQuery.isSuccess && (
               <>
                 <div className="flex w-1/3 flex-col gap-y-6">
@@ -671,7 +671,7 @@ const Renamer = () => {
           </div>
         </AnimateHeight>
 
-        <ShokoPanel title="Renamer Preview" className="min-h-[40rem] grow">
+        <ShokoPanel title="Renamer Preview" className="min-h-160 grow">
           {addedFiles.length === 0 && (
             <div className="flex grow items-center justify-center font-semibold">No files selected!</div>
           )}

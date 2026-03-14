@@ -111,7 +111,7 @@ const NameTab = React.memo(({ groupId }: Props) => {
         placeholder={(groupFetching || seriesFetching) ? 'Loading...' : undefined}
         label="Name"
         className="mb-4"
-        inputClassName={cx(nameInputIcons.length > 1 ? 'pr-[5rem]' : 'pr-12', 'truncate')}
+        inputClassName={cx(nameInputIcons.length > 1 ? 'pr-20' : 'pr-12', 'truncate')}
         endIcons={nameInputIcons}
         disabled={!nameEditable}
       />

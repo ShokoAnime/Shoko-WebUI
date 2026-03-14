@@ -118,7 +118,7 @@ const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTyp
         <div className="flex gap-x-2">
           <Button
             className={cx(
-              'flex gap-x-2 item hover:text-panel-text-primary transition-colors',
+              'flex gap-x-2 transition-colors hover:text-panel-text-primary',
               linkType === 'Show' && 'text-panel-text-primary',
             )}
             onClick={() => setLinkType('Show')}
@@ -129,7 +129,7 @@ const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTyp
           |
           <Button
             className={cx(
-              'flex gap-x-2 hover:text-panel-text-primary transition-colors',
+              'flex gap-x-2 transition-colors hover:text-panel-text-primary',
               linkType === 'Movie' && 'text-panel-text-primary',
             )}
             onClick={() => setLinkType('Movie')}
@@ -162,7 +162,7 @@ const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTyp
           <div
             className={cx(
               'flex h-full flex-col gap-y-2 overflow-y-auto',
-              refreshPending && 'opacity-65 pointer-events-none',
+              refreshPending && 'pointer-events-none opacity-65',
             )}
           >
             {debouncedSearch === '' && autoSearchResults.map(result => (

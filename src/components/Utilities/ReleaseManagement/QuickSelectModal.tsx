@@ -130,7 +130,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                         Managed Folder:&nbsp;
                         {`${managedFolder.Name} (ID: ${managedFolder.ID})`}
                       </div>
-                      <div className="flex flex-wrap break-all text-sm opacity-65">
+                      <div className="flex flex-wrap text-sm break-all opacity-65">
                         Location:&nbsp;
                         {group.FileLocation?.replace(managedFolder.Path, '')}
                       </div>

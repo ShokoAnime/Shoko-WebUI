@@ -14,16 +14,16 @@ type FileMissingEpisodeProps = {
 const MissingEpisode = ({ episode, rowId }: FileMissingEpisodeProps) => (
   <div
     className={cx(
-      'flex p-4 gap-16 rounded-lg border text-left transition-colors border-panel-border items-center',
+      'flex items-center gap-16 rounded-lg border border-panel-border p-4 text-left transition-colors',
       rowId % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
     )}
   >
-    <div className="w-[12.5rem]">
+    <div className="w-50">
       {episode.Type}
       &nbsp;
       {padNumber(episode.EpisodeNumber)}
     </div>
-    <div className="flex w-[46.875rem] flex-row">
+    <div className="flex w-187.5 flex-row">
       {episode.Titles.find(title => title.Language === 'en')?.Name ?? '--'}
       &nbsp;
       <a
@@ -57,15 +57,15 @@ const FileMissingEpisodes = ({ missingEps = [] }: Props) => (
     )
     : (
       <div className="flex max-h-[72vh] flex-col rounded-lg border border-panel-border bg-panel-background-transparent p-6 transition-colors">
-        <div className="sticky top-0 z-[1] flex bg-panel-background-alt">
+        <div className="sticky top-0 z-1 flex bg-panel-background-alt">
           <div className="mb-1 flex grow items-center gap-16 rounded-lg border border-panel-border bg-panel-table-header p-4 text-left font-semibold transition-colors">
-            <div className="w-[12.5rem] text-left">
+            <div className="w-50 text-left">
               Type
             </div>
-            <div className="w-[46.875rem] text-left">
+            <div className="w-187.5 text-left">
               Title
             </div>
-            <div className="w-[8.75rem] text-left">
+            <div className="w-35 text-left">
               Airing Date
             </div>
           </div>

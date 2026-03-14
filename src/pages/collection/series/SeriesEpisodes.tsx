@@ -169,7 +169,7 @@ const SeriesEpisodes = () => {
           hasMissing={hasMissingEpisodes}
         />
         <div className="flex grow flex-col gap-y-4">
-          <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
               <span>Episodes</span>
               <span className="hidden px-2 2xl:inline">|</span>
@@ -220,7 +220,7 @@ const SeriesEpisodes = () => {
                     return (
                       <div
                         key={episode ? episode.IDs.ID : `loading-${virtualItem.key}`}
-                        className="absolute left-0 top-0 flex w-full flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
+                        className="absolute top-0 left-0 flex w-full flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
                         data-index={virtualItem.index}
                         style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
                         ref={rowVirtualizer.measureElement}
@@ -237,7 +237,7 @@ const SeriesEpisodes = () => {
                             />
                           )
                           : (
-                            <div className="flex h-[20.75rem] items-center justify-center p-6 text-panel-text-primary">
+                            <div className="flex h-83 items-center justify-center p-6 text-panel-text-primary">
                               <Icon path={mdiLoading} spin size={3} />
                             </div>
                           )}

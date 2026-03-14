@@ -43,7 +43,7 @@ const Checkbox = memo((props: Props) => {
       className={cx([
         justify && 'justify-between',
         `${className}`,
-        'flex items-center transition ease-in-out gap-x-2',
+        'flex items-center gap-x-2 transition ease-in-out',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
         disabled && 'opacity-65',
         disabled ? 'cursor-auto' : 'cursor-pointer',
@@ -56,7 +56,7 @@ const Checkbox = memo((props: Props) => {
         checked={isChecked}
         disabled={disabled}
         onChange={onChange}
-        className="absolute size-0 overflow-hidden whitespace-nowrap border-0 p-0"
+        className="absolute size-0 overflow-hidden border-0 p-0 whitespace-nowrap"
         style={{
           clip: 'rect(0 0 0 0)',
           clipPath: 'inset(50%)',

@@ -18,7 +18,7 @@ const SeriesLink = React.memo(({ extraPadding, series }: { series: SeriesType, e
   <Link
     to={`/webui/collection/series/${series.IDs.ID}`}
     className={cx(
-      'flex justify-between align-middle hover:text-panel-text-primary transition-colors',
+      'flex justify-between align-middle transition-colors hover:text-panel-text-primary',
       extraPadding && ('pr-4'),
     )}
   >
@@ -47,7 +47,7 @@ const SeriesVirtualizer = (
   });
 
   return (
-    <div className="max-h-[12.5rem] overflow-y-auto" ref={scrollRef}>
+    <div className="max-h-50 overflow-y-auto" ref={scrollRef}>
       <div className="relative" style={{ height: virtualizer.getTotalSize() }}>
         {virtualizer.getVirtualItems().map(({ index, key, size, start }) => {
           const series = data[index];
@@ -55,7 +55,7 @@ const SeriesVirtualizer = (
           return (
             <div
               key={key}
-              className="absolute left-0 top-0 w-full"
+              className="absolute top-0 left-0 w-full"
               style={{ height: size, transform: `translateY(${start}px)` }}
             >
               {series
@@ -101,7 +101,7 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
       {tag?.Source === 'AniDB' && (
         <a
           href={`https://anidb.net/tag/${tag.ID}`}
-          className=" flex items-center gap-x-2 text-base text-panel-icon-action"
+          className="flex items-center gap-x-2 text-base text-panel-icon-action"
           rel="noopener noreferrer"
           target="_blank"
         >

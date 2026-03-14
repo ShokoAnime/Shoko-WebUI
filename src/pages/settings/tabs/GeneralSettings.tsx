@@ -151,7 +151,7 @@ const GeneralSettings = () => {
               </a>
             </div>
           </div>
-          <div className="flex items-center justify-between ">
+          <div className="flex items-center justify-between">
             <span>Web UI Channel</span>
             <SelectSmall
               id="update-channel"
@@ -235,7 +235,7 @@ const GeneralSettings = () => {
         </div>
         <div
           className={cx(
-            'flex justify-between items-center transition-opacity',
+            'flex items-center justify-between transition-opacity',
             !(WebUI_Settings?.notifications ?? true) && 'pointer-events-none opacity-65',
           )}
         >
@@ -265,7 +265,7 @@ const GeneralSettings = () => {
         </div>
         <div
           className={cx(
-            'flex flex-col transition-opacity gap-y-2',
+            'flex flex-col gap-y-2 transition-opacity',
             !LogRotator.Enabled && 'pointer-events-none opacity-65',
           )}
         >
@@ -285,7 +285,7 @@ const GeneralSettings = () => {
           />
           <div
             className={cx(
-              'flex justify-between items-center transition-opacity',
+              'flex items-center justify-between transition-opacity',
               !LogRotator.Delete && 'pointer-events-none opacity-65',
             )}
           >

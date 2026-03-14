@@ -31,8 +31,8 @@ const TabButton = React.memo((
     <Button
       onClick={handleClick}
       className={cx(
-        'font-semibold drop-shadow-none !border-none !bg-transparent text-xl',
-        active ? 'text-panel-text-primary' : '!text-panel-text',
+        'border-none! bg-transparent! text-xl font-semibold drop-shadow-none',
+        active ? 'text-panel-text-primary' : 'text-panel-text!',
       )}
     >
       {title}
@@ -68,7 +68,7 @@ const MetadataSources = () => {
   return (
     <>
       <title>First Run &gt; Metadata Sources | Shoko</title>
-      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
+      <TransitionDiv className="flex max-w-152 flex-col justify-center gap-y-6 overflow-y-auto">
         <div className="text-xl font-semibold">Metadata Sites</div>
         <div className="text-justify">
           Shoko offers support for various community sites that provide additional metadata for the series in your

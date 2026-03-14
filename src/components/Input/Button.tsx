@@ -45,10 +45,10 @@ const Button = ({
     className={cx([
       className,
       keybinding && 'flex items-center gap-x-2',
-      'relative text-sm font-semibold transition ease-in-out rounded-lg',
+      'relative rounded-lg text-sm font-semibold transition ease-in-out',
       buttonType && buttonTypeClasses[buttonType],
       buttonSize && buttonSizeClasses[buttonSize],
-      (loading || disabled) && 'opacity-65 cursor-default',
+      (loading || disabled) && 'cursor-default opacity-65',
     ])}
     onClick={onClick}
     disabled={loading || disabled}

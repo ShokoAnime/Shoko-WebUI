@@ -12,7 +12,7 @@ type Props = {
 const LoadingElement = React.memo(({ hidePlaceholderOnHover }: { hidePlaceholderOnHover?: boolean }) => (
   <div
     className={cx(
-      'w-full h-full flex flex-col justify-center items-center bg-panel-input p-6',
+      'flex size-full flex-col items-center justify-center bg-panel-input p-6',
       hidePlaceholderOnHover && 'group-hover:opacity-0',
     )}
   >
@@ -41,7 +41,7 @@ const CharacterImage = React.memo((props: Props) => {
         ? <LoadingElement hidePlaceholderOnHover={hidePlaceholderOnHover} />
         : (
           <div
-            className="group absolute left-0 top-0 z-[-1] flex size-full flex-col text-center"
+            className="group absolute top-0 left-0 z-[-1] flex size-full flex-col text-center"
             style={{ background: imageLoaded ? `50% 0% / cover no-repeat url('${backgroundImage.src}')` : undefined }}
           >
             {!imageLoaded && <LoadingElement hidePlaceholderOnHover={hidePlaceholderOnHover} />}

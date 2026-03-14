@@ -76,6 +76,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
       show={type !== null}
       onRequestClose={onClose}
       header={`${type} Languages`}
+      size="md"
     >
       {languagesQuery.isPending
         && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}

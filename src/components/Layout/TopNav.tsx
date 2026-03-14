@@ -162,11 +162,11 @@ const TopNav = () => {
     <>
       <div
         className={cx(
-          'z-[100] flex flex-col bg-header-background font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] transition-opacity',
-          layoutEditMode && 'opacity-65 pointer-events-none',
+          'z-100 flex flex-col bg-header-background font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] transition-opacity',
+          layoutEditMode && 'pointer-events-none opacity-65',
         )}
       >
-        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-6 py-2">
+        <div className="mx-auto flex w-full max-w-480 items-center justify-between px-6 py-2">
           <Link to="/webui/dashboard" className="flex items-center gap-x-3">
             <ShokoIcon className="size-20" />
             <span className="mt-1 text-2xl font-semibold text-header-text">Shoko</span>
@@ -184,7 +184,7 @@ const TopNav = () => {
             <NavLink
               to="settings"
               className={({ isActive }) =>
-                cx({ 'text-topnav-text-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
+                cx({ 'text-topnav-text-primary': isActive, 'pointer-events-none opacity-65': layoutEditMode })}
               onClick={closeModalsAndSubmenus}
               data-tooltip-id="tooltip"
               data-tooltip-content="Settings"
@@ -210,7 +210,7 @@ const TopNav = () => {
           </div>
         </div>
         <div className="bg-topnav-background text-topnav-text">
-          <div className="mx-auto flex w-full max-w-[120rem] justify-between px-6 py-4">
+          <div className="mx-auto flex w-full max-w-480 justify-between px-6 py-4">
             <div className="flex gap-x-6">
               <LinkMenuItem
                 icon={mdiViewDashboardOutline}
@@ -324,7 +324,7 @@ const TopNav = () => {
           height={showUtilitiesMenu ? 'auto' : 0}
           className="border-t border-topnav-border bg-topnav-background"
         >
-          <div className="mx-auto flex w-full max-w-[120rem] gap-x-6 px-6 py-4 text-sm">
+          <div className="mx-auto flex w-full max-w-480 gap-x-6 px-6 py-4 text-sm">
             <LinkMenuItem
               icon={mdiFileQuestionOutline}
               onClick={closeModalsAndSubmenus}

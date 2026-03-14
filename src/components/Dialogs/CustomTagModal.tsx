@@ -267,7 +267,7 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
             </Button>
           </div>
         </div>
-        <div className="flex h-[10.5rem] flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 contain-strict">
+        <div className="flex h-42 flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 contain-strict">
           {userTagsQuery.data?.map(tag => (
             <div
               key={tag.ID}

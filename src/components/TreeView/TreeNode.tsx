@@ -92,7 +92,7 @@ const TreeNode = React.memo((props: Props) => {
 
   return (
     <li
-      className={cx(['cursor-pointer', nodeId !== 0 && 'ml-3 mt-3'])}
+      className={cx(['cursor-pointer', nodeId !== 0 && 'mt-3 ml-3'])}
       onDoubleClick={toggleExpanded}
     >
       <div className="flex justify-between" onClick={nodeId === 0 ? toggleExpanded : toggleSelected}>
@@ -111,7 +111,7 @@ const TreeNode = React.memo((props: Props) => {
           </span>
         </div>
         <Icon
-          className={cx('justify-self-end mr-3 text-panel-text-primary', !isSelected ? 'hidden' : 'inline-block')}
+          className={cx('mr-3 justify-self-end text-panel-text-primary', !isSelected ? 'hidden' : 'inline-block')}
           path={mdiCheckboxMarkedCircleOutline}
           size={1}
         />

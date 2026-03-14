@@ -206,7 +206,7 @@ const GroupTab = ({ seriesId }: Props) => {
           },
         ]}
       />
-      <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6 pr-3">
+      <div className="mt-2 flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6 pr-3 select-none">
         <div
           className={cx(
             'flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',

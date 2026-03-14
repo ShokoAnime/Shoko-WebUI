@@ -20,7 +20,7 @@ const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
 
   return (
     <div
-      className="flex h-[9.75rem] max-w-[29.875rem] cursor-pointer flex-col gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6"
+      className="flex h-39 max-w-119.5 cursor-pointer flex-col gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6"
       onClick={emitTag}
     >
       <div className="flex flex-row items-center">
@@ -98,7 +98,7 @@ const SeriesTags = () => {
 
   const header = useMemo(
     () => (
-      <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-5">
+      <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-5">
         <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
           <span>Tags</span>
           <span className="hidden px-2 2xl:inline">|</span>

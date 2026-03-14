@@ -16,8 +16,8 @@ const MultiStateButton = React.memo(({ activeState, alternateColor, className, o
     {states.map(option => (
       <Button
         className={cx(
-          'w-40 rounded-lg py-3 px-4 font-medium text-sm',
-          activeState === option.value && '!bg-panel-toggle-background text-panel-toggle-text',
+          'w-40 rounded-lg px-4 py-3 text-sm font-medium',
+          activeState === option.value && 'bg-panel-toggle-background! text-panel-toggle-text',
           activeState !== option.value && 'text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
           activeState !== option.value && !alternateColor ? 'bg-panel-background' : 'bg-panel-toggle-background-alt',
         )}

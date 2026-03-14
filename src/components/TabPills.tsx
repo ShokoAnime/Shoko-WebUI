@@ -26,7 +26,7 @@ const TabPills = ({ tabs }: Props) => (
             'flex-1 p-4 text-sm transition-colors',
             active
               ? 'bg-panel-toggle-background! text-panel-toggle-text'
-              : 'bg-panel-background hover:bg-panel-toggle-background-hover text-panel-toggle-text-alt',
+              : 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
           )}
         >
           {name}
