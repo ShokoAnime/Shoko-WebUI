@@ -44,7 +44,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
     });
 
     return result;
-  }, [managedFoldersQuery]);
+  }, [managedFoldersQuery.data]);
 
   const { isPending: isDeletingFiles, mutate: deleteFiles } = useDeleteFilesMutation();
   const { isPending: isDeletingLocations, mutate: deleteLocations } = useDeleteFileLocationsMutation();

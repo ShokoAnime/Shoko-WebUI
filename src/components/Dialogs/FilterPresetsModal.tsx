@@ -122,7 +122,7 @@ const SidePanel = (
   useEffect(() => () => setSearch(''), []);
 
   const filteredList = useMemo(() => {
-    if (filtersQuery.isSuccess) {
+    if (filtersQuery.data) {
       return filtersQuery.data.List.filter(
         item =>
           !item.IsDirectory
@@ -130,7 +130,7 @@ const SidePanel = (
       );
     }
     return [];
-  }, [debouncedSearch, filtersQuery]);
+  }, [debouncedSearch, filtersQuery.data]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
