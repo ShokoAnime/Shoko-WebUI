@@ -1,83 +1,54 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
-import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSetPreferredTmdbShowOrderingMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbShowOrderingQuery } from '@/core/react-query/tmdb/queries';
 import { AlternateOrderingTypeEnum } from '@/core/react-query/tmdb/types';
 
-export type Props = {
+type Props = {
   onClose: () => void;
   show: boolean;
   showId: number;
 };
 
-function orderingToDescription(ordering: AlternateOrderingTypeEnum | undefined): string {
-  switch (ordering) {
-    case AlternateOrderingTypeEnum.Unknown:
-      return ' (Unknown)';
-    case AlternateOrderingTypeEnum.OriginalAirDate:
-      return ' (Original Air Date)';
-    case AlternateOrderingTypeEnum.Absolute:
-      return ' (Absolute)';
-    case AlternateOrderingTypeEnum.DVD:
-      return ' (DVD)';
-    case AlternateOrderingTypeEnum.Digital:
-      return ' (Digital)';
-    case AlternateOrderingTypeEnum.StoryArc:
-      return ' (Story Arc)';
-    case AlternateOrderingTypeEnum.Production:
-      return ' (Production)';
-    case AlternateOrderingTypeEnum.TV:
-      return ' (TV)';
-    default:
-      return '';
-  }
-}
+const orderingDescriptionMap = {
+  [AlternateOrderingTypeEnum.Unknown]: ' (Unknown)',
+  [AlternateOrderingTypeEnum.OriginalAirDate]: ' (Original Air Date)',
+  [AlternateOrderingTypeEnum.Absolute]: ' (Absolute)',
+  [AlternateOrderingTypeEnum.DVD]: ' (DVD)',
+  [AlternateOrderingTypeEnum.Digital]: ' (Digital)',
+  [AlternateOrderingTypeEnum.StoryArc]: ' (Story Arc)',
+  [AlternateOrderingTypeEnum.Production]: ' (Production)',
+  [AlternateOrderingTypeEnum.TV]: ' (TV)',
+  default: '',
+} as const;
 
 const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
   const orderingQuery = useTmdbShowOrderingQuery(showId, show && showId > 0);
-  const { mutate: setOrdering, status: setOrderingStatus } = useSetPreferredTmdbShowOrderingMutation(
-    showId,
-  );
-  const { data: orderingList } = orderingQuery;
-  const [selectedOrderingId, setSelectedOrderingId] = useState<string>('');
-  const selectedOrdering = useMemo(() => orderingList.find(ordering => ordering.OrderingID === selectedOrderingId), [
-    orderingList,
-    selectedOrderingId,
-  ]);
 
-  const canSave = setOrderingStatus !== 'pending' && selectedOrdering != null && !selectedOrdering.InUse;
+  const { isPending: setOrderingPending, mutate: setOrdering } = useSetPreferredTmdbShowOrderingMutation(showId);
 
-  const handleClose = () => {
-    setSelectedOrderingId('');
-    invalidateQueries(['series', 'tmdb', 'show']);
-    invalidateQueries(['series', 'tmdb', 'episode', 'bulk']);
-    onClose();
-  };
-
-  const handleOrderingClick = (event: React.MouseEvent<HTMLElement>) => {
-    const { orderingId } = event.currentTarget.dataset;
-    if (!orderingId) return;
-
-    const ordering = orderingList.find(ord => ord.OrderingID === orderingId);
-    if (!ordering || ordering.InUse) return;
-
-    if (selectedOrderingId === orderingId) {
-      setSelectedOrderingId('');
-    } else {
-      setSelectedOrderingId(orderingId);
-    }
-  };
+  const [inUseOrdering, setInUseOrdering] = useState('');
+  const [selectedOrdering, setSelectedOrdering] = useState('');
+  useEffect(() => {
+    if (!orderingQuery.data) return;
+    const initialOrdering = orderingQuery.data.find(ordering => ordering.InUse);
+    if (!initialOrdering) return;
+    setSelectedOrdering(initialOrdering.OrderingID);
+    setInUseOrdering(initialOrdering.OrderingID);
+  }, [orderingQuery.data]);
 
   const handleSave = () => {
-    if (!selectedOrderingId) return;
-    setOrdering(selectedOrderingId, {
+    if (!selectedOrdering) return;
+    setOrdering(selectedOrdering, {
       onSuccess: () => {
         toast.success('Ordering has been updated!');
+        onClose();
       },
       onError: () => {
         toast.error('Failed to update ordering!');
@@ -85,59 +56,61 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
     });
   };
 
-  useEffect(() => {
-    if (selectedOrdering?.InUse ?? false) {
-      setSelectedOrderingId('');
-    }
-  }, [selectedOrdering]);
-
-  useLayoutEffect(() => {
-    if (show) {
-      orderingQuery.refetch().catch(console.error);
-    }
-  }, [show, showId, orderingQuery]);
-
   return (
     <ModalPanel
       show={show}
-      onRequestClose={handleClose}
-      header="TMDb Show Settings"
+      onRequestClose={onClose}
+      header="TMDB Show Settings"
       size="sm"
       overlayClassName="!z-[90]"
     >
       <div className="flex grow flex-col gap-y-2">
-        <div className="mb-2 flex justify-between font-semibold">
+        <div className="flex justify-between font-semibold">
           Ordering
         </div>
-        <div className="flex h-[10.5rem] flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 contain-strict">
-          {orderingList.map(ordering => (
-            <div
-              key={ordering.OrderingID}
-              data-ordering-id={ordering.OrderingID}
-              onClick={handleOrderingClick}
-              className={cx(
-                'flex flex-row justify-between transition-colors',
-                !ordering.InUse && 'cursor-pointer',
-                ordering.InUse && (selectedOrdering?.OrderingID !== ordering.OrderingID)
-                  && 'text-panel-text-primary',
-                selectedOrdering?.OrderingID === ordering.OrderingID && 'text-panel-text-important',
-              )}
-            >
-              <span>
-                {`${ordering.OrderingName}${orderingToDescription(ordering.OrderingType)}`}
-              </span>
-              <span className="w-10 text-center">
-                {`${ordering.EpisodeCount}${
-                  ordering.HiddenEpisodeCount > 0 ? `(+${ordering.HiddenEpisodeCount})` : ''
-                }`}
-              </span>
-            </div>
-          ))}
+
+        <div className="h-60 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
+          {orderingQuery.data
+            ? (
+              <div className="flex flex-col grow overflow-y-auto gap-y-2 h-full">
+                {orderingQuery.data.map(ordering => (
+                  <div
+                    key={ordering.OrderingID}
+                    onClick={() => setSelectedOrdering(ordering.OrderingID)}
+                    className={cx(
+                      'flex justify-between transition-colors cursor-pointer',
+                      selectedOrdering === ordering.OrderingID && 'text-panel-text-primary',
+                    )}
+                  >
+                    {`${ordering.OrderingName}${orderingDescriptionMap[ordering.OrderingType ?? 'default']}`}
+                    <div className="w-10 text-center">
+                      {`${ordering.EpisodeCount}${
+                        ordering.HiddenEpisodeCount > 0 ? `(+${ordering.HiddenEpisodeCount})` : ''
+                      }`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+            : (
+              <div className="flex grow items-center justify-center h-full">
+                <Icon path={mdiLoading} size={3} spin className="text-panel-text-primary" />
+              </div>
+            )}
         </div>
       </div>
+
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">Close</Button>
-        <Button onClick={handleSave} buttonType="primary" disabled={!canSave} className="px-6 py-2">Save</Button>
+        <Button onClick={onClose} buttonType="secondary" buttonSize="normal">Close</Button>
+        <Button
+          onClick={handleSave}
+          buttonType="primary"
+          buttonSize="normal"
+          loading={setOrderingPending}
+          disabled={selectedOrdering === inUseOrdering}
+        >
+          Save
+        </Button>
       </div>
     </ModalPanel>
   );

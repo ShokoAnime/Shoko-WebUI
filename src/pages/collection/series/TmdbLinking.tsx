@@ -53,7 +53,7 @@ const TmdbLinking = () => {
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
 
-  const [toggledSettingsModal, toggleShowSettingsModal] = useToggle();
+  const [showSettingsModal, toggleSettingsModal] = useToggle();
   const showSettings = type === 'Show' && tmdbId > 0;
 
   const [createInProgress, setCreateInProgress] = useState(false);
@@ -400,13 +400,13 @@ const TmdbLinking = () => {
                           ? (
                             <>
                               <TmdbShowSettingsModal
-                                show={toggledSettingsModal}
+                                show={showSettingsModal}
                                 showId={tmdbId}
-                                onClose={toggleShowSettingsModal}
+                                onClose={toggleSettingsModal}
                               />
                               <Button
                                 className="text-panel-icon-action"
-                                onClick={toggleShowSettingsModal}
+                                onClick={toggleSettingsModal}
                                 tooltip="Open Settings"
                               >
                                 <Icon path={mdiCogOutline} size={1} />

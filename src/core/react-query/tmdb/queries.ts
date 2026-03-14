@@ -148,7 +148,6 @@ export const useTmdbBulkMoviesOnlineQuery = (data: TmdbBulkRequestType, enabled 
 export const useTmdbShowOrderingQuery = (showId: number, enabled = true) =>
   useQuery<TmdbShowOrderingInformationType[]>({
     queryKey: ['series', 'tmdb', 'show', showId, 'ordering'],
-    queryFn: () => (showId > 0 ? axios.get(`TMDB/Show/${showId}/Ordering`) : Promise.resolve([])),
-    initialData: () => [],
+    queryFn: () => axios.get(`TMDB/Show/${showId}/Ordering`),
     enabled,
   });
