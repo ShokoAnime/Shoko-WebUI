@@ -23,23 +23,6 @@ export type ReleaseManagementSeriesType = {
   EpisodeCount: number;
 } & SeriesType;
 
-export type SeriesRelationType = {
-  IDs: SeriesRelationIDsType;
-  RelatedIDs: SeriesRelationIDsType;
-  Type: SeriesRelationTypeEnum;
-  Source: string;
-};
-
-export type SeriesRelationIDsType = {
-  Shoko: number | null;
-  AniDB: number | null;
-};
-
-export type SeriesSearchResult = SeriesType & {
-  Match: string;
-  Distance: number;
-};
-
 export type SeriesIDsType = {
   ID: number;
   ParentGroup: number;
@@ -90,11 +73,6 @@ export const enum SeriesRelationTypeEnum {
   SideStory = 'SideStory',
   Summary = 'Summary',
 }
-
-export type SeriesAniDBRecommendedForYou = {
-  Anime: AniDBSeriesType;
-  SimilarTo: number;
-};
 
 export type SeriesAniDBSearchResult = {
   ID: number;

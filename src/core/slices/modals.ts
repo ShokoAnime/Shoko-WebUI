@@ -5,6 +5,7 @@ import editGroupReducer from './modals/editGroup';
 import editSeriesReducer from './modals/editSeries';
 import managedFolderReducer from './modals/managedFolder';
 import profileReducer from './modals/profile';
+import providerInfoReducer from './modals/providerInfo';
 
 export default combineReducers({
   browseFolder: browseFolderReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   profile: profileReducer,
   editSeries: editSeriesReducer,
   editGroup: editGroupReducer,
+  providerInfo: providerInfoReducer,
 });

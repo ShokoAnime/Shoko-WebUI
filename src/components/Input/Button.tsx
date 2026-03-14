@@ -21,6 +21,7 @@ type Props = {
   submit?: boolean;
   tooltip?: string;
   tooltipPlace?: PlacesType;
+  keybinding?: string;
 };
 
 const Button = ({
@@ -30,6 +31,7 @@ const Button = ({
   className,
   disabled,
   id,
+  keybinding,
   loading,
   loadingSize,
   onClick,
@@ -42,7 +44,8 @@ const Button = ({
     type={submit ? 'submit' : 'button'}
     className={cx([
       className,
-      'relative text-sm font-semibold transition ease-in-out rounded-lg outline-hidden',
+      keybinding && 'flex items-center gap-x-2',
+      'relative text-sm font-semibold transition ease-in-out rounded-lg',
       buttonType && buttonTypeClasses[buttonType],
       buttonSize && buttonSizeClasses[buttonSize],
       (loading || disabled) && 'opacity-65 cursor-default',
@@ -53,7 +56,18 @@ const Button = ({
     data-tooltip-content={tooltip}
     data-tooltip-place={tooltipPlace ?? 'top'}
   >
-    {children}
+    {keybinding
+      ? (
+        <>
+          {children}
+          <span className="-ml-1 self-center text-xs opacity-65">
+            (
+            {keybinding}
+            )
+          </span>
+        </>
+      )
+      : children}
     {loading && (
       <div className="absolute inset-0 flex items-center justify-center">
         <Icon path={mdiLoading} spin size={loadingSize ?? 1} />

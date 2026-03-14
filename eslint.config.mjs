@@ -63,7 +63,6 @@ export default [
   ...pluginQuery.configs['flat/recommended'],
   reactRefresh.configs.recommended,
   {
-    files: ['**/*.{j|t}s', '**/*.{j|t}sx'],
     plugins: {
       'sort-destructure-keys': sortDestructureKeys,
     },
@@ -154,7 +153,11 @@ export default [
       ],
       'no-param-reassign': [
         'error',
-        { props: true, ignorePropertyModificationsFor: ['sliceState', 'draftState', 'draftState2'] },
+        {
+          props: true,
+          ignorePropertyModificationsFor: ['sliceState'],
+          ignorePropertyModificationsForRegex: ['^draft']
+        },
       ],
       'no-restricted-imports': [
         'error',

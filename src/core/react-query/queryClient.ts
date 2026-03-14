@@ -16,7 +16,7 @@ const processError = (error: AxiosError | Error) => {
   if (isAxiosError(error)) {
     const { message } = error;
     const { method, url } = error.config as AxiosRequestConfig;
-    const { status, data } = error.response as AxiosResponse<{ detail: string }> ?? {};
+    const { data, status } = error.response as AxiosResponse<{ detail: string }> ?? {};
 
     errorHeader = `Error ${status}: ${method?.toUpperCase()} ${url}`;
     errorMessage = data?.detail ?? message;

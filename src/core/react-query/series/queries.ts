@@ -19,6 +19,7 @@ import type { ImagesType } from '@/core/types/api/common';
 import type { AniDBEpisodeType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
+  AniDBSeriesType,
   SeriesAniDBRelatedType,
   SeriesAniDBSearchResult,
   SeriesAniDBSimilarType,
@@ -40,7 +41,7 @@ export const useSeriesQuery = (
   });
 
 export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
-  useQuery<SeriesAniDBSearchResult>({
+  useQuery<AniDBSeriesType>({
     queryKey: ['series', 'anidb', anidbId],
     queryFn: () => axios.get(`Series/AniDB/${anidbId}`),
     enabled,

@@ -186,7 +186,7 @@ const SeriesList = (
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<EpisodeType>(episodes);
+  } = useRowSelection(episodes);
 
   useEffect(() => {
     setSelectedEpisodes(selectedRows);

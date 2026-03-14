@@ -1,5 +1,7 @@
 import type { Layout } from 'react-grid-layout';
 
+import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
+
 export type SettingsDatabaseType = {
   MySqliteDirectory: string;
   DatabaseBackupDirectory: string;
@@ -375,6 +377,7 @@ export type WebUISettingsType = {
   layout: {
     dashboard: Partial<Record<string, Layout>>;
   };
+  releaseInfoProviders: ManualLinkProviderType[];
   collection: {
     view: 'poster' | 'list';
     poster: {

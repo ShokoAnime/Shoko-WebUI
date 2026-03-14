@@ -20,7 +20,7 @@ export type ManagedFolderProps = {
 };
 
 const ManagedFolder = (props: ManagedFolderProps) => {
-  const { className, index = 0, folder } = props;
+  const { className, folder, index = 0 } = props;
   const dispatch = useDispatch();
   const { mutate: rescanManagedFolder } = useRescanManagedFolderMutation();
 

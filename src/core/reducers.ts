@@ -7,6 +7,7 @@ import firstrunReducer from './slices/firstrun';
 import mainpageReducer from './slices/mainpage';
 import miscReducer from './slices/misc';
 import modalsReducer from './slices/modals';
+import settingsReducer from './slices/settings';
 import utilitiesReducer from './slices/utilities';
 
 import type { MainpageActionTypes } from './slices/mainpage';
@@ -20,6 +21,7 @@ const reducers = combineReducers({
   mainpage: mainpageReducer,
   misc: miscReducer,
   modals: modalsReducer,
+  settings: settingsReducer,
   utilities: utilitiesReducer,
 });
 
