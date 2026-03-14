@@ -268,10 +268,6 @@ export const initialSettings: SettingsType = {
     updateChannel: semver.prerelease(getUiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
     releaseInfoProviders: [],
-    linking: {
-      enabledProviders: [],
-      providerOrder: [],
-    },
     collection: {
       view: 'poster',
       poster: {

@@ -111,26 +111,6 @@ export type FileAVDumpType = {
   LastVersion: string | null;
 };
 
-export type FileAniDBReleaseGroupType = {
-  ID: number;
-  Name: string;
-  ShortName: string;
-};
-
-type FileDetailedTypeSeriesID = {
-  SeriesID: FileIDsType;
-  EpisodeIDs: FileIDsType[];
-};
-
-export type FileDetailedType = FileType & {
-  SeriesIDs: FileDetailedTypeSeriesID[];
-};
-
-export type FileIDsType = {
-  AniDB: number;
-  ID: number;
-};
-
 export const enum FileSourceEnum {
   Unknown = 'Unknown',
   Other = 'Other',

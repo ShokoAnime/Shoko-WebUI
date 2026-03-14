@@ -1,4 +1,4 @@
-import type { DataSourceType, EpisodeImagesType, RatingType } from './common';
+import type { EpisodeImagesType, RatingType } from './common';
 import type { FileType } from '@/core/types/api/file';
 import type { TmdbEpisodeType, TmdbMovieType } from '@/core/types/api/tmdb';
 
@@ -56,13 +56,6 @@ export type AniDBEpisodeType = {
   Titles: EpisodeTitleType[];
   Description: string;
   Rating: RatingType;
-};
-
-export type EpisodeFilesQueryType = {
-  includeDataFrom?: DataSourceType[];
-  includeXRefs?: boolean;
-  isManuallyLinked?: boolean;
-  includeMediaInfo?: boolean;
 };
 
 export enum MatchRatingType {

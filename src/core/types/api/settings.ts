@@ -378,10 +378,6 @@ export type WebUISettingsType = {
     dashboard: Partial<Record<string, Layout>>;
   };
   releaseInfoProviders: ManualLinkProviderType[];
-  linking: {
-    enabledProviders: string[];
-    providerOrder: string[];
-  };
   collection: {
     view: 'poster' | 'list';
     poster: {
