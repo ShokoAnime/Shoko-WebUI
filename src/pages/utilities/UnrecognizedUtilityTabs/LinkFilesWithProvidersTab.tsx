@@ -126,6 +126,9 @@ const LinkFilesWithProvidersTab = () => {
   const canSubmit = initialized
     && links.some(link => link.state === LinkState.Ready);
 
+  const allSubmitted = initialized
+    && links.every(link => link.state === LinkState.Submitted);
+
   const navigateBack = () => {
     setRowSelection({});
     navigate(-1);
@@ -151,6 +154,11 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const handleSubmit = () => {
+    if (allSubmitted) {
+      navigateBack();
+      return;
+    }
+
     if (!canSubmit) return;
 
     setLinks((draft) => {
@@ -265,10 +273,10 @@ const LinkFilesWithProvidersTab = () => {
                 onClick={handleSubmit}
                 buttonType="primary"
                 className="px-4 py-3"
-                disabled={!canSubmit}
+                disabled={!allSubmitted && !canSubmit}
                 keybinding="Enter"
               >
-                Submit Pending
+                {allSubmitted ? 'Done' : 'Submit Pending'}
               </Button>
             </div>
           </div>
