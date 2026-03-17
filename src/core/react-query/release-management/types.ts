@@ -1,11 +1,7 @@
 import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType } from '@/core/types/api/common';
 
-export enum ReleaseManagementItemType {
-  MultipleReleases = 'MultipleReleases',
-  DuplicateFiles = 'DuplicateFiles',
-  MissingEpisodes = 'MissingEpisodes',
-}
+export type ReleaseManagementItemType = 'MultipleReleases' | 'DuplicateFiles' | 'MissingEpisodes';
 
 export type ReleaseManagementSeriesRequestType = {
   ignoreVariations?: boolean;

@@ -92,8 +92,8 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized/files/link-with-providers" element={<LinkFilesWithProvidersTab />} />
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
-            <Route path="release-management" element={<Navigate to="multiples" replace />} />
-            <Route path="release-management/:itemType" element={<ReleaseManagement />} />
+            <Route path="release-management" element={<Navigate to="MultipleReleases" replace />} />
+            <Route path="release-management/:type" element={<ReleaseManagement />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />

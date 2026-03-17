@@ -6,7 +6,7 @@ type XRefsType = {
   EpisodeIDs: EpisodeIDsType[];
 };
 
-type FileTypeLocation = {
+export type FileLocationType = {
   ID: number;
   FileID: number;
   ManagedFolderID: number;
@@ -19,7 +19,7 @@ export type FileType = {
   ID: number;
   Size: number;
   Hashes: FileHashDigestType[];
-  Locations: FileTypeLocation[];
+  Locations: FileLocationType[];
   Duration: string;
   ResumePosition?: string;
   Watched?: string;
