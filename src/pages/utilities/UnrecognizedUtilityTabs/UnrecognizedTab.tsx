@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useMeasure from 'react-use-measure';
 import {
@@ -79,6 +79,13 @@ const Menu = (
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
+
+  // This is for invalidating queries for LinkFilesWithProvidersTab
+  useEffect(() => {
+    invalidateQueries(['release-info']);
+    invalidateQueries(['series', 'anidb']);
+    invalidateQueries(['episode', 'anidb']);
+  }, []);
 
   const showDeleteConfirmation = useCallback(() => {
     setShowConfirmModal(true);

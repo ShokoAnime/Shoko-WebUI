@@ -14,8 +14,8 @@ const stopPropagation = (event: React.MouseEvent) => {
 const CrossReference = ({ xref }: { xref: ReleaseCrossReferenceType }) => {
   const { AnidbAnimeID, AnidbEpisodeID } = xref;
 
-  const animeQuery = useSeriesAniDBQuery(AnidbAnimeID!, !!AnidbAnimeID);
-  const episodeQuery = useEpisodeAniDBQuery(AnidbEpisodeID);
+  const animeQuery = useSeriesAniDBQuery(AnidbAnimeID!, !!AnidbAnimeID, true);
+  const episodeQuery = useEpisodeAniDBQuery(AnidbEpisodeID, true, true);
 
   return (
     <span className="text-sm font-semibold">

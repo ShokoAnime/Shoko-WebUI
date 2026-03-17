@@ -10,8 +10,9 @@ export const useReleaseInfoSummaryQuery = () =>
     queryFn: () => axios.get('ReleaseInfo/Summary'),
   });
 
-export const useReleaseInfoProvidersQuery = () =>
+export const useReleaseInfoProvidersQuery = (noStale = false) =>
   useQuery<ReleaseProviderInfoType[]>({
-    queryKey: ['release-info', 'providers'],
+    queryKey: ['release-info', 'providers', noStale],
     queryFn: () => axios.get('ReleaseInfo/Provider'),
+    staleTime: noStale ? Infinity : 1000,
   });

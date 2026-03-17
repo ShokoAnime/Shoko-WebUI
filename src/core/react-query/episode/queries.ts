@@ -20,9 +20,10 @@ export const useEpisodeFilesQuery = (
     enabled,
   });
 
-export const useEpisodeAniDBQuery = (episodeId: number, enabled = true) =>
+export const useEpisodeAniDBQuery = (episodeId: number, enabled = true, noStale = false) =>
   useQuery<AniDBEpisodeType>({
     queryKey: ['episode', 'anidb', episodeId],
     queryFn: () => axios.get(`Episode/AniDB/${episodeId}`),
     enabled,
+    staleTime: noStale ? Infinity : 1000,
   });
