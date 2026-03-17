@@ -28,7 +28,7 @@ const AutoSearchReleaseModal = (props: Props) => {
   const { initialProviders, onClose, onUpdateProviders, show } = props;
   const dispatch = useDispatch();
 
-  const providersQuery = useReleaseInfoProvidersQuery();
+  const providersQuery = useReleaseInfoProvidersQuery(true);
   const providerMap = useMemo(() => {
     if (!providersQuery.data) return {};
     return Object.fromEntries(providersQuery.data.map(provider => [provider.ID, provider]));

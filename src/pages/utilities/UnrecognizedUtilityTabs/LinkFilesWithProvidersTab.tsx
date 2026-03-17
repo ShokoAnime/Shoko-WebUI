@@ -1,9 +1,10 @@
-import React, { useEffect, useEffectEvent, useRef, useState } from 'react';
+import React, { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { produce } from 'immer';
 import { forEach } from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -16,6 +17,11 @@ import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
 import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
 import Title from '@/components/Utilities/Unrecognized/Title';
+import {
+  useAutoPreviewReleaseInfoForFileByIdMutation,
+  usePreviewReleaseInfoByProviderIdMutation,
+  useSubmitReleaseInfoForFileByIdMutation,
+} from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
@@ -37,12 +43,24 @@ const generateLinkId = () => {
   return lastLinkId;
 };
 
+const currentlyInitializingLinks = new Set<number>();
+const currentlySearchingLinks = new Set<number>();
+const currentlySubmittingLinks = new Set<number>();
+
 const LinkFilesWithProvidersTab = () => {
   const navigate = useNavigateVoid();
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
 
-  const releaseProvidersQuery = useReleaseInfoProvidersQuery();
   const settings = useSettingsQuery().data;
+  const releaseProvidersQuery = useReleaseInfoProvidersQuery(true);
+  const providerMap = useMemo(() => {
+    if (!releaseProvidersQuery.data) return {};
+    return Object.fromEntries(releaseProvidersQuery.data.map(provider => [provider.ID, provider]));
+  }, [releaseProvidersQuery.data]);
+
+  const { mutateAsync: previewReleaseInfo } = usePreviewReleaseInfoByProviderIdMutation();
+  const { mutateAsync: searchReleaseInfo } = useAutoPreviewReleaseInfoForFileByIdMutation();
+  const { mutateAsync: submitReleaseInfo } = useSubmitReleaseInfoForFileByIdMutation();
 
   const [linksDict, setLinks] = useImmer<LinksType>({});
   const links = Object.values(linksDict);
@@ -106,6 +124,12 @@ const LinkFilesWithProvidersTab = () => {
     initializeLinks();
   }, [releaseProvidersQuery.isSuccess]);
 
+  useEffect(() => () => {
+    currentlyInitializingLinks.clear();
+    currentlySearchingLinks.clear();
+    currentlySubmittingLinks.clear();
+  }, []);
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
     count: links.length,
@@ -152,6 +176,125 @@ const LinkFilesWithProvidersTab = () => {
 
     navigateBack();
   };
+
+  const processPreInit = useEffectEvent((link: ManualLinkType) => {
+    if (currentlyInitializingLinks.has(link.id)) return;
+    currentlyInitializingLinks.add(link.id);
+
+    const hasProvidersEnabled = link.providers.some(provider => provider.enabled);
+    const offlineImporterProviderId = link.providers.find(
+      provider => providerMap[provider.id]?.Name === 'Offline Importer',
+    )?.id;
+
+    if (!offlineImporterProviderId) {
+      setLinks((draft) => {
+        draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
+      });
+      return;
+    }
+
+    const path = link.file.Locations.find(location => location.AbsolutePath)?.AbsolutePath
+      ?? link.file.Locations?.[0]?.RelativePath ?? '';
+
+    previewReleaseInfo({ id: `match://${path}`, providerId: offlineImporterProviderId })
+      .then((data) => {
+        if (!data) return;
+        setLinks((draft) => {
+          draft[link.id].release = data;
+          draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
+        });
+      })
+      .catch(() => {
+        setLinks((draft) => {
+          draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
+        });
+      })
+      .finally(() => currentlyInitializingLinks.delete(link.id));
+  });
+
+  const processSearch = useEffectEvent((link: ManualLinkType) => {
+    if (currentlySearchingLinks.has(link.id)) return;
+    currentlySearchingLinks.add(link.id);
+
+    const enabledReleaseProviders = link.providers
+      .filter(provider => provider.enabled)
+      .map(provider => provider.id);
+    if (!enabledReleaseProviders.length) return;
+
+    searchReleaseInfo({ fileId: link.file.ID, providerIDs: enabledReleaseProviders })
+      .then((data) => {
+        if (!data) {
+          setLinks((draft) => {
+            draft[link.id].state = LinkState.Init;
+          });
+          return;
+        }
+
+        const finalData = produce(data, (draft) => {
+          const original = link.release;
+
+          if (draft.Source === ReleaseSource.Unknown && link.release.Source !== ReleaseSource.Unknown) {
+            draft.Source = link.release.Source;
+          }
+
+          if (draft.Version < 1) draft.Version = 1;
+
+          draft.FileSize ??= original.FileSize;
+          draft.OriginalFilename ??= original.OriginalFilename;
+          draft.IsChaptered ??= original.IsChaptered;
+          draft.IsCensored ??= original.IsCensored;
+          draft.IsCreditless ??= original.IsCreditless;
+          draft.Group ??= original.Group;
+
+          if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
+            draft.ProviderName += '+User';
+          }
+        });
+
+        setLinks((draft) => {
+          draft[link.id].release = finalData;
+          draft[link.id].state = LinkState.Ready;
+        });
+      })
+      .catch(() => {
+        setLinks((draft) => {
+          draft[link.id].state = LinkState.Init;
+        });
+      })
+      .finally(() => currentlySearchingLinks.delete(link.id));
+  });
+
+  const processSubmit = useEffectEvent((link: ManualLinkType) => {
+    if (currentlySubmittingLinks.has(link.id)) return;
+    currentlySubmittingLinks.add(link.id);
+
+    submitReleaseInfo({ fileId: link.file.ID, release: link.release })
+      .then(() => {
+        setLinks((draft) => {
+          draft[link.id].state = LinkState.Submitted;
+        });
+      })
+      .catch(() => {
+        setLinks((draft) => {
+          draft[link.id].state = LinkState.Ready;
+        });
+      })
+      .finally(() => currentlySubmittingLinks.delete(link.id));
+  });
+
+  useEffect(() => {
+    if (!initialized || !links.length) return;
+
+    links.forEach((link) => {
+      if (link.state === LinkState.PreInit) {
+        processPreInit(link);
+      } else if (link.state === LinkState.Searching) {
+        processSearch(link);
+      } else if (link.state === LinkState.Submitting) {
+        processSubmit(link);
+      }
+    });
+  }, [initialized, links]);
 
   const handleSubmit = () => {
     if (allSubmitted) {
@@ -309,7 +452,6 @@ const LinkFilesWithProvidersTab = () => {
                         >
                           <UnrecognizedVideo
                             link={link}
-                            setLinks={setLinks}
                             toggleSelect={handleRowSelect}
                             selected={rowSelection[link.id]}
                           />

@@ -62,7 +62,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   const [copyFailed, setCopyFailed] = useState(false);
 
   const [debouncedSearch] = useDebounceValue(searchText, 200);
-  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
+  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, show && !!debouncedSearch);
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');

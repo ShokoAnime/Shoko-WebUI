@@ -40,11 +40,12 @@ export const useSeriesQuery = (
     enabled,
   });
 
-export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
+export const useSeriesAniDBQuery = (anidbId: number, enabled = true, noStale = false) =>
   useQuery<AniDBSeriesType>({
-    queryKey: ['series', 'anidb', anidbId],
+    queryKey: ['series', 'anidb', anidbId, noStale],
     queryFn: () => axios.get(`Series/AniDB/${anidbId}`),
     enabled,
+    staleTime: noStale ? Infinity : 1000,
   });
 
 export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDBEpisodesRequestType, enabled = true) =>
