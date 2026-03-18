@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useParams, useSearchParams } from 'react-router';
 import { mdiEyeOffOutline, mdiRefresh, mdiSelectMultiple } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -80,6 +81,13 @@ const ReleaseManagement = () => {
       });
   };
 
+  const handleRefresh = () => {
+    if (isSeriesQueryFetching) return;
+    invalidateQueries(['release-management', 'series']);
+  };
+
+  useHotkeys('r', handleRefresh, { scopes: 'primary' });
+
   return (
     <>
       <title>{`${titleMap[type]} | Shoko`}</title>
@@ -93,10 +101,11 @@ const ReleaseManagement = () => {
               )}
             >
               <MenuButton
-                onClick={() => invalidateQueries(['release-management', 'series'])}
+                onClick={handleRefresh}
                 icon={mdiRefresh}
                 name="Refresh"
                 loading={isSeriesQueryFetching}
+                keybinding="R"
               />
 
               {type === 'MultipleReleases' && (
