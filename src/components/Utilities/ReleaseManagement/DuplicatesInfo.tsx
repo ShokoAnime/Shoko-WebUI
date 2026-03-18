@@ -10,6 +10,7 @@ import Button from '@/components/Input/Button';
 import { useDeleteFileLocationMutation } from '@/core/react-query/file/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import queryClient from '@/core/react-query/queryClient';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -69,6 +70,9 @@ const DuplicatesInfo = (props: Props) => {
         if (oneLocationLeft) handleEpisodeChange('next');
       });
   };
+
+  // To re-enable the correct keybinds once the delete confirmation modal closes
+  useToggleModalKeybinds(true, confirmDelete);
 
   const path = location.RelativePath ?? '';
   const match = /[/\\](?=[^/\\]*$)/g.exec(path);

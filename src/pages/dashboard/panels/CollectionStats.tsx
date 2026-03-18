@@ -78,13 +78,13 @@ const CollectionStats = () => {
       key="multiple-files"
       title="Duplicate Episodes"
       value={statsQuery.data?.EpisodesWithMultipleFiles}
-      link="/webui/utilities/release-management/multiples"
+      link="/webui/utilities/release-management/MultipleReleases"
     />,
     <Item
       key="duplicate-files"
       title="Duplicate Hashes"
       value={statsQuery.data?.FilesWithDuplicateLocations}
-      link="/webui/utilities/release-management/duplicates"
+      link="/webui/utilities/release-management/DuplicateFiles"
     />,
   ];
 
@@ -99,13 +99,13 @@ const CollectionStats = () => {
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"
       value={statsQuery.data?.MissingEpisodesCollecting}
-      link="/webui/utilities/release-management/missing-episodes?onlyCollecting=true"
+      link="/webui/utilities/release-management/MissingEpisodes?onlyCollecting=true"
     />,
     <Item
       key="missing-episodes"
       title="Missing Episodes (Total)"
       value={statsQuery.data?.MissingEpisodes}
-      link="/webui/utilities/release-management/missing-episodes"
+      link="/webui/utilities/release-management/MissingEpisodes"
     />,
   ];
 
