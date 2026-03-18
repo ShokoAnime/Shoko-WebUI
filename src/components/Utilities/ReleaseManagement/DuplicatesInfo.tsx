@@ -3,6 +3,7 @@ import { mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { produce } from 'immer';
+import { sortBy } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
@@ -17,17 +18,20 @@ import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileLocationType, FileType } from '@/core/types/api/file';
 import type { InfiniteData } from '@tanstack/react-query';
 
-const mapLocations = (data: InfiniteData<ListResultType<EpisodeType>>): Map<number, FileLocationType> => {
-  const locations = data.pages
-    .flatMap(page => page.List)
-    .flatMap(episode => episode.Files)
-    .flatMap(file => file?.Locations);
-
-  return new Map(
-    locations
-      .filter(location => location != null)
-      .map(location => [location.ID, location] as const),
-  );
+const getFileForLocation = (
+  data: InfiniteData<ListResultType<EpisodeType>>,
+  locationId: number,
+) => {
+  for (const page of data.pages) {
+    for (const episode of page.List) {
+      for (const file of episode.Files ?? []) {
+        if (file?.Locations?.some(loc => loc.ID === locationId)) {
+          return file;
+        }
+      }
+    }
+  }
+  return undefined;
 };
 
 const handleSuccess = (locationId: number, seriesId: number) => {
@@ -36,11 +40,16 @@ const handleSuccess = (locationId: number, seriesId: number) => {
     prevData =>
       produce(prevData, (draft) => {
         if (!draft) return;
-        const locationsMap = mapLocations(draft);
-        const foundLocation = locationsMap.get(locationId);
+        const file = getFileForLocation(draft, locationId);
+        if (!file) return;
 
+        const foundLocation = file.Locations.find(loc => loc.ID === locationId);
         if (!foundLocation) return;
+
         foundLocation.AbsolutePath = '';
+        file.Locations = sortBy(file.Locations, [
+          location => !location.AbsolutePath,
+        ]);
       }),
   );
 };

@@ -3,7 +3,7 @@ import { mdiFlagOffOutline, mdiFlagOutline, mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { produce } from 'immer';
-import { map } from 'lodash';
+import { map, sortBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useToggle } from 'usehooks-ts';
 
@@ -26,16 +26,18 @@ const parseFlag = (flag?: boolean) => {
   return 'No';
 };
 
-const mapFiles = (data: InfiniteData<ListResultType<EpisodeType>>): Map<number, FileType> => {
-  const files = data.pages
-    .flatMap(page => page.List)
-    .flatMap(episode => episode.Files);
-
-  return new Map(
-    files
-      .filter(file => file != null)
-      .map(file => [file.ID, file] as const),
-  );
+const getEpisodeForFile = (
+  data: InfiniteData<ListResultType<EpisodeType>>,
+  fileId: number,
+) => {
+  for (const page of data.pages) {
+    for (const episode of page.List) {
+      if (episode.Files?.some(file => file.ID === fileId)) {
+        return episode;
+      }
+    }
+  }
+  return undefined;
 };
 
 const handleSuccess = (fileId: number, seriesId: number, type: 'delete' | 'variation', variation?: boolean) => {
@@ -44,9 +46,10 @@ const handleSuccess = (fileId: number, seriesId: number, type: 'delete' | 'varia
     prevData =>
       produce(prevData, (draft) => {
         if (!draft) return;
-        const filesMap = mapFiles(draft);
-        const foundFile = filesMap.get(fileId);
+        const episode = getEpisodeForFile(draft, fileId);
+        if (!episode) return;
 
+        const foundFile = episode.Files?.find(file => file.ID === fileId);
         if (!foundFile) return;
 
         if (type === 'delete') {
@@ -54,6 +57,12 @@ const handleSuccess = (fileId: number, seriesId: number, type: 'delete' | 'varia
         } else {
           foundFile.IsVariation = !!variation;
         }
+
+        episode.Files = sortBy(episode.Files, [
+          file => file.Size === -1,
+          // eslint-disable-next-line no-nested-ternary
+          file => (file.Size === -1 ? 0 : (file.IsVariation ? 1 : 0)),
+        ]);
       }),
   );
 };
