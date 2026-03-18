@@ -13,6 +13,7 @@ import { useDeleteFileMutation, useMarkVariationMutation } from '@/core/react-qu
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import queryClient from '@/core/react-query/queryClient';
 import { dayjs } from '@/core/util';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -90,6 +91,9 @@ const MultipleReleasesInfo = (props: Props) => {
         if (oneFileLeft) handleEpisodeChange('next');
       });
   };
+
+  // To re-enable the correct keybinds once the delete confirmation modal closes
+  useToggleModalKeybinds(true, confirmDelete);
 
   const path = file.Locations[0]?.RelativePath ?? '';
   const match = /[/\\](?=[^/\\]*$)/g.exec(path);
