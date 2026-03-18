@@ -9,9 +9,9 @@ import toast from '@/components/Toast';
 import { useDeleteFileLocationsMutation, useDeleteFilesMutation } from '@/core/react-query/file/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
-import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
+import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
 type Props = {
@@ -25,11 +25,11 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
-      groupBy: type === ReleaseManagementItemType.MultipleReleases
+      groupBy: type === 'MultipleReleases'
         ? 'GroupName,FileSource,FileVersion,ManagedFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters'
         : 'ManagedFolder,FileLocation,MultipleLocations',
       includeEpisodeDetails: true,
-      includeLocationDetails: type === ReleaseManagementItemType.DuplicateFiles,
+      includeLocationDetails: type === 'DuplicateFiles',
     },
     show,
   );
@@ -64,7 +64,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
   };
 
   const handleConfirm = () => {
-    if (type === ReleaseManagementItemType.MultipleReleases) {
+    if (type === 'MultipleReleases') {
       const fileIds = map(
         [...groupsToDelete],
         groupIndex =>
@@ -124,7 +124,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
             return (
               <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
                 <div className="flex flex-col gap-y-1">
-                  {type === ReleaseManagementItemType.DuplicateFiles && (
+                  {type === 'DuplicateFiles' && (
                     <>
                       <div className="font-semibold">
                         Managed Folder:&nbsp;
@@ -148,7 +148,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                     </>
                   )}
 
-                  {type === ReleaseManagementItemType.MultipleReleases && (
+                  {type === 'MultipleReleases' && (
                     <>
                       <div className="font-semibold">
                         {group.GroupName === 'None' ? 'Manual link' : group.GroupName}

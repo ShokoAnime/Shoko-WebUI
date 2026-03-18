@@ -24,11 +24,6 @@ const invalidateQueueItems = debounce(
   500,
 );
 
-const invalidateReleaseManagement = debounce(
-  () => invalidateQueries(['release-management']),
-  5000,
-);
-
 const invalidateSeries = debounce(
   (seriesIds: number[]) =>
     seriesIds.forEach((seriesId) => {
@@ -47,7 +42,6 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
       invalidateDashboard();
       invalidateFiles();
       invalidateManagedFolders();
-      invalidateReleaseManagement();
       break;
     case 'FileMoved':
       invalidateFiles();
