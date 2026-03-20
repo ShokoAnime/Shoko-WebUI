@@ -88,6 +88,7 @@ const ReleaseManagementModal = (props: Props) => {
       <div className="flex flex-col gap-y-4 overflow-y-auto pr-2">
         {type === 'MultipleReleases' && map(episode.Files, file => (
           <MultipleReleasesInfo
+            key={episode.IDs.ID}
             episode={episode}
             file={file}
             handleEpisodeChange={handleEpisodeChange}
@@ -98,6 +99,7 @@ const ReleaseManagementModal = (props: Props) => {
         {type === 'DuplicateFiles' && flatMap(episode.Files, file =>
           map(file.Locations, location => (
             <DuplicatesInfo
+              key={file.ID}
               file={file}
               handleEpisodeChange={handleEpisodeChange}
               location={location}

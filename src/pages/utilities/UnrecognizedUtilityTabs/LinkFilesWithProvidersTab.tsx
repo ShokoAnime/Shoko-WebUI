@@ -88,7 +88,7 @@ const LinkFilesWithProvidersTab = () => {
     sortedFiles.forEach((file) => {
       const now = new Date().toISOString();
       const release: ReleaseInfoType = {
-        OriginalFilename: file.Locations?.[0].RelativePath.split(/[/\\]/g).pop(),
+        OriginalFilename: file.Locations?.[0]?.RelativePath.split(/[/\\]/g).pop(),
         ProviderName: 'User',
         Version: 1,
         Source: ReleaseSource.Unknown,
