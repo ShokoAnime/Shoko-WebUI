@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -8,8 +7,7 @@ import NameTab from '@/components/Collection/Group/EditGroupTabs/NameTab';
 import SeriesTab from '@/components/Collection/Group/EditGroupTabs/SeriesTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { setGroupId } from '@/core/slices/modals/editGroup';
-
-import type { RootState } from '@/core/store';
+import { useDispatch, useSelector } from '@/core/store';
 
 const tabs = {
   name: 'Name',
@@ -36,7 +34,7 @@ const renderTab = (activeTab: string, groupId: number) => {
 const EditGroupModal = () => {
   const dispatch = useDispatch();
 
-  const groupId = useSelector((state: RootState) => state.modals.editGroup.groupId);
+  const groupId = useSelector(state => state.modals.editGroup.groupId);
 
   const onClose = useCallback(() => {
     if (groupId === -1) return;

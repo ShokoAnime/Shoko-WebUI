@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { mdiCloseCircleOutline, mdiPauseCircleOutline, mdiPlayCircleOutline, mdiProgressClock } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { map, uniqBy } from 'lodash';
@@ -12,13 +11,13 @@ import {
   useQueueResumeMutation,
 } from '@/core/react-query/queue/mutations';
 import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
+import { useSelector } from '@/core/store';
 import { dayjs } from '@/core/util';
 
 import type { QueueItemType } from '@/core/signalr/types';
-import type { RootState } from '@/core/store';
 
 const Options = () => {
-  const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const queue = useSelector(state => state.mainpage.queueStatus);
 
   const { mutate: clearQueue } = useQueueClearMutation();
   const { mutate: pauseQueue } = useQueuePauseMutation();
@@ -49,7 +48,7 @@ const Options = () => {
 };
 
 const Title = () => {
-  const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const queue = useSelector(state => state.mainpage.queueStatus);
 
   return (
     <div className="flex items-center">
@@ -91,7 +90,7 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
 );
 
 const QueueItems = () => { // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
-  const currentlyExecuting = useSelector((state: RootState) => state.mainpage.queueStatus.CurrentlyExecuting);
+  const currentlyExecuting = useSelector(state => state.mainpage.queueStatus.CurrentlyExecuting);
   const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
   const list = useMemo(() => {
     if (!queueItemsQuery.data?.Total) return currentlyExecuting;
@@ -105,8 +104,8 @@ const QueueItems = () => { // This is a separate component so that the whole Sho
 };
 
 const QueueProcessor = () => {
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const hasFetched = useSelector(state => state.mainpage.fetched.queueStatus);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   return (
     <ShokoPanel

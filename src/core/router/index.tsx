@@ -1,11 +1,11 @@
 /* global globalThis */
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import Collection from '@/pages/collection/Collection';
@@ -51,8 +51,6 @@ import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/Manuall
 import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
 
 import AuthenticatedRoute from './AuthenticatedRoute';
-
-import type { RootState } from '@/core/store';
 
 const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV7(createBrowserRouter) as typeof createBrowserRouter;
 
@@ -135,8 +133,8 @@ const router = sentryCreateBrowserRouter(
 );
 
 const Router = () => {
-  const apikey = useSelector((state: RootState) => state.apiSession.apikey);
-  const webuiPreviewTheme = useSelector((state: RootState) => state.misc.webuiPreviewTheme);
+  const apikey = useSelector(state => state.apiSession.apikey);
+  const webuiPreviewTheme = useSelector(state => state.misc.webuiPreviewTheme);
 
   const settingsQuery = useSettingsQuery(!!apikey);
   const { theme } = settingsQuery.data.WebUI_Settings;

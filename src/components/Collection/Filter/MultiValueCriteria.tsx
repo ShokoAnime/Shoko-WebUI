@@ -1,8 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import Criteria from '@/components/Collection/Filter/Criteria';
 import { selectFilterValues } from '@/core/slices/collection';
+import { useSelector } from '@/core/store';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';

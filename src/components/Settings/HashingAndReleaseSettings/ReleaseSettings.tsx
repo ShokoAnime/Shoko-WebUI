@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -9,14 +8,14 @@ import Checkbox from '@/components/Input/Checkbox';
 import { useReleaseInfoProvidersQuery, useReleaseInfoSummaryQuery } from '@/core/react-query/release-info/queries';
 import { showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { reorderProvider, setReleaseInfoSettings, toggleProvider } from '@/core/slices/settings/release';
+import { useDispatch, useSelector } from '@/core/store';
 
-import type { RootState } from '@/core/store';
 import type { DropResult } from '@hello-pangea/dnd';
 
 const ReleaseSettings = () => {
   const dispatch = useDispatch();
 
-  const { providers, releaseInfoSettings, webuiProviders } = useSelector((state: RootState) => state.settings.release);
+  const { providers, releaseInfoSettings, webuiProviders } = useSelector(state => state.settings.release);
 
   const releaseProvidersQuery = useReleaseInfoProvidersQuery();
   const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();

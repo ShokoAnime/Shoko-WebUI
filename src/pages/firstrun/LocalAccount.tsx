@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useSetDefaultUserMutation } from '@/core/react-query/init/mutations';
 import { useDefaultUserQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved, setUser as setUserState } from '@/core/slices/firstrun';
+import { useDispatch } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import Footer from './Footer';

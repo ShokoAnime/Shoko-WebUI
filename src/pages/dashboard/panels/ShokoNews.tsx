@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -7,9 +6,9 @@ import cx from 'classnames';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useShokoNewsQuery } from '@/core/react-query/external/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useSelector } from '@/core/store';
 import { dayjs } from '@/core/util';
 
-import type { RootState } from '@/core/store';
 import type { DashboardNewsType } from '@/core/types/api/dashboard';
 
 const newNewsCheck = (date: string) => {
@@ -42,7 +41,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
 };
 
 const ShokoNews = () => {
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
   const newsQuery = useShokoNewsQuery();
   const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
 

@@ -1,6 +1,5 @@
 /* global globalThis */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading } from '@mdi/js';
@@ -13,6 +12,7 @@ import toast from '@/components/Toast';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
+import { useDispatch } from '@/core/store';
 
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 

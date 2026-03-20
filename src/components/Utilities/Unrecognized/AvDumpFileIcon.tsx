@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   mdiDumpTruck,
   mdiFileDocumentAlertOutline,
@@ -14,15 +13,15 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
+import { useSelector } from '@/core/store';
 import { copyToClipboard, processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 
-import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
 import type { AxiosError } from 'axios';
 
 const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boolean }) => {
-  const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
+  const avdumpList = useSelector(state => state.utilities.avdump);
   const { mutateAsync: avdumpFiles } = useAvdumpFilesMutation();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];

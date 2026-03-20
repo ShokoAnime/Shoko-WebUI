@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -10,8 +9,7 @@ import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
-
-import type { RootState } from '@/core/store';
+import { useDispatch, useSelector } from '@/core/store';
 
 // TODO: Add tabs after implementing back-end endpoint for PersonalStats
 // import PersonalStats from '@/components/Collection/Series/EditSeriesTabs/PersonalStats';
@@ -47,7 +45,7 @@ const renderTab = (activeTab: string, seriesId = -1) => {
 const EditSeriesModal = () => {
   const dispatch = useDispatch();
 
-  const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
+  const seriesId = useSelector(state => state.modals.editSeries.seriesId);
 
   const onClose = useCallback(() => {
     if (seriesId === -1) return;

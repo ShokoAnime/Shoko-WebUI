@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
@@ -10,6 +9,7 @@ import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useDispatch } from '@/core/store';
 
 const MainPage = () => {
   const dispatch = useDispatch();

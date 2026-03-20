@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, NavLink, Outlet, useOutletContext, useParams } from 'react-router';
 import useMeasure from 'react-use-measure';
 import {
@@ -24,6 +23,7 @@ import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
+import { useDispatch } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';

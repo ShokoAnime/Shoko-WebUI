@@ -1,7 +1,7 @@
 import type React from 'react';
-import { useDispatch } from 'react-redux';
 
 import { setGroupId } from '@/core/slices/modals/editGroup';
+import { useDispatch } from '@/core/store';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';

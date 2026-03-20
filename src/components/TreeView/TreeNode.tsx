@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiCheckboxMarkedCircleOutline, mdiChevronUp, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -8,8 +7,8 @@ import { forEach } from 'lodash';
 import toast from '@/components/Toast';
 import { useFolderDrivesQuery, useFolderQuery } from '@/core/react-query/folder/queries';
 import { setSelectedNode } from '@/core/slices/modals/browseFolder';
+import { useDispatch, useSelector } from '@/core/store';
 
-import type { RootState } from '@/core/store';
 import type { DriveType, FolderType } from '@/core/types/api/folder';
 
 type Props = {
@@ -22,7 +21,7 @@ type Props = {
 const TreeNode = React.memo((props: Props) => {
   const dispatch = useDispatch();
 
-  const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
+  const selectedNode = useSelector(state => state.modals.browseFolder.selectedNode);
 
   const [expanded, setExpanded] = useState(false);
   const [loaded, setLoaded] = useState(false);

@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import { useQuery } from '@tanstack/react-query';
 
 import queryClient from '@/core/react-query/queryClient';
+import { useSelector } from '@/core/store';
 import { dayjs } from '@/core/util';
 
-import type { RootState } from '@/core/store';
 import type { LogLineType } from '@/core/types/api/common';
 
 const logsQueryKey = ['logs'];
@@ -16,7 +15,7 @@ const formatTimestamps = (lines: LogLineType[]): LogLineType[] =>
   lines.map<LogLineType>(item => ({ ...item, TimeStamp: formatStamp(item.TimeStamp) }));
 
 const useLogsSubscription = () => {
-  const apikey = useSelector((state: RootState) => state.apiSession.apikey);
+  const apikey = useSelector(state => state.apiSession.apikey);
 
   useEffect(() => {
     const connectionLogHub = '/signalr/logging';

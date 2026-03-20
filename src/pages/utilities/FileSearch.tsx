@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import {
   mdiChevronLeft,
@@ -41,6 +40,7 @@ import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/que
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { addFiles } from '@/core/slices/utilities/renamer';
+import { useDispatch } from '@/core/store';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { copyToClipboard } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';

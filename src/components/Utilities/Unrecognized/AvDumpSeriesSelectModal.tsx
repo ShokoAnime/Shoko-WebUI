@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, some, toNumber } from 'lodash';
@@ -11,10 +10,9 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
+import { useSelector } from '@/core/store';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
-
-import type { RootState } from '@/core/store';
 
 type Props = {
   show: boolean;
@@ -64,7 +62,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   const [debouncedSearch] = useDebounceValue(searchText, 200);
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, show && !!debouncedSearch);
 
-  const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
+  const avdumpList = useSelector(state => state.utilities.avdump);
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
   const ed2kLinks = links.join('\n');
   const commonSeries = findMostCommonShowName(links.map(link => detectShow(link.split('|')[2])));

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams, useSearchParams } from 'react-router';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
@@ -23,11 +22,11 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 import { buildFilter } from '@/core/utilities/filter';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
-import type { RootState } from '@/core/store';
 import type { CreateOrUpdateFilterType, FilterCondition, SortingCriteria } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
@@ -114,7 +113,7 @@ const Collection = () => {
   const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
 
-  const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter);
+  const activeFilterFromStore = useSelector(state => state.collection.activeFilter);
   const activeFilter = useMemo(() => {
     if (!filterId || !activeFilterFromStore) return undefined;
     return activeFilterFromStore;

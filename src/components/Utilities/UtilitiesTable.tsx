@@ -1,5 +1,4 @@
 import React, { useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -7,9 +6,9 @@ import cx from 'classnames';
 import { debounce } from 'lodash';
 
 import { criteriaMap } from '@/components/Utilities/constants';
+import { useSelector } from '@/core/store';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { RootState } from '@/core/store';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
@@ -157,7 +156,7 @@ const UtilitiesTable = (props: Props) => {
     skipSort,
     sortCriteria,
   } = props;
-  const renamerPreviews = useSelector((state: RootState) => state.utilities.renamer.renameResults);
+  const renamerPreviews = useSelector(state => state.utilities.renamer.renameResults);
 
   const parentRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({

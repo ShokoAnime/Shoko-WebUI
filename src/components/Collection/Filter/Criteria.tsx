@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
 import { removeFilterCriteria, selectFilterMatch } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 
-import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
 type ModalType = 'tag' | 'multivalue';
@@ -30,7 +29,7 @@ const getModalComponent = (type: ModalType) => {
 };
 
 const ParameterList = ({ expression, value }: { expression: string, value: string }) => {
-  const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, expression));
+  const filterMatch = useSelector(state => selectFilterMatch(state, expression));
 
   return (
     <div className="line-clamp-2">

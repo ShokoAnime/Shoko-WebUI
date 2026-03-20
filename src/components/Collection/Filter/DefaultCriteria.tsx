@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Select from '@/components/Input/Select';
 import { addFilterCondition, removeFilterCriteria } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';

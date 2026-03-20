@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { mdiFolderPlusOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { produce } from 'immer';
@@ -10,6 +9,7 @@ import InputSmall from '@/components/Input/InputSmall';
 import ManagedFolder from '@/components/Settings/ManagedFolder';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setStatus } from '@/core/slices/modals/managedFolder';
+import { useDispatch } from '@/core/store';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';

@@ -1,11 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
 import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
+import { useDispatch } from '@/core/store';
 import { getMinimumServerVersion } from '@/core/util';
 
 const UnsupportedPage = () => {

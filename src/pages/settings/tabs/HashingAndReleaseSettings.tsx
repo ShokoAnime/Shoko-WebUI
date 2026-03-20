@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiCog, mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { produce } from 'immer';
@@ -23,10 +22,10 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { clearReleaseSettings, setProviders, setReleaseInfoSettings } from '@/core/slices/settings/release';
+import { useDispatch, useSelector } from '@/core/store';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
-import type { RootState } from '@/core/store';
 import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
 
 const HashingAndReleaseSettings = () => {
@@ -36,8 +35,8 @@ const HashingAndReleaseSettings = () => {
     providers,
     releaseInfoSettings,
     webuiProviders,
-  } = useSelector((state: RootState) => state.settings.release);
-  const { show: showProviderInfoModal } = useSelector((state: RootState) => state.modals.providerInfo);
+  } = useSelector(state => state.settings.release);
+  const { show: showProviderInfoModal } = useSelector(state => state.modals.providerInfo);
 
   const settings = useSettingsQuery().data;
   const releaseProvidersQuery = useReleaseInfoProvidersQuery();

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useRouteError } from 'react-router';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
@@ -7,6 +6,7 @@ import Button from '@/components/Input/Button';
 import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
+import { useDispatch } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type RouteError = {

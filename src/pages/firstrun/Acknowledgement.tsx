@@ -1,10 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import { useDispatch } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const Acknowledgement = () => {

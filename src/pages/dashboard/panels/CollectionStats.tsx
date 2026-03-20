@@ -1,15 +1,13 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
 import { resetFilter } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-
-import type { RootState } from '@/core/store';
 
 const Item = (
   { filter, link, title, value = 0 }: { title: string, value?: string | number, link?: string, filter?: string },
@@ -46,7 +44,7 @@ const Item = (
 };
 
 const CollectionStats = () => {
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   const statsQuery = useDashbordStatsQuery();
 

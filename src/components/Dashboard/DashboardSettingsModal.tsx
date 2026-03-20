@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { produce } from 'immer';
 import { toNumber } from 'lodash';
@@ -11,6 +10,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { useDispatch } from '@/core/store';
 
 type Props = {
   onClose: () => void;

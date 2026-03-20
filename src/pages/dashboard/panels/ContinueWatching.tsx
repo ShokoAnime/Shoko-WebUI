@@ -1,16 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashboardContinueWatchingQuery } from '@/core/react-query/dashboard/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useSelector } from '@/core/store';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 
-import type { RootState } from '@/core/store';
-
 const ContinueWatching = () => {
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
