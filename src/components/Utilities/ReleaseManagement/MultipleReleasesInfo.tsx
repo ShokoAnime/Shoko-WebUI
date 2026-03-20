@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { mdiFlagOffOutline, mdiFlagOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { produce } from 'immer';
 import { map, sortBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
@@ -77,7 +76,7 @@ type Props = {
 const MultipleReleasesInfo = (props: Props) => {
   const { episode, file, handleEpisodeChange, seriesId } = props;
 
-  const [confirmDelete, toggleConfirmDelete] = useToggle();
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const managedFoldersQuery = useManagedFoldersQuery();
 
@@ -91,6 +90,8 @@ const MultipleReleasesInfo = (props: Props) => {
   };
 
   const handleDelete = async () => {
+    if (!confirmDelete) return;
+
     await deleteFile({ fileId: file.ID })
       .then(() => {
         handleSuccess(file.ID, seriesId, 'delete');
@@ -175,7 +176,7 @@ const MultipleReleasesInfo = (props: Props) => {
             <Button
               buttonType="danger"
               buttonSize="small"
-              onClick={toggleConfirmDelete}
+              onClick={() => setConfirmDelete(true)}
               tooltip={isDeleted ? '' : 'Delete'}
               disabled={isDeleted}
             >
@@ -289,28 +290,26 @@ const MultipleReleasesInfo = (props: Props) => {
         </div>
       </div>
 
-      {confirmDelete && (
-        <ConfirmationPromptModal
-          onConfirm={handleDelete}
-          onClose={toggleConfirmDelete}
-          show={confirmDelete}
-          title="Delete file"
-          confirmButtonType="danger"
-          confirmText="Delete"
-        >
-          Do you want to delete the following file?
-          <div className="flex flex-col gap-1">
-            <div className="text-sm opacity-65">
-              {folderName}
-              &nbsp;-&nbsp;
-              {relativePath}
-            </div>
-            <div className="text-panel-text-important">
-              {fileName}
-            </div>
+      <ConfirmationPromptModal
+        onConfirm={handleDelete}
+        onClose={() => setConfirmDelete(false)}
+        show={confirmDelete}
+        title="Delete file"
+        confirmButtonType="danger"
+        confirmText="Delete"
+      >
+        Do you want to delete the following file?
+        <div className="flex flex-col gap-1">
+          <div className="text-sm opacity-65">
+            {folderName}
+            &nbsp;-&nbsp;
+            {relativePath}
           </div>
-        </ConfirmationPromptModal>
-      )}
+          <div className="text-panel-text-important">
+            {fileName}
+          </div>
+        </div>
+      </ConfirmationPromptModal>
     </>
   );
 };

@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { produce } from 'immer';
 import { sortBy } from 'lodash';
-import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
@@ -64,13 +63,15 @@ type Props = {
 const DuplicatesInfo = (props: Props) => {
   const { file, handleEpisodeChange, location, seriesId } = props;
 
-  const [confirmDelete, toggleConfirmDelete] = useToggle();
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const managedFoldersQuery = useManagedFoldersQuery();
 
   const { mutateAsync: deleteFileLocation } = useDeleteFileLocationMutation();
 
   const handleDelete = async () => {
+    if (!confirmDelete) return;
+
     await deleteFileLocation({ locationId: location.ID })
       .then(() => {
         handleSuccess(location.ID, seriesId);
@@ -125,7 +126,7 @@ const DuplicatesInfo = (props: Props) => {
             <Button
               buttonType="danger"
               buttonSize="small"
-              onClick={toggleConfirmDelete}
+              onClick={() => setConfirmDelete(true)}
               tooltip={isDeleted ? '' : 'Delete'}
               disabled={isDeleted}
             >
@@ -135,28 +136,26 @@ const DuplicatesInfo = (props: Props) => {
         </div>
       </div>
 
-      {confirmDelete && (
-        <ConfirmationPromptModal
-          onConfirm={handleDelete}
-          onClose={toggleConfirmDelete}
-          show={confirmDelete}
-          title="Delete file location"
-          confirmButtonType="danger"
-          confirmText="Delete"
-        >
-          Do you want to delete the following file location?
-          <div className="flex flex-col gap-1">
-            <div className="text-sm opacity-65">
-              {folderName}
-              &nbsp;-&nbsp;
-              {relativePath}
-            </div>
-            <div className="text-panel-text-important">
-              {fileName}
-            </div>
+      <ConfirmationPromptModal
+        onConfirm={handleDelete}
+        onClose={() => setConfirmDelete(false)}
+        show={confirmDelete}
+        title="Delete file location"
+        confirmButtonType="danger"
+        confirmText="Delete"
+      >
+        Do you want to delete the following file location?
+        <div className="flex flex-col gap-1">
+          <div className="text-sm opacity-65">
+            {folderName}
+            &nbsp;-&nbsp;
+            {relativePath}
           </div>
-        </ConfirmationPromptModal>
-      )}
+          <div className="text-panel-text-important">
+            {fileName}
+          </div>
+        </div>
+      </ConfirmationPromptModal>
     </>
   );
 };
