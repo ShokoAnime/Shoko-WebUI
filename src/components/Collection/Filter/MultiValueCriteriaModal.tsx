@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { filter, map, pull } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { selectFilterMatch, selectFilterValues, setFilterMatch, setFilterValues } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -35,7 +35,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
     },
     [criteria.PossibleParameters, criteria.PossibleParameterPairs, selectedValues, unsavedValues],
   );
-  const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, criteria.Expression));
+  const filterMatch = useSelector(state => selectFilterMatch(state, criteria.Expression));
 
   const handleMatchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setFilterMatch({ [criteria.Expression]: event.target.value as 'Or' | 'And' }));

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { produce } from 'immer';
 import { map } from 'lodash';
 
@@ -9,9 +8,8 @@ import TransitionDiv from '@/components/TransitionDiv';
 import { useDashboardCalendarQuery } from '@/core/react-query/dashboard/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useSelector } from '@/core/store';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
-
-import type { RootState } from '@/core/store';
 
 type TabType = 'collection' | 'all';
 const tabStates: { label?: string, value: TabType }[] = [
@@ -20,7 +18,7 @@ const tabStates: { label?: string, value: TabType }[] = [
 ];
 
 const UpcomingAnime = () => {
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   const settings = useSettingsQuery().data;
   const { hideR18Content, upcomingAnimeView } = useSettingsQuery().data.WebUI_Settings.dashboard;

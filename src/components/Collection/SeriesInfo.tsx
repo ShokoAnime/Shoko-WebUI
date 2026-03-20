@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter, setFilterValues } from '@/core/slices/collection';
+import { useDispatch } from '@/core/store';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';

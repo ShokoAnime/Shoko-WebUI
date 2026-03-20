@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -10,13 +9,12 @@ import ShokoIcon from '@/components/ShokoIcon';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useSelector } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-
-import type { RootState } from '@/core/store';
 
 const MenuItem = ({ id, text }: { text: string, id: string }) => {
   const { pathname } = useLocation();
-  const saved = useSelector((state: RootState) => state.firstrun.saved);
+  const saved = useSelector(state => state.firstrun.saved);
 
   const path = useMemo(() => {
     if (pathname === `/webui/firstrun/${id}`) return mdiCircleHalfFull;

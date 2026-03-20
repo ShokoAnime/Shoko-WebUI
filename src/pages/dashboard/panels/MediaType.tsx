@@ -1,12 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashboardSeriesSummaryQuery } from '@/core/react-query/dashboard/queries';
-
-import type { RootState } from '@/core/store';
+import { useSelector } from '@/core/store';
 
 const names = {
   Series: 'TV Series',
@@ -48,7 +46,7 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
 );
 
 const MediaType = () => {
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
   const seriesSummaryQuery = useDashboardSeriesSummaryQuery();
 
   let total = 0;

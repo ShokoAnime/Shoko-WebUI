@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import useMeasure from 'react-use-measure';
 import {
   mdiBeta,
@@ -45,6 +44,7 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
+import { useDispatch, useSelector } from '@/core/store';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
@@ -54,7 +54,6 @@ import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
 import type { AxiosError } from 'axios';
 import type { Updater } from 'use-immer';
@@ -316,7 +315,7 @@ const UnrecognizedTab = () => {
     [managedFolders],
   );
 
-  const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
+  const avdumpList = useSelector(state => state.utilities.avdump);
 
   const {
     handleRowSelect,

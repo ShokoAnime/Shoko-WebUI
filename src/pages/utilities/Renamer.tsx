@@ -1,6 +1,5 @@
 import React, { useEffect, useEffectEvent, useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   mdiAlertCircleOutline,
   mdiCheckCircleOutline,
@@ -42,10 +41,10 @@ import { useRenamerByConfigQuery, useRenamerConfigsQuery, useRenamersQuery } fro
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
+import { useDispatch, useSelector } from '@/core/store';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
 import type { ManagedFolderType as ImportFolderType } from '@/core/types/api/managed-folder';
 import type { RenamerConfigSettingsType, RenamerConfigType, RenamerResultType } from '@/core/types/api/renamer';
@@ -293,8 +292,8 @@ const ConfigOption = React.memo(({ config }: { config: RenamerConfigType }) => {
 
 const Renamer = () => {
   const dispatch = useDispatch();
-  const addedFiles = useSelector((state: RootState) => state.utilities.renamer.files);
-  const renameResults = useSelector((state: RootState) => state.utilities.renamer.renameResults);
+  const addedFiles = useSelector(state => state.utilities.renamer.files);
+  const renameResults = useSelector(state => state.utilities.renamer.renameResults);
 
   const settings = useSettingsQuery().data;
   const importFolderQuery = useImportFoldersQuery();

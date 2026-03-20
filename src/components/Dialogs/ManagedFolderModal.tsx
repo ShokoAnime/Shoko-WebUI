@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiFolderOpen } from '@mdi/js';
 import { find } from 'lodash';
 
@@ -16,10 +15,10 @@ import {
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import { setStatus } from '@/core/slices/modals/managedFolder';
+import { useDispatch, useSelector } from '@/core/store';
 
 import BrowseFolderModal from './BrowseFolderModal';
 
-import type { RootState } from '@/core/store';
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
 const defaultManagedFolder = {
@@ -33,7 +32,7 @@ const defaultManagedFolder = {
 const ManagedFolderModal = () => {
   const dispatch = useDispatch();
 
-  const { ID, edit, status } = useSelector((state: RootState) => state.modals.managedFolder);
+  const { ID, edit, status } = useSelector(state => state.modals.managedFolder);
 
   const managedFolderQuery = useManagedFoldersQuery();
   const managedFolders = managedFolderQuery?.data ?? [] as ManagedFolderType[];

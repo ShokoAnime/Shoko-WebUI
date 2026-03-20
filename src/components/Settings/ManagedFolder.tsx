@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
@@ -9,6 +8,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useRescanManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
 import { setEdit } from '@/core/slices/modals/managedFolder';
+import { useDispatch } from '@/core/store';
 import { formatThousand } from '@/core/util';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';

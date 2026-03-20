@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router';
 import { mdiBeta, mdiChevronRight, mdiCreation, mdiDatabaseSearchOutline } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -10,11 +9,10 @@ import toast from '@/components/Toast';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
+import { useSelector } from '@/core/store';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-
-import type { RootState } from '@/core/store';
 
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
@@ -94,7 +92,7 @@ const UnrecognizedFiles = () => {
     [filesQuery.data, filesQuery.isSuccess],
   );
 
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   return (
     <ShokoPanel

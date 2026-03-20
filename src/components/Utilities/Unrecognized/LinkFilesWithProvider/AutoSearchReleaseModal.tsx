@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useDispatch, useSelector } from 'react-redux';
 import { mdiInformationVariantCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useImmer } from 'use-immer';
@@ -12,9 +11,9 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
+import { useDispatch, useSelector } from '@/core/store';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { RootState } from '@/core/store';
 import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
 import type { DropResult } from '@hello-pangea/dnd';
 
@@ -28,7 +27,7 @@ type Props = {
 const AutoSearchReleaseModal = (props: Props) => {
   const { initialProviders, onClose, onUpdateProviders, show } = props;
   const dispatch = useDispatch();
-  const { show: showProviderInfoModal } = useSelector((state: RootState) => state.modals.providerInfo);
+  const { show: showProviderInfoModal } = useSelector(state => state.modals.providerInfo);
 
   const providersQuery = useReleaseInfoProvidersQuery(true);
   const providerMap = useMemo(() => {

@@ -189,13 +189,15 @@ export default [
         'error',
         {
           'patterns': [
-            { group: ['../*'], message: 'Please use @/ instead.' },
-            { group: ['usehooks-ts'], importNames: ['useCopyToClipboard'], message: 'Please use copyToClipboard from @/core/util instead.' }
+            { group: ['../*'], message: 'Use @/ instead.' },
+            { group: ['usehooks-ts'], importNames: ['useCopyToClipboard'], message: 'Use copyToClipboard from @/core/util instead.' }
           ],
           'paths': [
-            { name: 'react-router', importNames: ['useNavigate'], message: 'Please use @/hooks/useNavigateVoid instead.' },
-            { name: 'react-toastify', importNames: ['toast'], message: 'Please use @/components/Toast instead.' },
-            { name: 'usehooks-ts', importNames: ['useEventCallback'], message: 'Please use @/hooks/useEventCallback instead.' }
+            { name: 'react-redux', importNames: ['useDispatch'], message: 'Use @/core/store/useDispatch instead.' },
+            { name: 'react-redux', importNames: ['useSelector'], message: 'Use @/core/store/useSelector instead.' },
+            { name: 'react-router', importNames: ['useNavigate'], message: 'Use @/hooks/useNavigateVoid instead.' },
+            { name: 'react-toastify', importNames: ['toast'], message: 'Use @/components/Toast instead.' },
+            { name: 'usehooks-ts', importNames: ['useEventCallback'], message: 'Use @/hooks/useEventCallback instead.' }
           ]
         }
       ],

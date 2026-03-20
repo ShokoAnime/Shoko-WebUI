@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router';
 import { mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -15,6 +14,7 @@ import toast from '@/components/Toast';
 import { useDeleteFilterMutation } from '@/core/react-query/filter/mutations';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
+import { useDispatch } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FilterType } from '@/core/types/api/filter';

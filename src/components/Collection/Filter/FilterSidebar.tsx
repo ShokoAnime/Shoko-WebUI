@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { mdiContentSaveOutline, mdiFilterPlusOutline } from '@mdi/js';
 import { keys, map, values } from 'lodash';
@@ -18,10 +17,10 @@ import {
   selectActiveCriteriaWithValues,
   setActiveFilter,
 } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 import { buildSidebarFilter } from '@/core/utilities/filter';
 
 import type { ButtonType } from '@/components/Input/Button.utils';
-import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
 const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
@@ -83,7 +82,7 @@ const FilterSidebar = () => {
   const [criteriaModal, showCriteriaModal] = useState(false);
   const [savePresetModal, showSavePresetModal] = useState(false);
   const dispatch = useDispatch();
-  const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
+  const selectedCriteria = useSelector(state => state.collection.filterCriteria);
   const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
 
   const isFilterValid = keys(selectedCriteria).length > 0

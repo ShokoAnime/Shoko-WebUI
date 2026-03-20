@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
 import Criteria from '@/components/Collection/Filter/Criteria';
 import { selectFilterTags } from '@/core/slices/collection';
+import { useSelector } from '@/core/store';
 
 import type { FilterExpression } from '@/core/types/api/filter';
 

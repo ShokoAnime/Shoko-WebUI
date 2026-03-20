@@ -1,5 +1,4 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -10,6 +9,7 @@ import toast from '@/components/Toast';
 import Events from '@/core/events';
 import { useAddUserMutation, useChangePasswordMutation } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
+import { useDispatch } from '@/core/store';
 
 export type AddUserModalProps = {
   show: boolean;

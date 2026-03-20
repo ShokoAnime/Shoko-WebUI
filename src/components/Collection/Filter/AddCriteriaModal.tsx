@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { filter, map } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -7,6 +6,7 @@ import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilterExpressionsQuery } from '@/core/react-query/filter/queries';
 import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
+import { useDispatch, useSelector } from '@/core/store';
 
 import type { FilterExpression } from '@/core/types/api/filter';
 

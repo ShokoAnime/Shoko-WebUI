@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-restricted-imports
+import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import { throttle } from 'lodash';
@@ -31,6 +33,9 @@ const store = configureStore({
   // eslint-disable-next-line no-undef
   devTools: process.env.NODE_ENV !== 'production',
 });
+
+export const useDispatch = useReduxDispatch.withTypes<typeof store.dispatch>();
+export const useSelector = useReduxSelector.withTypes<RootState>();
 
 setupListeners(store.dispatch);
 

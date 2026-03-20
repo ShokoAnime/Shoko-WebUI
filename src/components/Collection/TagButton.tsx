@@ -1,11 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import { resetFilter, setFilterTag } from '@/core/slices/collection';
+import { useDispatch } from '@/core/store';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 

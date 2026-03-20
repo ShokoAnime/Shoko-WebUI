@@ -1,10 +1,8 @@
 import React, { type JSX } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router';
 
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
-
-import type { RootState } from '@/core/store';
+import { useSelector } from '@/core/store';
 
 type Props = {
   children: JSX.Element;
@@ -13,7 +11,7 @@ type Props = {
 const AuthenticatedRoute = ({ children }: Props) => {
   const location = useLocation();
   const from = encodeURIComponent(location.pathname + location.search + location.hash);
-  const isAuthenticated = useSelector((state: RootState) => state.apiSession.apikey !== '');
+  const isAuthenticated = useSelector(state => state.apiSession.apikey !== '');
   const serverStatusQuery = useServerStatusQuery();
   const serverState = serverStatusQuery.data?.State ?? 'Started';
 

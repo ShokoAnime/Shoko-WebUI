@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import {
@@ -21,16 +20,15 @@ import ShokoIcon from '@/components/ShokoIcon';
 import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
+import { useSelector } from '@/core/store';
 import { ImageTypeEnum } from '@/core/types/api/common';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-
-import type { RootState } from '@/core/store';
 
 const LoginPage = () => {
   const navigate = useNavigateVoid();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const apiSession = useSelector((state: RootState) => state.apiSession);
+  const apiSession = useSelector(state => state.apiSession);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

@@ -1,16 +1,14 @@
 import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useDispatch, useSelector } from 'react-redux';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { hideProviderInfo } from '@/core/slices/modals/providerInfo';
+import { useDispatch, useSelector } from '@/core/store';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
-
-import type { RootState } from '@/core/store';
 
 const ProviderInfoModal = () => {
   const dispatch = useDispatch();
-  const { provider, show } = useSelector((state: RootState) => state.modals.providerInfo);
+  const { provider, show } = useSelector(state => state.modals.providerInfo);
 
   const onClose = () => dispatch(hideProviderInfo());
 

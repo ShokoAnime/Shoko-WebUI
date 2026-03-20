@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import { mdiMinusCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -11,6 +10,7 @@ import { useDeleteManagedFolderMutation } from '@/core/react-query/managed-folde
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import { setEdit as setFolderModalEdit, setStatus as setFolderModalStatus } from '@/core/slices/modals/managedFolder';
+import { useDispatch } from '@/core/store';
 
 import Footer from './Footer';
 

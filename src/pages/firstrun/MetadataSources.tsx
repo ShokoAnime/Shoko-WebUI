@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -7,6 +6,7 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import { useDispatch } from '@/core/store';
 import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
 import Footer from './Footer';

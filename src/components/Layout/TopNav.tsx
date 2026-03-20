@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useLocation } from 'react-router';
 import {
   mdiCogOutline,
@@ -44,15 +43,14 @@ import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
+import { useDispatch, useSelector } from '@/core/store';
 import { getUiVersion, isDebug } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
-import type { RootState } from '@/core/store';
-
 const QueueCount = () => {
-  const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const queue = useSelector(state => state.mainpage.queueStatus);
 
   return (
     <div
@@ -74,9 +72,9 @@ const TopNav = () => {
   const navigate = useNavigateVoid();
   const { pathname } = useLocation();
 
-  const networkStatus = useSelector((state: RootState) => state.mainpage.networkStatus);
-  const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const networkStatus = useSelector(state => state.mainpage.networkStatus);
+  const banStatus = useSelector(state => state.mainpage.banStatus);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   const settingsQuery = useSettingsQuery();
   const webuiSettings = settingsQuery.data.WebUI_Settings;

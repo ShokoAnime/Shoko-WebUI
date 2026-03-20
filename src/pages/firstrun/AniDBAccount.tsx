@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import { setSaved as setFirstRunSaved, unsetSaved as unsetFirstRunSaved } from '@/core/slices/firstrun';
+import { useDispatch } from '@/core/store';
 import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 

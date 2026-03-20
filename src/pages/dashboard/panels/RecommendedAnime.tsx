@@ -1,16 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import SeriesPoster from '@/components/SeriesPoster';
 import { useRecommendedAnimeQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-
-import type { RootState } from '@/core/store';
+import { useSelector } from '@/core/store';
 
 const RecommendedAnime = () => {
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
