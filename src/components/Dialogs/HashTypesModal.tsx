@@ -48,7 +48,8 @@ const HashTypesModal = ({ onClose, provider, show }: HashTypesModalProps) => {
     }
   };
 
-  useToggleModalKeybinds(show);
+  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
   useHotkeys('escape', onClose, { scopes: 'modal' });
   useHotkeys('enter', handleSave, { scopes: 'modal' });
 

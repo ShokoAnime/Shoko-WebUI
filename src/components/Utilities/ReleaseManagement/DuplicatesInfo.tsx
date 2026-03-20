@@ -81,7 +81,7 @@ const DuplicatesInfo = (props: Props) => {
   };
 
   // To re-enable the correct keybinds once the delete confirmation modal closes
-  useToggleModalKeybinds(true, confirmDelete);
+  useToggleModalKeybinds(!confirmDelete, 'modal');
 
   const path = location.RelativePath ?? '';
   const match = /[/\\](?=[^/\\]*$)/g.exec(path);

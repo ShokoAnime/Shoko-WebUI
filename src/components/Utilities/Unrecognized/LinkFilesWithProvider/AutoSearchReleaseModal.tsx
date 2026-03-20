@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { mdiInformationVariantCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useImmer } from 'use-immer';
@@ -14,6 +14,7 @@ import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/qu
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
+import type { RootState } from '@/core/store';
 import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
 import type { DropResult } from '@hello-pangea/dnd';
 
@@ -27,6 +28,7 @@ type Props = {
 const AutoSearchReleaseModal = (props: Props) => {
   const { initialProviders, onClose, onUpdateProviders, show } = props;
   const dispatch = useDispatch();
+  const { show: showProviderInfoModal } = useSelector((state: RootState) => state.modals.providerInfo);
 
   const providersQuery = useReleaseInfoProvidersQuery(true);
   const providerMap = useMemo(() => {
@@ -97,7 +99,8 @@ const AutoSearchReleaseModal = (props: Props) => {
     dispatch(showProviderInfo(providerMap[providerId]));
   };
 
-  useToggleModalKeybinds(show);
+  useToggleModalKeybinds(show && !showProviderInfoModal, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
   useHotkeys('escape', onClose, { scopes: 'modal' });
   useHotkeys('enter', handleSearch, { scopes: 'modal' });
 

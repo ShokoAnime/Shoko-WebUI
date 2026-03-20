@@ -39,7 +39,7 @@ const ConfirmationPromptModal = ({
       .finally(() => onClose());
   };
 
-  useToggleModalKeybinds(true, show);
+  useToggleModalKeybinds(show, 'nested-modal');
   useHotkeys('escape', onClose, { scopes: 'nested-modal' });
   useHotkeys('enter', handleConfirm, { scopes: 'nested-modal' });
 

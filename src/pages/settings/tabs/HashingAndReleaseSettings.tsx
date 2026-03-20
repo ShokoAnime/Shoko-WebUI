@@ -23,6 +23,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { clearReleaseSettings, setProviders, setReleaseInfoSettings } from '@/core/slices/settings/release';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
 import type { RootState } from '@/core/store';
@@ -36,6 +37,7 @@ const HashingAndReleaseSettings = () => {
     releaseInfoSettings,
     webuiProviders,
   } = useSelector((state: RootState) => state.settings.release);
+  const { show: showProviderInfoModal } = useSelector((state: RootState) => state.modals.providerInfo);
 
   const settings = useSettingsQuery().data;
   const releaseProvidersQuery = useReleaseInfoProvidersQuery();
@@ -147,6 +149,8 @@ const HashingAndReleaseSettings = () => {
       patchSettings(newSettings);
     }
   };
+
+  useToggleModalKeybinds(!showHashTypesModal && !showProviderInfoModal, 'primary');
 
   if (!initialized || !hashingProvidersQuery.data) {
     return <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
