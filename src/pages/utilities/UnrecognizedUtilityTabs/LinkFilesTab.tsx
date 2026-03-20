@@ -587,7 +587,7 @@ const LinkFilesTab = () => {
   const renderStaticFileLinks = () =>
     map(orderedLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
-      const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
+      const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
       return (
         <div
           title={path}
@@ -610,7 +610,7 @@ const LinkFilesTab = () => {
   const renderDynamicFileLinks = () =>
     reduce<ManualLink, React.ReactNode[]>(orderedLinks, (result, link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
-      const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
+      const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
       const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div
