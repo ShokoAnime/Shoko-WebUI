@@ -102,7 +102,7 @@ const MultipleReleasesInfo = (props: Props) => {
   };
 
   // To re-enable the correct keybinds once the delete confirmation modal closes
-  useToggleModalKeybinds(true, confirmDelete);
+  useToggleModalKeybinds(!confirmDelete, 'modal');
 
   const path = file.Locations[0]?.RelativePath ?? '';
   const match = /[/\\](?=[^/\\]*$)/g.exec(path);
@@ -135,7 +135,6 @@ const MultipleReleasesInfo = (props: Props) => {
   return (
     <>
       <div
-        key={file.ID}
         className={cx(
           'flex flex-col gap-2 rounded-lg border border-panel-border bg-panel-background-alt p-4 transition-colors',
           file.IsVariation && 'border-panel-text-warning',

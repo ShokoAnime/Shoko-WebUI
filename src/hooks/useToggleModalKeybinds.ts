@@ -1,28 +1,19 @@
 import { useEffect } from 'react';
 import { useHotkeysContext } from 'react-hotkeys-hook';
 
-const useToggleModalKeybinds = (show: boolean, nestedModal?: boolean) => {
+type HotkeyScopesType = 'primary' | 'modal' | 'nested-modal';
+
+const allScopes: HotkeyScopesType[] = ['primary', 'modal', 'nested-modal'];
+
+const useToggleModalKeybinds = (enable: boolean, scope: HotkeyScopesType) => {
   const { disableScope, enableScope } = useHotkeysContext();
 
   useEffect(() => {
-    if (nestedModal) {
-      disableScope('primary');
-      disableScope('modal');
-      enableScope('nested-modal');
-      return;
-    }
+    if (!enable) return;
 
-    if (show) {
-      disableScope('primary');
-      disableScope('nested-modal');
-      enableScope('modal');
-      return;
-    }
-
-    disableScope('nested-modal');
-    disableScope('modal');
-    enableScope('primary');
-  }, [disableScope, enableScope, nestedModal, show]);
+    allScopes.forEach(disableScope);
+    enableScope(scope);
+  }, [disableScope, enable, enableScope, scope]);
 };
 
 export default useToggleModalKeybinds;

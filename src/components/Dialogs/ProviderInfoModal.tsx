@@ -14,7 +14,7 @@ const ProviderInfoModal = () => {
 
   const onClose = () => dispatch(hideProviderInfo());
 
-  useToggleModalKeybinds(true, show);
+  useToggleModalKeybinds(show, 'nested-modal');
   useHotkeys(['escape', 'enter'], onClose, { scopes: 'nested-modal' });
 
   return (
