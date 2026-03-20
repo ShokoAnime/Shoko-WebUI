@@ -18,7 +18,7 @@ import SeriesList from '@/components/Utilities/ReleaseManagement/SeriesList';
 import Title from '@/components/Utilities/ReleaseManagement/Title';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { useHideEpisodeMutation } from '@/core/react-query/episode/mutations';
-import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
+import { resetQueries } from '@/core/react-query/queryClient';
 
 import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -61,7 +61,7 @@ const ReleaseManagement = () => {
     setSelectedEpisode(undefined);
     setSelectedEpisodes([]);
 
-    return () => invalidateQueries(['release-management', 'series', 'episodes']);
+    return () => resetQueries(['release-management', 'series', 'episodes']);
   }, [type]);
 
   const { mutateAsync: hideEpisode } = useHideEpisodeMutation();
@@ -83,7 +83,7 @@ const ReleaseManagement = () => {
 
   const handleRefresh = () => {
     if (isSeriesQueryFetching) return;
-    invalidateQueries(['release-management', 'series']);
+    resetQueries(['release-management', 'series']);
   };
 
   useHotkeys('r', handleRefresh, { scopes: 'primary' });

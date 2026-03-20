@@ -245,13 +245,13 @@ const SeriesList = (
     <>
       <div className="flex grow">
         <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-          {seriesQuery.isFetching && (
+          {!seriesQuery.isSuccess && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />
             </div>
           )}
 
-          {!seriesQuery.isFetching && seriesCount === 0 && (
+          {seriesQuery.isSuccess && seriesCount === 0 && (
             <div className="flex grow items-center justify-center text-lg font-semibold">
               No series with
               {type === 'MultipleReleases' && ' multiple releases!'}
@@ -260,7 +260,7 @@ const SeriesList = (
             </div>
           )}
 
-          {!seriesQuery.isFetching && seriesQuery.isSuccess && seriesCount > 0 && (
+          {seriesQuery.isSuccess && seriesCount > 0 && (
             <UtilitiesTable
               columns={seriesColumns}
               count={seriesCount}
@@ -275,10 +275,10 @@ const SeriesList = (
         </div>
 
         <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-          {(seriesQuery.isFetching
+          {(!seriesQuery.isSuccess
             || selectedSeries === 0) && <div className="m-auto text-lg font-semibold">Select series to populate</div>}
 
-          {!seriesQuery.isFetching && (
+          {seriesQuery.isSuccess && (
             <>
               {selectedSeries > 0 && episodesQuery.isPending && (
                 <div className="flex grow items-center justify-center text-panel-text-primary">
