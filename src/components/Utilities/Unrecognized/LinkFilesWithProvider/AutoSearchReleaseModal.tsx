@@ -190,7 +190,7 @@ const AutoSearchReleaseModal = (props: Props) => {
         </Button>
       </div>
 
-      <ProviderInfoModal />
+      {show && <ProviderInfoModal />}
     </ModalPanel>
   );
 };
