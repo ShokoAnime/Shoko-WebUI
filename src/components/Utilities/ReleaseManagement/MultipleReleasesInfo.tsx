@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiFlagOffOutline, mdiFlagOutline, mdiTrashCanOutline } from '@mdi/js';
+import { mdiFlagOffOutline, mdiFlagOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { produce } from 'immer';
@@ -185,7 +185,7 @@ const MultipleReleasesInfo = (props: Props) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 overflow-auto border-t border-panel-border py-2 text-sm md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-2 overflow-auto border-t border-panel-border pt-2 text-sm md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="line-clamp-1">
             Group:&nbsp;
             {file.Release?.Group
@@ -252,7 +252,7 @@ const MultipleReleasesInfo = (props: Props) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-y-2 overflow-auto border-t border-panel-border py-2 text-sm">
+        <div className="grid grid-cols-[1fr_auto] gap-y-2 overflow-auto border-t border-panel-border pt-2 text-sm">
           <div
             className="line-clamp-1"
             data-tooltip-id="tooltip"
@@ -260,6 +260,23 @@ const MultipleReleasesInfo = (props: Props) => {
           >
             Audio:&nbsp;
             {audioLanguages}
+          </div>
+
+          <div className="row-span-2 flex items-center">
+            {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
+              <a
+                href={file.Release?.ReleaseURI}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="flex items-center gap-x-1 font-semibold text-panel-text-primary"
+                aria-label="Open AniDB file page"
+                onClick={event => event.stopPropagation()}
+              >
+                <div className="metadata-link-icon AniDB" />
+                {file.Release.ReleaseURI.split('/').pop()}
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={0.8} />
+              </a>
+            )}
           </div>
 
           <div
