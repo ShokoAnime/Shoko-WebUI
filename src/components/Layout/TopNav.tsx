@@ -29,23 +29,23 @@ import semver from 'semver';
 import { siDiscord } from 'simple-icons';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
+import ServerUpdateModal from '@/components/Dashboard/ServerUpdateModal';
+import WebUIUpdateModal from '@/components/Dashboard/WebUIUpdateModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
 import Button from '@/components/Input/Button';
 import ExternalLinkMenuItem from '@/components/Layout/ExternalLinkMenuItem';
 import LinkMenuItem from '@/components/Layout/LinkMenuItem';
 import MenuItem from '@/components/Layout/MenuItem';
 import ShokoIcon from '@/components/ShokoIcon';
-import toast from '@/components/Toast';
 import Events from '@/core/events';
+import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useCheckNetworkConnectivityMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
-import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
-import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
+import { useServerUpdateCheckQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
 import { useDispatch, useSelector } from '@/core/store';
 import { getUiVersion, isDebug } from '@/core/util';
-import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -69,25 +69,26 @@ const QueueCount = () => {
 const TopNav = () => {
   const dispatch = useDispatch();
 
-  const navigate = useNavigateVoid();
   const { pathname } = useLocation();
 
   const networkStatus = useSelector(state => state.mainpage.networkStatus);
   const banStatus = useSelector(state => state.mainpage.banStatus);
   const layoutEditMode = useSelector(state => state.mainpage.layoutEditMode);
 
+  const { data: versionData } = useVersionQuery();
   const settingsQuery = useSettingsQuery();
   const webuiSettings = settingsQuery.data.WebUI_Settings;
 
-  const checkWebuiUpdate = useWebuiUpdateCheckQuery(
+  const serverUpdateCheckQuery = useServerUpdateCheckQuery(
+    { channel: webuiSettings.serverUpdateChannel, force: false },
+    settingsQuery.isSuccess,
+  );
+  const webuiUpdateCheckQuery = useWebuiUpdateCheckQuery(
     { channel: webuiSettings.updateChannel, force: false },
     !isDebug() && settingsQuery.isSuccess,
   );
-  const {
-    isPending: isUpdateWebuiPending,
-    isSuccess: isUpdateWebuiSuccess,
-    mutate: updateWebui,
-  } = useUpdateWebuiMutation();
+
+  const updateCheckIsFetching = webuiUpdateCheckQuery.isFetching || serverUpdateCheckQuery.isFetching;
 
   const { isPending: isNetworkCheckPending, mutate: checkNetworkConnectivity } = useCheckNetworkConnectivityMutation();
 
@@ -96,6 +97,8 @@ const TopNav = () => {
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
   const [showDashboardSettingsModal, setShowDashboardSettingsModal] = useState(false);
+  const [showServerUpdateModal, setShowServerUpdateModal] = useState(false);
+  const [showWebuiUpdateModal, setShowWebuiUpdateModal] = useState(false);
 
   const isOffline = useMemo(
     () =>
@@ -117,44 +120,6 @@ const TopNav = () => {
   const handleLogout = () => {
     dispatch({ type: Events.AUTH_LOGOUT });
   };
-
-  const handleWebUiUpdate = () => {
-    const renderToast = () => (
-      <div className="flex flex-col gap-y-3">
-        WebUI Update Successful!
-        <div className="flex items-center justify-end">
-          <Button
-            onClick={() => {
-              toast.dismiss('webui-update');
-              navigate('/webui/dashboard');
-              setTimeout(() => window.location.reload(), 100);
-            }}
-            buttonType="primary"
-            className="w-full py-1.5 font-semibold"
-          >
-            Click Here to Reload
-          </Button>
-        </div>
-      </div>
-    );
-
-    updateWebui(webuiSettings.updateChannel, {
-      onSuccess: () =>
-        toast.success('', renderToast(), {
-          autoClose: false,
-          draggable: false,
-          closeOnClick: false,
-          toastId: 'webui-update',
-          className: 'w-80 ml-auto',
-        }),
-    });
-  };
-
-  const webuiUpdateStatus = useMemo(() => {
-    if (isUpdateWebuiPending) return 'Updating WebUI...';
-    if (checkWebuiUpdate.isFetching) return 'Checking for WebUI update';
-    return 'WebUI Update Available';
-  }, [isUpdateWebuiPending, checkWebuiUpdate.isFetching]);
 
   return (
     <>
@@ -263,24 +228,33 @@ const TopNav = () => {
                   isHighlighted={layoutEditMode || showDashboardSettingsModal}
                 />
               )}
-              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, getUiVersion()))
-                || checkWebuiUpdate.isFetching) && !isUpdateWebuiSuccess && (
+              {updateCheckIsFetching && (
+                <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold">
+                  <Icon path={mdiLoading} size={1} spin className="text-topnav-text-primary" />
+                  Checking for updates
+                </div>
+              )}
+              {!updateCheckIsFetching && serverUpdateCheckQuery.isSuccess
+                && semver.gt(serverUpdateCheckQuery.data.Version, versionData?.Server.Version ?? '999.999.999') && (
                 <div
-                  className="flex cursor-pointer items-center gap-x-2.5 font-semibold"
-                  onClick={() => handleWebUiUpdate()}
+                  className="flex cursor-pointer items-center gap-x-2 font-semibold"
+                  onClick={() => setShowServerUpdateModal(true)}
                 >
-                  <Icon
-                    path={checkWebuiUpdate.isFetching || isUpdateWebuiPending
-                      ? mdiLoading
-                      : mdiDownloadCircleOutline}
-                    size={1}
-                    className={checkWebuiUpdate.isFetching || isUpdateWebuiPending
-                      ? 'text-topnav-text-primary'
-                      : 'text-header-text-important'}
-                    spin={checkWebuiUpdate.isFetching || isUpdateWebuiPending}
-                  />
-                  <div className="flex">
-                    {webuiUpdateStatus}
+                  <Icon path={mdiDownloadCircleOutline} size={1} className="text-header-text-important" />
+                  <div>
+                    Server Update Available
+                  </div>
+                </div>
+              )}
+              {!updateCheckIsFetching && webuiUpdateCheckQuery.isSuccess
+                && semver.gt(webuiUpdateCheckQuery.data.Version, getUiVersion()) && (
+                <div
+                  className="flex cursor-pointer items-center gap-x-2 font-semibold"
+                  onClick={() => setShowWebuiUpdateModal(true)}
+                >
+                  <Icon path={mdiDownloadCircleOutline} size={1} className="text-header-text-important" />
+                  <div>
+                    WebUI Update Available
                   </div>
                 </div>
               )}
@@ -356,8 +330,11 @@ const TopNav = () => {
           </div>
         </AnimateHeight>
       </div>
+
       <ActionsModal show={showActionsModal} onClose={() => setShowActionsModal(false)} />
       <DashboardSettingsModal show={showDashboardSettingsModal} onClose={() => setShowDashboardSettingsModal(false)} />
+      <ServerUpdateModal onClose={() => setShowServerUpdateModal(false)} show={showServerUpdateModal} />
+      <WebUIUpdateModal onClose={() => setShowWebuiUpdateModal(false)} show={showWebuiUpdateModal} />
     </>
   );
 };

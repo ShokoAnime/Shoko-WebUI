@@ -1,5 +1,6 @@
 import type { Layout } from 'react-grid-layout';
 
+import type { ReleaseChannelType } from '@/core/types/api/init';
 import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
 
 export type SettingsDatabaseType = {
@@ -373,7 +374,8 @@ export type WebUISettingsType = {
   settingsRevision: number;
   theme: string;
   toastPosition: 'top-right' | 'bottom-right';
-  updateChannel: 'Stable' | 'Dev';
+  updateChannel: ReleaseChannelType;
+  serverUpdateChannel: ReleaseChannelType;
   layout: {
     dashboard: Partial<Record<string, Layout>>;
   };

@@ -14,12 +14,15 @@ export type ServerStatusType = {
   };
 };
 
+export type ReleaseChannelType = 'Auto' | 'Stable' | 'Dev';
+
 export type ComponentVersionType = {
   Version: string;
-  ReleaseChannel: 'Stable' | 'Dev' | 'Debug';
+  ReleaseChannel: ReleaseChannelType | 'Debug';
   ReleaseDate: string;
   Commit?: string;
   Tag?: string;
+  Description?: string;
 };
 
 export type VersionType = {
