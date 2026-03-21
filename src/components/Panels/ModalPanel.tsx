@@ -85,7 +85,7 @@ const ModalPanel = (props: Props) => {
             {children}
           </div>
           {footer && (
-            <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
+            <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt px-6 py-4">
               {footer}
             </div>
           )}
