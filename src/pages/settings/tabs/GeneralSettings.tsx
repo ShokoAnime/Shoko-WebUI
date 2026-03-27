@@ -10,7 +10,11 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
-import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
+import {
+  useServerUpdateCheckQuery,
+  useWebuiThemesQuery,
+  useWebuiUpdateCheckQuery,
+} from '@/core/react-query/webui/queries';
 import { getUiVersion, isDebug } from '@/core/util';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
@@ -27,10 +31,16 @@ const GeneralSettings = () => {
     WebUI_Settings,
   } = newSettings;
 
-  const checkWebuiUpdateQuery = useWebuiUpdateCheckQuery(
+  const serverUpdateCheckQuery = useServerUpdateCheckQuery(
+    { channel: newSettings.WebUI_Settings.serverUpdateChannel, force: true },
+    false,
+  );
+  const webuiUpdateCheckQuery = useWebuiUpdateCheckQuery(
     { channel: newSettings.WebUI_Settings.updateChannel, force: true },
     false,
   );
+  const updateCheckIsFetching = webuiUpdateCheckQuery.isFetching || serverUpdateCheckQuery.isFetching;
+
   const themePathHref = useMemo(() => document.getElementById('theme-css')!.attributes.getNamedItem('href')!, []);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const versionQuery = useVersionQuery();
@@ -102,14 +112,15 @@ const GeneralSettings = () => {
             buttonSize="small"
             className="flex flex-row flex-wrap items-center gap-x-2"
             onClick={() => {
-              checkWebuiUpdateQuery.refetch().then(() => {}, () => {});
+              serverUpdateCheckQuery.refetch().catch(console.error);
+              webuiUpdateCheckQuery.refetch().catch(console.error);
             }}
             tooltip="Check for WebUI Update"
           >
             <Icon
               path={mdiRefresh}
               size={0.85}
-              spin={checkWebuiUpdateQuery.isFetching}
+              spin={updateCheckIsFetching}
             />
             <span>Refresh</span>
           </Button>
