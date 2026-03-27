@@ -11,7 +11,7 @@ import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility
 
 type Props = {
   link: ManualLinkType;
-  toggleSelect: (linkId: number) => void;
+  toggleSelect: (event: React.KeyboardEvent | React.MouseEvent) => void;
   selected: boolean;
 };
 
@@ -44,27 +44,34 @@ const UnrecognizedVideo = (props: Props) => {
     border = 'border-panel-text-primary';
   }
 
-  const handleSelect = () => {
+  const handleSelect = (event: React.KeyboardEvent | React.MouseEvent) => {
     if (selectionDisabledStates.includes(link.state)) return;
-    toggleSelect(link.id);
+    toggleSelect(event);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.code === 'Space') {
       event.preventDefault();
-      handleSelect();
+      handleSelect(event);
     }
+  };
+
+  const handleMouseDown = (event: React.MouseEvent) => {
+    // Prevent native text selection on shift+click to avoid flash of selection
+    // and allow clean shift-range selection behavior
+    if (event.shiftKey) event.preventDefault();
   };
 
   return (
     <div
       className={cx(
-        'flex w-full cursor-pointer flex-col gap-y-2 rounded-lg border bg-panel-background p-4 leading-5 transition-colors focus:border-panel-text! focus:outline-none',
+        'flex w-full cursor-pointer flex-col gap-y-2 rounded-lg border bg-panel-background p-4 leading-5 transition-colors focus:outline-none focus-visible:border-panel-text!',
         border,
         selected && 'bg-panel-background-selected-row!',
         !selected && linkStateClassMap[link.state],
         [LinkState.Ready, LinkState.Submitting, LinkState.Submitted].includes(link.state) && 'bg-panel-background-alt',
       )}
+      onMouseDown={handleMouseDown}
       onClick={handleSelect}
       onKeyDown={handleKeyDown}
       tabIndex={0}

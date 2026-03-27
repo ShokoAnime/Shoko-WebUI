@@ -75,11 +75,15 @@ export const useWebuiUpdateCheckQuery = (params: UpdateCheckRequestType, enabled
     queryKey: ['webui', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestVersion', { params }),
     enabled,
+    staleTime: 3600,
   });
 
 export const useServerUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
   useQuery<ComponentVersionType>({
-    queryKey: ['server', 'update-check', params],
+    // Read the comment in useWebuiUpdateCheckQuery
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ['server', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestServerVersion', { params }),
     enabled,
+    staleTime: 3600,
   });

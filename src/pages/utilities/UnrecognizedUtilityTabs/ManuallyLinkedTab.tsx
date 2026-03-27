@@ -314,7 +314,7 @@ const ManuallyLinkedTab = () => {
                 skipSort
                 handleRowSelect={handleRowSelect}
                 rowSelection={rowSelection}
-                setSelectedRows={setRowSelection}
+                setRowSelection={setRowSelection}
               />
             )}
           </div>

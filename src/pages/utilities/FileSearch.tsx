@@ -417,7 +417,7 @@ const FileSearch = () => {
                 isFetchingNextPage={filesQuery.isFetchingNextPage}
                 rows={files}
                 rowSelection={rowSelection}
-                setSelectedRows={setRowSelection}
+                setRowSelection={setRowSelection}
                 setSortCriteria={setSortCriteria}
                 sortCriteria={sortCriteria}
               />
