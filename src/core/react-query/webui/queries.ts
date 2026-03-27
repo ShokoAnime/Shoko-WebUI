@@ -68,10 +68,10 @@ export const useWebuiThemesQuery = () =>
   });
 
 export const useWebuiUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
+  // The rule is disabled here because the query key needs to be same for both force: true and force: false
+  // Because when we force check update from settings, it should reflect in TopNav
+  // eslint-disable-next-line @tanstack/query/exhaustive-deps
   useQuery<ComponentVersionType>({
-    // The rule is disabled here because the query key needs to be same for both force: true and force: false
-    // Because when we force check update from settings, it should reflect in TopNav
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ['webui', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestVersion', { params }),
     enabled,
@@ -79,9 +79,9 @@ export const useWebuiUpdateCheckQuery = (params: UpdateCheckRequestType, enabled
   });
 
 export const useServerUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
+  // Read the comment in useWebuiUpdateCheckQuery
+  // eslint-disable-next-line @tanstack/query/exhaustive-deps
   useQuery<ComponentVersionType>({
-    // Read the comment in useWebuiUpdateCheckQuery
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ['server', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestServerVersion', { params }),
     enabled,
