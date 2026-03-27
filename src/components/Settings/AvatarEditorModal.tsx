@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import AvatarEditor from 'react-avatar-editor';
+import React, { useEffect, useState } from 'react';
+import AvatarEditor, { useAvatarEditor } from 'react-avatar-editor';
 import { mdiImageMinusOutline, mdiImagePlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -17,7 +17,7 @@ type Props = {
 const AvatarEditorModal = (props: Props) => {
   const { changeAvatar, image, onClose, show } = props;
 
-  const imageEditor = useRef<AvatarEditor>(null);
+  const imageEditor = useAvatarEditor();
   const [scale, setScale] = useState(1);
 
   const onLoadFailure = () => {
@@ -30,20 +30,10 @@ const AvatarEditorModal = (props: Props) => {
   }, [show]);
 
   const handleSave = () => {
-    if (!imageEditor.current) return;
-    const canvas: HTMLCanvasElement = imageEditor.current.getImage();
+    const canvas = imageEditor.getImageScaledToCanvas();
+    if (!canvas) return;
 
-    if (canvas.width > 512) {
-      const resizedCanvas = document.createElement('canvas');
-      const resizedCanvasContext = resizedCanvas.getContext('2d');
-      resizedCanvas.width = 512;
-      resizedCanvas.height = 512;
-      resizedCanvasContext?.drawImage(canvas, 0, 0, 512, 512);
-      changeAvatar(resizedCanvas.toDataURL('image/webp'));
-    } else {
-      changeAvatar(canvas.toDataURL('image/webp'));
-    }
-
+    changeAvatar(canvas.toDataURL('image/webp'));
     onClose();
   };
 
@@ -56,16 +46,17 @@ const AvatarEditorModal = (props: Props) => {
       size="sm"
       header="Avatar"
     >
-      <AvatarEditor
-        image={image}
-        width={256}
-        height={256}
-        borderRadius={9999}
-        scale={scale}
-        className="h-auto w-full self-center rounded-sm bg-panel-background"
-        onLoadFailure={onLoadFailure}
-        ref={imageEditor}
-      />
+      <div className="flex justify-center">
+        <AvatarEditor
+          image={image}
+          width={256}
+          height={256}
+          borderRadius={9999}
+          scale={scale}
+          onLoadFailure={onLoadFailure}
+          ref={imageEditor.ref}
+        />
+      </div>
       <div className="flex items-center gap-x-4">
         <Icon path={mdiImageMinusOutline} size={0.9} />
         <input
