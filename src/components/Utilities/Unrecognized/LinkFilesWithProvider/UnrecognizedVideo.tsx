@@ -65,7 +65,7 @@ const UnrecognizedVideo = (props: Props) => {
   return (
     <div
       className={cx(
-        'flex w-full cursor-pointer flex-col gap-y-2 rounded-lg border bg-panel-background p-4 leading-5 transition-colors focus:border-panel-text! focus:outline-none',
+        'flex w-full cursor-pointer flex-col gap-y-2 rounded-lg border bg-panel-background p-4 leading-5 transition-colors focus:outline-none focus-visible:border-panel-text!',
         border,
         selected && 'bg-panel-background-selected-row!',
         !selected && linkStateClassMap[link.state],
