@@ -26,6 +26,7 @@ import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/qu
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
 import { LinkState } from '@/core/types/utilities/unrecognized-utility';
+import { handleShiftSelect } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 
@@ -146,6 +147,11 @@ const LinkFilesWithProvidersTab = () => {
     selectedRows,
     setRowSelection,
   } = useRowSelection(links);
+
+  const lastRowIndex = useRef<number>(undefined);
+  const handleSelect = (event: React.KeyboardEvent | React.MouseEvent, index: number) => {
+    handleShiftSelect({ event, handleRowSelect, index, lastRowIndex, rowSelection, rows: links, setRowSelection });
+  };
 
   const canSubmit = initialized
     && links.some(link => link.state === LinkState.Ready);
@@ -452,7 +458,7 @@ const LinkFilesWithProvidersTab = () => {
                         >
                           <UnrecognizedVideo
                             link={link}
-                            toggleSelect={handleRowSelect}
+                            toggleSelect={event => handleSelect(event, virtualItem.index)}
                             selected={rowSelection[link.id]}
                           />
                         </div>

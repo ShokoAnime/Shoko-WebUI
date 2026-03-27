@@ -296,7 +296,7 @@ const SeriesList = (
                   skipSort
                   handleRowSelect={handleEpisodeSelect}
                   rowSelection={rowSelection}
-                  setSelectedRows={setRowSelection}
+                  setRowSelection={setRowSelection}
                 />
               )}
             </>

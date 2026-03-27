@@ -206,7 +206,7 @@ const SeriesWithoutFilesUtility = () => {
               isFetchingNextPage={seriesQuery.isFetchingNextPage}
               rows={series}
               rowSelection={rowSelection}
-              setSelectedRows={setRowSelection}
+              setRowSelection={setRowSelection}
               skipSort
             />
           )}
