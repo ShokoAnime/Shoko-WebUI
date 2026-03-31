@@ -4,7 +4,7 @@ import { mdiCogOutline, mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from 
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
+import { debounce, every, filter, forEach, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useToggle } from 'usehooks-ts';
 
@@ -443,7 +443,7 @@ const TmdbLinking = () => {
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualItems.map((virtualItem) => {
-                const episode = get(episodes, virtualItem.index, undefined);
+                const episode = episodes[virtualItem.index];
                 const isOdd = virtualItem.index % 2 === 1;
 
                 if (!episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
