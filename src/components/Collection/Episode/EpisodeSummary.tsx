@@ -11,7 +11,6 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -91,7 +90,7 @@ const EpisodeSummary = React.memo(
     const { backdrop } = useOutletContext<SeriesContextType>();
     const thumbnail = useEpisodeThumbnail(episode, backdrop);
     const [open, toggleOpen] = useToggle(false);
-    const episodeId = get(episode, 'IDs.ID', 0);
+    const episodeId = episode.IDs.ID ?? 0;
 
     const episodeFilesQuery = useEpisodeFilesQuery(
       episodeId,
