@@ -16,7 +16,7 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { forEach, get, reverse } from 'lodash';
+import { forEach, reverse } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
@@ -247,14 +247,14 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
     },
   );
 
-  const seriesId: number = get(file, 'SeriesIDs[0].SeriesID.ID', 0);
+  const seriesId = file?.SeriesIDs?.[0]?.SeriesID.ID ?? 0;
   const { data: seriesInfo, isFetching: seriesQueryIsPending } = useSeriesQuery(
     seriesId,
     {},
     !!seriesId,
   );
 
-  const episodeId: number = get(file, 'SeriesIDs[0].EpisodeIDs[0].ID', 0);
+  const episodeId = file?.SeriesIDs?.[0]?.EpisodeIDs?.[0]?.AniDB ?? 0;
   const { data: episodeInfo, isFetching: episodeQueryIsPending } = useEpisodeAniDBQuery(
     episodeId,
     !!episodeId,
