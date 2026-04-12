@@ -38,8 +38,6 @@ const reactConfig = [
 ];
 
 const typescriptConfig = [
-  // TypeScript ESLint Plugin
-  plugins.typescriptEslint,
   // Airbnb Base TypeScript Config
   ...configs.base.typescript,
   // Airbnb React TypeScript Config

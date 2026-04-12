@@ -95,23 +95,28 @@ const Collection = () => {
   const setSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
 
-    if (!query.trim()) {
+    if (isSeries) {
+      setSeriesSearch(query);
+    } else {
+      setGroupSearch(query);
+    }
+  };
+
+  const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
+  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
+
+  useEffect(() => {
+    if (!debouncedGroupSearch && !debouncedSeriesSearch) {
       setSearchParams({}, { replace: true });
-      setGroupSearch('');
-      setSeriesSearch('');
       return;
     }
 
     if (isSeries) {
-      setSearchParams({ qs: query }, { replace: true });
-      setSeriesSearch(query);
+      setSearchParams({ qs: debouncedSeriesSearch }, { replace: true });
     } else {
-      setSearchParams({ q: query }, { replace: true });
-      setGroupSearch(query);
+      setSearchParams({ q: debouncedGroupSearch }, { replace: true });
     }
-  };
-  const [debouncedGroupSearch] = useDebounceValue(groupSearch.trim(), 200);
-  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch.trim(), 200);
+  }, [debouncedGroupSearch, debouncedSeriesSearch, isSeries, setSearchParams]);
 
   const activeFilterFromStore = useSelector(state => state.collection.activeFilter);
   const activeFilter = useMemo(() => {
