@@ -168,7 +168,7 @@ const AniDBTab = ({ setStatus }: Props) => {
           value={Calendar_UpdateFrequency}
           onChange={handleInputChange}
         >
-          <UpdateFrequencyValues />
+          <UpdateFrequencyValues min24Hours />
         </SelectSmall>
         <SelectSmall
           label="Anime Information"
@@ -176,7 +176,7 @@ const AniDBTab = ({ setStatus }: Props) => {
           value={Anime_UpdateFrequency}
           onChange={handleInputChange}
         >
-          <UpdateFrequencyValues />
+          <UpdateFrequencyValues min24Hours />
         </SelectSmall>
         <SelectSmall
           label="Files With Missing Info"
