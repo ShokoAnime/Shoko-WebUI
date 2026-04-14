@@ -23,7 +23,6 @@ const AniDBTab = ({ setStatus }: Props) => {
     DownloadCharacters,
     DownloadCreators,
     DownloadRelatedAnime,
-    DownloadReleaseGroups,
     File_UpdateFrequency,
     MaxRelationDepth,
     MyList_AddFiles,
@@ -67,13 +66,6 @@ const AniDBTab = ({ setStatus }: Props) => {
           label="Creator Images"
           id="DownloadCreators"
           isChecked={DownloadCreators}
-          onChange={handleInputChange}
-          justify
-        />
-        <Checkbox
-          label="Release Groups"
-          id="DownloadReleaseGroups"
-          isChecked={DownloadReleaseGroups}
           onChange={handleInputChange}
           justify
         />

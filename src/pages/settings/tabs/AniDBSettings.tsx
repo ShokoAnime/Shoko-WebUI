@@ -21,7 +21,6 @@ const AniDBSettings = () => {
     DownloadCharacters,
     DownloadCreators,
     DownloadRelatedAnime,
-    DownloadReleaseGroups,
     File_UpdateFrequency,
     HTTPServerUrl,
     MaxRelationDepth,
@@ -138,13 +137,6 @@ const AniDBSettings = () => {
             id="creator-images"
             isChecked={DownloadCreators}
             onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked)}
-          />
-          <Checkbox
-            justify
-            label="Release Groups"
-            id="release-groups"
-            isChecked={DownloadReleaseGroups}
-            onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)}
           />
           <Checkbox
             justify
