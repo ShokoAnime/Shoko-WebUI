@@ -307,7 +307,10 @@ const PopOutModal = ({ show, ...props }: PopOutModalProps) => {
     }
 
     const rootConfig = cloneDeep(props.rootConfig);
-    const parentConfig = get(rootConfig, props.path) as unknown[];
+    let parentConfig = get(rootConfig, props.path) as unknown[] | undefined;
+    if (!parentConfig) {
+      set(rootConfig as object, props.path, parentConfig = []);
+    }
     if (props.index === null) {
       const path = [...props.path, parentConfig.length];
       const config = createDefaultItemForSchema(props.rootSchema, itemSchema, listDefinition, path, true);
