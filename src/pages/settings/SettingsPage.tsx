@@ -84,12 +84,16 @@ const SettingsPage = () => {
     if (toastId.current) toast.dismiss(toastId.current);
   }, []);
 
-  const updateSetting = (type: string, key: string, value: string | string[] | boolean | PluginRenamerSettingsType) => {
+  const updateSetting = (
+    type: string,
+    key: string,
+    value: string | string[] | number | boolean | PluginRenamerSettingsType | undefined,
+  ) => {
     if (key === 'theme' && typeof value === 'string') {
       globalThis.localStorage.setItem('theme', value);
     }
 
-    const tempSettings: Record<string, string | string[] | boolean | PluginRenamerSettingsType> = {
+    const tempSettings: Record<string, string | string[] | number | boolean | PluginRenamerSettingsType | undefined> = {
       ...(newSettings[type] as Record<string, string | string[] | boolean>),
       [key]: value,
     };
