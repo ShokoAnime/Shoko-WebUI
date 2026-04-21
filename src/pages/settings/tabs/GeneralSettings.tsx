@@ -23,11 +23,10 @@ let themeUpdateCounter = 0;
 const UI_VERSION = getUiVersion();
 
 const GeneralSettings = () => {
-  const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
+  const { newSettings, updateSetting } = useSettingsContext();
 
   const {
-    LogRotator,
-    TraceLog,
+    Logging,
     WebUI_Settings,
   } = newSettings;
 
@@ -270,44 +269,49 @@ const GeneralSettings = () => {
           <Checkbox
             id="enable-logs"
             label="Enable"
-            isChecked={LogRotator.Enabled}
-            onChange={event => updateSetting('LogRotator', 'Enabled', event.target.checked)}
+            isChecked={Logging.RotationEnabled}
+            onChange={event => updateSetting('Logging', 'RotationEnabled', event.target.checked)}
           />
         </div>
         <div
           className={cx(
             'flex flex-col gap-y-2 transition-opacity',
-            !LogRotator.Enabled && 'pointer-events-none opacity-65',
+            !Logging.RotationEnabled && 'pointer-events-none opacity-65',
           )}
         >
           <Checkbox
             justify
             label="Compress Logs"
             id="compress-logs"
-            isChecked={LogRotator.Zip}
-            onChange={event => updateSetting('LogRotator', 'Zip', event.target.checked)}
+            isChecked={Logging.RotationCompress}
+            onChange={event => updateSetting('Logging', 'RotationCompress', event.target.checked)}
           />
           <Checkbox
             justify
             label="Delete Older Logs"
             id="delete-logs"
-            isChecked={LogRotator.Delete}
-            onChange={event => updateSetting('LogRotator', 'Delete', event.target.checked)}
+            isChecked={Logging.RotationDeleteEnabled}
+            onChange={event => updateSetting('Logging', 'RotationDeleteEnabled', event.target.checked)}
           />
           <div
             className={cx(
               'flex items-center justify-between transition-opacity',
-              !LogRotator.Delete && 'pointer-events-none opacity-65',
+              !Logging.RotationDeleteEnabled && 'pointer-events-none opacity-65',
             )}
           >
             <span>Delete Frequency</span>
             <SelectSmall
               id="delete-frequency"
-              value={LogRotator.Delete_Days}
-              onChange={event => updateSetting('LogRotator', 'Delete_Days', event.target.value)}
+              value={Logging.RotationDeleteDays ?? ''}
+              onChange={event =>
+                updateSetting(
+                  'Logging',
+                  'RotationDeleteDays',
+                  event.target.value ? parseInt(event.target.value, 10) : undefined,
+                )}
             >
-              <option value="0">Never</option>
-              <option value="7">Daily</option>
+              <option value="">Never</option>
+              <option value="7">Weekly</option>
               <option value="30">Monthly</option>
               <option value="90">Quarterly</option>
             </SelectSmall>
@@ -316,8 +320,8 @@ const GeneralSettings = () => {
             justify
             label="Trace Logs"
             id="trace-logs"
-            isChecked={TraceLog}
-            onChange={event => setNewSettings({ ...newSettings, TraceLog: event.target.checked })}
+            isChecked={Logging.TraceLog}
+            onChange={event => updateSetting('Logging', 'TraceLog', event.target.checked)}
           />
         </div>
       </div>

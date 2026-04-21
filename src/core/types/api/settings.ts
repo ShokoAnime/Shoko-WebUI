@@ -316,11 +316,12 @@ export type SettingsPlexType = {
   Server: string;
 };
 
-export type SettingsLogRotatorType = {
-  Enabled: boolean;
-  Zip: boolean;
-  Delete: boolean;
-  Delete_Days: string;
+export type SettingsLoggingType = {
+  RotationEnabled: boolean;
+  RotationCompress: boolean;
+  RotationDeleteEnabled: boolean;
+  RotationDeleteDays?: number;
+  TraceLog: boolean;
 };
 
 export type SettingsImportType = {
@@ -358,13 +359,12 @@ export type SettingsServerType = {
   Language: SettingsLanguageType;
   TraktTv: SettingsTraktType;
   Plex: SettingsPlexType;
-  LogRotator: SettingsLogRotatorType;
+  Logging: SettingsLoggingType;
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string[];
   Import: SettingsImportType;
   LoadImageMetadata: boolean;
-  TraceLog: boolean;
   Plugins: PluginSettingsType;
 };
 

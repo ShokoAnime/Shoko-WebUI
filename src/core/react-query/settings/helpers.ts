@@ -394,11 +394,12 @@ export const initialSettings: SettingsType = {
     Libraries: [],
     Token: '',
   },
-  LogRotator: {
-    Enabled: false,
-    Zip: false,
-    Delete: false,
-    Delete_Days: '0',
+  Logging: {
+    RotationEnabled: false,
+    RotationCompress: false,
+    RotationDeleteEnabled: false,
+    RotationDeleteDays: 90,
+    TraceLog: false,
   },
   AutoGroupSeries: false,
   AutoGroupSeriesUseScoreAlgorithm: false,
@@ -410,7 +411,6 @@ export const initialSettings: SettingsType = {
     VideoExtensions: [],
   },
   LoadImageMetadata: false,
-  TraceLog: false,
   Plugins: {
     EnabledPlugins: {},
     Priority: [],
