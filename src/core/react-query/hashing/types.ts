@@ -1,3 +1,4 @@
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
 export type HashingSummaryType = {
@@ -15,6 +16,6 @@ export type HashProviderInfoType = {
   Description?: string;
   AvailableHashTypes: string[];
   EnabledHashTypes: string[];
-  Configuration?: object;
+  Configuration?: ConfigurationInfoType;
   Plugin: PluginInfoType;
 };

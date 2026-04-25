@@ -30,7 +30,7 @@ const addEntireCollection = () => {
   queryClient.fetchQuery<ListResultType<FileType>>(
     {
       queryKey: ['files', 'entire-collection'],
-      queryFn: () => axios.get('File', { params: { pageSize: 0 } }),
+      queryFn: () => axios.get('File', { params: { pageSize: 0, sortOrder: [-FileSortCriteriaEnum.FileID] } }),
     },
   )
     .then(result => store.dispatch(addFiles(result.List)))

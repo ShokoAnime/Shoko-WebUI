@@ -1,3 +1,4 @@
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
 export type ReleaseInfoSettingsType = {
@@ -17,6 +18,6 @@ export type ReleaseProviderInfoType = {
   Description?: string;
   Priority: number;
   IsEnabled: boolean;
-  Configuration?: object;
+  Configuration?: ConfigurationInfoType;
   Plugin: PluginInfoType;
 };
