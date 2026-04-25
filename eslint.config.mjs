@@ -195,7 +195,6 @@ export default [
             { name: 'react-redux', importNames: ['useSelector'], message: 'Use @/core/store/useSelector instead.' },
             { name: 'react-router', importNames: ['useNavigate'], message: 'Use @/hooks/useNavigateVoid instead.' },
             { name: 'react-toastify', importNames: ['toast'], message: 'Use @/components/Toast instead.' },
-            { name: 'usehooks-ts', importNames: ['useEventCallback'], message: 'Use @/hooks/useEventCallback instead.' }
           ]
         }
       ],

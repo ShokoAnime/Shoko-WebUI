@@ -15,10 +15,9 @@ pnpm build:debug    # Development build
 
 **Lint chain (runs in this exact order):**
 ```bash
+pnpm dprint:fix     # dprint fmt (auto-fix formatting)
+pnpm eslint:fix     # eslint --fix --cache src (auto-fix lint rules)
 pnpm lint           # tscheck -> dprint -> eslint -> stylelint
-pnpm tscheck        # tsc --noEmit
-pnpm eslint:fix     # eslint --fix --cache src
-pnpm dprint:fix     # dprint fmt
 ```
 
 **Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`.
@@ -51,18 +50,25 @@ pnpm dprint:fix     # dprint fmt
 
 ## Code Style
 
-- **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes, always semicolons.
-- **Linter:** ESLint flat config (`eslint.config.mjs`). Airbnb Extended + TypeScript + React + Tailwind + Query.
-- **TypeScript:** Prefer `type` over `interface`. Prefer `Array<T>` syntax. Use consistent type imports.
-- **Functions:** Arrow-function expressions only (`const Foo = () => ...`).
-- **Imports:** Use `@/` alias instead of relative `../` paths. Import order is enforced and alphabetized.
+- **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes (double quotes in JSX), always semicolons.
+- **Linter:** ESLint flat config (`eslint.config.mjs`). Airbnb Extended + TypeScript + React + Tailwind + Query + typescript-eslint (type-checked + stylistic) + @stylistic + react-refresh + sort-destructure-keys.
+- **TypeScript:** Prefer `type` over `interface`. Prefer `T[]` syntax. Use consistent type imports. Multiline type members use semicolons; single-line members use commas.
+- **Functions:** Arrow-function expressions only (`const Foo = () => ...`). Omit parens for single parameters; require them for block bodies.
+- **Identifiers:** Minimum 3 characters. Exceptions: `cx`, `ID`, `id`, `_`, `__`. Object properties are exempt.
+- **Unused variables:** Prefix with `_` to suppress `no-unused-vars` (applies to args, vars, and caught errors).
+- **Nullish coalescing:** Use `??` instead of `||`, except for boolean values where `||` is acceptable.
+- **Imports:** Use `@/` alias instead of relative `../` paths. Import order is enforced with blank lines between groups (builtin → external → internal → parent → sibling → index → type), alphabetized within each group. `react*` imports sort first among externals. Named imports/exports are sorted alphabetically (case-sensitive) within each declaration.
+- **Destructuring:** Object destructuring keys must be sorted alphabetically.
 - **Restricted imports** (will error if imported directly):
-  - `react-redux`: `useDispatch`, `useSelector` → use `@/core/store/useDispatch` and `useSelector`
+  - `../*` (relative parent imports) → use `@/` alias instead
+  - `react-redux`: `useDispatch`, `useSelector` → use `@/core/store/useDispatch` and `@/core/store/useSelector`
   - `react-router`: `useNavigate` → use `@/hooks/useNavigateVoid`
   - `react-toastify`: `toast` → use `@/components/Toast`
-  - `usehooks-ts`: `useEventCallback`, `useCopyToClipboard` → use `@/hooks/useEventCallback` and `@/core/util`
+  - `usehooks-ts`: `useCopyToClipboard` → use `copyToClipboard` from `@/core/util`
 - **State mutations:** `no-param-reassign` allows `sliceState` and `draft*` properties for Immer/Redux.
 - **Console:** Only `console.warn` and `console.error` are allowed.
+- **Control flow:** `for-of` and `for-in` loops are allowed (`no-restricted-syntax` is disabled).
+- **React components:** Nested components are allowed when passed as props.
 
 ## Verification & CI
 
