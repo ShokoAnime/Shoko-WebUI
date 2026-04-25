@@ -2,15 +2,6 @@
 
 React 19 + Vite frontend for the Shoko Anime Management Server.
 
-## Repo Structure
-
-- `src/pages` – Route-level components.
-- `src/components` – Reusable UI components.
-- `src/core` – API client (axios), Redux store, React Query, SignalR, router.
-- `src/hooks` – Custom React hooks.
-- `src/css` – Global styles and Tailwind entry.
-- `public/` – Static assets; `version.json` is generated here at build time.
-
 ## Build & Development
 
 > **Node >=22, pnpm only.** CI uses Node 24 and pnpm 10.
@@ -30,9 +21,33 @@ pnpm eslint:fix     # eslint --fix --cache src
 pnpm dprint:fix     # dprint fmt
 ```
 
-## Dev Proxy
+**Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`.
 
-API calls are proxied during dev. Copy `proxy.config.default.js` to `proxy.config.js` and change the target if Shoko Server is not at `http://localhost:8111`.
+## Repo Structure
+
+- `src/pages` – Route-level components.
+- `src/components` – Reusable UI components.
+- `src/core` – API client (axios), Redux store, React Query, SignalR, router.
+- `src/hooks` – Custom React hooks.
+- `src/css` – Global styles and Tailwind entry.
+- `public/` – Static assets; `version.json` is generated here at build time.
+
+## Architecture
+
+- **Entry:** `index.html` → `src/main.tsx` → `src/core/app.tsx` → `src/core/router`
+- **State:** React Query for server state; Redux Toolkit for global UI state.
+- **API clients:** Four axios instances in `src/core/axios.ts`:
+  - `axios` — Shoko API v3 (`/api/v3`)
+  - `axiosV2` — Shoko API v2 (`/api`)
+  - `axiosPlex` — Plex endpoints (`/plex`)
+  - `axiosExternal` — Unconfigured base for external calls
+  - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`.
+- **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware.
+- **Redux:** Store in `src/core/store.ts` — root reducer clears all state on `AUTH_LOGOUT`, persists to localStorage (throttled 1s). Re-exported `useDispatch`/`useSelector` from this module (not `react-redux` directly).
+- **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/` with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts`.
+- **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`.
+- **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
+- **Path alias:** `@/` maps to `src/` (configured in `vite.config.mjs` and `tsconfig.json`).
 
 ## Code Style
 
@@ -48,14 +63,6 @@ API calls are proxied during dev. Copy `proxy.config.default.js` to `proxy.confi
   - `usehooks-ts`: `useEventCallback`, `useCopyToClipboard` → use `@/hooks/useEventCallback` and `@/core/util`
 - **State mutations:** `no-param-reassign` allows `sliceState` and `draft*` properties for Immer/Redux.
 - **Console:** Only `console.warn` and `console.error` are allowed.
-
-## Architecture
-
-- **Entry:** `index.html` → `src/main.tsx` → `src/core/app.tsx` → `src/core/router`
-- **State:** React Query for server state; Redux Toolkit for global UI state.
-- **API:** Axios client in `src/core/axios.ts`. SignalR real-time client in `src/core/signalr`.
-- **Build:** Vite 8 with Rolldown. Base path is `/webui/`. Hidden sourcemaps. Sentry plugin requires `SENTRY_AUTH_TOKEN`.
-- **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 
 ## Verification & CI
 
