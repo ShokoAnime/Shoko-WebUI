@@ -5,7 +5,7 @@
 
 ## 🚀 Features
 
-*   **Modern Stack**: Built with [React 19](https://react.dev/), [Vite](https://vitejs.dev/), and [Redux Toolkit](https://redux-toolkit.js.org/).
+*   **Modern Stack**: [React 19](https://react.dev/), [Vite](https://vitejs.dev/), [Tailwind CSS](https://tailwindcss.com/), [Redux Toolkit](https://redux-toolkit.js.org/), and [React Query](https://tanstack.com/query).
 *   **Fast**: Optimized build times and runtime performance.
 *   **Responsive**: Designed to look great on desktop and mobile.
 *   **Real-time**: Leverages SignalR for live updates from the server.
@@ -37,26 +37,7 @@
 
 ## 🏗️ Architecture
 
-The WebUI acts as a client for the Shoko Server API. It manages global state via Redux and caches server data using React Query.
-
-```mermaid
-graph TD
-    User[User Browser]
-    UI[React Components]
-    Store[Redux Store]
-    Query[React Query Cache]
-    API[Axios Client]
-    SignalR[SignalR Client]
-    Server[Shoko Server]
-
-    User --> UI
-    UI --> Store
-    UI --> Query
-    Query --> API
-    API --> Server
-    SignalR <--> Server
-    SignalR --> Store
-```
+The WebUI is a client for the Shoko Server API. It manages global UI state via Redux Toolkit, caches server data with React Query, and receives real-time updates through SignalR.
 
 ## 💻 Development
 
@@ -65,8 +46,10 @@ graph TD
 | Command | Description |
 | :--- | :--- |
 | `pnpm start` | Runs the app in development mode. |
-| `pnpm build` | Builds the app for production to the `build` folder. |
-| `pnpm lint` | Checks source code with `eslint`, `stylelint`, `dprint`, and `tsc`. |
+| `pnpm build` | Builds the app for production to the `dist/` folder. |
+| `pnpm build:debug` | Creates a development build. |
+| `pnpm lint` | Runs the full verification chain: `tscheck` → `dprint` → `eslint` → `stylelint`. |
+| `pnpm tscheck` | Runs TypeScript checks (`tsc --noEmit`). |
 | `pnpm eslint:fix` | Automatically fixes ESLint errors. |
 | `pnpm dprint:fix` | Formats code using dprint. |
 

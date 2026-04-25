@@ -1,126 +1,71 @@
-# Project Overview
+# Shoko WebUI
 
-Shoko WebUI is the modern, React-based frontend interface for the Shoko Anime Management Server. It provides a rich user experience for managing anime collections, configuring server settings, and browsing metadata. The application is built with performance and aesthetics in mind, utilizing Vite for fast development and Redux Toolkit/React Query for robust state management.
+React 19 + Vite frontend for the Shoko Anime Management Server.
 
-## Repository Structure
+## Repo Structure
 
-*   `.github/workflows` – CI/CD configurations for automated releases and linting checks.
-*   `build` – Production build output directory.
-*   `dist` – Distribution files.
-*   `images` – Static image assets.
-*   `public` – Static public assets served directly by the web server.
-*   `src` – Source code root.
-    *   `src/components` – Reusable UI components (buttons, inputs, layout elements).
-    *   `src/core` – Core application logic including API clients, Redux store, and React Query configurations.
-    *   `src/css` – Global stylesheets and Tailwind configuration.
-    *   `src/hooks` – Custom React hooks.
-    *   `src/pages` – functional components representing distinct application routes/pages.
-*   `eslint.config.mjs` – Flat config for ESLint.
-*   `vite.config.mjs` – Configuration for the Vite build tool.
+- `src/pages` – Route-level components.
+- `src/components` – Reusable UI components.
+- `src/core` – API client (axios), Redux store, React Query, SignalR, router.
+- `src/hooks` – Custom React hooks.
+- `src/css` – Global styles and Tailwind entry.
+- `public/` – Static assets; `version.json` is generated here at build time.
 
-## Build & Development Commands
+## Build & Development
 
-> **Note:** This project strictly uses `pnpm`. Do not use `npm` or `yarn`.
+> **Node >=22, pnpm only.** CI uses Node 24 and pnpm 10.
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Start development server (runs locally at http://localhost:3000)
-pnpm start
-
-# Build for production
-pnpm build
-
-# Build for debug/dev mode
-pnpm build:debug
-
-# Linting and Type Checking verification chain
-# Runs: tscheck, dprint check, eslint, and stylelint
-pnpm lint
-
-# Fix linting issues automatically
-pnpm eslint:fix
-pnpm dprint:fix
+pnpm start          # Dev server at http://localhost:3000, base /webui/
+pnpm build          # Production build (dist/)
+pnpm build:debug    # Development build
 ```
 
-## Code Style & Conventions
-
-*   **Formatting**: Handled by `dprint`. Run `pnpm dprint:fix` to format.
-*   **Linting**: strict ESLint configuration based on Airbnb's rules with TypeScript support.
-*   **CSS**: Vanilla CSS works alongside Tailwind CSS (configured via `postcss` and `stylelint`).
-*   **Naming**:
-    *   React Components/Files: PascalCase (e.g., `MyComponent.tsx`).
-    *   Hooks: camelCase with `use` prefix (e.g., `useMyHook.ts`).
-    *   Utilities/Functions: camelCase.
-*   **State Management**:
-    *   Use `React Query` (`@tanstack/react-query`) for server state (fetching data).
-    *   Use `Redux Toolkit` for complex client-side global state.
-    *   Use local state (`useState`) for component-specific UI logic.
-
-## Architecture Notes
-
-**Key Components & Data Flow:**
-
-1.  **Frontend (React)**: The UI layer composed of functional components in `src/pages` and `src/components`.
-2.  **State Layer**:
-    *   `Redux Store` (`src/core/store.ts`): Manages global UI state.
-    *   `React Query` (`src/core/react-query`): Caches and manages server data.
-3.  **API Layer** (`src/core`):
-    *   Communicates with Shoko Server API via `axios`.
-    *   Real-time updates handled via SignalR (`src/core/signalr`).
-4.  **Backend (Proxy)**:
-    *   During dev, API requests are proxied to `http://localhost:8111` (or custom endpoint) to avoid CORS issues.
-
-```mermaid
-graph TD
-    User[User Browser]
-    UI[React Components]
-    Store[Redux Store]
-    Query[React Query Cache]
-    API[Axios Client]
-    SignalR[SignalR Client]
-    Server[Shoko Server]
-
-    User --> UI
-    UI --> Store
-    UI --> Query
-    Query --> API
-    API --> Server
-    SignalR <--> Server
-    SignalR --> Store
+**Lint chain (runs in this exact order):**
+```bash
+pnpm lint           # tscheck -> dprint -> eslint -> stylelint
+pnpm tscheck        # tsc --noEmit
+pnpm eslint:fix     # eslint --fix --cache src
+pnpm dprint:fix     # dprint fmt
 ```
 
-## Testing Strategy
+## Dev Proxy
 
-> **Status**: Currently, there are no distinct unit or integration tests configured in the repository (e.g., Jest or Vitest).
+API calls are proxied during dev. Copy `proxy.config.default.js` to `proxy.config.js` and change the target if Shoko Server is not at `http://localhost:8111`.
 
-*   **Type Safety**: TypeScript (`pnpm tscheck`) provides static analysis.
-*   **Linting**: Strict linting (`eslint`, `stylelint`) enforces code quality.
-*   **Manual Testing**: Development relies on `pnpm start` and manual verification against a live Shoko Server instance.
-*   **CI Checks**: GitHub Actions run `Lint-PR` to enforce static analysis on Pull Requests.
+## Code Style
 
-## Security & Compliance
+- **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes, always semicolons.
+- **Linter:** ESLint flat config (`eslint.config.mjs`). Airbnb Extended + TypeScript + React + Tailwind + Query.
+- **TypeScript:** Prefer `type` over `interface`. Prefer `Array<T>` syntax. Use consistent type imports.
+- **Functions:** Arrow-function expressions only (`const Foo = () => ...`).
+- **Imports:** Use `@/` alias instead of relative `../` paths. Import order is enforced and alphabetized.
+- **Restricted imports** (will error if imported directly):
+  - `react-redux`: `useDispatch`, `useSelector` → use `@/core/store/useDispatch` and `useSelector`
+  - `react-router`: `useNavigate` → use `@/hooks/useNavigateVoid`
+  - `react-toastify`: `toast` → use `@/components/Toast`
+  - `usehooks-ts`: `useEventCallback`, `useCopyToClipboard` → use `@/hooks/useEventCallback` and `@/core/util`
+- **State mutations:** `no-param-reassign` allows `sliceState` and `draft*` properties for Immer/Redux.
+- **Console:** Only `console.warn` and `console.error` are allowed.
 
-*   **Dependencies**: Keep dependencies updated. Use `pnpm audit` to check for vulnerabilities.
-*   **Secrets**: Do not commit secrets. Use environment variables (Vite supports `.env` files) if necessary, though this is a client-side app.
-*   **Proxy Config**: `proxy.config.js` is used to tunnel requests to the backend securely during development.
+## Architecture
 
-## Agent Guardrails
+- **Entry:** `index.html` → `src/main.tsx` → `src/core/app.tsx` → `src/core/router`
+- **State:** React Query for server state; Redux Toolkit for global UI state.
+- **API:** Axios client in `src/core/axios.ts`. SignalR real-time client in `src/core/signalr`.
+- **Build:** Vite 8 with Rolldown. Base path is `/webui/`. Hidden sourcemaps. Sentry plugin requires `SENTRY_AUTH_TOKEN`.
+- **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 
-*   **Type Inference**: Leverage TypeScript's inference capabilities. Do not add explicit type annotations where the compiler can automatically and accurately infer the type.
-*   **Restricted Files**:
-    *   Do NOT modify `pnpm-lock.yaml` manually.
-    *   Do NOT modify `eslint.config.mjs` or `.dprint.json` unless explicitly tasked to update toolchains.
-*   **Review Policy**: All changes to `src/core` (especially authentication or API handling) require high scrutiny.
-*   **Dependency Management**: Always use `pnpm add` / `pnpm remove`. Never use `npm install`.
+## Verification & CI
 
-## Extensibility Hooks
+- **No unit/integration tests** are configured. Verification is `pnpm lint`.
+- **Pre-commit:** Husky runs `lint-staged`, which executes `tsc --noEmit`, `dprint fmt`, `eslint --cache`, and `stylelint` on staged files.
+- **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`.
 
-*   **Proxy Settings**: Copy `proxy.config.default.js` to `proxy.config.js` to point the dev server to a different backend instance.
-*   **Feature Flags**: Check `src/core` for any feature-flag implementations (currently managed via Redux state or server capabilities).
+## Guardrails
 
-## Further Reading
-
-*   [README.md](./README.md) – Quick start guide.
-*   [package.json](./package.json) – Full list of dependencies and scripts.
+- Do NOT modify `pnpm-lock.yaml`, `eslint.config.mjs`, or `.dprint.json` unless explicitly asked.
+- Do NOT use `npm` or `yarn`; always use `pnpm add` / `pnpm remove`.
+- Do not add explicit type annotations where TS inference is sufficient.
+- Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
