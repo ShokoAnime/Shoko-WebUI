@@ -10,6 +10,7 @@ import {
   mdiEyeOffOutline,
   mdiFileDocumentEditOutline,
   mdiLinkVariantPlus,
+  mdiListBoxOutline,
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
@@ -60,11 +61,13 @@ import type { Updater } from 'use-immer';
 
 const Menu = (
   props: {
+    files: FileType[];
     selectedRows: FileType[];
     setSelectedRows: Updater<Record<number, boolean>>;
   },
 ) => {
   const {
+    files,
     selectedRows,
     setSelectedRows,
   } = props;
@@ -176,7 +179,16 @@ const Menu = (
               icon={mdiRefresh}
               name="Refresh"
             />
-          )}
+          ) && (
+          <MenuButton
+            onClick={() => {
+              setSelectedRows(Object.fromEntries(files.map(file => [file.ID, true])) as Record<number, boolean>);
+              invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+            }}
+            icon={mdiListBoxOutline}
+            name="Select All"
+          />
+        )}
       </div>
       <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
       <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
@@ -198,6 +210,7 @@ const Menu = (
   ), [
     handleRename,
     ignoreFiles,
+    files,
     rehashFiles,
     rescanFiles,
     setSelectedRows,
@@ -220,6 +233,15 @@ const Menu = (
           }}
           icon={mdiRefresh}
           name="Refresh"
+        />
+
+        <MenuButton
+          onClick={() => {
+            setSelectedRows(Object.fromEntries(files.map(file => [file.ID, true])) as Record<number, boolean>);
+            invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+          }}
+          icon={mdiListBoxOutline}
+          name="Select All"
         />
         <TransitionDiv
           className="hidden grow gap-x-2 lg:flex 2xl:gap-x-4"
@@ -394,6 +416,7 @@ const UnrecognizedTab = () => {
                 overlayClassName="grow 2xl:w-auto 2xl:grow-0"
               />
               <Menu
+                files={files}
                 selectedRows={selectedRows}
                 setSelectedRows={setRowSelection}
               />
