@@ -2,7 +2,7 @@ export type ImageType = {
   Source: ImageSourceEnum;
   Type: ImageTypeEnum;
   ID: number;
-  RelativeFilepath: null;
+  Available: boolean;
   Preferred: boolean;
   Width: null;
   Height: null;
@@ -11,7 +11,7 @@ export type ImageType = {
   Source: ImageSourceEnum;
   Type: ImageTypeEnum;
   ID: number;
-  RelativeFilepath: string;
+  Available: boolean;
   Preferred: boolean;
   Width: number;
   Height: number;

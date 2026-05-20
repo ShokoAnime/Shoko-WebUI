@@ -3,7 +3,7 @@ import { useOutletContext, useParams } from 'react-router';
 import { mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { capitalize, split } from 'lodash';
+import { capitalize } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
@@ -51,10 +51,6 @@ const SeriesImages = () => {
   const images = useSeriesImagesQuery(series.IDs.ID).data;
   const { mutate: changeImage } = useChangeSeriesImageMutation(series.IDs.ID);
 
-  const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
-  const filename = splitPath[0] === '-' ? '-' : splitPath.pop();
-  const filepath = splitPath[0] ? splitPath.join('/') : '-';
-
   const handleSelectionChange = (item: ImageType) => {
     setSelectedImage(old => ((old === item) ? null : item));
   };
@@ -83,8 +79,6 @@ const SeriesImages = () => {
             transparent
             sticky
           >
-            <InfoLine title="Filename" value={filename ?? 'N/A'} />
-            <InfoLine title="Location" value={filepath} />
             <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
             <InfoLine
               title="Size"

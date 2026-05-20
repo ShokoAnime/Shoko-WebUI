@@ -4,7 +4,7 @@ export type RandomImageMetadataResultType = {
   Source: string;
   Type: ImageTypeEnum;
   ID: string;
-  RelativeFilepath: string;
+  Available: boolean;
   Preferred: boolean;
   Width: number | null;
   Height: number | null;

@@ -38,7 +38,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
       return undefined;
     }
 
-    if (!settings.LoadImageMetadata && !image.RelativeFilepath) {
+    if (!settings.LoadImageMetadata && !image.Available) {
       return null;
     }
 
