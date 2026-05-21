@@ -10,7 +10,6 @@ type BaseUserType = {
 
 export type CommunitySitesType = {
   AniDB: boolean;
-  Trakt: boolean;
   Plex: boolean;
 };
 

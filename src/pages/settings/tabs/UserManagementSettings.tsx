@@ -82,7 +82,7 @@ const UserManagementSettings = () => {
 
     setSelectedUser((draftState) => {
       if (!draftState) return;
-      if ((id === 'Trakt' || id === 'AniDB') && typeof value === 'boolean') draftState.CommunitySites[id] = value;
+      if (id === 'AniDB' && typeof value === 'boolean') draftState.CommunitySites[id] = value;
       else draftState[id] = value;
     });
   };
@@ -243,14 +243,6 @@ const UserManagementSettings = () => {
             label="AniDB User"
             id="AniDB"
             isChecked={selectedUser.CommunitySites?.AniDB}
-            onChange={handleInputChange}
-            className="h-8"
-          />
-          <Checkbox
-            justify
-            label="Trakt User"
-            id="Trakt"
-            isChecked={selectedUser.CommunitySites?.Trakt}
             onChange={handleInputChange}
             className="h-8"
           />

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
-import TraktSettings from '@/components/Settings/MetadataSitesSettings/TraktSettings';
 
 const IntegrationsSettings = () => (
   <>
@@ -15,8 +14,6 @@ const IntegrationsSettings = () => (
 
     <div className="border-b border-panel-border" />
 
-    <TraktSettings />
-    <div className="border-b border-panel-border" />
     <PlexSettings />
     <div className="border-b border-panel-border" />
   </>
