@@ -7,7 +7,7 @@ React 19 + Vite frontend for the Shoko Anime Management Server.
 > **Node >=22, pnpm only.** CI uses Node 24 and pnpm 10.
 
 ```bash
-pnpm install
+pnpm install          # Also sets up Husky via the `prepare` script
 pnpm start          # Dev server at http://localhost:3000, base /webui/
 pnpm build          # Production build (dist/)
 pnpm build:debug    # Development build
@@ -42,7 +42,7 @@ pnpm lint           # tscheck -> dprint -> eslint -> stylelint
   - `axiosExternal` — Unconfigured base for external calls
   - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`.
 - **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware.
-- **Redux:** Store in `src/core/store.ts` — root reducer clears all state on `AUTH_LOGOUT`, persists to localStorage (throttled 1s). Re-exported `useDispatch`/`useSelector` from this module (not `react-redux` directly).
+- **Redux:** Store in `src/core/store.ts` — root reducer clears all state on `AUTH_LOGOUT`. The full store is persisted to `sessionStorage`; only `apiSession` is persisted to `localStorage` (when `rememberUser` is true). Re-exported `useDispatch`/`useSelector` from this module (not `react-redux` directly).
 - **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/` with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts`.
 - **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`.
 - **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
@@ -82,3 +82,4 @@ pnpm lint           # tscheck -> dprint -> eslint -> stylelint
 - Do NOT use `npm` or `yarn`; always use `pnpm add` / `pnpm remove`.
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
+- If you modify files, styles, structures, configurations, or workflows mentioned in this file, update the corresponding `AGENTS.md` sections to keep them accurate.
