@@ -62,14 +62,6 @@ export type SettingsAnidbUpdateType = {
   Notification_HandleMovedFiles: boolean;
 };
 
-export type SettingsTraktType = {
-  Enabled: boolean;
-  TokenExpirationDate: string;
-  SyncFrequency: SettingsUpdateFrequencyType;
-  AuthToken: string;
-  RefreshToken: string;
-};
-
 export type SettingsTMDBType = {
   /**
    * Automagically link AniDB anime to TMDB shows and movies.
@@ -357,7 +349,6 @@ export type SettingsServerType = {
     & SettingsAnidbUpdateType;
   TMDB: SettingsTMDBType;
   Language: SettingsLanguageType;
-  TraktTv: SettingsTraktType;
   Plex: SettingsPlexType;
   Logging: SettingsLoggingType;
   AutoGroupSeries: boolean;

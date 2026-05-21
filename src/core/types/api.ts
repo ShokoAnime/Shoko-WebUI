@@ -15,11 +15,6 @@ export type ListResultType<T> = {
   List: T[];
 };
 
-export type TraktCodeType = {
-  usercode: string;
-  url: string;
-};
-
 export type ShokoError = {
   errors: Record<string, string[]>;
   status: number;

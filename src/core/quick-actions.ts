@@ -41,21 +41,11 @@ const quickActions = {
     functionName: 'RefreshAniDBMovedFiles',
     info: 'Process file moved messages from AniDB. This will force an update on the affected files.',
   },
-  'send-watch-states-trakt': {
-    name: 'Send Watch States to Trakt',
-    functionName: 'SendWatchStatesToTrakt',
-    info: 'Send missing watch states to Trakt. This does not overwrite Trakt data.',
-  },
-  'get-watch-states-trakt': {
-    name: 'Get Watch States from Trakt',
-    functionName: 'GetWatchStatesFromTrakt',
-    info: 'Get missing watch states fom Trakt. This does not overwrite local data.',
-  },
   'run-import': {
     name: 'Run Import',
     functionName: 'RunImport',
     info:
-      'This checks for new files, hashes them etc, scans Drop Folders, checks and scans for community site links (trakt, tmdb, etc), and downloads missing images.',
+      'This checks for new files, hashes them etc, scans Drop Folders, checks and scans for community site links (tmdb, etc), and downloads missing images.',
   },
   'import-new-files': {
     name: 'Import New Files',

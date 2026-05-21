@@ -382,13 +382,6 @@ export const initialSettings: SettingsType = {
     DescriptionLanguageOrder: ['en'],
     DescriptionSourceOrder: [LanguageSource.TMDB, LanguageSource.AniDB],
   },
-  TraktTv: {
-    Enabled: false,
-    TokenExpirationDate: '',
-    SyncFrequency: 1,
-    AuthToken: '',
-    RefreshToken: '',
-  },
   Plex: {
     Server: '',
     Libraries: [],

@@ -3,7 +3,6 @@ import type { ApiUserType, CommunitySitesType, UserType } from '@/core/types/api
 const simplifyCommunitySites = (sites: string[]) => {
   const result: CommunitySitesType = {
     AniDB: false,
-    Trakt: false,
     Plex: false,
   };
   sites.forEach((site) => {

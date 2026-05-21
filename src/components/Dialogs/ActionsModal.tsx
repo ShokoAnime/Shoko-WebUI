@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import cx from 'classnames';
-import { produce } from 'immer';
 import { map } from 'lodash';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -8,9 +7,8 @@ import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
-import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-const defaultActions = {
+const actions = {
   import: {
     title: 'Import',
     data: [
@@ -65,13 +63,6 @@ const defaultActions = {
       'validate-all-images',
     ],
   },
-  trakt: {
-    title: 'Trakt',
-    data: [
-      'send-watch-states-trakt',
-      'get-watch-states-trakt',
-    ],
-  },
   plex: {
     title: 'Plex',
     data: [
@@ -124,12 +115,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
 };
 
 const ActionsModal = ({ onClose, show }: Props) => {
-  const { TraktTv } = useSettingsQuery().data;
   const [activeTab, setActiveTab] = useState('import');
-
-  const actions = produce(defaultActions, (draftState) => {
-    if (!TraktTv.Enabled || !TraktTv.AuthToken) delete draftState.trakt;
-  });
 
   return (
     <ModalPanel

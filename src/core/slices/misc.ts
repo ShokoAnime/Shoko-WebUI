@@ -3,10 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
-  trakt: {
-    usercode: string;
-    url: string;
-  };
   plex: {
     url: string;
     authenticated: boolean;
@@ -18,10 +14,6 @@ type State = {
 const miscSlice = createSlice({
   name: 'misc',
   initialState: {
-    trakt: {
-      usercode: '',
-      url: '',
-    },
     plex: {
       url: '',
       authenticated: false,
