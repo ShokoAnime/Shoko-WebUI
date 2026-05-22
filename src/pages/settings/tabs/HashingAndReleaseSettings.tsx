@@ -11,7 +11,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseSettings';
 import toast from '@/components/Toast';
-import { useUpdateHashingSettingsQuery } from '@/core/react-query/hashing/mutations';
+import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
 import {
   useUpdateReleaseInfoProvidersMutation,
@@ -47,7 +47,7 @@ const HashingAndReleaseSettings = () => {
   const { mutate: patchSettings } = usePatchSettingsMutation();
   const { mutate: updateReleaseInfoSettings } = useUpdateReleaseInfoSettingsMutation();
   const { mutate: updateReleaseInfoProviders } = useUpdateReleaseInfoProvidersMutation();
-  const { mutate: updateHashingSettings } = useUpdateHashingSettingsQuery();
+  const { mutate: updateHashingSettings } = useUpdateHashingSettingsMutation();
 
   const [showHashTypesModal, setShowHashTypesModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<HashProviderInfoType | undefined>();
