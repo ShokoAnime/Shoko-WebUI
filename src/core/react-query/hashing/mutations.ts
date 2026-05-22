@@ -8,12 +8,12 @@ import type { HashingSummaryType, UpdateHashingProviderType } from '@/core/react
 export const useUpdateHashingProviderMutation = () =>
   useMutation({
     mutationFn: ({ id, settings }: { id: string, settings: UpdateHashingProviderType }) =>
-      axios.put(`/Hashing/Provider/${id}`, settings),
+      axios.put(`Hashing/Provider/${id}`, settings),
     onSuccess: () => invalidateQueries(['hashing', 'providers']),
   });
 
-export const useUpdateHashingSettingsQuery = () =>
+export const useUpdateHashingSettingsMutation = () =>
   useMutation({
-    mutationFn: (data: HashingSummaryType) => axios.post('/Hashing/Settings', data),
+    mutationFn: (data: HashingSummaryType) => axios.post('Hashing/Settings', data),
     onSuccess: () => invalidateQueries(['hashing', 'summary']),
   });
