@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import dayjs from 'dayjs';
 import { countBy, some, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -31,7 +32,7 @@ type AniDbPromptType = {
 
 const ANIDB_RULES_SNOOZE_KEY = 'anidb-add-files-rules-snooze-until';
 const ANIDB_RULES_DELAY_SECONDS = 10;
-const ANIDB_RULES_SNOOZE_MS = 30 * 24 * 60 * 60 * 1000;
+const ANIDB_RULES_SNOOZE_DAYS = 30;
 
 const anidbPrompts: AniDbPromptType[] = [
   {
@@ -122,7 +123,10 @@ const AniDbRulesModal = ({
     if (!canProceed) return;
 
     if (dontShowAgain) {
-      globalThis.localStorage.setItem(ANIDB_RULES_SNOOZE_KEY, `${Date.now() + ANIDB_RULES_SNOOZE_MS}`);
+      globalThis.localStorage.setItem(
+        ANIDB_RULES_SNOOZE_KEY,
+        dayjs().add(ANIDB_RULES_SNOOZE_DAYS, 'day').toISOString(),
+      );
     }
 
     onProceed();
@@ -280,8 +284,8 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   };
 
   const hasRulesSnooze = () => {
-    const snoozeUntil = toNumber(globalThis.localStorage.getItem(ANIDB_RULES_SNOOZE_KEY));
-    return snoozeUntil > Date.now();
+    const snoozeUntil = globalThis.localStorage.getItem(ANIDB_RULES_SNOOZE_KEY);
+    return snoozeUntil != null && dayjs(snoozeUntil).isAfter(dayjs());
   };
 
   const handleMassAddClick = (event: React.MouseEvent<HTMLAnchorElement>, url: string) => {
