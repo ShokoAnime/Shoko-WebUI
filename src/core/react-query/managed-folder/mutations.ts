@@ -15,7 +15,7 @@ export const useCreateManagedFolderMutation = () =>
 export const useDeleteManagedFolderMutation = () =>
   useMutation({
     mutationFn: ({ folderId, ...data }: DeleteManagedFolderRequestType) =>
-      axios.delete(`ManagedFolder/${folderId}`, { data }),
+      axios.delete(`ManagedFolder/${folderId}`, { params: data }),
     onSuccess: () => invalidateQueries(['managed-folder']),
   });
 

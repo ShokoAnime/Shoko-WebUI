@@ -3,6 +3,7 @@ import { mdiFolderOpen } from '@mdi/js';
 import { find } from 'lodash';
 
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -18,6 +19,7 @@ import { setStatus } from '@/core/slices/modals/managedFolder';
 import { useDispatch, useSelector } from '@/core/store';
 
 import BrowseFolderModal from './BrowseFolderModal';
+import ConfirmationPromptModal from './ConfirmationPromptModal';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
@@ -38,13 +40,17 @@ const ManagedFolderModal = () => {
   const managedFolders = managedFolderQuery?.data ?? [] as ManagedFolderType[];
 
   const { isPending: isCreatePending, mutate: createFolder } = useCreateManagedFolderMutation();
-  const { isPending: isDeletePending, mutate: deleteFolder } = useDeleteManagedFolderMutation();
+  const { isPending: isDeletePending, mutateAsync: deleteFolder } = useDeleteManagedFolderMutation();
   const { isPending: isUpdatePending, mutate: updateFolder } = useUpdateManagedFolderMutation();
 
   const [managedFolder, setManagedFolder] = useState(defaultManagedFolder);
+  const [keepAssociatedFileRecords, setKeepAssociatedFileRecords] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const getFolderDetails = () => {
     setManagedFolder(defaultManagedFolder);
+    setKeepAssociatedFileRecords(false);
+    setShowDeleteConfirm(false);
 
     if (edit) {
       const folderDetails = find(managedFolders, { ID }) ?? {};
@@ -61,13 +67,15 @@ const ManagedFolderModal = () => {
   const handleBrowse = () => dispatch(setBrowseStatus(true));
   const handleClose = () => dispatch(setStatus(false));
 
-  const handleDelete = () => {
-    deleteFolder({ folderId: ID }, {
-      onSuccess: () => {
+  const handleDelete = async () => {
+    await deleteFolder({ folderId: ID, removeRecords: !keepAssociatedFileRecords })
+      .then(() => {
         toast.success('Managed folder deleted!');
         dispatch(setStatus(false));
-      },
-    });
+      })
+      .catch(() => {
+        toast.error('Failed to delete managed folder.');
+      });
   };
 
   const handleSave = () => {
@@ -148,7 +156,7 @@ const ManagedFolderModal = () => {
           <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
             <div className="flex justify-end gap-x-3 font-semibold">
               {edit && (
-                <Button onClick={handleDelete} buttonType="danger" buttonSize="normal">
+                <Button onClick={() => setShowDeleteConfirm(true)} buttonType="danger" buttonSize="normal">
                   Delete
                 </Button>
               )}
@@ -165,6 +173,37 @@ const ManagedFolderModal = () => {
           </div>
         </div>
       </ModalPanel>
+      <ConfirmationPromptModal
+        onConfirm={handleDelete}
+        onClose={() => setShowDeleteConfirm(false)}
+        show={showDeleteConfirm}
+        title="Delete Managed Folder"
+        confirmButtonType="danger"
+        confirmText="Delete"
+      >
+        <div>
+          Are you sure you want to delete the managed folder&nbsp;
+          <span className="font-semibold text-panel-text-important">{managedFolder.Name}</span>
+          ?
+        </div>
+        <div className="flex flex-col gap-y-1 rounded-lg border border-panel-border bg-panel-background-alt p-4">
+          <div className="text-sm opacity-65">Location</div>
+          <div className="break-all text-panel-text-important">{managedFolder.Path}</div>
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <Checkbox
+            id="keep-associated-file-records"
+            isChecked={keepAssociatedFileRecords}
+            onChange={event => setKeepAssociatedFileRecords(event.target.checked)}
+            label="Keep associated file records"
+            labelRight
+          />
+          <div className="text-sm opacity-65">
+            Keep VideoLocals, DuplicateFiles, and related records for this folder. Use this when migrating files to a
+            new location.
+          </div>
+        </div>
+      </ConfirmationPromptModal>
       <BrowseFolderModal onSelect={onFolderSelect} />
     </>
   );
