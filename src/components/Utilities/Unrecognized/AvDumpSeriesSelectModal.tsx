@@ -1,22 +1,20 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import dayjs from 'dayjs';
 import { countBy, some, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
-import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
+import AniDbRulesModal from '@/components/Utilities/Unrecognized/AniDbRulesModal';
+import { ANIDB_RULES_SNOOZE_KEY, anidbPrompts } from '@/components/Utilities/Unrecognized/AniDbRulesModal.constants';
 import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { useSelector } from '@/core/store';
-import { copyToClipboard } from '@/core/util';
+import { copyToClipboard, dayjs } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
-import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 type Props = {
   show: boolean;
@@ -24,30 +22,6 @@ type Props = {
   fileIds: number[];
   links: string[];
 };
-
-type AniDbPromptType = {
-  answer: string;
-  prompt: string;
-};
-
-const ANIDB_RULES_SNOOZE_KEY = 'anidb-add-files-rules-snooze-until';
-const ANIDB_RULES_DELAY_SECONDS = 10;
-const ANIDB_RULES_SNOOZE_DAYS = 30;
-
-const anidbPrompts: AniDbPromptType[] = [
-  {
-    answer: 'private',
-    prompt: 'Type the category name AniDB uses for disallowed files like remuxes and personal re-encodes.',
-  },
-  {
-    answer: 'banned',
-    prompt: 'Type the word that describes what can happen to your AniDB account if you ignore these rules.',
-  },
-  {
-    answer: 'remuxes',
-    prompt: 'Type the specific file type mentioned in the warning that AniDB does not allow users to add.',
-  },
-];
 
 const Title = ({ count, step, stepCount }: { count: number, step: number, stepCount: number }) => (
   <div className="flex items-center gap-x-0.5 font-semibold">
@@ -79,141 +53,6 @@ const StepDescription = ({ children }: { children: React.ReactNode }) => (
     </div>
   </div>
 );
-
-const AniDbRulesModal = ({
-  challenge,
-  onClose,
-  onProceed,
-  show,
-}: {
-  challenge: AniDbPromptType;
-  onClose: () => void;
-  onProceed: () => void;
-  show: boolean;
-}) => {
-  const [answer, setAnswer] = useState('');
-  const [dontShowAgain, setDontShowAgain] = useState(false);
-  const [secondsRemaining, setSecondsRemaining] = useState(ANIDB_RULES_DELAY_SECONDS);
-
-  useEffect(() => {
-    if (!show) return undefined;
-
-    setAnswer('');
-    setDontShowAgain(false);
-    setSecondsRemaining(ANIDB_RULES_DELAY_SECONDS);
-
-    const interval = globalThis.setInterval(() => {
-      setSecondsRemaining((currentSeconds) => {
-        if (currentSeconds <= 1) {
-          globalThis.clearInterval(interval);
-          return 0;
-        }
-
-        return currentSeconds - 1;
-      });
-    }, 1000);
-
-    return () => globalThis.clearInterval(interval);
-  }, [challenge, show]);
-
-  const isAnswerCorrect = answer.trim().toLowerCase() === challenge.answer;
-  const canProceed = secondsRemaining === 0 && isAnswerCorrect;
-
-  const handleProceed = () => {
-    if (!canProceed) return;
-
-    if (dontShowAgain) {
-      globalThis.localStorage.setItem(
-        ANIDB_RULES_SNOOZE_KEY,
-        dayjs().add(ANIDB_RULES_SNOOZE_DAYS, 'day').toISOString(),
-      );
-    }
-
-    onProceed();
-  };
-
-  useToggleModalKeybinds(show, 'nested-modal');
-  useHotkeys('escape', onClose, { scopes: 'nested-modal' });
-  useHotkeys('enter', () => {
-    if (!canProceed) return;
-    handleProceed();
-  }, { scopes: 'nested-modal' });
-
-  return (
-    <ModalPanel
-      show={show}
-      onRequestClose={onClose}
-      header="AniDB Rules Confirmation"
-      size="sm"
-      overlayClassName="!z-[90]"
-    >
-      <div className="flex flex-col gap-y-4">
-        <StepDescription>
-          Review these AniDB file submission rules before opening the mass-add page.
-        </StepDescription>
-        <div className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
-          <div className="font-semibold text-panel-text-important">
-            Do not add private files such as remuxes or your own re-encodes.
-          </div>
-          <div className="mt-2 text-sm opacity-80">
-            Submitting files that break AniDB&apos;s rules can get your account banned and creates unnecessary work for
-            AniDB moderators.
-          </div>
-          <a
-            href="https://wiki.anidb.net/Content:Files"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-flex text-sm font-semibold text-panel-text-primary transition-colors hover:opacity-80"
-          >
-            Review AniDB file rules
-          </a>
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <div className="font-semibold">{challenge.prompt}</div>
-          <Input
-            id="anidb-rules-answer"
-            value={answer}
-            type="text"
-            placeholder="Enter your answer"
-            onChange={event => setAnswer(event.target.value)}
-            className="w-full"
-          />
-          <div className="text-sm opacity-65">
-            Wait &nbsp;
-            {secondsRemaining}
-            &nbsp;
-            {secondsRemaining === 1 ? 'second' : 'seconds'}
-            &nbsp;and answer correctly to continue.
-          </div>
-        </div>
-        <Checkbox
-          id="anidb-rules-snooze"
-          isChecked={dontShowAgain}
-          onChange={event => setDontShowAgain(event.target.checked)}
-          label="Don&apos;t show this warning again for 30 days"
-          labelRight
-        />
-        <div className="flex justify-end gap-x-2.5">
-          <Button
-            buttonType="secondary"
-            className="flex items-center justify-center px-4 py-2"
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            buttonType="primary"
-            className="flex items-center justify-center px-4 py-2"
-            disabled={!canProceed}
-            onClick={handleProceed}
-          >
-            Open AniDB Add Page
-          </Button>
-        </div>
-      </div>
-    </ModalPanel>
-  );
-};
 
 const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   const { mutateAsync: rescanFile } = useRescanFileMutation();
@@ -272,7 +111,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   };
 
   const openAniDbPage = (url: string) => {
-    const newWindow = globalThis.open(url, '_blank', 'noopener,noreferrer');
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
 
     if (!newWindow) {
       toast.error('Could not open AniDB.', 'Please allow popups for this site and try again.');
@@ -284,13 +123,11 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   };
 
   const hasRulesSnooze = () => {
-    const snoozeUntil = globalThis.localStorage.getItem(ANIDB_RULES_SNOOZE_KEY);
+    const snoozeUntil = localStorage.getItem(ANIDB_RULES_SNOOZE_KEY);
     return snoozeUntil != null && dayjs(snoozeUntil).isAfter(dayjs());
   };
 
-  const handleMassAddClick = (event: React.MouseEvent<HTMLAnchorElement>, url: string) => {
-    event.preventDefault();
-
+  const handleMassAddClick = (url: string) => {
     if (hasRulesSnooze()) {
       openAniDbPage(url);
       return;
@@ -398,18 +235,15 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
                     )
                     : (searchQuery.data ?? []).map(result => (
                       <div key={result.ID} className="flex justify-between">
-                        <a
-                          href={`https://anidb.net/anime/${result.ID}/release/add`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={event =>
-                            handleMassAddClick(event, `https://anidb.net/anime/${result.ID}/release/add`)}
+                        <button
+                          type="button"
+                          onClick={() => handleMassAddClick(`https://anidb.net/anime/${result.ID}/release/add`)}
                           data-tooltip-id="tooltip"
-                          className="transition-colors hover:text-panel-text-primary"
+                          className="line-clamp-1 text-left transition-colors hover:text-panel-text-primary"
                           data-tooltip-content="Mass Add"
                         >
-                          <div className="line-clamp-1">{result.Title}</div>
-                        </a>
+                          {result.Title}
+                        </button>
                         <a
                           href={`https://anidb.net/anime/${result.ID}`}
                           aria-label="Check Series"
@@ -451,6 +285,11 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
         onClose={() => setShowAniDbRulesModal(false)}
         onProceed={handleRulesProceed}
         show={showAniDbRulesModal}
+        stepDescription={
+          <StepDescription>
+            Review these AniDB file submission rules before opening the mass-add page.
+          </StepDescription>
+        }
       />
     </ModalPanel>
   );
