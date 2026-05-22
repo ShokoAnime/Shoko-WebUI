@@ -31,13 +31,13 @@ const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) 
     <div
       className={cx('flex flex-col grow', extra && 'opacity-65')}
       data-tooltip-id="tooltip"
-      data-tooltip-content={episode.Name}
+      data-tooltip-content={episode.AniDB?.Title ?? `Episode ${episode.AniDB?.EpisodeNumber ?? '??'}`}
     >
       <div className="line-clamp-1 text-xs font-semibold opacity-65">
         {episode.AniDB?.AirDate ?? 'Airdate Unknown'}
       </div>
       <div className="line-clamp-1">
-        {episode.Name}
+        {episode.AniDB?.Title ?? `Episode ${episode.AniDB?.EpisodeNumber ?? '??'}`}
       </div>
     </div>
 
