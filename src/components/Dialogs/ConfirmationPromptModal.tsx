@@ -34,9 +34,11 @@ const ConfirmationPromptModal = ({
     setIsConfirmPending(true);
     Promise.resolve()
       .then(() => onConfirm())
-      .then(() => setIsConfirmPending(false))
       .catch(console.error)
-      .finally(() => onClose());
+      .finally(() => {
+        setIsConfirmPending(false);
+        onClose();
+      });
   };
 
   useToggleModalKeybinds(show, 'nested-modal');
