@@ -68,6 +68,7 @@ const ManagedFolderModal = () => {
   const handleClose = () => dispatch(setStatus(false));
 
   const handleDelete = async () => {
+    if (!ID) return;
     await deleteFolder({ folderId: ID, removeRecords: !keepAssociatedFileRecords })
       .then(() => {
         toast.success('Managed folder deleted!');
