@@ -1,3 +1,5 @@
+import semver from 'semver';
+
 import type {
   PluginPackageCatalogArchiveType,
   PluginPackageCatalogEntryType,
@@ -7,23 +9,12 @@ import type {
 import type { PluginInfoType } from '@/core/types/api/plugin';
 import type { PackageInfoType } from '@/core/types/api/plugin-package';
 
-const compareVersionStrings = (left: string, right: string) => {
-  const leftParts = left.split('.').map(part => Number.parseInt(part, 10) || 0);
-  const rightParts = right.split('.').map(part => Number.parseInt(part, 10) || 0);
-  const maxLength = Math.max(leftParts.length, rightParts.length);
-
-  for (let index = 0; index < maxLength; index += 1) {
-    const leftValue = leftParts[index] ?? 0;
-    const rightValue = rightParts[index] ?? 0;
-
-    if (leftValue > rightValue) return 1;
-    if (leftValue < rightValue) return -1;
-  }
-
-  return 0;
-};
-
 const getInstalledPluginVersion = (plugin?: PluginInfoType | null) => plugin?.Version ?? null;
+
+const isVersionGreaterThan = (
+  left: string,
+  right: string,
+) => (semver.valid(left) && semver.valid(right) ? semver.gt(left, right) : false);
 
 const createArchiveCompatibilityKey = (packageInfo: PackageInfoType) =>
   [
@@ -43,7 +34,21 @@ const isSameRelease = (release: PluginPackageCatalogReleaseType, repositoryId: s
 const sortReleasesByVersionDescending = (
   left: PluginPackageCatalogReleaseType,
   right: PluginPackageCatalogReleaseType,
-) => compareVersionStrings(right.Version, left.Version);
+) => {
+  // Handle cases where version might be missing or invalid
+  if (!left.Version || !right.Version) {
+    if (left.Version) return -1;
+    if (right.Version) return 1;
+    return 0;
+  }
+
+  try {
+    return semver.compare(right.Version, left.Version);
+  } catch {
+    // Fallback to string comparison if semver fails
+    return right.Version.localeCompare(left.Version);
+  }
+};
 
 const sortArchivesByRuntimeIdentifier = (
   left: PluginPackageCatalogArchiveType,
@@ -117,7 +122,7 @@ export const groupPluginPackages = (packages: PackageInfoType[], compatiblePacka
       const releases = sortedReleases.map((release, index): PluginPackageCatalogReleaseType => ({
         ...release,
         IsLatest: index === 0,
-        IsUpdateAvailable: !!installedVersion && compareVersionStrings(release.Version, installedVersion) > 0,
+        IsUpdateAvailable: !!installedVersion && isVersionGreaterThan(release.Version, installedVersion),
         Archives: [...release.Archives].sort(sortArchivesByRuntimeIdentifier),
       }));
 
@@ -126,19 +131,25 @@ export const groupPluginPackages = (packages: PackageInfoType[], compatiblePacka
         Releases: releases,
         HasUpdateAvailable: !!installedVersion
           && !!latestVersion
-          && compareVersionStrings(latestVersion, installedVersion) > 0,
+          && isVersionGreaterThan(latestVersion, installedVersion),
       };
     })
     .sort((left, right) => left.Name.localeCompare(right.Name));
 };
 
-export const groupInstalledPlugins = (plugins: PluginInfoType[]) =>
+export const groupInstalledPlugins = (plugins: PluginInfoType[]) => {
+  const groups = new Map<string, PluginInfoType[]>();
+
   [...plugins]
-    .sort((left, right) => left.Name.localeCompare(right.Name) || compareVersionStrings(right.Version, left.Version))
-    .reduce<Record<string, PluginInfoType[]>>((groups, plugin) => ({
-      ...groups,
-      [plugin.ID]: [...(groups[plugin.ID] ?? []), plugin],
-    }), {});
+    .sort((left, right) => left.Name.localeCompare(right.Name) || semver.compare(right.Version, left.Version))
+    .forEach((plugin) => {
+      const pluginGroup = groups.get(plugin.ID) ?? [];
+      pluginGroup.push(plugin);
+      groups.set(plugin.ID, pluginGroup);
+    });
+
+  return Object.fromEntries(groups);
+};
 
 export const getPluginUpdates = (entries: PluginPackageCatalogEntryType[]) =>
   entries
