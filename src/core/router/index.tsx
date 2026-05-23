@@ -37,6 +37,7 @@ import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
+import PluginsSettings from '@/pages/settings/tabs/PluginsSettings';
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
@@ -123,6 +124,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
+            <Route path="plugins" element={<PluginsSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKeys />} />
           </Route>

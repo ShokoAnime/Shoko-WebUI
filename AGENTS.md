@@ -83,3 +83,16 @@ pnpm lint           # tscheck -> dprint -> eslint -> stylelint
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
 - If you modify files, styles, structures, configurations, or workflows mentioned in this file, update the corresponding `AGENTS.md` sections to keep them accurate.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan at:
+specs/001-plugin-management/plan.md
+
+This includes:
+- Technical architecture and dependencies
+- Data model and entity relationships
+- Implementation phases and component structure
+- API integration patterns and UI/UX guidelines
+- Quickstart reference for development
+<!-- SPECKIT END -->

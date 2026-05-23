@@ -10,6 +10,7 @@ public/version.json
 
 # Node.js and NPM
 node_modules/
+/.pnpm-store/
 npm-debug.log
 proxy.config.js
 /flowgen.js
@@ -31,3 +32,10 @@ flow-typed/npm/
 yarn-error.log
 .pnp.*
 run.config.default.min.js
+
+# Spec Kit working directories
+/.agents/
+/.specify/
+/specs/
+
+.opencode/
