@@ -28,7 +28,7 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
 
   return (
     <div className="rounded-lg border border-panel-border bg-panel-background-alt p-2">
-      <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-x-3">
+      <div className="mb-1 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-x-3 sm:py-1">
         <div className="flex flex-wrap items-center gap-2">
           <div className="font-semibold">
             {release.Version}
@@ -40,7 +40,10 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
             </span>
           </div>
         </div>
-        <div className="text-sm whitespace-nowrap opacity-65">{new Date(release.ReleasedAt).toLocaleDateString()}</div>
+        <div className="text-sm whitespace-nowrap opacity-65">
+          Released
+          {new Date(release.ReleasedAt).toLocaleDateString()}
+        </div>
         <div className="flex justify-start sm:justify-end">
           <Button
             buttonType={release.IsInstalled ? 'secondary' : 'primary'}

@@ -78,10 +78,16 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                 {isServerBundled && !plugin.RestartPending && (
                   <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Built-in</span>
                 )}
+                {plugin.IsPinned && (
+                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Pinned</span>
+                )}
                 {!plugin.CanLoad && (
                   <span className="rounded-lg border border-button-danger-border px-2 py-1 text-xs text-button-danger-text">
                     Incompatible
                   </span>
+                )}
+                {plugin.CanLoad && (
+                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Compatible</span>
                 )}
                 {plugin.RestartPending && (
                   <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Needs restart</span>
@@ -89,23 +95,15 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
               </div>
             </div>
 
-            <div className="mb-4 flex flex-wrap gap-x-1 text-sm opacity-65">
+            <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
               <span>Installed:</span>
-              <span>{new Date(plugin.InstalledAt).toLocaleString()}</span>
-            </div>
-
-            <div className="mb-4 flex flex-wrap gap-x-1 text-sm opacity-65">
+              <span>{new Date(plugin.InstalledAt).toLocaleDateString()}</span>
+              <span>•</span>
               <span>Abstraction:</span>
               <span>{plugin.AbstractionVersion}</span>
+              <span>•</span>
               <span>Runtime:</span>
               <span>{plugin.RuntimeIdentifier}</span>
-            </div>
-
-            <div className="mb-4 flex flex-wrap gap-x-1 text-sm">
-              <span>Status:</span>
-              <span className={plugin.CanLoad ? 'text-green-500' : 'text-red-500'}>
-                {plugin.CanLoad ? 'Compatible' : 'Incompatible'}
-              </span>
             </div>
 
             {plugin.RestartPending && (
@@ -132,7 +130,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                           onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
                         },
                       )}
-                    disabled={isReadOnly}
+                    disabled={isReadOnly || !plugin.CanEnableOrDisable}
                     loading={updateArgs?.pluginId === plugin.ID && updateArgs?.pluginVersion === plugin.Version}
                   >
                     {plugin.IsEnabled ? 'Disable' : 'Enable'}

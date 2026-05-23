@@ -25,6 +25,10 @@ export type PluginInfoType = {
   RestartPending: boolean;
   CanLoad: boolean;
   CanUninstall: boolean;
+  CanEnableOrDisable: boolean;
+  IsPinned: boolean;
+  RepositoryUrl?: string | null;
+  HomepageUrl?: string | null;
   ContainingDirectory?: string | null;
   DLLs: string[];
 };
