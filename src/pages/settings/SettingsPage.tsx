@@ -24,6 +24,7 @@ const items = [
   { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
+  { name: 'Plugins', path: 'plugins' },
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
@@ -62,7 +63,7 @@ const SettingsPage = () => {
     const path = pathname.split('/').pop();
     if (!path) return false;
     if (pathname.includes('settings/dynamic/')) return true;
-    return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
+    return ['user-management', 'api-keys', 'hashing-release', 'dynamic', 'plugins'].includes(path);
   }, [pathname]);
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
