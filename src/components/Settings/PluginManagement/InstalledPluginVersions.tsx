@@ -31,10 +31,38 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
   const { mutate: deleteAllPluginVersions, variables: deleteAllArgs } = useDeleteAllPluginVersionsMutation();
   const [pendingDelete, setPendingDelete] = React.useState<PendingDeleteType | null>(null);
 
+  // Get the first plugin in the list as a representative for the group
+  const representativePlugin = plugins[0];
+
   return (
     <div className="flex flex-col gap-y-3">
+      {/* Uninstall All button at the top of the plugin group */}
+      <div className="flex justify-end">
+        {representativePlugin.LoadOrder !== 0 && (
+          <Button
+            buttonType="danger"
+            buttonSize="small"
+            disabled={!representativePlugin.IsInstalled || !representativePlugin.CanUninstall}
+            onClick={() => setPendingDelete({ kind: 'all', plugin: representativePlugin })}
+            loading={deleteAllArgs?.pluginId === representativePlugin.ID}
+          >
+            Uninstall All Versions
+          </Button>
+        )}
+      </div>
+
       {plugins.map((plugin) => {
-        const isReadOnly = plugin.RestartPending || !plugin.CanUninstall;
+        // Determine if plugin is readonly (restart pending)
+        const isReadOnly = plugin.RestartPending;
+        // Determine if plugin is server-bundled (not user-installed)
+        // A plugin is server-bundled if it has no containing directory or is not user-installed
+        const isServerBundled = !plugin.IsInstalled || plugin.ContainingDirectory === null
+          || plugin.ContainingDirectory === undefined;
+        // Determine if plugin can be uninstalled (user installed plugins that aren't restart pending)
+        const canUninstall = plugin.IsInstalled && !plugin.RestartPending && plugin.CanUninstall;
+        // Determine if plugin is core (should never be disabled)
+        // Core plugins always have LoadOrder = 0
+        const isCorePlugin = plugin.LoadOrder === 0;
 
         return (
           <div
@@ -47,7 +75,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                 {plugin.IsActive && (
                   <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Active</span>
                 )}
-                {isReadOnly && (
+                {isServerBundled && !plugin.RestartPending && (
                   <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Built-in</span>
                 )}
                 {!plugin.CanLoad && (
@@ -66,6 +94,20 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
               <span>{new Date(plugin.InstalledAt).toLocaleString()}</span>
             </div>
 
+            <div className="mb-4 flex flex-wrap gap-x-1 text-sm opacity-65">
+              <span>Abstraction:</span>
+              <span>{plugin.AbstractionVersion}</span>
+              <span>Runtime:</span>
+              <span>{plugin.RuntimeIdentifier}</span>
+            </div>
+
+            <div className="mb-4 flex flex-wrap gap-x-1 text-sm">
+              <span>Status:</span>
+              <span className={plugin.CanLoad ? 'text-green-500' : 'text-red-500'}>
+                {plugin.CanLoad ? 'Compatible' : 'Incompatible'}
+              </span>
+            </div>
+
             {plugin.RestartPending && (
               <div className="mb-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 text-sm">
                 Restart the server to finish removing or unloading this plugin.
@@ -73,37 +115,39 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
             )}
 
             <div className="flex flex-wrap justify-end gap-3">
-              <Button
-                buttonType="secondary"
-                buttonSize="small"
-                onClick={() =>
-                  updatePlugin({ pluginId: plugin.ID, pluginVersion: plugin.Version, isEnabled: !plugin.IsEnabled }, {
-                    onSuccess: () =>
-                      toast.success('Plugin updated', `${plugin.Name} ${plugin.IsEnabled ? 'disabled' : 'enabled'}.`),
-                  })}
-                disabled={isReadOnly}
-                loading={updateArgs?.pluginId === plugin.ID && updateArgs?.pluginVersion === plugin.Version}
-              >
-                {plugin.IsEnabled ? 'Disable' : 'Enable'}
-              </Button>
-              <Button
-                buttonType="danger"
-                buttonSize="small"
-                disabled={isReadOnly}
-                onClick={() => setPendingDelete({ kind: 'version', plugin })}
-                loading={deleteArgs?.pluginId === plugin.ID && deleteArgs?.pluginVersion === plugin.Version}
-              >
-                Uninstall Version
-              </Button>
-              <Button
-                buttonType="danger"
-                buttonSize="small"
-                disabled={isReadOnly}
-                onClick={() => setPendingDelete({ kind: 'all', plugin })}
-                loading={deleteAllArgs?.pluginId === plugin.ID}
-              >
-                Uninstall All
-              </Button>
+              {isCorePlugin ? null : (
+                <>
+                  <Button
+                    buttonType="secondary"
+                    buttonSize="small"
+                    onClick={() =>
+                      updatePlugin(
+                        { pluginId: plugin.ID, pluginVersion: plugin.Version, isEnabled: !plugin.IsEnabled },
+                        {
+                          onSuccess: () =>
+                            toast.success(
+                              'Plugin updated',
+                              `${plugin.Name} ${plugin.IsEnabled ? 'disabled' : 'enabled'}.`,
+                            ),
+                          onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
+                        },
+                      )}
+                    disabled={isReadOnly}
+                    loading={updateArgs?.pluginId === plugin.ID && updateArgs?.pluginVersion === plugin.Version}
+                  >
+                    {plugin.IsEnabled ? 'Disable' : 'Enable'}
+                  </Button>
+                  <Button
+                    buttonType="danger"
+                    buttonSize="small"
+                    disabled={!canUninstall}
+                    onClick={() => setPendingDelete({ kind: 'version', plugin })}
+                    loading={deleteArgs?.pluginId === plugin.ID && deleteArgs?.pluginVersion === plugin.Version}
+                  >
+                    Uninstall Version
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         );
@@ -121,6 +165,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
           if (pendingDelete.kind === 'all') {
             deleteAllPluginVersions({ pluginId: pendingDelete.plugin.ID }, {
               onSuccess: () => toast.success('All plugin versions uninstalled', pendingDelete.plugin.Name),
+              onError: () => toast.error('Failed to uninstall all plugin versions', pendingDelete.plugin.Name),
             });
             return;
           }
@@ -128,6 +173,8 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
           deletePlugin({ pluginId: pendingDelete.plugin.ID, pluginVersion: pendingDelete.plugin.Version }, {
             onSuccess: () =>
               toast.success('Plugin uninstalled', `${pendingDelete.plugin.Name} ${pendingDelete.plugin.Version}`),
+            onError: () =>
+              toast.error('Failed to uninstall plugin', `${pendingDelete.plugin.Name} ${pendingDelete.plugin.Version}`),
           });
         }}
       >
