@@ -36,13 +36,6 @@ const PluginsSettings = () => {
     pageSize: 0,
     query: debouncedQuery || undefined,
   });
-  const compatiblePackagesQuery = usePluginPackagesQuery({
-    allowSync: false,
-    onlyCompatible: true,
-    onlyLatest: false,
-    pageSize: 0,
-    query: debouncedQuery || undefined,
-  });
   const pluginsQuery = usePluginsQuery({ allVersions: true, query: debouncedQuery || undefined });
   const updatePackagesQuery = usePluginPackagesQuery({
     allowSync: false,
@@ -50,24 +43,18 @@ const PluginsSettings = () => {
     onlyLatest: false,
     pageSize: 0,
   });
-  const updateCompatiblePackagesQuery = usePluginPackagesQuery({
-    allowSync: false,
-    onlyCompatible: true,
-    onlyLatest: false,
-    pageSize: 0,
-  });
 
   const groupedPackages = useMemo(
-    () => groupPluginPackages(packagesQuery.data?.List ?? [], compatiblePackagesQuery.data?.List ?? []),
-    [compatiblePackagesQuery.data?.List, packagesQuery.data?.List],
+    () => groupPluginPackages(packagesQuery.data?.List ?? []),
+    [packagesQuery.data?.List],
   );
   const groupedPlugins = useMemo(
     () => groupInstalledPlugins(pluginsQuery.data ?? []),
     [pluginsQuery.data],
   );
   const updateEntries = useMemo(
-    () => groupPluginPackages(updatePackagesQuery.data?.List ?? [], updateCompatiblePackagesQuery.data?.List ?? []),
-    [updateCompatiblePackagesQuery.data?.List, updatePackagesQuery.data?.List],
+    () => groupPluginPackages(updatePackagesQuery.data?.List ?? []),
+    [updatePackagesQuery.data?.List],
   );
   const pluginUpdates = useMemo(
     () => getPluginUpdates(updateEntries),
@@ -90,8 +77,8 @@ const PluginsSettings = () => {
     return updateEntries.filter(entry => matchingPackageIds.has(entry.PackageID));
   }, [filteredPluginUpdates, updateEntries]);
 
-  const isLoading = !packagesQuery.data || !compatiblePackagesQuery.data || !pluginsQuery.data;
-  const updatesLoading = !updatePackagesQuery.data || !updateCompatiblePackagesQuery.data;
+  const isLoading = !packagesQuery.data || !pluginsQuery.data;
+  const updatesLoading = !updatePackagesQuery.data;
 
   return (
     <>

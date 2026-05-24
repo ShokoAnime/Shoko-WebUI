@@ -16,18 +16,6 @@ const isVersionGreaterThan = (
   right: string,
 ) => (semver.valid(left) && semver.valid(right) ? semver.gt(left, right) : false);
 
-const createArchiveCompatibilityKey = (packageInfo: PackageInfoType) =>
-  [
-    packageInfo.Manifest.PackageID,
-    packageInfo.Release.RepositoryID,
-    packageInfo.Release.Version,
-    packageInfo.Archive.RuntimeIdentifier,
-    packageInfo.Archive.AbstractionVersion,
-  ].join('::');
-
-const createCompatibleArchiveLookup = (packages: PackageInfoType[]) =>
-  new Set(packages.map(createArchiveCompatibilityKey));
-
 const isSameRelease = (release: PluginPackageCatalogReleaseType, repositoryId: string, version: string) =>
   release.Version === version && release.RepositoryID === repositoryId;
 
@@ -55,9 +43,8 @@ const sortArchivesByRuntimeIdentifier = (
   right: PluginPackageCatalogArchiveType,
 ) => left.RuntimeIdentifier.localeCompare(right.RuntimeIdentifier);
 
-export const groupPluginPackages = (packages: PackageInfoType[], compatiblePackages: PackageInfoType[] = packages) => {
+export const groupPluginPackages = (packages: PackageInfoType[]) => {
   const map = new Map<string, PluginPackageCatalogEntryType>();
-  const compatibleArchives = createCompatibleArchiveLookup(compatiblePackages);
 
   packages.forEach((packageInfo) => {
     const {
@@ -84,7 +71,7 @@ export const groupPluginPackages = (packages: PackageInfoType[], compatiblePacka
 
     const archiveInfo: PluginPackageCatalogArchiveType = {
       ...Archive,
-      IsCompatible: compatibleArchives.has(createArchiveCompatibilityKey(packageInfo)),
+      IsCompatible: Archive.IsCompatible,
       IsInstalled: !!Plugin,
     };
     const isMatchingRelease = (item: PluginPackageCatalogReleaseType) =>

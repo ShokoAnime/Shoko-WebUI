@@ -13,6 +13,15 @@ export type PackageArchiveInfoType = {
   AbstractionVersion: string;
   ArchiveUrl: string;
   ArchiveChecksum: string;
+  IsCompatible: boolean;
+};
+
+export type PluginPackageArchiveType = {
+  RuntimeIdentifier: string;
+  AbstractionVersion: string;
+  ArchiveUrl: string;
+  ArchiveChecksum: string;
+  IsCompatible: boolean;
 };
 
 export type PackageReleaseInfoType = {
