@@ -140,7 +140,9 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                         </span>
                       )}
                       {plugin.RestartPending && (
-                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Needs restart</span>
+                        <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs text-orange-300">
+                          Restart required
+                        </span>
                       )}
                     </div>
                   </div>
