@@ -70,29 +70,37 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
             key={`${plugin.ID}-${plugin.Version}`}
             className="rounded-lg border border-panel-border bg-panel-input p-4"
           >
-            <div className="mb-2 flex items-start justify-between gap-x-3">
-              <div className="font-semibold">{plugin.Version}</div>
-              <div className="flex flex-wrap justify-end gap-2">
-                {plugin.IsActive && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Active</span>
-                )}
-                {isServerBundled && !plugin.RestartPending && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Built-in</span>
-                )}
-                {plugin.IsPinned && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Pinned</span>
+            <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-3">
+              <div className="min-w-0 flex-1 font-semibold">{plugin.Version}</div>
+              <div className="flex shrink-0 flex-wrap justify-start gap-2 sm:justify-end">
+                {plugin.RestartPending && (
+                  <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs whitespace-nowrap text-orange-100">
+                    Restart required
+                  </span>
                 )}
                 {!plugin.CanLoad && (
-                  <span className="rounded-lg border border-button-danger-border px-2 py-1 text-xs text-button-danger-text">
+                  <span className="rounded-lg border border-red-500/50 bg-red-500/25 px-2 py-1 text-xs whitespace-nowrap text-red-100">
                     Incompatible
                   </span>
                 )}
-                {plugin.CanLoad && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Compatible</span>
+                {plugin.IsActive && (
+                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                    Active
+                  </span>
                 )}
-                {plugin.RestartPending && (
-                  <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs text-orange-300">
-                    Restart required
+                {isServerBundled && !plugin.RestartPending && (
+                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                    Built-in
+                  </span>
+                )}
+                {plugin.IsPinned && (
+                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                    Pinned
+                  </span>
+                )}
+                {plugin.CanLoad && (
+                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                    Compatible
                   </span>
                 )}
               </div>

@@ -49,14 +49,6 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
           ...prev,
           [pluginId]: url,
         }));
-
-        thumbnailUrlRefs.current[pluginId] = url;
-        loadedThumbnailRefs.current[pluginId] = true;
-
-        setThumbnailUrls(prev => ({
-          ...prev,
-          [pluginId]: url,
-        }));
       } catch {
         // Missing thumbnails are expected for some plugins.
         loadedThumbnailRefs.current[pluginId] = true;
@@ -117,31 +109,35 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
 
                 <div className="flex grow flex-col gap-y-2">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-3">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-lg font-semibold">{plugin.Name}</div>
                       <div className="text-sm opacity-80">{plugin.Description}</div>
                     </div>
 
-                    <div className="flex flex-wrap justify-end gap-2">
+                    <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
                       {updateEntry && (
-                        <span className="rounded-lg bg-button-primary px-2 py-1 text-xs text-button-primary-text">
+                        <span className="rounded-lg border border-green-500/30 bg-green-500/20 px-2 py-1 text-xs whitespace-nowrap text-green-100">
                           Update available
                         </span>
                       )}
-                      {plugin.IsActive && (
-                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Active</span>
-                      )}
-                      {hasReadOnlyVersions && (
-                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Built-in</span>
+                      {plugin.RestartPending && (
+                        <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs whitespace-nowrap text-orange-100">
+                          Restart required
+                        </span>
                       )}
                       {!plugin.CanLoad && (
-                        <span className="rounded-lg border border-button-danger-border px-2 py-1 text-xs text-button-danger-text">
+                        <span className="rounded-lg border border-red-500/50 bg-red-500/25 px-2 py-1 text-xs whitespace-nowrap text-red-100">
                           Incompatible
                         </span>
                       )}
-                      {plugin.RestartPending && (
-                        <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs text-orange-300">
-                          Restart required
+                      {plugin.IsActive && (
+                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                          Active
+                        </span>
+                      )}
+                      {hasReadOnlyVersions && (
+                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                          Built-in
                         </span>
                       )}
                     </div>
