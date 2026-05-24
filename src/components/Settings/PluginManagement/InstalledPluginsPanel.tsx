@@ -103,7 +103,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                       <img
                         src={thumbnailUrl}
                         alt={plugin.Name}
-                        className="size-18 rounded-lg border border-panel-border object-cover"
+                        className="block size-18 rounded-lg border border-panel-border object-contain"
                         onError={() =>
                           setThumbnailUrls((prev) => {
                             const next = { ...prev };

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from '@/components/Input/Button';
-import { getPluginPackageThumbnailUrl } from '@/core/utilities/pluginManagement';
+import { axios } from '@/core/axios';
+import { getPluginPackageThumbnailUrl, getPluginThumbnailUrl } from '@/core/utilities/pluginManagement';
 
 import type {
   PluginPackageCatalogEntryType,
@@ -40,10 +41,11 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
             </span>
           </div>
         </div>
+
         <div className="text-sm whitespace-nowrap opacity-65">
-          Released
-          {new Date(release.ReleasedAt).toLocaleDateString()}
+          {`Released ${new Date(release.ReleasedAt).toLocaleDateString()}`}
         </div>
+
         <div className="flex justify-start sm:justify-end">
           <Button
             buttonType={release.IsInstalled ? 'secondary' : 'primary'}
@@ -66,45 +68,96 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
 };
 
 const CatalogItem = ({ entry, onInstall }: Props) => {
-  const [imageFailed, setImageFailed] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>();
   const [showOlderVersions, setShowOlderVersions] = useState(false);
+
   const newestRelease = entry.Releases[0];
   const olderReleases = entry.Releases.slice(1);
+
+  useEffect(() => {
+    let objectUrl: string | undefined;
+
+    const fetchThumbnail = async () => {
+      const thumbnailPluginId = entry.Plugin?.Thumbnail ? entry.Plugin.ID : undefined;
+      const thumbnailPackageId = entry.Thumbnail ? entry.PackageID : undefined;
+
+      if (!thumbnailPluginId && !thumbnailPackageId) return;
+
+      const thumbnailEndpoint = thumbnailPluginId
+        ? getPluginThumbnailUrl(thumbnailPluginId)
+        : getPluginPackageThumbnailUrl(thumbnailPackageId!);
+
+      const contentType = entry.Plugin?.Thumbnail?.MimeType ?? entry.Thumbnail?.MimeType;
+
+      try {
+        const response = await axios.get<Blob>(thumbnailEndpoint, {
+          responseType: 'blob',
+        });
+
+        const responseBlob = response as unknown as Blob;
+        const blob = contentType && responseBlob.type !== contentType
+          ? responseBlob.slice(0, responseBlob.size, contentType)
+          : responseBlob;
+
+        objectUrl = URL.createObjectURL(blob);
+        setThumbnailUrl(objectUrl);
+      } catch {
+        // Missing thumbnails are expected for some packages/plugins.
+      }
+    };
+
+    fetchThumbnail().catch(() => {
+      // handled in fetchThumbnail
+    });
+
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [entry.PackageID, entry.Plugin, entry.Thumbnail]);
 
   return (
     <div className="rounded-lg border border-panel-border bg-panel-input p-3">
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="shrink-0">
-          {entry.Thumbnail && !imageFailed
+          {thumbnailUrl
             ? (
               <img
-                src={getPluginPackageThumbnailUrl(entry.PackageID)}
+                src={thumbnailUrl}
                 alt={entry.Name}
-                className="size-18 rounded-lg border border-panel-border object-cover"
-                onError={() => setImageFailed(true)}
+                className="block size-18 rounded-lg border border-panel-border object-contain"
+                onError={() => setThumbnailUrl(undefined)}
               />
             )
             : <div className="size-18 rounded-lg border border-panel-border bg-panel-background-alt" />}
         </div>
+
         <div className="flex grow flex-col gap-y-3">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-4">
             <div className="flex flex-col gap-y-1">
               <div className="text-lg font-semibold">{entry.Name}</div>
               <div className="text-sm opacity-80">{entry.Overview}</div>
+
               <div className="flex flex-wrap gap-x-1 text-xs opacity-65">
                 <span>By</span>
                 <span>{entry.Authors}</span>
               </div>
             </div>
+
             <div className="flex shrink-0 flex-row flex-wrap gap-2 sm:flex-col sm:items-end">
               {entry.HasUpdateAvailable && (
                 <span className="rounded-lg bg-button-primary px-2 py-1 text-xs text-button-primary-text">
                   Update available
                 </span>
               )}
+
               {entry.HasInstalledVersion && (
-                <span className="rounded-lg bg-panel-background-alt px-2 py-1 text-xs">Installed</span>
+                <span className="rounded-lg bg-panel-background-alt px-2 py-1 text-xs">
+                  Installed
+                </span>
               )}
+
               {!entry.HasCompatibleInstallOption && (
                 <span className="rounded-lg border border-button-danger-border px-2 py-1 text-xs text-button-danger-text">
                   Incompatible
@@ -125,7 +178,13 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
           </div>
 
           <div className="flex flex-col gap-y-3">
-            {newestRelease && <ReleaseCard entry={entry} onInstall={onInstall} release={newestRelease} />}
+            {newestRelease && (
+              <ReleaseCard
+                entry={entry}
+                onInstall={onInstall}
+                release={newestRelease}
+              />
+            )}
 
             {olderReleases.length > 0 && (
               <div className="flex flex-col gap-y-3">
@@ -134,7 +193,9 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                   className="self-start text-sm font-semibold opacity-80 transition-opacity hover:opacity-100"
                   onClick={() => setShowOlderVersions(value => !value)}
                 >
-                  {showOlderVersions ? 'Hide older versions' : `Older versions (${olderReleases.length})`}
+                  {showOlderVersions
+                    ? 'Hide older versions'
+                    : `Older versions (${olderReleases.length})`}
                 </button>
 
                 {showOlderVersions
