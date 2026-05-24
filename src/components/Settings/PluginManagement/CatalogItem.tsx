@@ -139,9 +139,32 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
               <div className="text-lg font-semibold">{entry.Name}</div>
               <div className="text-sm opacity-80">{entry.Overview}</div>
 
-              <div className="flex flex-wrap gap-x-1 text-xs opacity-65">
-                <span>By</span>
-                <span>{entry.Authors}</span>
+              <div className="flex flex-wrap items-center gap-x-2 text-xs opacity-65">
+                <span>{`By ${entry.Authors}`}</span>
+
+                {entry.Plugin?.RepositoryUrl && (
+                  <a
+                    href={entry.Plugin.RepositoryUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-button-primary transition-opacity hover:opacity-80"
+                    onClick={event => event.stopPropagation()}
+                  >
+                    Repository
+                  </a>
+                )}
+
+                {entry.Plugin?.HomepageUrl && (
+                  <a
+                    href={entry.Plugin.HomepageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-button-primary transition-opacity hover:opacity-80"
+                    onClick={event => event.stopPropagation()}
+                  >
+                    Homepage
+                  </a>
+                )}
               </div>
             </div>
 
