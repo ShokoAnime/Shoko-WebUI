@@ -35,7 +35,16 @@ run.config.default.min.js
 
 # Spec Kit working directories
 /.agents/
+/.opencode/
 /.specify/
 /specs/
 
-.opencode/
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# macOS filesystem metadata
+.Spotlight-V100
+.Trashes
