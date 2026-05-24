@@ -22,8 +22,10 @@ type Props = {
 
 const RepositoryPanel = ({ query }: Props) => {
   const repositoriesQuery = usePluginPackageRepositoriesQuery();
-  const { mutate: deleteRepository, variables: deletingId } = useDeletePluginPackageRepositoryMutation();
-  const { mutate: syncRepository, variables: syncingArgs } = useSyncPluginPackageRepositoryMutation();
+  const { mutate: deleteRepository, status: deleteRepositoryStatus, variables: deletingId } =
+    useDeletePluginPackageRepositoryMutation();
+  const { mutate: syncRepository, status: syncRepositoryStatus, variables: syncingArgs } =
+    useSyncPluginPackageRepositoryMutation();
   const { mutate: syncAll, status: syncAllStatus } = useSyncAllPluginPackageRepositoriesMutation();
   const [repositoryToDelete, setRepositoryToDelete] = React.useState<RepositoryDeleteStateType | null>(null);
   const [isFormCollapsed, setIsFormCollapsed] = useState(true); // Start collapsed by default
@@ -97,8 +99,8 @@ const RepositoryPanel = ({ query }: Props) => {
         <div className="flex flex-col gap-y-3">
           {repositories.map((repository) => {
             const isLocalRepository = repository.ID === '00000000-0000-0000-0000-000000000000';
-            const isSyncing = syncingArgs?.repositoryId === repository.ID;
-            const isDeleting = deletingId === repository.ID;
+            const isSyncing = syncRepositoryStatus === 'pending' && syncingArgs?.repositoryId === repository.ID;
+            const isDeleting = deleteRepositoryStatus === 'pending' && deletingId === repository.ID;
 
             return (
               <div key={repository.ID} className="rounded-lg border border-panel-border bg-panel-background-alt p-4">

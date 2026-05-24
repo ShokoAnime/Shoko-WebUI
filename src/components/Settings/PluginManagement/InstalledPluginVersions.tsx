@@ -26,9 +26,10 @@ type PendingDeleteType =
   };
 
 const InstalledPluginVersions = ({ plugins }: Props) => {
-  const { mutate: updatePlugin, variables: updateArgs } = useUpdatePluginMutation();
-  const { mutate: deletePlugin, variables: deleteArgs } = useDeletePluginMutation();
-  const { mutate: deleteAllPluginVersions, variables: deleteAllArgs } = useDeleteAllPluginVersionsMutation();
+  const { mutate: updatePlugin, status: updateStatus, variables: updateArgs } = useUpdatePluginMutation();
+  const { mutate: deletePlugin, status: deleteStatus, variables: deleteArgs } = useDeletePluginMutation();
+  const { mutate: deleteAllPluginVersions, status: deleteAllStatus, variables: deleteAllArgs } =
+    useDeleteAllPluginVersionsMutation();
   const [pendingDelete, setPendingDelete] = React.useState<PendingDeleteType | null>(null);
 
   // Get the first plugin in the list as a representative for the group
@@ -44,7 +45,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
             buttonSize="small"
             disabled={!representativePlugin.IsInstalled || !representativePlugin.CanUninstall}
             onClick={() => setPendingDelete({ kind: 'all', plugin: representativePlugin })}
-            loading={deleteAllArgs?.pluginId === representativePlugin.ID}
+            loading={deleteAllStatus === 'pending' && deleteAllArgs?.pluginId === representativePlugin.ID}
           >
             Uninstall All Versions
           </Button>
@@ -131,7 +132,8 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                         },
                       )}
                     disabled={isReadOnly || !plugin.CanEnableOrDisable}
-                    loading={updateArgs?.pluginId === plugin.ID && updateArgs?.pluginVersion === plugin.Version}
+                    loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
+                      && updateArgs?.pluginVersion === plugin.Version}
                   >
                     {plugin.IsEnabled ? 'Disable' : 'Enable'}
                   </Button>
@@ -140,7 +142,8 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                     buttonSize="small"
                     disabled={!canUninstall}
                     onClick={() => setPendingDelete({ kind: 'version', plugin })}
-                    loading={deleteArgs?.pluginId === plugin.ID && deleteArgs?.pluginVersion === plugin.Version}
+                    loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
+                      && deleteArgs?.pluginVersion === plugin.Version}
                   >
                     Uninstall Version
                   </Button>
