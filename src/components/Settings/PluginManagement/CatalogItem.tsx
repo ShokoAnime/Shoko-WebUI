@@ -59,8 +59,8 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
       </div>
 
       {!hasCompatibleArchive && !release.IsInstalled && (
-        <div className="mb-3 text-sm text-button-danger-text">
-          No compatible version is available for this server.
+        <div className="mb-3 rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-sm text-orange-100">
+          This version is not compatible with your server version.
         </div>
       )}
     </div>
