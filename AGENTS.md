@@ -48,6 +48,10 @@ pnpm lint           # tscheck -> dprint -> eslint -> stylelint
 - **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 - **Path alias:** `@/` maps to `src/` (configured in `vite.config.mjs` and `tsconfig.json`).
 
+## React Patterns
+
+This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The compiler automatically memoizes components and values, so **do not use `useMemo`, `useCallback`, or `React.memo` unless absolutely required** (e.g., for a library boundary or a very specific measured performance issue). Let the compiler handle optimization instead of manually adding memoization.
+
 ## Code Style
 
 - **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes (double quotes in JSX), always semicolons.
