@@ -319,7 +319,11 @@ const UnrecognizedTab = () => {
       : false),
     [selectedRows, avdumpList],
   );
-  const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
+  const dumpInProgress = selectedRows.length > 0
+    && some(
+      selectedRows,
+      row => avdumpList.sessions[avdumpList.sessionMap[row.ID]]?.status === 'Running',
+    );
 
   const handleAvdumpClick = () => {
     if (isAvdumpFinished && !dumpInProgress) {
