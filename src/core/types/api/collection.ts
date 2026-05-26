@@ -17,6 +17,7 @@ export type CollectionGroupType = {
   Name: string;
   Size: number;
   Sizes: GroupSizesType;
+  TotalSize: number;
 };
 
 export type GroupSizesType = SeriesSizesType & {

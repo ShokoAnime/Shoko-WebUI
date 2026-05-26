@@ -11,14 +11,19 @@ const useRouteLink = (item: CollectionGroupType | SeriesType) => {
     let link = '/webui/collection';
 
     if (groupId) {
+      // groupId present → item is SeriesType
       return `${link}/series/${item.IDs.ID}`;
     }
 
-    if (item.Size === 1) {
-      return `${link}/series/${(item as CollectionGroupType).IDs.MainSeries}`;
+    // No groupId → item is CollectionGroupType
+    const group = item as CollectionGroupType;
+
+    // TODO: Remove `?? group.Size` fallback once minimum server version is bumped
+    if ((group.TotalSize ?? group.Size) === 1) {
+      return `${link}/series/${group.IDs.MainSeries}`;
     }
 
-    link += `/group/${item.IDs.ID}`;
+    link += `/group/${group.IDs.ID}`;
 
     if (filterId) {
       return `${link}/filter/${filterId}`;
