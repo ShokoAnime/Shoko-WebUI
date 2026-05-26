@@ -18,14 +18,14 @@ import {
 import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
 const sections = [
-  { label: 'Repositories', value: 'repositories' },
-  { label: 'Browse', value: 'browse' },
   { label: 'Installed', value: 'installed' },
+  { label: 'Browse', value: 'browse' },
   { label: 'Updates', value: 'updates' },
+  { label: 'Repositories', value: 'repositories' },
 ];
 
 const PluginsSettings = () => {
-  const [section, setSection] = useState('repositories');
+  const [section, setSection] = useState('installed');
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounceValue(query, 300);
 
