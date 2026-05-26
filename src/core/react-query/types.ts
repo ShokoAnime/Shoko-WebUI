@@ -1,9 +1,28 @@
 import type { PaginationType } from '@/core/types/api';
 import type { FileSortCriteriaEnum } from '@/core/types/api/file';
 
-type FileIncludeType = 'Ignored' | 'MediaInfo' | 'ReleaseInfo' | 'XRefs' | 'AbsolutePaths';
-type FileExcludeType = 'Watched' | 'Duplicates' | 'Unrecognized' | 'ManualLinks';
-type FileIncludeOnlyType = 'Watched' | 'Variations' | 'Duplicates' | 'Unrecognized' | 'ManualLinks' | 'Ignored';
+type FileIncludeType =
+  | 'Ignored'
+  | 'MediaInfo'
+  | 'ReleaseInfo'
+  | 'XRefs'
+  | 'AbsolutePaths'
+  | 'ImportLimbo'
+  | 'LocationUIDs';
+type FileExcludeType =
+  | 'Watched'
+  | 'Duplicates'
+  | 'Unrecognized'
+  | 'ManualLinks'
+  | 'Variations';
+type FileIncludeOnlyType =
+  | 'Watched'
+  | 'Variations'
+  | 'Duplicates'
+  | 'Unrecognized'
+  | 'ManualLinks'
+  | 'Ignored'
+  | 'ImportLimbo';
 
 export type FileRequestType = {
   include?: FileIncludeType[];
