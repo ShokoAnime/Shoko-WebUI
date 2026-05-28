@@ -79,7 +79,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
         return (
           <div
             key={`${plugin.ID}-${plugin.Version}`}
-            className="rounded-xl border border-panel-border bg-panel-input p-4"
+            className="rounded-xl border border-panel-border bg-panel-background-alt p-4"
           >
             <div className="flex flex-col gap-y-3">
               <div className="font-semibold">{`Version ${plugin.Version}`}</div>
@@ -96,22 +96,22 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                   </Badge>
                 )}
                 {plugin.IsActive && (
-                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
+                  <Badge className="border border-panel-border bg-panel-input text-inherit">
                     Active
                   </Badge>
                 )}
                 {isServerBundled && !plugin.RestartPending && (
-                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
+                  <Badge className="border border-panel-border bg-panel-input text-inherit">
                     Built-in
                   </Badge>
                 )}
                 {plugin.IsPinned && (
-                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
+                  <Badge className="border border-panel-border bg-panel-input text-inherit">
                     Pinned
                   </Badge>
                 )}
                 {plugin.CanLoad && (
-                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
+                  <Badge className="border border-panel-border bg-panel-input text-inherit">
                     Compatible
                   </Badge>
                 )}
@@ -130,7 +130,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
             </div>
 
             {plugin.RestartPending && (
-              <div className="mt-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 text-sm">
+              <div className="mt-4 rounded-lg border border-panel-border bg-panel-input px-4 py-3 text-sm">
                 Restart the server to finish removing or unloading this plugin.
               </div>
             )}

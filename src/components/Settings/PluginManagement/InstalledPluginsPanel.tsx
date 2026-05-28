@@ -126,7 +126,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
         return (
           <article
             key={pluginId}
-            className="overflow-hidden rounded-xl border border-panel-border bg-panel-background-alt"
+            className="overflow-hidden rounded-xl border border-panel-border bg-panel-input"
           >
             <div className="flex flex-col p-4 lg:flex-row lg:items-start lg:gap-3">
               <button
@@ -140,7 +140,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                       <img
                         src={thumbnailUrl}
                         alt={plugin.Name}
-                        className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-input object-contain"
+                        className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt object-contain"
                         onError={() =>
                           setThumbnailUrls((prev) => {
                             const next = { ...prev };
@@ -150,7 +150,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                       />
                     )
                     : (
-                      <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-panel-border bg-panel-input">
+                      <div className="aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt">
                         <div className="size-full" />
                       </div>
                     )}
@@ -160,7 +160,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-lg font-semibold">{plugin.Name}</div>
-                      <span className="rounded-lg bg-panel-input px-2 py-1 text-xs font-medium">
+                      <span className="rounded-lg bg-panel-background-alt px-2 py-1 text-xs font-medium">
                         {plugins[0]?.Version}
                       </span>
                     </div>
@@ -188,7 +188,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                       </Badge>
                     )}
                     {hasReadOnlyVersions && (
-                      <Badge className="border border-panel-border bg-panel-input text-inherit">
+                      <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
                         Built-in
                       </Badge>
                     )}
@@ -213,7 +213,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
             </div>
 
             {expanded && (
-              <div className="bg-panel-input/20 px-4 pb-4">
+              <div className="bg-panel-background-alt/30 px-4 pb-4">
                 <InstalledPluginVersions plugins={plugins} />
               </div>
             )}

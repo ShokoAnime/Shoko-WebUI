@@ -148,7 +148,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                 />
               )
               : (
-                <div className="aspect-video rounded-lg border border-dashed border-panel-border bg-panel-background-alt/60">
+                <div className="aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt">
                   <div className="size-full" />
                 </div>
               )}
