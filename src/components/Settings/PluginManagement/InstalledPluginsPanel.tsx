@@ -1,11 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import InstalledPluginVersions from '@/components/Settings/PluginManagement/InstalledPluginVersions';
-import { axios } from '@/core/axios';
 import { sortInstalledPluginGroups } from '@/core/react-query/plugin-package/helpers';
-import { getPluginPackageThumbnailUrl, getPluginThumbnailUrl } from '@/core/utilities/pluginManagement';
 
 import type { PluginGroupsType } from '@/core/react-query/plugin/types';
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
@@ -28,11 +26,8 @@ const Badge = ({ children, className }: BadgeProps) => (
 
 const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+  const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Record<string, boolean>>({});
   const [selectedPackageId, setSelectedPackageId] = useState<string>();
-  const [thumbnailUrls, setThumbnailUrls] = useState<Record<string, string>>({});
-
-  const thumbnailUrlRefs = useRef<Record<string, string>>({});
-  const loadedThumbnailRefs = useRef<Record<string, boolean>>({});
 
   const pluginGroups = useMemo(
     () => sortInstalledPluginGroups(groupedPlugins, groupedPackages),
@@ -41,72 +36,8 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
   const selectedEntry = groupedPackages.find(entry => entry.PackageID === selectedPackageId);
 
   useEffect(() => {
-    const fetchBlobUrl = async (url: string, contentType?: string) => {
-      const response = await axios.get<Blob>(url, {
-        responseType: 'blob',
-      });
-
-      const responseBlob = response as unknown as Blob;
-
-      return contentType && responseBlob.type !== contentType
-        ? responseBlob.slice(0, responseBlob.size, contentType)
-        : responseBlob;
-    };
-
-    const fetchThumbnail = async (
-      pluginId: string,
-      packageId?: string,
-      pluginContentType?: string,
-      packageContentType?: string,
-    ) => {
-      if (loadedThumbnailRefs.current[pluginId]) return;
-
-      try {
-        const blob = await fetchBlobUrl(getPluginThumbnailUrl(pluginId), pluginContentType);
-        const url = URL.createObjectURL(blob);
-
-        thumbnailUrlRefs.current[pluginId] = url;
-        loadedThumbnailRefs.current[pluginId] = true;
-
-        setThumbnailUrls(prev => ({
-          ...prev,
-          [pluginId]: url,
-        }));
-      } catch {
-        if (packageId && packageContentType) {
-          try {
-            const blob = await fetchBlobUrl(getPluginPackageThumbnailUrl(packageId), packageContentType);
-            const url = URL.createObjectURL(blob);
-
-            thumbnailUrlRefs.current[pluginId] = url;
-            loadedThumbnailRefs.current[pluginId] = true;
-
-            setThumbnailUrls(prev => ({
-              ...prev,
-              [pluginId]: url,
-            }));
-            return;
-          } catch {
-            // Missing thumbnails are expected for some plugins.
-          }
-        }
-
-        loadedThumbnailRefs.current[pluginId] = true;
-      }
-    };
-
-    Object.entries(groupedPlugins).forEach(([, plugins]) => {
-      const plugin = plugins[0];
-      const packageEntry = groupedPackages.find(entry => entry.Plugin?.ID === plugin?.ID);
-
-      if (!plugin?.Thumbnail && !packageEntry?.Thumbnail) return;
-
-      fetchThumbnail(plugin.ID, packageEntry?.PackageID, plugin.Thumbnail?.MimeType, packageEntry?.Thumbnail?.MimeType)
-        .catch(() => {
-          // handled in fetchThumbnail
-        });
-    });
-  }, [groupedPackages, groupedPlugins]);
+    setFailedThumbnailUrls({});
+  }, [pluginGroups]);
 
   if (pluginGroups.length === 0) {
     return <div className="rounded-lg border border-panel-border bg-panel-input p-6">No installed plugins found.</div>;
@@ -116,7 +47,16 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
     <div className="flex flex-col gap-y-4">
       {pluginGroups.map(([pluginId, plugins]) => {
         const plugin = plugins[0];
-        const thumbnailUrl = thumbnailUrls[plugin.ID];
+        const matchingEntry = groupedPackages.find(
+          entry => entry.Plugin?.ID === pluginId || entry.PackageID === pluginId,
+        );
+        const thumbnailPlugin = plugins.find(item => item.Thumbnail);
+        const thumbnailCandidates = [
+          matchingEntry?.Thumbnail ? `/api/v3/Plugin/Package/${matchingEntry.PackageID}/Thumbnail` : undefined,
+          matchingEntry?.Plugin?.Thumbnail ? `/api/v3/Plugin/${matchingEntry.Plugin.ID}/Thumbnail` : undefined,
+          thumbnailPlugin?.Thumbnail ? `/api/v3/Plugin/${thumbnailPlugin.ID}/Thumbnail` : undefined,
+        ].filter(candidate => !!candidate && !failedThumbnailUrls[candidate]);
+        const thumbnailUrl = thumbnailCandidates[0];
         const expanded = !!expandedIds[pluginId];
         const updateEntry = groupedPackages.find(entry => entry.Plugin?.ID === pluginId && entry.HasUpdateAvailable);
         const hasReadOnlyVersions = plugins.every(
@@ -141,12 +81,14 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                         src={thumbnailUrl}
                         alt={plugin.Name}
                         className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt object-contain"
-                        onError={() =>
-                          setThumbnailUrls((prev) => {
-                            const next = { ...prev };
-                            delete next[plugin.ID];
-                            return next;
-                          })}
+                        onError={() => {
+                          if (!thumbnailUrl) return;
+
+                          setFailedThumbnailUrls(prev => ({
+                            ...prev,
+                            [thumbnailUrl]: true,
+                          }));
+                        }}
                       />
                     )
                     : (

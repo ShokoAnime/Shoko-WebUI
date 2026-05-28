@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/Input/Button';
-import { axios } from '@/core/axios';
-import { getPluginPackageThumbnailUrl, getPluginThumbnailUrl } from '@/core/utilities/pluginManagement';
 
 import type {
   PluginPackageCatalogEntryType,
@@ -80,71 +78,55 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
 };
 
 const CatalogItem = ({ entry, onInstall }: Props) => {
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>();
+  const [packageThumbnailFailed, setPackageThumbnailFailed] = useState(false);
+  const [pluginThumbnailFailed, setPluginThumbnailFailed] = useState(false);
   const [showOlderVersions, setShowOlderVersions] = useState(false);
 
   const newestRelease = entry.Releases[0];
   const olderReleases = entry.Releases.slice(1);
 
   useEffect(() => {
-    let objectUrl: string | undefined;
-
-    const fetchBlobUrl = async (url: string, contentType?: string) => {
-      const response = await axios.get<Blob>(url, {
-        responseType: 'blob',
-      });
-
-      const responseBlob = response as unknown as Blob;
-      const blob = contentType && responseBlob.type !== contentType
-        ? responseBlob.slice(0, responseBlob.size, contentType)
-        : responseBlob;
-
-      objectUrl = URL.createObjectURL(blob);
-      setThumbnailUrl(objectUrl);
-    };
-
-    const fetchThumbnail = async () => {
-      if (entry.Thumbnail) {
-        try {
-          await fetchBlobUrl(getPluginPackageThumbnailUrl(entry.PackageID), entry.Thumbnail.MimeType);
-          return;
-        } catch {
-          // Missing package thumbnails are expected for some packages.
-        }
-      }
-
-      if (entry.Plugin?.Thumbnail) {
-        try {
-          await fetchBlobUrl(getPluginThumbnailUrl(entry.Plugin.ID), entry.Plugin.Thumbnail.MimeType);
-        } catch {
-          // Missing plugin thumbnails are expected for some installed plugins.
-        }
-      }
-    };
-
-    fetchThumbnail().catch(() => {
-      // handled in fetchThumbnail
-    });
-
-    return () => {
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl);
-      }
-    };
+    setPackageThumbnailFailed(false);
+    setPluginThumbnailFailed(false);
   }, [entry.PackageID, entry.Plugin, entry.Thumbnail]);
+
+  const packageThumbnailUrl = useMemo(
+    () => (entry.Thumbnail ? `/api/v3/Plugin/Package/${entry.PackageID}/Thumbnail` : undefined),
+    [entry.PackageID, entry.Thumbnail],
+  );
+  const pluginThumbnailUrl = useMemo(
+    () => (entry.Plugin?.Thumbnail ? `/api/v3/Plugin/${entry.Plugin.ID}/Thumbnail` : undefined),
+    [entry.Plugin],
+  );
+  let thumbnailSrc: string | undefined;
+
+  if (packageThumbnailUrl && !packageThumbnailFailed) {
+    thumbnailSrc = packageThumbnailUrl;
+  } else if (pluginThumbnailUrl && !pluginThumbnailFailed) {
+    thumbnailSrc = pluginThumbnailUrl;
+  }
 
   return (
     <article className="overflow-hidden rounded-xl border border-panel-border bg-panel-input">
       <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-3">
           <div className="w-full shrink-0 lg:w-44 lg:flex-none">
-            {thumbnailUrl
+            {thumbnailSrc
               ? (
                 <img
-                  src={thumbnailUrl}
+                  src={thumbnailSrc}
                   alt={entry.Name}
                   className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt object-contain"
-                  onError={() => setThumbnailUrl(undefined)}
+                  onError={() => {
+                    if (thumbnailSrc === packageThumbnailUrl) {
+                      setPackageThumbnailFailed(true);
+                      return;
+                    }
+
+                    if (thumbnailSrc === pluginThumbnailUrl) {
+                      setPluginThumbnailFailed(true);
+                    }
+                  }}
                 />
               )
               : (
