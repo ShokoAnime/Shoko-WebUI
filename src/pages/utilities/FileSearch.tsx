@@ -254,7 +254,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
     !!seriesId,
   );
 
-  const episodeId = file?.SeriesIDs?.[0]?.EpisodeIDs?.[0]?.AniDB ?? 0;
+  const episodeId = file?.SeriesIDs?.[0]?.EpisodeIDs?.[0]?.ID ? file?.SeriesIDs?.[0]?.EpisodeIDs?.[0]?.AniDB : 0;
   const { data: episodeInfo, isFetching: episodeQueryIsPending } = useEpisodeAniDBQuery(
     episodeId,
     !!episodeId,
@@ -304,28 +304,29 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
       </div>
 
       {seriesInfo && (
-        <div className="flex flex-col gap-y-1">
-          <div className="flex justify-between">
-            <span className="font-semibold">Series Name</span>
-            <Link to={`/webui/collection/series/${seriesId}`}>
-              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-                <ShokoIcon className="size-6" />
-                Shoko
-                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-              </div>
-            </Link>
+        <>
+          <div className="flex flex-col gap-y-1">
+            <div className="flex justify-between">
+              <span className="font-semibold">Series Name</span>
+              <Link to={`/webui/collection/series/${seriesId}`}>
+                <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+                  <ShokoIcon className="size-6" />
+                  Shoko
+                  <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+                </div>
+              </Link>
+            </div>
+            <span className="break-all">{seriesInfo.Name}</span>
           </div>
-          <span className="break-all">{seriesInfo.Name}</span>
-        </div>
-      )}
-
-      {episodeInfo && (
-        <div className="flex flex-col gap-y-1">
-          <div className="flex justify-between capitalize">
-            <span className="font-semibold">Episode Name</span>
+          <div className="flex flex-col gap-y-1">
+            <div className="flex justify-between capitalize">
+              <span className="font-semibold">Episode Name</span>
+            </div>
+            <span className={cx('break-all', !episodeInfo && 'text-panel-text-danger')}>
+              {episodeInfo?.Title ?? '<missing data>'}
+            </span>
           </div>
-          <span className="break-all">{episodeInfo.Title}</span>
-        </div>
+        </>
       )}
 
       <MediaInfoDetails file={file} />
@@ -343,7 +344,7 @@ const FileSearch = () => {
   } = useTableSearchSortCriteria(-FileSortCriteriaEnum.CreatedAt);
 
   const filesQuery = useFilesInfiniteQuery({
-    include: ['XRefs'],
+    include: ['XRefs', 'ImportLimbo'],
     sortOrder: sortCriteria ? [sortCriteria] : undefined,
     pageSize: 50,
   }, debouncedSearch);
