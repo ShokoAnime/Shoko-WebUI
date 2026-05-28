@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import InstalledPluginVersions from '@/components/Settings/PluginManagement/InstalledPluginVersions';
 import { axios } from '@/core/axios';
-import { getPluginThumbnailUrl } from '@/core/utilities/pluginManagement';
+import { sortInstalledPluginGroups } from '@/core/react-query/plugin-package/helpers';
+import { getPluginPackageThumbnailUrl, getPluginThumbnailUrl } from '@/core/utilities/pluginManagement';
 
 import type { PluginGroupsType } from '@/core/react-query/plugin/types';
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
@@ -14,6 +15,17 @@ type Props = {
   groupedPlugins: PluginGroupsType;
 };
 
+type BadgeProps = {
+  children: React.ReactNode;
+  className?: string;
+};
+
+const Badge = ({ children, className }: BadgeProps) => (
+  <span className={`rounded-lg px-2.5 py-1 text-xs font-medium ${className ?? ''}`.trim()}>
+    {children}
+  </span>
+);
+
 const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [selectedPackageId, setSelectedPackageId] = useState<string>();
@@ -22,24 +34,35 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
   const thumbnailUrlRefs = useRef<Record<string, string>>({});
   const loadedThumbnailRefs = useRef<Record<string, boolean>>({});
 
-  const pluginGroups = Object.entries(groupedPlugins);
+  const pluginGroups = useMemo(
+    () => sortInstalledPluginGroups(groupedPlugins, groupedPackages),
+    [groupedPackages, groupedPlugins],
+  );
   const selectedEntry = groupedPackages.find(entry => entry.PackageID === selectedPackageId);
 
   useEffect(() => {
-    const fetchThumbnail = async (pluginId: string, contentType?: string) => {
+    const fetchBlobUrl = async (url: string, contentType?: string) => {
+      const response = await axios.get<Blob>(url, {
+        responseType: 'blob',
+      });
+
+      const responseBlob = response as unknown as Blob;
+
+      return contentType && responseBlob.type !== contentType
+        ? responseBlob.slice(0, responseBlob.size, contentType)
+        : responseBlob;
+    };
+
+    const fetchThumbnail = async (
+      pluginId: string,
+      packageId?: string,
+      pluginContentType?: string,
+      packageContentType?: string,
+    ) => {
       if (loadedThumbnailRefs.current[pluginId]) return;
 
       try {
-        const response = await axios.get<Blob>(getPluginThumbnailUrl(pluginId), {
-          responseType: 'blob',
-        });
-
-        const responseBlob = response as unknown as Blob;
-
-        const blob = contentType && responseBlob.type !== contentType
-          ? responseBlob.slice(0, responseBlob.size, contentType)
-          : responseBlob;
-
+        const blob = await fetchBlobUrl(getPluginThumbnailUrl(pluginId), pluginContentType);
         const url = URL.createObjectURL(blob);
 
         thumbnailUrlRefs.current[pluginId] = url;
@@ -50,21 +73,40 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
           [pluginId]: url,
         }));
       } catch {
-        // Missing thumbnails are expected for some plugins.
+        if (packageId && packageContentType) {
+          try {
+            const blob = await fetchBlobUrl(getPluginPackageThumbnailUrl(packageId), packageContentType);
+            const url = URL.createObjectURL(blob);
+
+            thumbnailUrlRefs.current[pluginId] = url;
+            loadedThumbnailRefs.current[pluginId] = true;
+
+            setThumbnailUrls(prev => ({
+              ...prev,
+              [pluginId]: url,
+            }));
+            return;
+          } catch {
+            // Missing thumbnails are expected for some plugins.
+          }
+        }
+
         loadedThumbnailRefs.current[pluginId] = true;
       }
     };
 
     Object.entries(groupedPlugins).forEach(([, plugins]) => {
       const plugin = plugins[0];
+      const packageEntry = groupedPackages.find(entry => entry.Plugin?.ID === plugin?.ID);
 
-      if (!plugin?.Thumbnail) return;
+      if (!plugin?.Thumbnail && !packageEntry?.Thumbnail) return;
 
-      fetchThumbnail(plugin.ID, plugin.Thumbnail?.MimeType).catch(() => {
-        // handled in fetchThumbnail
-      });
+      fetchThumbnail(plugin.ID, packageEntry?.PackageID, plugin.Thumbnail?.MimeType, packageEntry?.Thumbnail?.MimeType)
+        .catch(() => {
+          // handled in fetchThumbnail
+        });
     });
-  }, [groupedPlugins]);
+  }, [groupedPackages, groupedPlugins]);
 
   if (pluginGroups.length === 0) {
     return <div className="rounded-lg border border-panel-border bg-panel-input p-6">No installed plugins found.</div>;
@@ -82,20 +124,23 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
         );
 
         return (
-          <div key={pluginId} className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <article
+            key={pluginId}
+            className="overflow-hidden rounded-xl border border-panel-border bg-panel-background-alt"
+          >
+            <div className="flex flex-col p-4 lg:flex-row lg:items-start lg:gap-3">
               <button
                 type="button"
-                className="flex w-full items-start gap-4 text-left"
+                className="flex min-w-0 flex-1 flex-col gap-4 text-left lg:flex-row"
                 onClick={() => setExpandedIds(state => ({ ...state, [pluginId]: !expanded }))}
               >
-                <div className="shrink-0">
+                <div className="w-full shrink-0 lg:w-44 lg:flex-none">
                   {thumbnailUrl
                     ? (
                       <img
                         src={thumbnailUrl}
                         alt={plugin.Name}
-                        className="block size-18 rounded-lg border border-panel-border object-contain"
+                        className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-input object-contain"
                         onError={() =>
                           setThumbnailUrls((prev) => {
                             const next = { ...prev };
@@ -104,71 +149,75 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                           })}
                       />
                     )
-                    : <div className="size-18 rounded-lg border border-panel-border bg-panel-input" />}
+                    : (
+                      <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-panel-border bg-panel-input">
+                        <div className="size-full" />
+                      </div>
+                    )}
                 </div>
 
-                <div className="flex grow flex-col gap-y-2">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-3">
-                    <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 flex-1 flex-col gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
                       <div className="text-lg font-semibold">{plugin.Name}</div>
-                      <div className="text-sm opacity-80">{plugin.Description}</div>
+                      <span className="rounded-lg bg-panel-input px-2 py-1 text-xs font-medium">
+                        {plugins[0]?.Version}
+                      </span>
                     </div>
-
-                    <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
-                      {updateEntry && (
-                        <span className="rounded-lg border border-green-500/30 bg-green-500/20 px-2 py-1 text-xs whitespace-nowrap text-green-100">
-                          Update available
-                        </span>
-                      )}
-                      {plugin.RestartPending && (
-                        <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs whitespace-nowrap text-orange-100">
-                          Restart required
-                        </span>
-                      )}
-                      {!plugin.CanLoad && (
-                        <span className="rounded-lg border border-red-500/50 bg-red-500/25 px-2 py-1 text-xs whitespace-nowrap text-red-100">
-                          Incompatible
-                        </span>
-                      )}
-                      {plugin.IsActive && (
-                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
-                          Active
-                        </span>
-                      )}
-                      {hasReadOnlyVersions && (
-                        <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
-                          Built-in
-                        </span>
-                      )}
+                    <div className="mt-2 line-clamp-3 text-sm/6 opacity-80">{plugin.Description}</div>
+                    <div className="mt-2 flex flex-wrap gap-x-1 text-sm opacity-65">
+                      <span>{plugins.length}</span>
+                      <span>installed version(s)</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-x-1 text-sm opacity-65">
-                    <span>{plugins.length}</span>
-                    <span>installed version(s)</span>
+                  <div className="flex flex-wrap gap-2">
+                    {updateEntry && (
+                      <Badge className="border border-green-500/30 bg-green-500/20 text-green-100">
+                        Update available
+                      </Badge>
+                    )}
+                    {plugin.RestartPending && (
+                      <Badge className="border border-orange-500/30 bg-orange-500/15 text-orange-100">
+                        Restart required
+                      </Badge>
+                    )}
+                    {!plugin.CanLoad && (
+                      <Badge className="border border-red-500/50 bg-red-500/25 text-red-100">
+                        Incompatible
+                      </Badge>
+                    )}
+                    {hasReadOnlyVersions && (
+                      <Badge className="border border-panel-border bg-panel-input text-inherit">
+                        Built-in
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap justify-end gap-3 pt-1">
+                    {updateEntry && (
+                      <Button
+                        buttonType="primary"
+                        buttonSize="small"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setSelectedPackageId(updateEntry.PackageID);
+                        }}
+                      >
+                        Upgrade
+                      </Button>
+                    )}
                   </div>
                 </div>
               </button>
-
-              <div className="flex shrink-0 flex-wrap justify-end gap-3 self-start lg:self-auto">
-                {updateEntry && (
-                  <Button
-                    buttonType="primary"
-                    buttonSize="small"
-                    onClick={() => setSelectedPackageId(updateEntry.PackageID)}
-                  >
-                    Upgrade
-                  </Button>
-                )}
-              </div>
             </div>
 
             {expanded && (
-              <div className="mt-4">
+              <div className="bg-panel-input/20 px-4 pb-4">
                 <InstalledPluginVersions plugins={plugins} />
               </div>
             )}
-          </div>
+          </article>
         );
       })}
 

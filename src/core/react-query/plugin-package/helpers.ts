@@ -1,5 +1,6 @@
 import semver from 'semver';
 
+import type { PluginGroupsType } from '@/core/react-query/plugin/types';
 import type {
   PluginPackageCatalogArchiveType,
   PluginPackageCatalogEntryType,
@@ -42,6 +43,18 @@ const sortArchivesByRuntimeIdentifier = (
   left: PluginPackageCatalogArchiveType,
   right: PluginPackageCatalogArchiveType,
 ) => left.RuntimeIdentifier.localeCompare(right.RuntimeIdentifier);
+
+const sortEntriesByUpdatePriorityAndName = (
+  left: Pick<PluginPackageCatalogEntryType, 'HasUpdateAvailable' | 'Name'>,
+  right: Pick<PluginPackageCatalogEntryType, 'HasUpdateAvailable' | 'Name'>,
+) => Number(right.HasUpdateAvailable) - Number(left.HasUpdateAvailable) || left.Name.localeCompare(right.Name);
+
+const sortInstalledPluginGroupEntries = (
+  left: { hasUpdateAvailable: boolean, plugins: PluginInfoType[] },
+  right: { hasUpdateAvailable: boolean, plugins: PluginInfoType[] },
+) =>
+  Number(right.hasUpdateAvailable) - Number(left.hasUpdateAvailable)
+  || left.plugins[0].Name.localeCompare(right.plugins[0].Name);
 
 export const groupPluginPackages = (packages: PackageInfoType[]) => {
   const map = new Map<string, PluginPackageCatalogEntryType>();
@@ -121,7 +134,7 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
           && isVersionGreaterThan(latestVersion, installedVersion),
       };
     })
-    .sort((left, right) => left.Name.localeCompare(right.Name));
+    .sort(sortEntriesByUpdatePriorityAndName);
 };
 
 export const groupInstalledPlugins = (plugins: PluginInfoType[]) => {
@@ -137,6 +150,23 @@ export const groupInstalledPlugins = (plugins: PluginInfoType[]) => {
 
   return Object.fromEntries(groups);
 };
+
+export const sortInstalledPluginGroups = (
+  groupedPlugins: PluginGroupsType,
+  groupedPackages: PluginPackageCatalogEntryType[],
+) =>
+  Object.entries(groupedPlugins)
+    .map(([pluginId, plugins]) => {
+      const updateEntry = groupedPackages.find(entry => entry.Plugin?.ID === pluginId && entry.HasUpdateAvailable);
+
+      return {
+        hasUpdateAvailable: !!updateEntry,
+        pluginId,
+        plugins,
+      };
+    })
+    .sort(sortInstalledPluginGroupEntries)
+    .map(({ pluginId, plugins }) => [pluginId, plugins] as const);
 
 export const getPluginUpdates = (entries: PluginPackageCatalogEntryType[]) =>
   entries

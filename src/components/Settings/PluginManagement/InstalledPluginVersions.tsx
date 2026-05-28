@@ -25,6 +25,17 @@ type PendingDeleteType =
     plugin: PluginInfoType;
   };
 
+type BadgeProps = {
+  children: React.ReactNode;
+  className?: string;
+};
+
+const Badge = ({ children, className }: BadgeProps) => (
+  <span className={`rounded-lg px-2.5 py-1 text-xs font-medium ${className ?? ''}`.trim()}>
+    {children}
+  </span>
+);
+
 const InstalledPluginVersions = ({ plugins }: Props) => {
   const { mutate: updatePlugin, status: updateStatus, variables: updateArgs } = useUpdatePluginMutation();
   const { mutate: deletePlugin, status: deleteStatus, variables: deleteArgs } = useDeletePluginMutation();
@@ -38,8 +49,8 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
   return (
     <div className="flex flex-col gap-y-3">
       {/* Uninstall All button at the top of the plugin group */}
-      <div className="flex justify-end">
-        {representativePlugin.LoadOrder !== 0 && (
+      <div className="flex justify-end pt-4">
+        {plugins.length > 1 && representativePlugin.LoadOrder !== 0 && (
           <Button
             buttonType="danger"
             buttonSize="small"
@@ -68,98 +79,97 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
         return (
           <div
             key={`${plugin.ID}-${plugin.Version}`}
-            className="rounded-lg border border-panel-border bg-panel-input p-4"
+            className="rounded-xl border border-panel-border bg-panel-input p-4"
           >
-            <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-3">
-              <div className="min-w-0 flex-1 font-semibold">{plugin.Version}</div>
-              <div className="flex shrink-0 flex-wrap justify-start gap-2 sm:justify-end">
+            <div className="flex flex-col gap-y-3">
+              <div className="font-semibold">{`Version ${plugin.Version}`}</div>
+
+              <div className="flex flex-wrap gap-2">
                 {plugin.RestartPending && (
-                  <span className="rounded-lg bg-orange-500/15 px-2 py-1 text-xs whitespace-nowrap text-orange-100">
+                  <Badge className="border border-orange-500/30 bg-orange-500/15 text-orange-100">
                     Restart required
-                  </span>
+                  </Badge>
                 )}
                 {!plugin.CanLoad && (
-                  <span className="rounded-lg border border-red-500/50 bg-red-500/25 px-2 py-1 text-xs whitespace-nowrap text-red-100">
+                  <Badge className="border border-red-500/50 bg-red-500/25 text-red-100">
                     Incompatible
-                  </span>
+                  </Badge>
                 )}
                 {plugin.IsActive && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
                     Active
-                  </span>
+                  </Badge>
                 )}
                 {isServerBundled && !plugin.RestartPending && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
                     Built-in
-                  </span>
+                  </Badge>
                 )}
                 {plugin.IsPinned && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
                     Pinned
-                  </span>
+                  </Badge>
                 )}
                 {plugin.CanLoad && (
-                  <span className="rounded-lg border border-panel-border px-2 py-1 text-xs whitespace-nowrap">
+                  <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
                     Compatible
-                  </span>
+                  </Badge>
                 )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                <span>Installed:</span>
+                <span>{new Date(plugin.InstalledAt).toLocaleDateString()}</span>
+                <span>•</span>
+                <span>Abstraction:</span>
+                <span>{plugin.AbstractionVersion}</span>
+                <span>•</span>
+                <span>Runtime:</span>
+                <span>{plugin.RuntimeIdentifier}</span>
               </div>
             </div>
 
-            <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-              <span>Installed:</span>
-              <span>{new Date(plugin.InstalledAt).toLocaleDateString()}</span>
-              <span>•</span>
-              <span>Abstraction:</span>
-              <span>{plugin.AbstractionVersion}</span>
-              <span>•</span>
-              <span>Runtime:</span>
-              <span>{plugin.RuntimeIdentifier}</span>
-            </div>
-
             {plugin.RestartPending && (
-              <div className="mb-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 text-sm">
+              <div className="mt-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 text-sm">
                 Restart the server to finish removing or unloading this plugin.
               </div>
             )}
 
-            <div className="flex flex-wrap justify-end gap-3">
-              {isCorePlugin ? null : (
-                <>
-                  <Button
-                    buttonType="secondary"
-                    buttonSize="small"
-                    onClick={() =>
-                      updatePlugin(
-                        { pluginId: plugin.ID, pluginVersion: plugin.Version, isEnabled: !plugin.IsEnabled },
-                        {
-                          onSuccess: () =>
-                            toast.success(
-                              'Plugin updated',
-                              `${plugin.Name} ${plugin.IsEnabled ? 'disabled' : 'enabled'}.`,
-                            ),
-                          onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
-                        },
-                      )}
-                    disabled={isReadOnly || !plugin.CanEnableOrDisable}
-                    loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
-                      && updateArgs?.pluginVersion === plugin.Version}
-                  >
-                    {plugin.IsEnabled ? 'Disable' : 'Enable'}
-                  </Button>
-                  <Button
-                    buttonType="danger"
-                    buttonSize="small"
-                    disabled={!canUninstall}
-                    onClick={() => setPendingDelete({ kind: 'version', plugin })}
-                    loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
-                      && deleteArgs?.pluginVersion === plugin.Version}
-                  >
-                    Uninstall Version
-                  </Button>
-                </>
-              )}
-            </div>
+            {isCorePlugin ? null : (
+              <div className="mt-4 flex flex-wrap justify-end gap-3">
+                <Button
+                  buttonType="secondary"
+                  buttonSize="small"
+                  onClick={() =>
+                    updatePlugin(
+                      { pluginId: plugin.ID, pluginVersion: plugin.Version, isEnabled: !plugin.IsEnabled },
+                      {
+                        onSuccess: () =>
+                          toast.success(
+                            'Plugin updated',
+                            `${plugin.Name} ${plugin.IsEnabled ? 'disabled' : 'enabled'}.`,
+                          ),
+                        onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
+                      },
+                    )}
+                  disabled={isReadOnly || !plugin.CanEnableOrDisable}
+                  loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
+                    && updateArgs?.pluginVersion === plugin.Version}
+                >
+                  {plugin.IsEnabled ? 'Disable' : 'Enable'}
+                </Button>
+                <Button
+                  buttonType="danger"
+                  buttonSize="small"
+                  disabled={!canUninstall}
+                  onClick={() => setPendingDelete({ kind: 'version', plugin })}
+                  loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
+                    && deleteArgs?.pluginVersion === plugin.Version}
+                >
+                  Uninstall Version
+                </Button>
+              </div>
+            )}
           </div>
         );
       })}
