@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, some, toNumber } from 'lodash';
@@ -12,7 +13,6 @@ import AniDbRulesModal from '@/components/Utilities/Unrecognized/AniDbRulesModal
 import { ANIDB_RULES_SNOOZE_KEY, anidbPrompts } from '@/components/Utilities/Unrecognized/AniDbRulesModal.constants';
 import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
-import { useSelector } from '@/core/store';
 import { copyToClipboard, dayjs } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
