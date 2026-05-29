@@ -45,7 +45,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useServerUpdateCheckQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
-import { getUiVersion } from '@/core/util';
+import { getUiVersion, parseServerVersion } from '@/core/util';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -239,7 +239,10 @@ const TopNav = () => {
                 </div>
               )}
               {!updateCheckIsFetching && serverUpdateCheckQuery.isSuccess
-                && semver.gt(serverUpdateCheckQuery.data.Version, versionData?.Server.Version ?? '999.999.999') && (
+                && semver.gt(
+                  parseServerVersion(serverUpdateCheckQuery.data.Version) ?? '0.0.0',
+                  parseServerVersion(versionData?.Server.Version ?? '999.999.999') ?? '999.999.999',
+                ) && (
                 <div
                   className="flex cursor-pointer items-center gap-x-2 font-semibold"
                   onClick={() => setShowServerUpdateModal(true)}
