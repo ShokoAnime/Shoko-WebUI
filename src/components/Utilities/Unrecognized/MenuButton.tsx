@@ -5,18 +5,21 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 
 const MenuButton = (
-  { disabled, highlightType, icon, name, onClick }: {
-    onClick: React.MouseEventHandler<HTMLButtonElement>;
+  { disabled, highlightType, icon, keybinding, loading, name, onClick }: {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
     icon: string;
     name: string;
     highlightType?: 'primary' | 'danger';
     disabled?: boolean;
+    loading?: boolean;
+    keybinding?: string;
   },
 ) => (
   <Button
     onClick={onClick}
     className="flex items-center gap-x-2 text-base! font-normal! text-panel-text"
-    disabled={disabled}
+    disabled={disabled || loading}
+    keybinding={keybinding}
   >
     <Icon
       path={icon}
@@ -25,6 +28,7 @@ const MenuButton = (
         'text-panel-text-primary': highlightType === 'primary',
         'text-panel-text-danger': highlightType === 'danger',
       })}
+      spin={loading}
     />
     {name}
   </Button>

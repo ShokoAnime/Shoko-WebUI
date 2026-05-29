@@ -1,38 +1,49 @@
 import React, { useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ButtonType } from '@/components/Input/Button.utils';
 
 type Props = {
-  content: React.ReactNode;
+  children: React.ReactNode;
   onConfirm: () => void | Promise<void>;
   onClose: () => void;
   show: boolean;
   title: string;
+  cancelText?: string;
   confirmText?: string;
   confirmButtonType?: ButtonType;
 };
 
 const ConfirmationPromptModal = ({
-  content,
+  cancelText = 'Cancel',
+  children,
+  confirmButtonType = 'primary',
+  confirmText = 'Confirm',
   onClose,
   onConfirm,
   show,
   title,
-  confirmText = 'Confirm',
-  confirmButtonType = 'primary',
 }: Props) => {
   const [isConfirmPending, setIsConfirmPending] = useState(false);
 
   const handleConfirm = () => {
     setIsConfirmPending(true);
-    Promise.resolve(onConfirm())
-      .then(() => setIsConfirmPending(false))
+    Promise.resolve()
+      .then(() => onConfirm())
       .catch(console.error)
-      .finally(onClose);
+      .finally(() => {
+        setIsConfirmPending(false);
+        onClose();
+      });
   };
+
+  useToggleModalKeybinds(show, 'nested-modal');
+  useHotkeys('escape', onClose, { scopes: 'nested-modal' });
+  useHotkeys('enter', handleConfirm, { scopes: 'nested-modal' });
 
   return (
     <ModalPanel
@@ -42,16 +53,16 @@ const ConfirmationPromptModal = ({
       header={<div className="text-xl font-semibold">{title}</div>}
     >
       <div className="flex flex-col gap-y-4 py-2">
-        {content}
+        {children}
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">
-          Cancel
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">
+          {cancelText}
         </Button>
         <Button
           onClick={handleConfirm}
           buttonType={confirmButtonType}
-          className="px-6 py-2"
+          className="px-5 py-2"
           loading={isConfirmPending}
         >
           {confirmText}

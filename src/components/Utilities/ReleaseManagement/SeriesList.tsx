@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { forEach } from 'lodash';
+import { flatMap } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import ShokoIcon from '@/components/ShokoIcon';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
@@ -10,12 +11,14 @@ import {
   useReleaseManagementSeries,
   useReleaseManagementSeriesEpisodes,
 } from '@/core/react-query/release-management/queries';
-import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
+import ReleaseManagementModal from './ReleaseManagementModal';
+
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
+import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { ReleaseManagementSeriesType } from '@/core/types/api/series';
 
@@ -108,7 +111,7 @@ const multiplesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
   name: 'File Count',
   className: 'w-28',
   item: (episode) => {
-    const count = episode.Files?.length ?? 0;
+    const count = episode.Files?.filter(file => file.Size > 0).length ?? 0;
     return (
       <>
         <span className="text-panel-text-important">{count}</span>
@@ -123,10 +126,11 @@ const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
   name: 'Duplicate Count',
   className: 'w-40',
   item: (episode) => {
-    let count = 0;
-    forEach(episode.Files, (file) => {
-      if (file.Locations.length > 1) count += 1;
-    });
+    let count = flatMap(
+      episode.Files,
+      file => file.Locations,
+    ).filter(location => !!location.AbsolutePath).length;
+    count = count === 1 ? 0 : (count / 2);
     return (
       <>
         <span className="text-panel-text-important">{count}</span>
@@ -141,7 +145,6 @@ type Props = {
   ignoreVariations: boolean;
   onlyCollecting: boolean;
   onlyFinishedSeries: boolean;
-  setSelectedEpisode: (episode: EpisodeType) => void;
   setSelectedEpisodes: (episodes: EpisodeType[]) => void;
   setSelectedSeriesId: (id: number) => void;
   setSeriesCount: (count: number) => void;
@@ -152,7 +155,6 @@ const SeriesList = (
     ignoreVariations,
     onlyCollecting,
     onlyFinishedSeries,
-    setSelectedEpisode,
     setSelectedEpisodes,
     setSelectedSeriesId,
     setSeriesCount,
@@ -181,6 +183,9 @@ const SeriesList = (
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
 
+  const [showEpisodeModal, toggleEpisodeModal] = useToggle(false);
+  const [selectedEpisode, setSelectedEpisode] = useState(-1);
+
   const {
     handleRowSelect,
     rowSelection,
@@ -193,8 +198,21 @@ const SeriesList = (
   }, [selectedRows, setSelectedEpisodes]);
 
   const handleEpisodeSelect = (episodeId: number, select: boolean) => {
-    if (type === ReleaseManagementItemType.MissingEpisodes) handleRowSelect(episodeId, select);
-    else setSelectedEpisode(episodes.find(episode => episode.IDs.ID === episodeId)!);
+    if (type === 'MissingEpisodes') handleRowSelect(episodeId, select);
+    else {
+      setSelectedEpisode(episodes.findIndex(episode => episode.IDs.ID === episodeId));
+      toggleEpisodeModal();
+    }
+  };
+
+  const handleEpisodeChange = (changeType: 'previous' | 'next') => {
+    if (
+      (changeType === 'next' && selectedEpisode === episodes.length - 1)
+      || (changeType === 'previous' && selectedEpisode <= 0)
+    ) return;
+
+    if (changeType === 'previous') setSelectedEpisode(index => index - 1);
+    else setSelectedEpisode(index => index + 1);
   };
 
   useEffect(() => {
@@ -202,16 +220,11 @@ const SeriesList = (
     setSeriesCount(seriesCount);
   }, [selectedSeries, seriesCount, setSelectedSeriesId, setSeriesCount]);
 
-  // Reset series selection if query data changes
-  useEffect(() => {
-    setSelectedSeries(0);
-  }, [seriesQuery.data]);
-
   const episodeColumns = useMemo(() => {
-    if (type !== ReleaseManagementItemType.MissingEpisodes) {
+    if (type !== 'MissingEpisodes') {
       return [
         episodeNameColumn,
-        type === ReleaseManagementItemType.MultipleReleases
+        type === 'MultipleReleases'
           ? multiplesEpisodeFileCountColumn
           : duplicatesEpisodeFileCountColumn,
       ];
@@ -230,59 +243,79 @@ const SeriesList = (
 
   return (
     <>
-      <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-        {seriesQuery.isPending && (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={4} spin />
-          </div>
-        )}
+      <div className="flex grow">
+        <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
+          {seriesQuery.isFetching && (
+            <div className="flex grow items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
 
-        {!seriesQuery.isPending && seriesCount === 0 && (
-          <div className="flex grow items-center justify-center text-lg font-semibold">
-            No series with
-            {type === ReleaseManagementItemType.MultipleReleases && ' multiple releases!'}
-            {type === ReleaseManagementItemType.DuplicateFiles && ' duplicate files!'}
-            {type === ReleaseManagementItemType.MissingEpisodes && ' missing episodes!'}
-          </div>
-        )}
+          {!seriesQuery.isFetching && seriesCount === 0 && (
+            <div className="flex grow items-center justify-center text-lg font-semibold">
+              No series with
+              {type === 'MultipleReleases' && ' multiple releases!'}
+              {type === 'DuplicateFiles' && ' duplicate files!'}
+              {type === 'MissingEpisodes' && ' missing episodes!'}
+            </div>
+          )}
 
-        {seriesQuery.isSuccess && seriesCount > 0 && (
-          <UtilitiesTable
-            columns={seriesColumns}
-            count={seriesCount}
-            fetchNextPage={seriesQuery.fetchNextPage}
-            isFetchingNextPage={seriesQuery.isFetchingNextPage}
-            rows={series}
-            skipSort
-            handleRowSelect={(id, _) => setSelectedSeries(id)}
-            rowSelection={{ [selectedSeries]: true }}
-          />
-        )}
+          {!seriesQuery.isFetching && seriesQuery.isSuccess && seriesCount > 0 && (
+            <UtilitiesTable
+              columns={seriesColumns}
+              count={seriesCount}
+              fetchNextPage={seriesQuery.fetchNextPage}
+              isFetchingNextPage={seriesQuery.isFetchingNextPage}
+              rows={series}
+              skipSort
+              handleRowSelect={(id, _) => setSelectedSeries(id)}
+              rowSelection={{ [selectedSeries]: true }}
+            />
+          )}
+        </div>
+
+        <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
+          {(seriesQuery.isFetching
+            || selectedSeries === 0) && <div className="m-auto text-lg font-semibold">Select series to populate</div>}
+
+          {!seriesQuery.isFetching && (
+            <>
+              {selectedSeries > 0 && episodesQuery.isPending && (
+                <div className="flex grow items-center justify-center text-panel-text-primary">
+                  <Icon path={mdiLoading} size={4} spin />
+                </div>
+              )}
+
+              {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount > 0 && (
+                <UtilitiesTable
+                  columns={episodeColumns}
+                  count={episodeCount}
+                  fetchNextPage={episodesQuery.fetchNextPage}
+                  isFetchingNextPage={episodesQuery.isFetchingNextPage}
+                  rows={episodes}
+                  skipSort
+                  handleRowSelect={handleEpisodeSelect}
+                  rowSelection={rowSelection}
+                  setSelectedRows={setRowSelection}
+                />
+              )}
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-        {selectedSeries === 0 && <div className="m-auto text-lg font-semibold">Select series to populate</div>}
-
-        {selectedSeries > 0 && episodesQuery.isPending && (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={4} spin />
-          </div>
-        )}
-
-        {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount > 0 && (
-          <UtilitiesTable
-            columns={episodeColumns}
-            count={episodeCount}
-            fetchNextPage={episodesQuery.fetchNextPage}
-            isFetchingNextPage={episodesQuery.isFetchingNextPage}
-            rows={episodes}
-            skipSort
-            handleRowSelect={handleEpisodeSelect}
-            rowSelection={rowSelection}
-            setSelectedRows={setRowSelection}
-          />
-        )}
-      </div>
+      {type !== 'MissingEpisodes' && (
+        <ReleaseManagementModal
+          onClose={toggleEpisodeModal}
+          show={showEpisodeModal}
+          episode={episodes[selectedEpisode]}
+          handleEpisodeChange={handleEpisodeChange}
+          episodeCount={episodeCount}
+          episodeIndex={selectedEpisode}
+          seriesId={selectedSeries}
+          type={type}
+        />
+      )}
     </>
   );
 };

@@ -56,7 +56,7 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
     id: 'crc32',
     name: 'CRC32',
     className: 'w-32',
-    item: file => file.Hashes.CRC32,
+    item: file => file.Hashes.find(hash => hash.Type === 'CRC32')?.Value ?? '',
   },
   {
     id: 'size',

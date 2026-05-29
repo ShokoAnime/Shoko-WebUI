@@ -6,7 +6,7 @@ type XRefsType = {
   EpisodeIDs: EpisodeIDsType[];
 };
 
-type FileTypeLocation = {
+export type FileLocationType = {
   ID: number;
   FileID: number;
   ImportFolderID: number;
@@ -15,16 +15,17 @@ type FileTypeLocation = {
   IsAccessible: boolean;
 };
 
+export type FileHashDigestType = {
+  Type: string;
+  Value: string;
+  Metadata?: string;
+};
+
 export type FileType = {
   ID: number;
   Size: number;
-  Hashes: {
-    ED2K: string;
-    SHA1: string;
-    CRC32: string;
-    MD5: string;
-  };
-  Locations: FileTypeLocation[];
+  Hashes: FileHashDigestType[];
+  Locations: FileLocationType[];
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;
