@@ -78,7 +78,7 @@ const seriesColumns: UtilityHeaderType<SeriesType>[] = [
     name: 'Link Count',
     className: 'w-32',
     item: (series) => {
-      const count = series.Sizes.ManualLinks;
+      const count = series.Sizes.FileSources.Unknown;
       return `${count} ${count === 1 ? 'File' : 'Files'}`;
     },
   },

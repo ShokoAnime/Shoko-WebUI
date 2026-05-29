@@ -119,7 +119,6 @@ export type SeriesLinkType = {
 };
 
 export type SeriesSizesType = {
-  ManualLinks: number;
   FileSources: SeriesSizesFileSourcesType;
   Local: SeriesSizesEpisodeCountsType;
   Watched: SeriesSizesEpisodeCountsType;
