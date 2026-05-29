@@ -66,12 +66,17 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore" highlight />
+        <MenuButton
+          onClick={restoreFiles}
+          icon={mdiEyeOutline}
+          name="Restore"
+          highlightType="danger"
+        />
         <MenuButton
           onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}
           name="Cancel Selection"
-          highlight
+          highlightType="primary"
         />
       </TransitionDiv>
     </div>

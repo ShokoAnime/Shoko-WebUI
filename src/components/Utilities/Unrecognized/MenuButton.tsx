@@ -4,23 +4,30 @@ import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 
-const MenuButton = React.memo((
-  { disabled, highlight = false, icon, name, onClick }: {
+const MenuButton = (
+  { disabled, highlightType, icon, name, onClick }: {
     onClick: React.MouseEventHandler<HTMLButtonElement>;
     icon: string;
     name: string;
-    highlight?: boolean;
+    highlightType?: 'primary' | 'danger';
     disabled?: boolean;
   },
 ) => (
   <Button
     onClick={onClick}
-    className="flex items-center gap-x-2 !text-base !font-normal text-panel-text"
+    className="flex items-center gap-x-2 text-base! font-normal! text-panel-text"
     disabled={disabled}
   >
-    <Icon path={icon} size={1} className={cx({ 'text-panel-text-primary': highlight })} />
+    <Icon
+      path={icon}
+      size={1}
+      className={cx({
+        'text-panel-text-primary': highlightType === 'primary',
+        'text-panel-text-danger': highlightType === 'danger',
+      })}
+    />
     {name}
   </Button>
-));
+);
 
 export default MenuButton;

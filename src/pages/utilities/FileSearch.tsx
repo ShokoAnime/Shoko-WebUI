@@ -149,12 +149,17 @@ const Menu = (
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
-        <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
+        <MenuButton
+          onClick={showDeleteConfirmation}
+          icon={mdiMinusCircleOutline}
+          name="Delete"
+          highlightType="danger"
+        />
         <MenuButton
           onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}
           name="Cancel Selection"
-          highlight
+          highlightType="primary"
         />
       </div>
       <DeleteFilesModal

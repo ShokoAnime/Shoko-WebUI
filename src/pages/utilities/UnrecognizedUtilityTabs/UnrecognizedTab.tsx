@@ -174,12 +174,17 @@ const Menu = (
       <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
       <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
       <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
-      <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
+      <MenuButton
+        onClick={showDeleteConfirmation}
+        icon={mdiMinusCircleOutline}
+        name="Delete"
+        highlightType="danger"
+      />
       <MenuButton
         onClick={() => setSelectedRows([])}
         icon={mdiCloseCircleOutline}
         name="Cancel Selection"
-        highlight
+        highlightType="primary"
       />
     </>
   ), [
@@ -197,7 +202,7 @@ const Menu = (
       <div
         className={cx(
           selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',
-          'box-border h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
+          'box-border h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
         )}
       >
         <MenuButton
