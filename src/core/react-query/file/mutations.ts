@@ -30,8 +30,8 @@ export const useDeleteFilesMutation = () =>
 
 export const useDeleteFileMutation = (seriesId?: number, episodeId?: number) =>
   useMutation({
-    mutationFn: ({ fileId, removeFolder = true }: DeleteFileRequestType) =>
-      axios.delete(`File/${fileId}`, { data: { removeFolder } }),
+    mutationFn: ({ fileId, removeFolder }: DeleteFileRequestType) =>
+      axios.delete(`File/${fileId}`, { params: { removeFolder } }),
     onSuccess: () => {
       if (!seriesId || !episodeId) return;
 
