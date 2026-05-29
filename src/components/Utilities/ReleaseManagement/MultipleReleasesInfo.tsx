@@ -1,11 +1,10 @@
-import React from 'react';
-import { mdiFlagOffOutline, mdiFlagOutline, mdiTrashCanOutline } from '@mdi/js';
+import React, { useState } from 'react';
+import { mdiFlagOffOutline, mdiFlagOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { produce } from 'immer';
 import { map, sortBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
@@ -77,7 +76,7 @@ type Props = {
 const MultipleReleasesInfo = (props: Props) => {
   const { episode, file, handleEpisodeChange, seriesId } = props;
 
-  const [confirmDelete, toggleConfirmDelete] = useToggle();
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const importFoldersQuery = useImportFoldersQuery();
 
@@ -91,6 +90,8 @@ const MultipleReleasesInfo = (props: Props) => {
   };
 
   const handleDelete = async () => {
+    if (!confirmDelete) return;
+
     await deleteFile({ fileId: file.ID })
       .then(() => {
         handleSuccess(file.ID, seriesId, 'delete');
@@ -102,7 +103,7 @@ const MultipleReleasesInfo = (props: Props) => {
   };
 
   // To re-enable the correct keybinds once the delete confirmation modal closes
-  useToggleModalKeybinds(true, confirmDelete);
+  useToggleModalKeybinds(!confirmDelete, 'modal');
 
   const path = file.Locations[0]?.RelativePath ?? '';
   const match = /[/\\](?=[^/\\]*$)/g.exec(path);
@@ -158,7 +159,7 @@ const MultipleReleasesInfo = (props: Props) => {
             <Button
               buttonType="danger"
               buttonSize="small"
-              onClick={toggleConfirmDelete}
+              onClick={() => setConfirmDelete(true)}
               tooltip={isDeleted ? '' : 'Delete'}
               disabled={isDeleted}
             >
@@ -172,6 +173,21 @@ const MultipleReleasesInfo = (props: Props) => {
             Group:&nbsp;
             {file.AniDB?.ReleaseGroup?.Name ?? 'Unknown'}
           </div>
+
+          {file.AniDB && (
+            <a
+              href={`https://anidb.net/file/${file.AniDB.ID}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="flex items-center gap-x-1 font-semibold text-panel-text-primary"
+              aria-label="Open AniDB file page"
+              onClick={event => event.stopPropagation()}
+            >
+              <div className="metadata-link-icon AniDB" />
+              {file.AniDB.ID}
+              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={0.8} />
+            </a>
+          )}
 
           <div className="line-clamp-1">
             Source:&nbsp;
@@ -254,28 +270,26 @@ const MultipleReleasesInfo = (props: Props) => {
         </div>
       </div>
 
-      {confirmDelete && (
-        <ConfirmationPromptModal
-          onConfirm={handleDelete}
-          onClose={toggleConfirmDelete}
-          show={confirmDelete}
-          title="Delete file"
-          confirmButtonType="danger"
-          confirmText="Delete"
-        >
-          Do you want to delete the following file?
-          <div className="flex flex-col gap-1">
-            <div className="text-sm opacity-65">
-              {folderName}
-              &nbsp;-&nbsp;
-              {relativePath}
-            </div>
-            <div className="text-panel-text-important">
-              {fileName}
-            </div>
+      <ConfirmationPromptModal
+        onConfirm={handleDelete}
+        onClose={() => setConfirmDelete(false)}
+        show={confirmDelete}
+        title="Delete file"
+        confirmButtonType="danger"
+        confirmText="Delete"
+      >
+        Do you want to delete the following file?
+        <div className="flex flex-col gap-1">
+          <div className="text-sm opacity-65">
+            {folderName}
+            &nbsp;-&nbsp;
+            {relativePath}
           </div>
-        </ConfirmationPromptModal>
-      )}
+          <div className="text-panel-text-important">
+            {fileName}
+          </div>
+        </div>
+      </ConfirmationPromptModal>
     </>
   );
 };
