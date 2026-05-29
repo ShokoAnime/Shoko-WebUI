@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
+import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
+import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useCreateFilterMutation } from '@/core/react-query/filter/mutations';
@@ -19,15 +21,19 @@ const SavePresetModal = ({ filterCondition, onClose, show }: Props) => {
   const filtersQuery = useFiltersQuery(show);
 
   const [name, setName] = useState('');
+  const [parentFilter, setParentFilter] = useState(-1);
 
   const { isPending: isCreatePending, mutate: createFilter } = useCreateFilterMutation();
 
   const filterExists = filtersQuery.data?.List.some(filter => filter.Name === name) ?? false;
 
-  const handleClose = () => {
+  const directoryFilters = filtersQuery.data?.List.filter(filter => filter.IsDirectory) ?? [];
+
+  useLayoutEffect(() => {
+    if (show) return;
     setName('');
-    onClose();
-  };
+    setParentFilter(-1);
+  }, [show]);
 
   const handleSave = () => {
     createFilter({
@@ -35,14 +41,15 @@ const SavePresetModal = ({ filterCondition, onClose, show }: Props) => {
       ApplyAtSeriesLevel: true,
       Expression: filterCondition,
       Sorting: { Type: 'Name', IsInverted: false },
+      ParentID: parentFilter === -1 ? undefined : parentFilter,
     }, {
-      onSuccess: () => handleClose(),
+      onSuccess: () => onClose(),
       onError: () => toast.error('Failed to save preset!'),
     });
   };
 
   return (
-    <ModalPanel show={show} onRequestClose={handleClose} header="Save Preset" size="sm">
+    <ModalPanel show={show} onRequestClose={onClose} header="Save Preset" size="sm">
       <Input
         id="name"
         label="Name"
@@ -51,9 +58,24 @@ const SavePresetModal = ({ filterCondition, onClose, show }: Props) => {
         onChange={event => setName(event.target.value)}
       />
 
+      <Select
+        id="parentFilter"
+        label="Parent"
+        value={parentFilter}
+        onChange={event => setParentFilter(toNumber(event.target.value))}
+        disabled={directoryFilters.length === 0}
+      >
+        <option value={-1}>None</option>
+        {directoryFilters.map(filter => (
+          <option key={filter.IDs.ID} value={filter.IDs.ID}>
+            {filter.Name}
+          </option>
+        ))}
+      </Select>
+
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button
-          onClick={handleClose}
+          onClick={onClose}
           buttonType="secondary"
           buttonSize="normal"
         >

@@ -6,7 +6,7 @@ type XRefsType = {
   EpisodeIDs: EpisodeIDsType[];
 };
 
-type FileTypeLocation = {
+export type FileLocationType = {
   ID: number;
   FileID: number;
   ImportFolderID: number;
@@ -24,7 +24,7 @@ export type FileType = {
     CRC32: string;
     MD5: string;
   };
-  Locations: FileTypeLocation[];
+  Locations: FileLocationType[];
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;

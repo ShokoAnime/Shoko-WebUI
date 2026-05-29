@@ -60,4 +60,5 @@ export const useReleaseManagementSeriesEpisodes = (
       return lastPageParam + 1;
     },
     enabled,
+    staleTime: Infinity,
   });

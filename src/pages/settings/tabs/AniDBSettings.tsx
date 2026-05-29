@@ -250,7 +250,7 @@ const AniDBSettings = () => {
               value={Calendar_UpdateFrequency}
               onChange={event => updateSetting('AniDb', 'Calendar_UpdateFrequency', event.target.value)}
             >
-              <UpdateFrequencyValues />
+              <UpdateFrequencyValues min24Hours />
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">
@@ -260,7 +260,7 @@ const AniDBSettings = () => {
               value={Anime_UpdateFrequency}
               onChange={event => updateSetting('AniDb', 'Anime_UpdateFrequency', event.target.value)}
             >
-              <UpdateFrequencyValues />
+              <UpdateFrequencyValues min24Hours />
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">

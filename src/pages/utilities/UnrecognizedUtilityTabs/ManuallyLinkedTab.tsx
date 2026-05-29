@@ -165,7 +165,7 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
           onClick={() => setSelectedRows({})}
           icon={mdiCloseCircleOutline}
           name="Cancel Selection"
-          highlight
+          highlightType="primary"
         />
       </TransitionDiv>
     </div>

@@ -26,7 +26,7 @@ export type ImagesType = {
 };
 
 export type EpisodeImagesType = ImagesType & {
-  Thumbnails: ImageType[];
+  Thumbnails?: ImageType[];
 };
 
 export const enum ImageSourceEnum {

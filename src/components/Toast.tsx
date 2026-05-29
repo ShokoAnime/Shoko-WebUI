@@ -13,9 +13,13 @@ const showToast = (isSystemToast?: boolean) => {
   if (isSystemToast) return true;
 
   const settings = queryClient.getQueryData<SettingsServerType>(['settings'])!;
-  const webuiSettings = JSON.parse(settings.WebUI_Settings) as WebUISettingsType;
 
-  return webuiSettings?.notifications;
+  try {
+    const webuiSettings = JSON.parse(settings.WebUI_Settings) as WebUISettingsType;
+    return webuiSettings?.notifications;
+  } catch (_) {
+    return true;
+  }
 };
 
 const success = (header: string, message?: React.ReactNode, options?: ToastOptions) => {

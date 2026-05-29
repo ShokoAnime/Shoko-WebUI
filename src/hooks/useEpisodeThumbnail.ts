@@ -11,7 +11,7 @@ function useEpisodeThumbnail(
 ) {
   const { useThumbnailFallback } = useSettingsQuery().data.WebUI_Settings.collection.image;
   return useMemo(() => {
-    if (episode.Images.Thumbnails.length) {
+    if (episode.Images.Thumbnails?.length) {
       return episode.Images.Thumbnails.find(image => image.Preferred) ?? episode.Images.Thumbnails[0];
     }
 

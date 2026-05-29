@@ -1,4 +1,5 @@
 import React from 'react';
+import { HotkeysProvider } from 'react-hotkeys-hook';
 import { Provider } from 'react-redux';
 import * as Sentry from '@sentry/react';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -13,8 +14,10 @@ const App = () => (
     <Provider store={store}>
       <Sentry.ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <Router />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <HotkeysProvider initiallyActiveScopes={['primary']}>
+            <Router />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </HotkeysProvider>
         </QueryClientProvider>
       </Sentry.ErrorBoundary>
     </Provider>

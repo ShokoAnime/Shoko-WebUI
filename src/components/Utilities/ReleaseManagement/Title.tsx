@@ -18,11 +18,11 @@ const Title = () => (
   <div className="flex items-center gap-x-2 font-semibold">
     Release Management
     <Icon path={mdiChevronRight} size={1} />
-    <TabButton id="multiples" name="Multiples" />
+    <TabButton id="MultipleReleases" name="Multiples" />
     <div>|</div>
-    <TabButton id="duplicates" name="Duplicates" />
+    <TabButton id="DuplicateFiles" name="Duplicates" />
     <div>|</div>
-    <TabButton id="missing-episodes" name="Missing Episodes" />
+    <TabButton id="MissingEpisodes" name="Missing Episodes" />
   </div>
 );
 

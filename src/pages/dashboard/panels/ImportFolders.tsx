@@ -10,6 +10,7 @@ import toast from '@/components/Toast';
 import { useRescanImportFolderMutation } from '@/core/react-query/import-folder/mutations';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
+import { formatThousand } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
@@ -88,7 +89,7 @@ const ImportFolders = () => {
           <div>
             {prettyBytes(folder.FileSize ?? 0, { binary: true })}
             &nbsp;(
-            {(folder.Size ?? 0).toLocaleString('en-US')}
+            {formatThousand(folder.Size ?? 0)}
             &nbsp;Series)
           </div>
         </div>
