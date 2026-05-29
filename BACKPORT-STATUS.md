@@ -2,7 +2,7 @@
 
 **Date**: 2026-05-29  
 **Branch**: `v2.5.x`  
-**Commits ahead of origin**: 25
+**Commits ahead of origin**: 28
 
 ---
 
@@ -26,6 +26,7 @@
 | `f120784e` | Use manual links count | `a2f9217f` | Kept v2.5.x server version |
 | `ef9c5e3e` | Fix error page for no route match | `7bd5d4c2` | Clean |
 | `4633cc59` | Add update check modals and server update check | `ec6c5580` | Added `react-markdown`, `remark-breaks`, `remark-gfm` deps. Requires server `5.3.3.0+` |
+| `864db17e` | Add import folder delete safeguards | `cbf280f6` | Adapted to `ImportFolderModal.tsx` + `import-folder/mutations.ts`. Server v5.3.3.0+ supports `removeRecords` query param |
 
 ### Backported with Adaptations
 
@@ -38,6 +39,7 @@
 | `1e33834e` | Fix sentry sessions, update frequency values | `666a19d0` | Code changes only, skipped lockfile and eslint config |
 | `05fe5060` | Guard against missing folder ID | `b10d1510` | Applied to `ImportFolderModal.tsx` instead of `ManagedFolderModal.tsx` |
 | `08364cc3` + `d6ec797f` | Sentry and hotkey fixes | `f911db36` | Combined backport: added `useToggleModalKeybinds(!show, 'primary')` to ReleaseManagementModal, fixed React keys, added try-catch in Toast.tsx, added optional chaining in LinkFilesTab.tsx |
+| `e462f333` | Fix versioning, managed folder handlers, toast position | `5ede0bc4` | Partial backport: `formatThousand` in ImportFolders, CSS remix sizes (LoginPage, UnsupportedPage, MainPage), `getMinimumServerVersion()` util. Skipped version comparison simplifications (`useIsFeatureSupported`, `SentryErrorBoundaryWrapper`) — v5.x server uses docker-style versions not semver |
 
 ### Preparatory Commits (v2.5.x Infrastructure)
 
@@ -84,13 +86,12 @@
 
 ### Not Backportable (v6.x Server Dependencies)
 
-The following 22 commits depend on v6.x server APIs or new subsystems and cannot be backported:
+The following 20 commits depend on v6.x server APIs or new subsystems and cannot be backported:
 
 - `50b568c7` - Show "import limbo" files (requires `ImportLimbo` API)
-- `05fe5060` - Guard managed folder delete (depends on `managed-folder/` rename)
+- `05fe5060` - Guard managed folder delete (already backported to ImportFolderModal in `864db17e`)
 - `b194958f` - Align react-query endpoints (depends on `hashing/`, `release-info/` modules)
 - `bd604622` - Fix ConfirmationPromptModal loading state (already included in `ConfirmationPromptModal` backport)
-- `864db17e` - Managed folder delete safeguards (depends on `managed-folder/` rename)
 - `648af242` - Remove Trakt integration (would break v2.5.x functionality)
 - `01148e05` - Use `Available` instead of `RelativeFilepath` (v6.x API change)
 - `7ea56857` - Restructure logging settings (v6.x settings schema)
@@ -102,7 +103,6 @@ The following 22 commits depend on v6.x server APIs or new subsystems and cannot
 - `14d73a35` - Remove unused code (types still used on v2.5.x)
 - `7f0271a3` - Fix the PR (part of provider-based linking)
 - `81fdd28b` - Provider-based linking UI (depends on v6.x hashing/release-info APIs)
-- `e462f333` - Fix versioning, managed folder handlers (depends on `managed-folder/` rename)
 - `a215db61` - Distill changes from 'update-plugin-abstraction' (67-file rename)
 
 ---
@@ -136,13 +136,14 @@ The following 22 commits depend on v6.x server APIs or new subsystems and cannot
 
 ### Server Version
 - Bumped minimum server version to `5.3.3.0` (from `5.3.0.6`) to support `WebUI/LatestServerVersion` endpoint in update check modals
+- Added `getMinimumServerVersion()` utility function to wrap `import.meta.env.VITE_MIN_SERVER_VERSION`
 
 ---
 
 ## Summary
 
-**Total Commits Backported**: 24 (including 4 preparatory commits)  
-**Commits Skipped**: 24 (2 high-conflict refactors, 22 v6.x dependencies)  
+**Total Commits Backported**: 27 (including 4 preparatory commits)  
+**Commits Skipped**: 22 (2 high-conflict refactors, 20 v6.x dependencies)  
 **Remaining Optional**: 1 (`97f19f48` - deps update)
 
 **Testing Coverage**:
@@ -156,6 +157,7 @@ The following 22 commits depend on v6.x server APIs or new subsystems and cannot
 - ✅ Update channel with Auto/Stable/Dev support
 - ✅ Server update banner in TopNav
 - ✅ Minimum server version bumped to 5.3.3.0
+- ✅ Import folder delete confirmation with file record retention option
 
 **Next Steps**:
 1. Test all backported features against v2.5.x server (min v5.3.3.0)
