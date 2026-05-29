@@ -63,6 +63,7 @@ const ImportFolderModal = () => {
   const handleClose = () => dispatch(setStatus(false));
 
   const handleDelete = () => {
+    if (!ID) return;
     deleteFolder({ folderId: ID }, {
       onSuccess: () => {
         toast.success('Import folder deleted!');
