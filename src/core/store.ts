@@ -1,3 +1,4 @@
+import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import { throttle } from 'lodash';
@@ -37,5 +38,8 @@ setupListeners(store.dispatch);
 store.subscribe(throttle(() => {
   saveState(store.getState());
 }, 1000));
+
+export const useDispatch = useReduxDispatch.withTypes<typeof store.dispatch>();
+export const useSelector = useReduxSelector.withTypes<RootState>();
 
 export default store;
