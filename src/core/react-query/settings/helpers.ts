@@ -336,6 +336,7 @@ export const initialSettings: SettingsType = {
     DownloadCharacters: false,
     DownloadCreators: false,
     DownloadRelatedAnime: false,
+    DownloadReleaseGroups: false,
     MaxRelationDepth: 0,
     MyList_AddFiles: false,
     MyList_DeleteType: 0,

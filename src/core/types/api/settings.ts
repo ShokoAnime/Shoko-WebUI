@@ -31,6 +31,7 @@ export type SettingsAnidbDownloadType = {
   DownloadCharacters: boolean;
   DownloadCreators: boolean;
   DownloadRelatedAnime: boolean;
+  DownloadReleaseGroups: boolean;
   MaxRelationDepth: number;
 };
 
