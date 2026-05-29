@@ -11,12 +11,12 @@ import toast from '@/components/Toast';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { uiVersion } from '@/core/util';
+import { getUiVersion } from '@/core/util';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
 
-const UI_VERSION = uiVersion();
+const UI_VERSION = getUiVersion();
 
 const GeneralSettings = () => {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();

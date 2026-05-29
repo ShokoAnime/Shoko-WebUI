@@ -3,7 +3,7 @@ import semver from 'semver';
 
 import { webuiSettingsPatches } from '@/core/patches';
 import { LanguageSource } from '@/core/types/api/settings';
-import { uiVersion } from '@/core/util';
+import { getUiVersion } from '@/core/util';
 
 import type { SupportedLanguagesResponseType } from '@/core/react-query/settings/types';
 import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
@@ -265,7 +265,7 @@ export const initialSettings: SettingsType = {
     settingsRevision: 0,
     theme: 'theme-shoko-gray',
     toastPosition: 'bottom-right',
-    updateChannel: semver.prerelease(uiVersion()) ? 'Dev' : 'Stable',
+    updateChannel: semver.prerelease(getUiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
     collection: {
       view: 'poster',
