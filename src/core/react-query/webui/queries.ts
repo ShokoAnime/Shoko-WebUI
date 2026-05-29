@@ -7,7 +7,7 @@ import queryClient from '@/core/react-query/queryClient';
 import type {
   GroupViewRequestType,
   SeriesFileSummaryRequestType,
-  WebuiUpdateCheckRequestType,
+  UpdateCheckRequestType,
 } from '@/core/react-query/webui/types';
 import type { ComponentVersionType } from '@/core/types/api/init';
 import type {
@@ -67,12 +67,19 @@ export const useWebuiThemesQuery = () =>
     queryFn: () => axios.get('WebUI/Theme', { params: { forceRefresh: true } }),
   });
 
-export const useWebuiUpdateCheckQuery = (params: WebuiUpdateCheckRequestType, enabled = true) =>
+export const useWebuiUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
   useQuery<ComponentVersionType>({
     // The rule is disabled here because the query key needs to be same for both force: true and force: false
     // Because when we force check update from settings, it should reflect in TopNav
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ['webui', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestVersion', { params }),
+    enabled,
+  });
+
+export const useServerUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
+  useQuery<ComponentVersionType>({
+    queryKey: ['server', 'update-check', params],
+    queryFn: () => axios.get('WebUI/LatestServerVersion', { params }),
     enabled,
   });
