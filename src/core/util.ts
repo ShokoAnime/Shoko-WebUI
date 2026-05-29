@@ -28,6 +28,7 @@ const { DEV, VITE_APPVERSION, VITE_GITHASH, VITE_MIN_SERVER_VERSION } = import.m
 
 export const isDebug = () => DEV;
 export const getUiVersion = () => (DEV ? VITE_GITHASH : VITE_APPVERSION);
+export const getMinimumServerVersion = () => VITE_MIN_SERVER_VERSION;
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
