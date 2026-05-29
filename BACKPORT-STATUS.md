@@ -2,7 +2,7 @@
 
 **Date**: 2026-05-29  
 **Branch**: `v2.5.x`  
-**Commits ahead of origin**: 22
+**Commits ahead of origin**: 25
 
 ---
 
@@ -25,6 +25,7 @@
 | `639dfd95` | Release mgmt erratic behaviour fix | `fe9b0d1c` | Minor conflict in MultipleReleasesInfo.tsx |
 | `f120784e` | Use manual links count | `a2f9217f` | Kept v2.5.x server version |
 | `ef9c5e3e` | Fix error page for no route match | `7bd5d4c2` | Clean |
+| `4633cc59` | Add update check modals and server update check | `ec6c5580` | Added `react-markdown`, `remark-breaks`, `remark-gfm` deps. Requires server `5.3.3.0+` |
 
 ### Backported with Adaptations
 
@@ -45,6 +46,7 @@
 | `b8d8e657` | refactor: rename uiVersion to getUiVersion, convert isDebug to arrow function | Required for `9802c4e7` |
 | `cd9956d8` | feat: add react-hotkeys-hook infrastructure | Added `react-hotkeys-hook` v5.2.4, `HotkeysProvider` wrapper, `useToggleModalKeybinds` hook |
 | `145a8f22` | feat: add typed useDispatch and useSelector hooks | Added typed hooks to `store.ts` using `withTypes()` API |
+| `6b5c6ffc` | chore: bump minimum server version to 5.3.3.0 | Required for `4633cc59` (update check endpoints) |
 
 ---
 
@@ -82,7 +84,7 @@
 
 ### Not Backportable (v6.x Server Dependencies)
 
-The following 23 commits depend on v6.x server APIs or new subsystems and cannot be backported:
+The following 22 commits depend on v6.x server APIs or new subsystems and cannot be backported:
 
 - `50b568c7` - Show "import limbo" files (requires `ImportLimbo` API)
 - `05fe5060` - Guard managed folder delete (depends on `managed-folder/` rename)
@@ -93,7 +95,6 @@ The following 23 commits depend on v6.x server APIs or new subsystems and cannot
 - `01148e05` - Use `Available` instead of `RelativeFilepath` (v6.x API change)
 - `7ea56857` - Restructure logging settings (v6.x settings schema)
 - `95eedf04` - Add shift selection, update checks (depends on provider-based linking)
-- `4633cc59` - Add update check modals (new deps, v6.x endpoints)
 - `e1060a1a` - Process all links in LinkFilesWithProvidersTab (depends on `release-info/` module)
 - `b2bb3f4f` - Show "Done" button (depends on provider-based linking)
 - `e636576f` - Misc changes (bumps min server to v6.x)
@@ -134,14 +135,14 @@ The following 23 commits depend on v6.x server APIs or new subsystems and cannot
 - AniDB file link uses `https://anidb.net/file/{file.AniDB.ID}` instead of `file.Release.ReleaseURI`
 
 ### Server Version
-- Kept minimum server version at `5.3.0.6` (v2.5.x requirement)
+- Bumped minimum server version to `5.3.3.0` (from `5.3.0.6`) to support `WebUI/LatestServerVersion` endpoint in update check modals
 
 ---
 
 ## Summary
 
-**Total Commits Backported**: 21 (including 3 preparatory commits)  
-**Commits Skipped**: 25 (2 high-conflict refactors, 23 v6.x dependencies)  
+**Total Commits Backported**: 24 (including 4 preparatory commits)  
+**Commits Skipped**: 24 (2 high-conflict refactors, 22 v6.x dependencies)  
 **Remaining Optional**: 1 (`97f19f48` - deps update)
 
 **Testing Coverage**:
@@ -151,8 +152,12 @@ The following 23 commits depend on v6.x server APIs or new subsystems and cannot
 - ✅ Error boundary enhanced with 404 handling
 - ✅ Manual links count display fixed
 - ✅ Audio/subtitle language tooltips added
+- ✅ Server and WebUI update check modals added
+- ✅ Update channel with Auto/Stable/Dev support
+- ✅ Server update banner in TopNav
+- ✅ Minimum server version bumped to 5.3.3.0
 
 **Next Steps**:
-1. Test all backported features against v2.5.x server
+1. Test all backported features against v2.5.x server (min v5.3.3.0)
 2. Optionally backport `97f19f48` (deps update) if desired
 3. Push to remote and create PR
