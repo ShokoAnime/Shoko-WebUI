@@ -141,17 +141,17 @@ const AniDBSettings = () => {
           />
           <Checkbox
             justify
-            label="Always Download Related Anime"
-            id="related-anime"
-            isChecked={DownloadRelatedAnime}
-            onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked)}
-          />
-          <Checkbox
-            justify
             label="Release Groups"
             id="release-groups"
             isChecked={DownloadReleaseGroups}
             onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)}
+          />
+          <Checkbox
+            justify
+            label="Always Download Related Anime"
+            id="related-anime"
+            isChecked={DownloadRelatedAnime}
+            onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked)}
           />
           <div className="flex items-center justify-between transition-opacity">
             Related Depth
