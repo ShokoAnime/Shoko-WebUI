@@ -15,16 +15,15 @@ export type FileLocationType = {
   IsAccessible: boolean;
 };
 
-export type FileHashDigestType = {
-  Type: string;
-  Value: string;
-  Metadata?: string;
-};
-
 export type FileType = {
   ID: number;
   Size: number;
-  Hashes: FileHashDigestType[];
+  Hashes: {
+    ED2K: string;
+    SHA1: string;
+    CRC32: string;
+    MD5: string;
+  };
   Locations: FileLocationType[];
   Duration: string;
   ResumePosition: string | null;
