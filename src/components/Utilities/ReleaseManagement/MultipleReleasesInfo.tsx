@@ -115,6 +115,24 @@ const MultipleReleasesInfo = (props: Props) => {
   const importedDate = dayjs(file.Imported);
   const isDeleted = file.Size === -1;
 
+  const audioLanguages = file.MediaInfo?.Audio && file.MediaInfo.Audio.length > 0
+    ? map(
+      file.MediaInfo.Audio,
+      item => item.Language,
+    )
+      .filter(item => !!item)
+      .join(', ')
+    : 'N/A';
+
+  const subtitleLanguages = file.MediaInfo?.Subtitles && file.MediaInfo.Subtitles.length > 0
+    ? map(
+      file.MediaInfo.Subtitles,
+      item => item.Language,
+    )
+      .filter(item => !!item)
+      .join(', ')
+    : 'N/A';
+
   return (
     <>
       <div
@@ -168,7 +186,7 @@ const MultipleReleasesInfo = (props: Props) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 overflow-auto border-t border-panel-border py-2 text-sm md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-2 overflow-auto border-t border-panel-border pt-2 text-sm md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="line-clamp-1">
             Group:&nbsp;
             {file.AniDB?.ReleaseGroup?.Name ?? 'Unknown'}
@@ -243,29 +261,25 @@ const MultipleReleasesInfo = (props: Props) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-y-2 overflow-auto border-t border-panel-border py-2 text-sm">
-          <div className="line-clamp-1">
+        <div className="grid grid-cols-[1fr_auto] gap-y-2 overflow-auto border-t border-panel-border pt-2 text-sm">
+          <div
+            className="line-clamp-1"
+            data-tooltip-id="tooltip"
+            data-tooltip-content={audioLanguages !== 'N/A' ? audioLanguages : ''}
+          >
             Audio:&nbsp;
-            {file.MediaInfo?.Audio && file.MediaInfo.Audio.length > 0
-              ? map(
-                file.MediaInfo.Audio,
-                item => item.Language,
-              )
-                .filter(item => !!item)
-                .join(', ')
-              : 'N/A'}
+            {audioLanguages}
           </div>
 
-          <div className="line-clamp-1">
+          <div className="row-span-2 flex items-center" />
+
+          <div
+            className="line-clamp-1"
+            data-tooltip-id="tooltip"
+            data-tooltip-content={subtitleLanguages !== 'N/A' ? subtitleLanguages : ''}
+          >
             Subtitles:&nbsp;
-            {file.MediaInfo?.Subtitles && file.MediaInfo.Subtitles.length > 0
-              ? map(
-                file.MediaInfo.Subtitles,
-                item => item.Language,
-              )
-                .filter(item => !!item)
-                .join(', ')
-              : 'N/A'}
+            {subtitleLanguages}
           </div>
         </div>
       </div>
