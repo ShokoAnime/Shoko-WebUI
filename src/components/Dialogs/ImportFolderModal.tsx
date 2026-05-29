@@ -4,6 +4,7 @@ import { mdiFolderOpen } from '@mdi/js';
 import { find } from 'lodash';
 
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -18,6 +19,7 @@ import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder'
 import { setStatus } from '@/core/slices/modals/importFolder';
 
 import BrowseFolderModal from './BrowseFolderModal';
+import ConfirmationPromptModal from './ConfirmationPromptModal';
 
 import type { RootState } from '@/core/store';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
@@ -39,13 +41,17 @@ const ImportFolderModal = () => {
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const { isPending: isCreatePending, mutate: createFolder } = useCreateImportFolderMutation();
-  const { isPending: isDeletePending, mutate: deleteFolder } = useDeleteImportFolderMutation();
+  const { isPending: isDeletePending, mutateAsync: deleteFolder } = useDeleteImportFolderMutation();
   const { isPending: isUpdatePending, mutate: updateFolder } = useUpdateImportFolderMutation();
 
   const [importFolder, setImportFolder] = useState(defaultImportFolder);
+  const [keepAssociatedFileRecords, setKeepAssociatedFileRecords] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const getFolderDetails = () => {
     setImportFolder(defaultImportFolder);
+    setKeepAssociatedFileRecords(false);
+    setShowDeleteConfirm(false);
 
     if (edit) {
       const folderDetails = find(importFolders, { ID }) ?? {};
@@ -62,14 +68,16 @@ const ImportFolderModal = () => {
   const handleBrowse = () => dispatch(setBrowseStatus(true));
   const handleClose = () => dispatch(setStatus(false));
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!ID) return;
-    deleteFolder({ folderId: ID }, {
-      onSuccess: () => {
+    await deleteFolder({ folderId: ID, removeRecords: !keepAssociatedFileRecords })
+      .then(() => {
         toast.success('Import folder deleted!');
         dispatch(setStatus(false));
-      },
-    });
+      })
+      .catch(() => {
+        toast.error('Failed to delete import folder.');
+      });
   };
 
   const handleSave = () => {
@@ -150,7 +158,7 @@ const ImportFolderModal = () => {
           <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
             <div className="flex justify-end gap-x-3 font-semibold">
               {edit && (
-                <Button onClick={handleDelete} buttonType="danger" buttonSize="normal">
+                <Button onClick={() => setShowDeleteConfirm(true)} buttonType="danger" buttonSize="normal">
                   Delete
                 </Button>
               )}
@@ -167,6 +175,37 @@ const ImportFolderModal = () => {
           </div>
         </div>
       </ModalPanel>
+      <ConfirmationPromptModal
+        onConfirm={handleDelete}
+        onClose={() => setShowDeleteConfirm(false)}
+        show={showDeleteConfirm}
+        title="Delete Import Folder"
+        confirmButtonType="danger"
+        confirmText="Delete"
+      >
+        <div>
+          Are you sure you want to delete the import folder&nbsp;
+          <span className="font-semibold text-panel-text-important">{importFolder.Name}</span>
+          ?
+        </div>
+        <div className="flex flex-col gap-y-1 rounded-lg border border-panel-border bg-panel-background-alt p-4">
+          <div className="text-sm opacity-65">Location</div>
+          <div className="break-all text-panel-text-important">{importFolder.Path}</div>
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <Checkbox
+            id="keep-associated-file-records"
+            isChecked={keepAssociatedFileRecords}
+            onChange={event => setKeepAssociatedFileRecords(event.target.checked)}
+            label="Keep associated file records"
+            labelRight
+          />
+          <div className="text-sm opacity-65">
+            Keep VideoLocals, DuplicateFiles, and related records for this folder. Use this when migrating files to a
+            new location.
+          </div>
+        </div>
+      </ConfirmationPromptModal>
       <BrowseFolderModal onSelect={onFolderSelect} />
     </>
   );

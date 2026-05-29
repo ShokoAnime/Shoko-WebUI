@@ -15,7 +15,7 @@ export const useCreateImportFolderMutation = () =>
 export const useDeleteImportFolderMutation = () =>
   useMutation({
     mutationFn: ({ folderId, ...data }: DeleteImportFolderRequestType) =>
-      axios.delete(`ImportFolder/${folderId}`, { data }),
+      axios.delete(`ImportFolder/${folderId}`, { params: data }),
     onSuccess: () => invalidateQueries(['import-folder']),
   });
 
