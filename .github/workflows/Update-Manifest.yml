@@ -1,0 +1,108 @@
+name: Update-Manifest
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    name: Update manifest.json on metadata branch
+
+    steps:
+      - name: Check for zip asset
+        id: check-asset
+        run: |
+          ASSET_COUNT=$(echo '${{ toJson(github.event.release.assets) }}' | jq '[.[] | select(.name | endswith(".zip"))] | length')
+          echo "zip_count=$ASSET_COUNT" >> $GITHUB_OUTPUT
+          if [ "$ASSET_COUNT" -eq 0 ]; then
+            echo "No .zip asset found in this release. Skipping manifest update."
+          fi
+
+      - name: Exit if no zip asset
+        if: steps.check-asset.outputs.zip_count == '0'
+        run: exit 0
+
+      - name: Checkout metadata branch
+        uses: actions/checkout@v5
+        with:
+          ref: metadata
+
+      - name: Read existing manifest or create empty one
+        run: |
+          if [ ! -f manifest.json ]; then
+            echo '{ "Stable": [], "Dev": [] }' > manifest.json
+            echo "Created empty manifest.json"
+          else
+            echo "Existing manifest.json found"
+          fi
+
+      - name: Extract release info
+        id: extract
+        run: |
+          VERSION=$(echo '${{ github.event.release.tag_name }}' | sed 's/^v//')
+          PRERELEASE='${{ github.event.release.prerelease }}'
+          ASSET_ID=$(echo '${{ toJson(github.event.release.assets) }}' | jq -r '.[0].id')
+          DOWNLOAD_URL=$(echo '${{ toJson(github.event.release.assets) }}' | jq -r '.[0].browser_download_url')
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
+          echo "asset_id=$ASSET_ID" >> $GITHUB_OUTPUT
+          echo "download_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
+
+      - name: Fetch release body and checksum via GitHub API
+        id: api
+        run: |
+          gh api "repos/${{ github.repository }}/releases/${{ github.event.release.id }}" --jq '.body' > /tmp/release-body.txt
+
+          DIGEST=$(gh api "repos/${{ github.repository }}/releases/assets/${{ steps.extract.outputs.asset_id }}" --jq '.digest')
+          if [ -z "$DIGEST" ]; then
+            echo "::error::Could not get digest from GitHub API for asset ${{ steps.extract.outputs.asset_id }}"
+            exit 1
+          fi
+          echo "checksum=$DIGEST" >> $GITHUB_OUTPUT
+
+      - name: Parse minServerVersion from release body
+        id: parse-body
+        run: |
+          MIN_SERVER=$(sed -n 's/.*Minimum Server Version: \*\*\([^*]*\)\*\*.*/\1/p' /tmp/release-body.txt | head -1)
+          if [ -z "$MIN_SERVER" ]; then
+            echo "::error::Could not parse minServerVersion from release body"
+            exit 1
+          fi
+          echo "min_server_version=$MIN_SERVER" >> $GITHUB_OUTPUT
+
+      - name: Update manifest.json
+        id: update
+        env:
+          MANIFEST_TARGET: ${{ steps.extract.outputs.prerelease == 'true' && 'Dev' || 'Stable' }}
+        run: |
+          VERSION="${{ steps.extract.outputs.version }}"
+          DOWNLOAD_URL="${{ steps.extract.outputs.download_url }}"
+          CHECKSUM="${{ steps.api.outputs.checksum }}"
+
+          NEW_ENTRY=$(jq -n \
+            --arg version "$VERSION" \
+            --arg minServerVersion "${{ steps.parse-body.outputs.min_server_version }}" \
+            --arg downloadUrl "$DOWNLOAD_URL" \
+            --arg checksum "$CHECKSUM" \
+            --rawfile releaseNotes /tmp/release-body.txt \
+            '{version: $version, minServerVersion: $minServerVersion, downloadUrl: $downloadUrl, checksum: $checksum, releaseNotes: $releaseNotes}')
+
+          jq --argjson newEntry "$NEW_ENTRY" --arg target "$MANIFEST_TARGET" '
+            .[$target] = ([$newEntry] + (.[$target] | map(select(.version != $newEntry.version))))
+          ' manifest.json > /tmp/manifest-updated.json
+
+          mv /tmp/manifest-updated.json manifest.json
+          echo "Updated manifest: added $VERSION to $MANIFEST_TARGET"
+
+      - name: Commit and push to metadata branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git commit -m "Update manifest: add ${{ steps.extract.outputs.version }} to $MANIFEST_TARGET"
+          git push origin metadata
