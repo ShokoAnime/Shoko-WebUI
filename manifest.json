@@ -1,0 +1,83 @@
+{
+  "Stable": [
+    {
+      "version": "2.5.5",
+      "minServerVersion": "5.3.3.0",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.5/Shoko-WebUI-v2.5.5.zip",
+      "checksum": "sha256:84553e379ed3a990dcb4f3dff4e566bbf38cb537fa5686c3899123b6cefdf8e3",
+      "releaseNotes": "<!-- Minimum Server Version: **5.3.3.0** -->\r\n> [!Warning]\r\n> This version requires a **Shoko Server** of at least version **5.3.3.0** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\r\n\r\n\r\n\r\n## What's Changed\r\n* Backport changes from daily by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1336\r\n\r\n## Features\r\n\r\n- **Server & WebUI update check modals** — New update notification system with `ServerUpdateModal`, `WebUIUpdateModal`, and `UpdateModal`; checks for latest server/WebUI releases and displays them in-app\r\n- **Release Management rewrite** — Replaced the release management UI with a modal-based workflow including `DuplicatesInfo`, `MultipleReleasesInfo`, `ReleaseManagementModal` with confirmation prompts\r\n- **Import folder delete safeguards** — Added `ConfirmationPromptModal` with `keepAssociatedFileRecords` checkbox before deleting import folders\r\n- **AniDB rules confirmation** — Added confirmation modal for AniDB rules when linking files via avdump\r\n- **Filter presets & utility QoL** — New `ConfirmationPromptModal` for filter presets, improved utility tab interactions\r\n- **Hotkey infrastructure** — Added `react-hotkeys-hook` dependency with `HotkeysProvider`, keyboard shortcut support for modals\r\n- **Thumbnails made optional** — Backward-compatible type relaxation so episodes without thumbnails don't break\r\n\r\n## Fixes\r\n\r\n- **AniDB episode title** — Use AniDB title for AniDB episodes on TMDB linking page\r\n- **Unrecognized tab** — Scoped `dumpInProgress` to selected rows only\r\n- **Error page** — Improved 404/no-route-match error handling in `ErrorBoundary`\r\n- **Sentry fixes** — Error boundary improvements, toast JSON parse safety, React key fixes in release management\r\n- **useDeleteFileMutation** — Changed `removeFolder` from body to query param (matching server API)\r\n- **Versioning/toast/CSS** — Improved version display, import folder formatting, toast positioning\r\n\r\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.5.4...v2.5.5\n"
+    },
+    {
+      "version": "2.5.4",
+      "minServerVersion": "5.3.0.6",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.4/Shoko-WebUI-v2.5.4.zip",
+      "checksum": "sha256:d0c93a093600e78d31a516d23d538d18076882c7f16a708ee03000a6a2b494e1",
+      "releaseNotes": "<!-- Minimum Server Version: **5.3.0.6** -->\r\n> [!Warning]\r\n> This version requires a **Shoko Server** of at least version **5.3.0.6** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\r\n\r\n## What's Changed\r\n* Use natural sort in LinkFilesTab by @harshithmohan\r\n\r\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.5.3...v2.5.4\n"
+    },
+    {
+      "version": "2.5.3",
+      "minServerVersion": "5.3.0.6",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.3/Shoko-WebUI-v2.5.3.zip",
+      "checksum": "sha256:be468b082ae5e1c3375ebd1659612623593f2af22532dd0fa1ed4838c0541588",
+      "releaseNotes": "<!-- Minimum Server Version: **5.3.0.6** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **5.3.0.6** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix remaining issues with EpisodeTypeEnum changes, update deps by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1281\n* feat: allow creating new filter presets by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1283\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.5.2...v2.5.3\n"
+    },
+    {
+      "version": "2.5.2",
+      "minServerVersion": "5.3.0.6",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.2/Shoko-WebUI-v2.5.2.zip",
+      "checksum": "sha256:67af62f699f4119ddebe2a15585eca5d46172ea9ef885ef1bf816a7a32e5ebfc",
+      "releaseNotes": "<!-- Minimum Server Version: **5.3.0.6** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **5.3.0.6** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: notification disable setting by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1275\n* Add `Credits` and `Trailer` to range fill, remove old values from episode filter by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1276\n* refactor: align episode type in APIv3 closer to the plugin abstraction by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1277\n* Add AGENTS.md, update README.md by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1278\n* Fix episode types by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1279\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.5.1...v2.5.2\n"
+    },
+    {
+      "version": "2.5.1",
+      "minServerVersion": "5.2.5.7",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.1/Shoko-WebUI-v2.5.1.zip",
+      "checksum": "sha256:cbe85be50fcaedea627a563bfe4ce0f2c15f9ccab77c72162d13a0b42dcdc73b",
+      "releaseNotes": "<!-- Minimum Server Version: **5.2.5.7** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **5.2.5.7** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Changes for trakt rewrite, bump min server required, misc changes by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1265\n* Remove tvdb actions by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1266\n* Use the wrong spelling for \"Cancelled\" to ignore sentry event by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1267\n* fix: set default value for Plex authentication status by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1268\n* Add new Trakt actions by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1269\n* Move min server version to version.json & add to release notes by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1270\n* Fix release notes by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1271\n* Forgot a `#` by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1272\n* repo: update mininum server version by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1273\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.5.0...v2.5.1\n"
+    },
+    {
+      "version": "2.5.0",
+      "minServerVersion": "5.1.0.28",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.0/Shoko-WebUI-v2.5.0.zip",
+      "checksum": "sha256:a1b43e0fabc13de05fc0c50f05910964f0615f9a876fa29fcea558b807ec2153",
+      "releaseNotes": "<!-- Minimum Server Version: **5.1.0.28** -->\r\n> [!Warning]\r\n> This version requires a **Shoko Server** of at least version **5.1.0.28** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\r\n\r\n## What's Changed\r\n* Update to node24, update deps and cleanup by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1251\r\n* Fix typo in README.md from 'offesnse' to 'offense' by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1252\r\n* Fix selected checkbox in browser folder modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1253\r\n* debug build for checking sentry sourcemap issue by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1254\r\n* fix sentry sourcemaps by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1255\r\n* stop sentry from uploading duplicate sourcemaps by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1256\r\n* Fix sentry sourcemaps... again by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1257\r\n* fix vite local build by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1258\r\n* fix issue with max number value on inputs by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1259\r\n* ignore monaco and extension errors in sentry by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1260\r\n* Update lodash to fix security issue by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1261\r\n* add filter sidebar button tooltips to match docs descriptions by @natyusha in https://github.com/ShokoAnime/Shoko-WebUI/pull/1263\r\n* Fix nullable issue in LinkFilesTab by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1264\r\n\r\n\r\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.4.1...v2.5.0\n"
+    }
+  ],
+  "Dev": [
+    {
+      "version": "2.6.0-dev.38",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.38/Shoko-WebUI-v2.6.0-dev.38.zip",
+      "checksum": "sha256:add9c8c6a32a0bc63a31211989bad0e4c995b7a75040b7b12a2b507bdbe12140",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix release workflow: target_commitish and previous_tag (#1335) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1335\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.37...v2.6.0-dev.38\n"
+    },
+    {
+      "version": "2.6.0-dev.37",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.37/Shoko-WebUI-v2.6.0-dev.37.zip",
+      "checksum": "sha256:47561e57512d91daa0d0bc7537539bb6ec6dfac8e05c6a191b8b4f4e598796aa",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Show \"import limbo\" files in unrecognized and file search utils by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1334\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.36...v2.6.0-dev.37\n"
+    },
+    {
+      "version": "2.6.0-dev.36",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.36/Shoko-WebUI-v2.6.0-dev.36.zip",
+      "checksum": "sha256:7f09b9f3152562cacfc8e845a5777927edd5678bbc13f653b1e54ebf72e4d427",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update AGENTS.md: add info about React Compiler (#1332) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1332\n* fix: use `TotalSize` for deciding route link by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1333\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.35...v2.6.0-dev.36\n"
+    },
+    {
+      "version": "2.6.0-dev.35",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.35/Shoko-WebUI-v2.6.0-dev.35.zip",
+      "checksum": "sha256:8fc0c9eaf47faf75e04a6273bd7fbb8fcf8e502abd5831a4ec48afd2d798b61f",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: scope dumpInProgress to selected rows in unrecognized util by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1331\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.34...v2.6.0-dev.35\n"
+    },
+    {
+      "version": "2.6.0-dev.34",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.34/Shoko-WebUI-v2.6.0-dev.34.zip",
+      "checksum": "sha256:0ec64fc2bb9d84e34651665e252727513b7d74be6800169ab526cd2cc917d324",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: guard against missing folder ID in managed folder delete by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1330\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.33...v2.6.0-dev.34\n"
+    }
+  ]
+}
