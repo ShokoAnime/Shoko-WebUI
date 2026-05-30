@@ -79,6 +79,6 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: Update manifest: add ${{ inputs.version }} to ${{ steps.update.outputs.target }}
+          commit_message: 'Update manifest: add ${{ inputs.version }} to ${{ steps.update.outputs.target }}'
           file_pattern: manifest.json
           branch: metadata
