@@ -87,3 +87,8 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
 - If you modify files, styles, structures, configurations, or workflows mentioned in this file, update the corresponding `AGENTS.md` sections to keep them accurate.
+
+## Specifications
+
+Implementation specs and planning artifacts may exist under `specs/`.
+Use them as historical/reference material when relevant, but prefer the current source code and API contracts as the source of truth.
