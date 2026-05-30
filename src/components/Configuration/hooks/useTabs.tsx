@@ -1,0 +1,60 @@
+import { useLayoutEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router';
+
+import { pathToString } from '@/core/schema';
+
+import type { SectionType } from '@/components/Configuration/hooks/useSections';
+import type { TabType } from '@/components/TabPills';
+
+function useTabs(sections: SectionType[], path: (string | number)[]): [SectionType | undefined, TabType[]] {
+  const currentPath = useMemo(() => (pathToString(['tab', ...path])), [path]);
+
+  const [navigationState, updateNavigationState] = useSearchParams();
+
+  const currentTab = useMemo(() => {
+    const value = parseInt(navigationState.get(currentPath) ?? '0', 10);
+    if (Number.isNaN(value)) return 0;
+    return value;
+  }, [navigationState, currentPath]);
+
+  const currentSection = useMemo(() => sections[currentTab], [sections, currentTab]);
+
+  const setCurrentTab = (value: number, replace = false) => {
+    const changedState = Object.fromEntries(navigationState.entries());
+    const keys = Object.keys(changedState)
+      .filter(key => key.startsWith(`${currentPath}.`));
+    for (const key of keys) {
+      delete changedState[key];
+    }
+    if (value === 0) {
+      delete changedState[currentPath];
+    } else {
+      changedState[currentPath] = value.toString();
+    }
+    updateNavigationState(changedState, { replace });
+  };
+
+  const tabDetails = useMemo(() => {
+    const tabs = new Array<TabType>();
+    for (const [index, { title }] of sections.entries()) {
+      tabs.push({
+        id: index.toString(),
+        name: title,
+        onClick: () => {
+          setCurrentTab(index);
+        },
+        active: currentTab === index,
+      });
+    }
+
+    return tabs;
+  }, [sections, currentTab, setCurrentTab]);
+
+  useLayoutEffect(() => {
+    if (!tabDetails.find(tab => tab.active) && tabDetails.length > 0) setCurrentTab(0);
+  }, [tabDetails, currentTab, setCurrentTab]);
+
+  return [currentSection, tabDetails];
+}
+
+export default useTabs;

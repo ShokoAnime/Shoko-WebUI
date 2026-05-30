@@ -8,6 +8,8 @@ type Props = {
   placeholder?: string;
   value: string | number;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onClick?: React.MouseEventHandler<HTMLInputElement>;
+  onMouseUp?: React.MouseEventHandler<HTMLInputElement>;
   onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   autoFocus?: boolean;
@@ -16,6 +18,7 @@ type Props = {
   suffixes?: React.ReactNode;
   min?: number;
   max?: number;
+  step?: number;
 };
 
 const InputSmall = React.memo((props: Props) => {
@@ -28,8 +31,11 @@ const InputSmall = React.memo((props: Props) => {
     max,
     min,
     onChange,
+    onClick,
     onKeyUp,
+    onMouseUp,
     placeholder,
+    step,
     suffixes,
     type,
     value,
@@ -46,6 +52,18 @@ const InputSmall = React.memo((props: Props) => {
       onChange(newEvent);
       return;
     }
+    if (type === 'number' && min && event.target.valueAsNumber < min) {
+      toast.info(`Value cannot be less than ${min}!`);
+      onChange({
+        ...event,
+        target: {
+          ...event.target,
+          value: min.toString(),
+          valueAsNumber: min,
+        },
+      });
+      return;
+    }
 
     onChange(event);
   };
@@ -59,12 +77,15 @@ const InputSmall = React.memo((props: Props) => {
         placeholder={placeholder ?? ''}
         value={value}
         onChange={handleChange}
+        onClick={onClick}
+        onMouseUp={onMouseUp}
         onKeyUp={onKeyUp}
         autoFocus={autoFocus}
         disabled={disabled}
         autoComplete={autoComplete ?? 'on'}
         min={min}
         max={max}
+        step={step}
       />
 
       {suffixes}

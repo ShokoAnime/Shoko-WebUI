@@ -33,6 +33,7 @@ import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
+import DynamicSettings from '@/pages/settings/tabs/DynamicSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
@@ -125,6 +126,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKeys />} />
+            <Route path="dynamic/:configGuid" element={<DynamicSettings />} />
           </Route>
         </Route>
       </Route>
