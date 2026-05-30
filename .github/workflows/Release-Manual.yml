@@ -17,6 +17,9 @@ on:
 
 jobs:
   release:
+    outputs:
+      version: ${{ github.event.inputs.version }}
+      prerelease: ${{ github.event.inputs.prerelease }}
     runs-on: ubuntu-latest
     environment: production
     name: Build & release
@@ -101,3 +104,11 @@ jobs:
           previous_tag: ${{ steps.prev-tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-manifest:
+    needs: release
+    if: success()
+    uses: ./.github/workflows/Update-Manifest.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+      prerelease: ${{ needs.release.outputs.prerelease }}
