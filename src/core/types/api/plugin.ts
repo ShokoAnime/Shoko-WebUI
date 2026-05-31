@@ -34,3 +34,10 @@ export type PluginInfoType = {
   ContainingDirectory?: string;
   DLLs: string[];
 };
+
+export type PluginPageType = {
+  Name: string;
+  Url: string;
+  CanEmbed: boolean;
+  PluginInfo?: PluginInfoType;
+};
