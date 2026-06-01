@@ -586,11 +586,11 @@ const Renamer = () => {
                             <Icon className="text-panel-text-danger" path={mdiTrashCanOutline} size={1} />
                           </Button>
 
-                          <Button onClick={() => openPresetModal(true)} tooltip="New Preset">
+                          <Button onClick={() => openPresetModal(true)} tooltip="Rename Preset">
                             <Icon className="text-panel-text-primary" path={mdiPencilOutline} size={1} />
                           </Button>
 
-                          <Button onClick={() => openPresetModal(false)} tooltip="Rename Preset">
+                          <Button onClick={() => openPresetModal(false)} tooltip="New Preset">
                             <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
                           </Button>
                         </div>
