@@ -88,11 +88,12 @@ export type UiDefinitionType = {
 };
 
 export type PropertySchemaType = JSONSchema4 & {
-  'x-uiDefinition': UiDefinitionType;
+  'x-uiDefinition'?: UiDefinitionType;
 };
 
 export type FormSchemaType = JSONSchema4 & {
   'x-uiDefinition': UiDefinitionType;
+  definitions?: Record<string, PropertySchemaType>;
   properties: Record<string, PropertySchemaType>;
   type: 'object';
 };

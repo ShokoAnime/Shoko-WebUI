@@ -25,7 +25,7 @@ const DynamicSection = ({
   const filteredKeys = Object.keys(structure).filter((key) => {
     const propertySchema = properties[key];
     if (!propertySchema) return false;
-    return !(hideCodeBlocks && propertySchema['x-uiDefinition'].elementType === 'code-block');
+    return !(hideCodeBlocks && propertySchema['x-uiDefinition']?.elementType === 'code-block');
   });
 
   return (

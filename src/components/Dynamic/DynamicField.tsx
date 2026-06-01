@@ -19,8 +19,11 @@ type Props = {
 
 const DynamicField = ({ onChange, propertyName, propertySchema, value }: Props) => {
   const { 'x-uiDefinition': uiDef } = propertySchema;
-  const { elementType } = uiDef;
   const label = propertySchema.title ?? propertyName;
+
+  if (!uiDef) return null;
+
+  const { elementType } = uiDef;
 
   if (elementType === 'auto') {
     const jsonType = propertySchema.type;
