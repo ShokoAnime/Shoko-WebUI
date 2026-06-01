@@ -113,15 +113,8 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   };
 
   const openAniDbPage = (url: string) => {
-    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-
-    if (!newWindow) {
-      toast.error('Could not open AniDB.', 'Please allow popups for this site and try again.');
-      return false;
-    }
-
+    window.open(url, '_blank', 'noopener,noreferrer');
     setClickedLink(true);
-    return true;
   };
 
   const hasRulesSnooze = () => {
@@ -141,8 +134,8 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   };
 
   const handleRulesProceed = () => {
-    const opened = openAniDbPage(selectedMassAddUrl);
-    if (opened) setShowAniDbRulesModal(false);
+    openAniDbPage(selectedMassAddUrl);
+    setShowAniDbRulesModal(false);
   };
 
   useLayoutEffect(() => () => {
