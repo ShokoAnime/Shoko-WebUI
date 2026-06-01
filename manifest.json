@@ -46,6 +46,13 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.41",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.41/Shoko-WebUI-v2.6.0-dev.41.zip",
+      "checksum": "sha256:95c69a9f2480552dcf72a6497e30c3819fc311217677116594ed7379aedec91b",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix anidb rules modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1341\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.40...v2.6.0-dev.41\n"
+    },
+    {
       "version": "2.6.0-dev.40",
       "minServerVersion": "6.0.0-dev.73",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.40/Shoko-WebUI-v2.6.0-dev.40.zip",
