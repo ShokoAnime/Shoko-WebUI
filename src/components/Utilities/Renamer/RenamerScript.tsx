@@ -67,7 +67,7 @@ const RenamerScript = ({ configurationId, newConfig, setNewConfig }: Props) => {
       }
     >
       <CodeEditor
-        language={configurationProperties[propertyName]['x-uiDefinition'].codeLanguage?.toLowerCase() ?? 'plaintext'}
+        language={configurationProperties[propertyName]['x-uiDefinition']?.codeLanguage?.toLowerCase() ?? 'plaintext'}
         value={newConfig[propertyName] as string}
         onChange={updateScript}
       />
