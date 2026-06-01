@@ -1,4 +1,5 @@
 import type { PluginInfoType } from '@/core/types/api/plugin';
+import type { JSONSchema4 } from 'json-schema';
 
 export type ConfigurationInfoType = {
   ID: string;
@@ -86,30 +87,12 @@ export type UiDefinitionType = {
   visibility?: UiVisibilityType;
 };
 
-export type PropertySchemaType = {
-  $ref?: string;
-  additionalProperties?: PropertySchemaType;
-  default?: unknown;
-  description?: string;
-  enum?: unknown[];
-  format?: string;
-  items?: PropertySchemaType;
-  maximum?: number;
-  maxLength?: number;
-  minimum?: number;
-  minLength?: number;
-  pattern?: string;
-  title?: string;
-  type?: string | string[];
+export type PropertySchemaType = JSONSchema4 & {
   'x-uiDefinition': UiDefinitionType;
 };
 
-export type FormSchemaType = {
-  $schema?: string;
-  description?: string;
-  id?: string;
-  properties: Record<string, PropertySchemaType>;
-  title?: string;
-  type: 'object';
+export type FormSchemaType = JSONSchema4 & {
   'x-uiDefinition': UiDefinitionType;
+  properties: Record<string, PropertySchemaType>;
+  type: 'object';
 };
