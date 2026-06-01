@@ -10,46 +10,59 @@ import {
   mdiLoading,
   mdiMinusCircleMultipleOutline,
   mdiMinusCircleOutline,
+  mdiPencilOutline,
+  mdiPlusCircleOutline,
   mdiRefresh,
+  mdiStarCircleOutline,
+  mdiTrashCanOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { produce } from 'immer';
-import { chunk, filter, find, isEqual, map } from 'lodash';
+import { chunk, find, isEqual } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
+import DynamicForm from '@/components/Dynamic/DynamicForm';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import AddFilesModal from '@/components/Utilities/Renamer/AddFilesModal';
-import ConfigModal from '@/components/Utilities/Renamer/ConfigModal';
+import PresetModal from '@/components/Utilities/Renamer/PresetModal';
 import RenamerScript from '@/components/Utilities/Renamer/RenamerScript';
-import RenamerSettings from '@/components/Utilities/Renamer/RenamerSettings';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import { useManagedFoldersQuery as useImportFoldersQuery } from '@/core/react-query/managed-folder/queries';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import {
-  useRenamerDeleteConfigMutation,
-  useRenamerPreviewMutation,
-  useRenamerRelocateMutation,
-  useRenamerSaveConfigMutation,
-} from '@/core/react-query/renamer/mutations';
-import { useRenamerByConfigQuery, useRenamerConfigsQuery, useRenamersQuery } from '@/core/react-query/renamer/queries';
-import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+  useDeleteRelocationPresetMutation,
+  useRelocationPreviewMutation,
+  useRelocationRelocateMutation,
+  useUpdateRelocationConfigurationMutation,
+  useUpdateRelocationPresetMutation,
+} from '@/core/react-query/relocation/mutations';
+import {
+  useRelocationConfigurationQuery,
+  useRelocationPresetsQuery,
+  useRelocationProviderQuery,
+  useRelocationProvidersQuery,
+} from '@/core/react-query/relocation/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
+import { clearFiles, clearResults, removeFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { FileType } from '@/core/types/api/file';
-import type { ManagedFolderType as ImportFolderType } from '@/core/types/api/managed-folder';
-import type { RenamerConfigSettingsType, RenamerConfigType, RenamerResultType } from '@/core/types/api/renamer';
+import type { ManagedFolderType } from '@/core/types/api/managed-folder';
+import type {
+  RelocationConfigurationType,
+  RelocationPresetType,
+  RelocationResultType,
+} from '@/core/types/api/relocation';
+import type { RenamerResultType } from '@/core/types/api/renamer';
 
-const getFileColumn = (importFolders: ImportFolderType[]) => ({
+const getFileColumn = (importFolders: ManagedFolderType[]) => ({
   id: 'filename',
   name: 'Original Filename',
   className: 'line-clamp-2 grow basis-0 overflow-hidden',
@@ -80,8 +93,8 @@ const getFileColumn = (importFolders: ImportFolderType[]) => ({
 } as UtilityHeaderType<FileType>);
 
 const getResultColumn = (
-  renameResults: Record<number, RenamerResultType>,
-  importFolders: ImportFolderType[],
+  renameResults: Record<number, RelocationResultType>,
+  managedFolders: ManagedFolderType[],
 ) => ({
   id: 'result',
   name: 'Result',
@@ -112,9 +125,9 @@ const getResultColumn = (
     const path = result.RelativePath ?? '';
     const match = /[/\\](?=[^/\\]*$)/g.exec(path);
     const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
-    const importFolder = find(
-      importFolders,
-      { ID: result.ImportFolderID ?? -1 },
+    const managedFolder = find(
+      managedFolders,
+      { ID: result.ManagedFolderID ?? -1 },
     )?.Name ?? '<Unknown>';
     const fileName = path ? path?.split(/[/\\]/g).pop() : 'No change!';
 
@@ -126,7 +139,7 @@ const getResultColumn = (
         data-tooltip-delay-show={500}
       >
         <span className="line-clamp-1 text-sm font-semibold opacity-65">
-          {`${importFolder} - ${relativePath}`}
+          {`${managedFolder} - ${relativePath}`}
         </span>
         <span className="line-clamp-1 break-all">
           {fileName}
@@ -173,7 +186,7 @@ const getStatusIcon = (result?: RenamerResultType, noChange = false) => {
 
 const getStatusColumn = (
   renameResults: Record<number, RenamerResultType>,
-  importFolders: ImportFolderType[],
+  importFolders: ManagedFolderType[],
   moveFiles: boolean,
 ) => ({
   id: 'status',
@@ -233,7 +246,7 @@ const Menu = React.memo((props: MenuProps) => {
       )}
     >
       <MenuButton
-        onClick={() => dispatch(clearRenameResults())}
+        onClick={() => dispatch(clearResults())}
         icon={mdiRefresh}
         name="Refresh"
       />
@@ -266,56 +279,60 @@ const Menu = React.memo((props: MenuProps) => {
   );
 });
 
-const ConfigOption = React.memo(({ config }: { config: RenamerConfigType }) => {
-  const renamersQuery = useRenamersQuery();
+const PresetOption = ({ preset }: { preset: RelocationPresetType }) => {
+  const renamersQuery = useRelocationProvidersQuery();
 
-  const currentRenamer = useMemo(
-    () => find(renamersQuery.data, item => item.RenamerID === config.RenamerID),
-    [config.RenamerID, renamersQuery.data],
-  );
+  const currentRenamer = find(renamersQuery.data, provider => provider.ID === preset.ProviderID);
 
-  let configName: string;
+  let presetName: string;
   if (renamersQuery.isPending) {
-    configName = 'Loading...';
+    presetName = 'Loading...';
   } else if (currentRenamer) {
-    configName = `${config.Name} (${currentRenamer.Name} - ${currentRenamer.Version})`;
+    presetName = `${preset.Name} (${currentRenamer.Name} - ${currentRenamer.Version})`;
   } else {
-    configName = `${config.Name} (<Unknown>)`;
+    presetName = `${preset.Name} (<Unknown>)`;
   }
 
   return (
-    <option value={config.Name}>
-      {configName}
+    <option value={preset.ID}>
+      {presetName}
     </option>
   );
-});
+};
 
 const Renamer = () => {
   const dispatch = useDispatch();
   const addedFiles = useSelector(state => state.utilities.renamer.files);
-  const renameResults = useSelector(state => state.utilities.renamer.renameResults);
+  const relocationResults = useSelector(state => state.utilities.renamer.results);
 
   const settings = useSettingsQuery().data;
-  const importFolderQuery = useImportFoldersQuery();
-  const renamerConfigsQuery = useRenamerConfigsQuery();
+  const managedFoldersQuery = useManagedFoldersQuery();
+  const relocationPresetsQuery = useRelocationPresetsQuery();
 
-  const [
-    selectedConfig,
-    setSelectedConfig,
-  ] = useState<RenamerConfigType>({ RenamerID: '', Name: '' });
+  const defaultPreset = find(relocationPresetsQuery.data, preset => preset.IsDefault);
 
-  const [
-    newConfig,
-    setNewConfig,
-  ] = useImmer<Record<string, RenamerConfigSettingsType> | undefined>(undefined);
+  const [newConfig, setNewConfig] = useImmer<RelocationConfigurationType | undefined>(undefined);
 
-  const renamer = useRenamerByConfigQuery(selectedConfig.Name, !!selectedConfig.Name).data;
+  const [selectedPreset, setSelectedPreset] = useState<RelocationPresetType>();
 
-  const { isPending: relocatePending, mutate: relocateFiles } = useRenamerRelocateMutation();
-  const { isPending: previewPending, mutateAsync: previewRename } = useRenamerPreviewMutation();
-  const { isPending: savePending, mutate: saveConfig } = useRenamerSaveConfigMutation();
-  const { isPending: deletePending, mutate: deleteConfig } = useRenamerDeleteConfigMutation();
-  const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
+  const renamer = useRelocationProviderQuery(selectedPreset?.ProviderID ?? '', !!selectedPreset).data;
+  const renamerHasConfig = !!renamer?.Configuration;
+
+  const configQuery = useRelocationConfigurationQuery(
+    selectedPreset?.ID ?? '',
+    renamerHasConfig && !!selectedPreset,
+  );
+
+  useEffect(() => {
+    if (!configQuery.data) return;
+    setNewConfig(configQuery.data);
+  }, [configQuery.data, setNewConfig]);
+
+  const { isPending: isUpdatePresetPending, mutate: updatePreset } = useUpdateRelocationPresetMutation();
+  const { isPending: isDeletePresetPending, mutate: deletePreset } = useDeleteRelocationPresetMutation();
+  const { isPending: isSaveConfigPending, mutate: saveConfig } = useUpdateRelocationConfigurationMutation();
+  const { isPending: previewPending, mutateAsync: previewRelocation } = useRelocationPreviewMutation();
+  const { isPending: isRelocatePending, mutate: relocateFiles } = useRelocationRelocateMutation();
 
   const [moveFiles, toggleMoveFiles] = useToggle(settings.Plugins.Renamer.MoveOnImport);
   // In the case where move on import is not selected, we will assume the user wants to rename files when
@@ -325,19 +342,13 @@ const Renamer = () => {
   );
   const [showSettings, toggleSettings] = useToggle(false);
   const [showAddFilesModal, toggleAddFilesModal] = useToggle(false);
-  const [showConfigModal, toggleConfigModal] = useToggle(false);
-  const [configModelRename, setConfigModelRename] = useState(false);
+  const [showPresetModal, togglePresetModal] = useToggle(false);
+  const [presetRename, setPresetRename] = useState(false);
 
-  const configEdited = useMemo(
-    () => !isEqual(selectedConfig.Settings, newConfig),
-    [
-      newConfig,
-      selectedConfig.Settings,
-    ],
-  );
+  const configEdited = !isEqual(configQuery.data, newConfig);
 
   const fetchPreviewPage = async (index: number) => {
-    if (!newConfig || !renamer) return;
+    if (!renamer || (renamer.Configuration && !newConfig)) return;
     const pageSize = 20;
     const pageNumber = Math.floor(index / pageSize);
     const pendingPreviews = addedFiles
@@ -346,50 +357,41 @@ const Renamer = () => {
         (pageNumber + 1) * pageSize,
       )
       .map(file => file.ID)
-      .filter(fileId => !renameResults[fileId]);
+      .filter(fileId => !relocationResults[fileId]);
 
     if (pendingPreviews.length === 0 || !renamer) return;
 
-    await previewRename(
-      {
-        move: moveFiles,
-        rename: renameFiles,
-        FileIDs: pendingPreviews,
-        Config: {
-          RenamerID: renamer.RenamerID,
-          Name: 'Preview',
-          Settings: map(newConfig, config => config),
-        },
-      },
-    );
+    await previewRelocation({
+      move: moveFiles,
+      rename: renameFiles,
+      FileIDs: pendingPreviews,
+      ProviderID: renamer.ID,
+      Configuration: newConfig,
+    });
   };
 
-  const changeSelectedConfig = (configName: string) => {
-    if (configName === '') {
-      setSelectedConfig({ RenamerID: '', Name: '' });
+  const changeSelectedPreset = (presetId: string) => {
+    if (presetId === '') {
+      setSelectedPreset(undefined);
       return;
     }
 
-    if (!renamerConfigsQuery.isSuccess || !renamerConfigsQuery.data[0]) return;
-    const tempConfig = renamerConfigsQuery.data.find(
-      config => config.Name === configName,
-    ) ?? renamerConfigsQuery.data[0];
+    if (!relocationPresetsQuery.isSuccess || !relocationPresetsQuery.data[0]) return;
+    const tempPreset = relocationPresetsQuery.data.find(
+      preset => preset.ID === presetId,
+    ) ?? relocationPresetsQuery.data[0];
 
-    if (!tempConfig) return;
+    if (!tempPreset) return;
 
-    setSelectedConfig(tempConfig);
-    setNewConfig(tempConfig.Settings);
+    setSelectedPreset(tempPreset);
   };
 
-  const changeSelectedConfigEvent = useEffectEvent((configName: string) => changeSelectedConfig(configName));
+  const changeSelectedPresetEvent = useEffectEvent((presetId: string) => changeSelectedPreset(presetId));
 
   // Handle the below 3 hooks with care. These are used for auto-updating previews on changes.
   // We combine them here because there is a delay in when the name changes and the config changes
   // Effect should only be triggered once even if both values change
-  const [debouncedConfig] = useDebounceValue(
-    newConfig ? `${selectedConfig.Name}-${JSON.stringify(newConfig)}` : undefined,
-    500,
-  );
+  const [debouncedConfig] = useDebounceValue(newConfig, 500);
   const [initialClear, setInitialClear] = useState(true);
   useEffect(() => {
     if (!debouncedConfig) return;
@@ -400,68 +402,65 @@ const Renamer = () => {
       return;
     }
 
-    dispatch(clearRenameResults());
+    dispatch(clearResults());
     // initialClear is used to skip the effect on initial render, adding it to deps would cause the effect to run
     // an extra time
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedConfig, dispatch]);
 
   const handleSaveConfig = () => {
-    if (!newConfig || !renamer) return;
-    saveConfig(
-      {
-        RenamerID: renamer.RenamerID,
-        Name: selectedConfig.Name,
-        Settings: map(newConfig, config => config),
-      },
-      {
-        onSuccess: () => {
-          toast.success(`"${selectedConfig.Name}" saved successfully!`);
-        },
-        onError: () => toast.error(`"${selectedConfig.Name}" could not be saved!`),
-      },
-    );
+    if (!selectedPreset) return;
+
+    saveConfig({
+      presetId: selectedPreset.ID,
+      ...newConfig,
+    }, {
+      onSuccess: () => toast.success(`"${selectedPreset.Name}" saved successfully!`),
+      onError: () => toast.error(`"${selectedPreset.Name}" could not be saved!`),
+    });
   };
 
-  const handleDeleteConfig = () => {
-    if (!renamer) return;
-    deleteConfig(selectedConfig.Name, {
-      onSuccess: () => toast.success(`"${selectedConfig.Name}" deleted successfully!`),
-      onError: () => toast.error(`"${selectedConfig.Name}" could not be deleted!`),
+  const handleDeletePreset = () => {
+    if (!selectedPreset) return;
+
+    deletePreset(selectedPreset.ID, {
+      onSuccess: () => toast.success(`"${selectedPreset.Name}" deleted successfully!`),
+      onError: () => toast.error(`"${selectedPreset.Name}" could not be deleted!`),
     });
-    changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
+
+    changeSelectedPreset(defaultPreset?.ID ?? relocationPresetsQuery.data?.[0]?.ID ?? '');
   };
 
   const handleSetAsDefault = () => {
-    const newSettings = produce(settings, (draftState) => {
-      draftState.Plugins.Renamer.DefaultRenamer = selectedConfig.Name;
-    });
-    patchSettings(newSettings, {
-      onSuccess: () => {
-        toast.success(`"${selectedConfig.Name}" set as default renamer!`);
-      },
+    if (!selectedPreset) return;
+
+    updatePreset({
+      presetId: selectedPreset.ID,
+      IsDefault: true,
+    }, {
+      onSuccess: () => toast.success(`${selectedPreset.Name} set as default preset!`),
       onError: error => toast.error('', error.message),
     });
   };
 
-  const openConfigModal = (rename: boolean) => {
-    setConfigModelRename(rename);
-    toggleConfigModal();
+  const openPresetModal = (rename: boolean) => {
+    setPresetRename(rename);
+    togglePresetModal();
   };
 
   useEffect(() => {
-    dispatch(clearRenameResults());
+    dispatch(clearResults());
   }, [dispatch, moveFiles, renameFiles]);
 
   useEffect(() => {
-    if (!renamerConfigsQuery.isSuccess) return;
+    if (!relocationPresetsQuery.isSuccess) return;
 
-    if (selectedConfig.Name) changeSelectedConfigEvent(selectedConfig.Name);
-    else changeSelectedConfigEvent(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
+    if (selectedPreset) changeSelectedPresetEvent(selectedPreset.ID);
+    else changeSelectedPresetEvent(defaultPreset?.ID ?? '');
     // This shouldn't run when `selectedConfig.Name` changes.
     // We are resetting `selectedConfig` when new data arrives so that it is up-to-date for `configEdited` flag
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [renamerConfigsQuery.data, renamerConfigsQuery.isSuccess, settings]);
+  }, [relocationPresetsQuery.data, relocationPresetsQuery.isSuccess, settings]);
 
   const {
     handleRowSelect,
@@ -471,28 +470,21 @@ const Renamer = () => {
   } = useRowSelection(addedFiles);
 
   const columns = useMemo(() => {
-    const importFolders = importFolderQuery?.data ?? [];
+    const importFolders = managedFoldersQuery?.data ?? [];
     return [
       getFileColumn(importFolders),
-      getResultColumn(renameResults, importFolders),
-      getStatusColumn(renameResults, importFolders, moveFiles),
+      getResultColumn(relocationResults, importFolders),
+      getStatusColumn(relocationResults, importFolders, moveFiles),
     ];
-  }, [importFolderQuery?.data, moveFiles, renameResults]);
-
-  const renamerSettingsExist = useMemo(
-    () =>
-      filter(
-        renamer?.Settings,
-        model => model.SettingType !== 'Code',
-      ).length > 0,
-    [renamer],
-  );
+  }, [managedFoldersQuery?.data, moveFiles, relocationResults]);
 
   const handleRename = () => {
+    if (!selectedPreset || !addedFiles.length) return;
+
     // Split the files into chunks of 1000 to avoid API errors
     chunk(addedFiles, 1000).forEach((files) => {
       relocateFiles({
-        configName: selectedConfig.Name,
+        presetId: selectedPreset.ID,
         move: moveFiles,
         rename: renameFiles,
         deleteEmptyDirectories: true,
@@ -502,12 +494,12 @@ const Renamer = () => {
   };
 
   const [renameDisabled, renameDisabledReason] = useMemo(() => {
-    if (relocatePending) return [true, 'Renaming in progress...'];
+    if (isRelocatePending) return [true, 'Renaming in progress...'];
     if (configEdited) return [true, 'Config has been edited, please save before renaming files'];
     if (addedFiles.length === 0) return [true, 'No files added'];
     if (!moveFiles && !renameFiles) return [true, 'Neither rename nor move is selected. No action to be performed'];
     return [false, ''];
-  }, [addedFiles.length, configEdited, moveFiles, relocatePending, renameFiles]);
+  }, [addedFiles.length, configEdited, moveFiles, isRelocatePending, renameFiles]);
 
   return (
     <>
@@ -521,7 +513,7 @@ const Renamer = () => {
               renameFiles={renameFiles}
               toggleMoveFiles={toggleMoveFiles}
               toggleRenameFiles={toggleRenameFiles}
-              disable={relocatePending}
+              disable={isRelocatePending}
             />
             <div className="flex gap-x-3">
               <Button
@@ -529,7 +521,7 @@ const Renamer = () => {
                 buttonSize="normal"
                 className="flex h-13 items-center"
                 onClick={toggleSettings}
-                disabled={!renamerConfigsQuery.isSuccess}
+                disabled={!relocationPresetsQuery.isSuccess}
               >
                 <Icon path={mdiCogOutline} size={1} />
               </Button>
@@ -538,7 +530,7 @@ const Renamer = () => {
                 buttonSize="normal"
                 className="flex h-13 items-center"
                 onClick={toggleAddFilesModal}
-                disabled={relocatePending}
+                disabled={isRelocatePending}
               >
                 Add Files
               </Button>
@@ -547,7 +539,7 @@ const Renamer = () => {
                 buttonSize="normal"
                 className="flex h-13 flex-wrap items-center gap-x-2"
                 onClick={handleRename}
-                loading={relocatePending}
+                loading={isRelocatePending}
                 disabled={renameDisabled}
                 tooltip={renameDisabledReason}
               >
@@ -560,108 +552,99 @@ const Renamer = () => {
         </ShokoPanel>
 
         <AnimateHeight height={showSettings ? 'auto' : 0}>
-          <div className={cx('my-3 flex h-128! gap-x-6', relocatePending && 'pointer-events-none opacity-65')}>
-            {renamerConfigsQuery.isSuccess && (
+          <div className={cx('my-3 flex h-128! gap-x-6', isRelocatePending && 'pointer-events-none opacity-65')}>
+            {relocationPresetsQuery.isSuccess && (
               <>
                 <div className="flex w-1/3 flex-col gap-y-6">
-                  <ShokoPanel title="Renamer Selection" contentClassName="gap-y-5" fullHeight={!renamerSettingsExist}>
+                  <ShokoPanel
+                    title="Preset Selection"
+                    contentClassName="gap-y-5"
+                    className="h-128"
+                  >
                     <Select
-                      label="Config"
-                      id="renamer-config"
-                      value={selectedConfig.Name}
-                      onChange={event => changeSelectedConfig(event.target.value)}
-                    >
-                      {renamerConfigsQuery.data.map(renamerConfig => (
-                        <ConfigOption config={renamerConfig} key={renamerConfig.Name} />
-                      ))}
+                      label="Preset"
+                      id="relocation-preset"
+                      value={selectedPreset?.ID ?? 'na'}
+                      onChange={event => changeSelectedPreset(event.target.value)}
+                      options={
+                        <div className="flex items-center gap-x-2">
+                          <Button
+                            onClick={handleSetAsDefault}
+                            loading={isUpdatePresetPending}
+                            disabled={selectedPreset?.IsDefault || isUpdatePresetPending}
+                            tooltip={selectedPreset?.IsDefault ? 'Already set as default!' : 'Set as default'}
+                          >
+                            <Icon className="text-panel-text-primary" path={mdiStarCircleOutline} size={1} />
+                          </Button>
 
-                      {renamerConfigsQuery.data.length === 0 && (
+                          <Button
+                            onClick={handleDeletePreset}
+                            loading={isDeletePresetPending}
+                            disabled={selectedPreset?.IsDefault || isDeletePresetPending}
+                            tooltip={selectedPreset?.IsDefault ? 'Cannot delete default preset!' : 'Delete Preset'}
+                          >
+                            <Icon className="text-panel-text-danger" path={mdiTrashCanOutline} size={1} />
+                          </Button>
+
+                          <Button onClick={() => openPresetModal(true)} tooltip="New Preset">
+                            <Icon className="text-panel-text-primary" path={mdiPencilOutline} size={1} />
+                          </Button>
+
+                          <Button onClick={() => openPresetModal(false)} tooltip="Rename Preset">
+                            <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
+                          </Button>
+                        </div>
+                      }
+                    >
+                      {relocationPresetsQuery.data.map(preset => <PresetOption preset={preset} key={preset.ID} />)}
+
+                      {relocationPresetsQuery.data.length === 0 && (
                         <option key="na" value="na">
                           No renamer found!
                         </option>
                       )}
                     </Select>
-                    <div className="flex justify-end gap-x-3 font-semibold">
-                      <Button
-                        onClick={handleSetAsDefault}
-                        buttonType="secondary"
-                        buttonSize="normal"
-                        loading={settingsPatchPending}
-                        disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
-                          || settingsPatchPending}
-                        tooltip={selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer
-                          ? 'Already set as default!'
-                          : ''}
-                      >
-                        Set as default
-                      </Button>
-                      <Button
-                        onClick={handleDeleteConfig}
-                        buttonType="danger"
-                        buttonSize="normal"
-                        loading={deletePending}
-                        disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer) || deletePending}
-                        tooltip={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
-                          ? 'Cannot delete default config!'
-                          : ''}
-                      >
-                        Delete
-                      </Button>
-                      <Button
-                        onClick={() => openConfigModal(true)}
-                        buttonType="secondary"
-                        buttonSize="normal"
-                      >
-                        Rename
-                      </Button>
-                      <Button
-                        onClick={() => openConfigModal(false)}
-                        buttonType="secondary"
-                        buttonSize="normal"
-                      >
-                        New
-                      </Button>
-                      <Button
-                        onClick={handleSaveConfig}
-                        buttonType="primary"
-                        buttonSize="normal"
-                        loading={savePending}
-                        disabled={savePending || !renamer?.DefaultSettings}
-                        tooltip={!renamer?.DefaultSettings ? 'Renamer does not have any settings to save.' : ''}
-                      >
-                        Save
-                      </Button>
-                      <ConfigModal
-                        show={showConfigModal}
-                        onClose={toggleConfigModal}
-                        rename={configModelRename}
-                        config={selectedConfig}
-                        changeSelectedConfig={changeSelectedConfig}
-                      />
-                    </div>
-                  </ShokoPanel>
 
-                  {renamerSettingsExist && (
-                    <ShokoPanel title="Selected Renamer Config">
-                      {/* TODO: Maybe a todo... The transition div for checkbox is buggy when AnimateHeight is used. */}
-                      {/* It doesn't appear before a click event when height is changed. Adding showSetting force re-renders it. */}
-                      {newConfig && renamer?.Settings && showSettings && (
-                        <RenamerSettings
-                          newConfig={newConfig}
-                          setNewConfig={setNewConfig}
-                          settingsModel={renamer.Settings}
-                        />
-                      )}
-                    </ShokoPanel>
-                  )}
+                    {renamer?.Configuration?.ID && newConfig && (
+                      <>
+                        <div className="flex grow overflow-y-auto pr-2">
+                          <DynamicForm
+                            configuration={newConfig}
+                            configurationId={renamer.Configuration.ID}
+                            setConfiguration={setNewConfig}
+                            hideCodeBlocks
+                            hideHeader
+                          />
+                        </div>
+
+                        <Button
+                          onClick={handleSaveConfig}
+                          buttonType="primary"
+                          buttonSize="normal"
+                          loading={isSaveConfigPending}
+                          disabled={isSaveConfigPending || !renamerHasConfig || !configEdited}
+                          tooltip={!renamerHasConfig ? 'Renamer does not have any settings to save.' : ''}
+                        >
+                          Save
+                        </Button>
+                      </>
+                    )}
+
+                    <PresetModal
+                      show={showPresetModal}
+                      onClose={togglePresetModal}
+                      rename={presetRename}
+                      preset={selectedPreset}
+                    />
+                  </ShokoPanel>
                 </div>
 
-                <ShokoPanel title="Selected Renamer Script" className="w-2/3" disableOverflow>
-                  {newConfig && renamer?.Settings && (
+                <ShokoPanel title="Script" className="w-2/3" disableOverflow>
+                  {newConfig && renamer?.Configuration?.ID && (
                     <RenamerScript
                       newConfig={newConfig}
                       setNewConfig={setNewConfig}
-                      settingsModel={renamer.Settings}
+                      configurationId={renamer.Configuration.ID}
                     />
                   )}
                 </ShokoPanel>
@@ -670,7 +653,7 @@ const Renamer = () => {
           </div>
         </AnimateHeight>
 
-        <ShokoPanel title="Renamer Preview" className="min-h-160 grow">
+        <ShokoPanel title="Renamer Preview" className="min-h-120 grow">
           {addedFiles.length === 0 && (
             <div className="flex grow items-center justify-center font-semibold">No files selected!</div>
           )}
