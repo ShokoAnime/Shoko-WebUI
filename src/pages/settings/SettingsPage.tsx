@@ -47,12 +47,9 @@ const SettingsPage = () => {
 
   const pluginGroups = useMemo(() => {
     if (!pluginPages) return [];
-    const sharedPages = pluginPages.filter(
-      (page): page is SharedPluginPageType => 'PluginInfo' in page,
-    );
     const groups: { id: string, name: string, pages: SharedPluginPageType[] }[] = [];
     const seen = new Map<string, SharedPluginPageType[]>();
-    for (const page of sharedPages) {
+    for (const page of pluginPages) {
       const pluginId = page.PluginInfo.ID;
       if (!seen.has(pluginId)) {
         seen.set(pluginId, []);
