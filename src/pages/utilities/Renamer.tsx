@@ -60,9 +60,8 @@ import type {
   RelocationPresetType,
   RelocationResultType,
 } from '@/core/types/api/relocation';
-import type { RenamerResultType } from '@/core/types/api/renamer';
 
-const getFileColumn = (importFolders: ManagedFolderType[]) => ({
+const getFileColumn = (managedFolders: ManagedFolderType[]) => ({
   id: 'filename',
   name: 'Original Filename',
   className: 'line-clamp-2 grow basis-0 overflow-hidden',
@@ -70,8 +69,8 @@ const getFileColumn = (importFolders: ManagedFolderType[]) => ({
     const path = file.Locations[0]?.RelativePath ?? '';
     const match = /[/\\](?=[^/\\]*$)/g.exec(path);
     const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
-    const importFolder = find(
-      importFolders,
+    const managedFolder = find(
+      managedFolders,
       { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
     )?.Name ?? '<Unknown>';
     return (
@@ -82,7 +81,7 @@ const getFileColumn = (importFolders: ManagedFolderType[]) => ({
         data-tooltip-delay-show={500}
       >
         <span className="line-clamp-1 text-sm font-semibold opacity-65">
-          {`${importFolder} - ${relativePath}`}
+          {`${managedFolder} - ${relativePath}`}
         </span>
         <span className="line-clamp-1 break-all">
           {path?.split(/[/\\]/g).pop()}
@@ -149,7 +148,7 @@ const getResultColumn = (
   },
 } as UtilityHeaderType<FileType>);
 
-const getStatusIcon = (result?: RenamerResultType, noChange = false) => {
+const getStatusIcon = (result?: RelocationResultType, noChange = false) => {
   let icon = mdiHelpCircleOutline;
   let className = '';
   let tooltip = '';
@@ -185,8 +184,8 @@ const getStatusIcon = (result?: RenamerResultType, noChange = false) => {
 };
 
 const getStatusColumn = (
-  renameResults: Record<number, RenamerResultType>,
-  importFolders: ManagedFolderType[],
+  renameResults: Record<number, RelocationResultType>,
+  managedFolders: ManagedFolderType[],
   moveFiles: boolean,
 ) => ({
   id: 'status',
@@ -200,20 +199,20 @@ const getStatusColumn = (
       const path = file.Locations[0]?.RelativePath ?? '';
       const match = /[/\\](?=[^/\\]*$)/g.exec(path);
       const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
-      const importFolder = find(
-        importFolders,
+      const managedFolder = find(
+        managedFolders,
         { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
       )?.Name ?? '<Unknown>';
 
       const newPath = result.RelativePath ?? '';
       const newRelativePath = match ? newPath?.substring(0, match.index) : 'Root Level';
-      const newImportFolder = find(
-        importFolders,
-        { ID: result.ImportFolderID ?? -1 },
+      const newManagedFolder = find(
+        managedFolders,
+        { ID: result?.ManagedFolderID ?? -1 },
       )?.Name ?? '<Unknown>';
 
       noChange = (path === newPath) && (!moveFiles
-        || (importFolder === newImportFolder && relativePath === newRelativePath));
+        || (managedFolder === newManagedFolder && relativePath === newRelativePath));
     }
 
     return (
@@ -470,11 +469,11 @@ const Renamer = () => {
   } = useRowSelection(addedFiles);
 
   const columns = useMemo(() => {
-    const importFolders = managedFoldersQuery?.data ?? [];
+    const managedFolders = managedFoldersQuery?.data ?? [];
     return [
-      getFileColumn(importFolders),
-      getResultColumn(relocationResults, importFolders),
-      getStatusColumn(relocationResults, importFolders, moveFiles),
+      getFileColumn(managedFolders),
+      getResultColumn(relocationResults, managedFolders),
+      getStatusColumn(relocationResults, managedFolders, moveFiles),
     ];
   }, [managedFoldersQuery?.data, moveFiles, relocationResults]);
 
