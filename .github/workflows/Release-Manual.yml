@@ -17,6 +17,9 @@ on:
 
 jobs:
   release:
+    outputs:
+      version: ${{ github.event.inputs.version }}
+      prerelease: ${{ github.event.inputs.prerelease }}
     runs-on: ubuntu-latest
     environment: production
     name: Build & release
@@ -49,6 +52,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref }}
           fetch-depth: 0
+
+      - name: Get previous release tag
+        id: prev-tag
+        run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -89,9 +96,19 @@ jobs:
         with:
           files: ./build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip
           tag_name: v${{ github.event.inputs.version }}
+          target_commitish: ${{ github.event.inputs.ref }}
           prerelease: ${{ github.event.inputs.prerelease }}
           fail_on_unmatched_files: true
           body_path: ./release-notes.txt
           generate_release_notes: true
+          previous_tag: ${{ steps.prev-tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-manifest:
+    needs: release
+    if: success()
+    uses: ./.github/workflows/Update-Manifest.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+      prerelease: ${{ needs.release.outputs.prerelease }}

@@ -29,7 +29,7 @@ const FileActionsTab = ({ seriesId }: Props) => {
         onClick={rehashSeriesFiles}
       />
       <Action
-        name="Rename/Move Files"
+        name="Relocate Files"
         description="Rename/Move every file associated with the group."
         onClick={relocateSeriesFiles}
       />

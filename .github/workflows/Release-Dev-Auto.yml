@@ -5,6 +5,8 @@ on:
 
 jobs:
   release-dev-auto:
+    outputs:
+      version_tag: ${{ steps.semver.outputs.version_tag }}
     runs-on: ubuntu-latest
     environment: production
     name: Build & release dev version
@@ -101,3 +103,11 @@ jobs:
 
             **Changes since last build**:
             ${{ env.CHANGELOG }}
+
+  update-manifest:
+    needs: release-dev-auto
+    if: success()
+    uses: ./.github/workflows/Update-Manifest.yml
+    with:
+      version: ${{ needs.release-dev-auto.outputs.version_tag }}
+      prerelease: true

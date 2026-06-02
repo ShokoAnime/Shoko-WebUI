@@ -1,0 +1,84 @@
+name: Update-Manifest
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      prerelease:
+        required: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    name: Update manifest.json
+
+    steps:
+      - name: Get release data via GitHub API
+        id: release-data
+        run: |
+          RELEASE=$(gh api "repos/${{ github.repository }}/releases/tags/v${{ inputs.version }}" --jq '{body, assets: [.assets[] | {id, name, digest, browser_download_url}]}')
+
+          ZIP_ASSET=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".zip"))')
+          if [ -z "$ZIP_ASSET" ]; then
+            echo "::error::No .zip asset found in release v${{ inputs.version }}"
+            exit 1
+          fi
+
+          echo "$RELEASE" | jq -r '.body' > /tmp/release-body.txt
+          echo "download_url=$(echo "$RELEASE" | jq -r '.assets[0].browser_download_url')" >> "$GITHUB_OUTPUT"
+          echo "checksum=$(echo "$RELEASE" | jq -r '.assets[0].digest')" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Parse minServerVersion from release body
+        id: parse
+        run: |
+          MIN_SERVER=$(sed -n 's/.*Minimum Server Version: \*\*\([^*]*\)\*\*.*/\1/p' /tmp/release-body.txt | head -1)
+          if [ -z "$MIN_SERVER" ]; then
+            echo "::error::Could not parse minServerVersion from release body"
+            exit 1
+          fi
+          echo "min_server_version=$MIN_SERVER" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout metadata branch
+        uses: actions/checkout@v5
+        with:
+          ref: metadata
+          persist-credentials: true
+
+      - name: Create empty manifest if missing
+        run: |
+          if [ ! -f manifest.json ]; then
+            echo '{ "Stable": [], "Dev": [] }' > manifest.json
+          fi
+
+      - name: Update manifest
+        id: update
+        run: |
+          TARGET="${{ inputs.prerelease == true && 'Dev' || 'Stable' }}"
+
+          NEW_ENTRY=$(jq -n \
+            --arg version "${{ inputs.version }}" \
+            --arg minServerVersion "${{ steps.parse.outputs.min_server_version }}" \
+            --arg downloadUrl "${{ steps.release-data.outputs.download_url }}" \
+            --arg checksum "${{ steps.release-data.outputs.checksum }}" \
+            --rawfile releaseNotes /tmp/release-body.txt \
+            '{version: $version, minServerVersion: $minServerVersion, downloadUrl: $downloadUrl, checksum: $checksum, releaseNotes: $releaseNotes}')
+
+          jq --argjson e "$NEW_ENTRY" --arg t "$TARGET" '
+            .[$t] = ([$e] + (.[$t] | map(select(.version != $e.version))))
+          ' manifest.json > tmp.json && mv tmp.json manifest.json
+
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: 'Update manifest: add ${{ inputs.version }} to ${{ steps.update.outputs.target }}'
+          file_pattern: manifest.json
+          branch: metadata

@@ -3,14 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type { ReleaseInfoSettingsType, UpdateReleaseInfoProvidersType } from '@/core/react-query/release-info/types';
+import type { UpdateReleaseInfoProvidersType } from '@/core/react-query/release-info/types';
 import type { ReleaseInfoType } from '@/core/types/api/file';
-
-export const useUpdateReleaseInfoSettingsMutation = () =>
-  useMutation({
-    mutationFn: (settings: ReleaseInfoSettingsType) => axios.post('ReleaseInfo/Settings', settings),
-    onSuccess: () => invalidateQueries(['release-info', 'summary']),
-  });
 
 export const useUpdateReleaseInfoProvidersMutation = () =>
   useMutation({

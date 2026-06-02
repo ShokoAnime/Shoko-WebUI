@@ -7,32 +7,28 @@ export type PackageThumbnailInfoType = {
 export type PluginInfoType = {
   ID: string;
   Name: string;
-  Description: string | null;
+  Description: string;
   Version: string;
   RuntimeIdentifier: string;
   AbstractionVersion: string;
-  SourceRevision?: string | null;
-  ReleaseTag?: string | null;
-  Channel: string;
+  SourceRevision?: string;
+  ReleaseTag?: string;
+  Channel: ReleaseChannelType;
   ReleasedAt: string;
-  Authors?: string | null;
+  Authors?: string;
+  RepositoryUrl?: string;
+  HomepageUrl?: string;
   LoadOrder: number;
-  Thumbnail?: PackageThumbnailInfoType | null;
+  Thumbnail?: PackageThumbnailInfoType;
   InstalledAt: string;
   IsInstalled: boolean;
   IsEnabled: boolean;
+  IsPinned: boolean;
   IsActive: boolean;
   RestartPending: boolean;
   CanLoad: boolean;
   CanUninstall: boolean;
   CanEnableOrDisable: boolean;
-  IsPinned: boolean;
-  RepositoryUrl?: string | null;
-  HomepageUrl?: string | null;
-  ContainingDirectory?: string | null;
+  ContainingDirectory?: string;
   DLLs: string[];
-};
-
-export type UpdatePluginInfoBodyType = {
-  isEnabled?: boolean;
 };
