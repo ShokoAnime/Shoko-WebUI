@@ -197,19 +197,20 @@ const SettingsPage = () => {
                               : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
                             key={page.ID}
                           >
-                            <span>{page.Name}</span>
-                            <a
-                              href={page.Url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              tabIndex={-1}
+                            {page.Name}
+                            <button
+                              type="button"
                               data-tooltip-id="tooltip"
                               data-tooltip-content={`Open ${page.Name} in new tab`}
-                              onClick={event => event.stopPropagation()}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                window.open(page.Url, '_blank', 'noopener,noreferrer');
+                              }}
                               className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center justify-center rounded-md p-1 text-panel-text-primary opacity-60 transition-opacity hover:opacity-100"
                             >
                               <Icon path={mdiOpenInNew} size={0.7} />
-                            </a>
+                            </button>
                           </NavLink>
                         )
                         : (
