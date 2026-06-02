@@ -61,8 +61,20 @@ const PluginPageEmbed = () => {
 
   // Cross-origin: listen for postMessage from cooperating plugin pages.
   // Plugin pages send: { type: 'shoko-plugin-resize', height: <number> }
+  // We only accept messages from the origin of the currently embedded page.
   useEffect(() => {
+    if (!page?.Url) return undefined;
+
+    let expectedOrigin: string;
+    try {
+      expectedOrigin = new URL(page.Url).origin;
+    } catch {
+      return undefined;
+    }
+
     const handler = (event: MessageEvent) => {
+      if (event.origin !== expectedOrigin) return;
+
       const data: unknown = event.data;
       if (
         typeof data === 'object'
@@ -77,7 +89,7 @@ const PluginPageEmbed = () => {
     };
     globalThis.addEventListener('message', handler);
     return () => globalThis.removeEventListener('message', handler);
-  }, []);
+  }, [page]);
 
   if (isPending) {
     return (
