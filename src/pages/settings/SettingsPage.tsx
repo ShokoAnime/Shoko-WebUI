@@ -60,10 +60,12 @@ const SettingsPage = () => {
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   const isSpecialPage = useMemo(() => {
+    if (pathname.includes('/settings/plugins')) return true;
+
     const path = pathname.split('/').pop();
     if (!path) return false;
     if (pathname.includes('settings/dynamic/')) return true;
-    return ['user-management', 'api-keys', 'hashing-release', 'dynamic', 'plugins'].includes(path);
+    return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes

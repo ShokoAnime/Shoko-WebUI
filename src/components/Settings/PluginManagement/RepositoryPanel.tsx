@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import dayjs from 'dayjs';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
@@ -22,36 +23,33 @@ type Props = {
 
 const RepositoryPanel = ({ query }: Props) => {
   const repositoriesQuery = usePluginPackageRepositoriesQuery();
-  const { mutate: deleteRepository, status: deleteRepositoryStatus, variables: deletingId } =
+  const { isPending: isDeletePending, mutate: deleteRepository, variables: deletingId } =
     useDeletePluginPackageRepositoryMutation();
-  const { mutate: syncRepository, status: syncRepositoryStatus, variables: syncingArgs } =
+  const { isPending: isSyncPending, mutate: syncRepository, variables: syncingRepositoryId } =
     useSyncPluginPackageRepositoryMutation();
-  const { mutate: syncAll, status: syncAllStatus } = useSyncAllPluginPackageRepositoriesMutation();
-  const [repositoryToDelete, setRepositoryToDelete] = React.useState<RepositoryDeleteStateType | null>(null);
-  const [isFormCollapsed, setIsFormCollapsed] = useState(true); // Start collapsed by default
-  const normalizedQuery = query.trim().toLocaleLowerCase();
-  const isSearching = normalizedQuery.length > 0;
-  const repositories = React.useMemo(() => {
-    if (!normalizedQuery) {
-      return repositoriesQuery.data?.filter(repo => repo.ID !== '00000000-0000-0000-0000-000000000000') ?? [];
-    }
+  const { isPending: isSyncAllPending, mutate: syncAll } = useSyncAllPluginPackageRepositoriesMutation();
+  const [isAddRepositoryOpen, setIsAddRepositoryOpen] = useState(false);
+  const [repositoryToDelete, setRepositoryToDelete] = useState<RepositoryDeleteStateType | null>(null);
 
-    const matchesQuery = (value: string) => value.toLocaleLowerCase().includes(normalizedQuery);
+  const repositories = useMemo(() => {
+    if (!repositoriesQuery.data) return [];
+    if (!query) return repositoriesQuery.data;
 
-    return (repositoriesQuery.data ?? []).filter((repository) => {
-      const isValidRepository = repository.ID !== '00000000-0000-0000-0000-000000000000';
+    const matchesQuery = (value: string) => value.toLocaleLowerCase().includes(query);
 
-      return (
-        isValidRepository
-        && [repository.Name, repository.Url].some(matchesQuery)
-      );
-    });
-  }, [normalizedQuery, repositoriesQuery.data]);
-  const shouldShowForm = !isSearching && !isFormCollapsed; // Only show form when not searching and not collapsed
+    return repositoriesQuery.data.filter(repository => [repository.Name, repository.Url].some(matchesQuery));
+  }, [query, repositoriesQuery.data]);
 
   return (
     <div className="flex flex-col gap-y-4">
-      <div className="flex justify-start sm:justify-end">
+      <div className="flex flex-wrap justify-start gap-3 sm:justify-end">
+        <Button
+          buttonType="secondary"
+          buttonSize="normal"
+          onClick={() => setIsAddRepositoryOpen(true)}
+        >
+          Add Repository
+        </Button>
         <Button
           buttonType="secondary"
           buttonSize="normal"
@@ -59,48 +57,28 @@ const RepositoryPanel = ({ query }: Props) => {
             syncAll({ forceSync: true }, {
               onSuccess: () => toast.success('Repositories synchronized'),
             })}
-          loading={syncAllStatus === 'pending'}
+          loading={isSyncAllPending}
         >
           Sync All
         </Button>
       </div>
 
-      {/* Add button to toggle form visibility */}
-      {!isSearching && (
-        <div className="flex justify-start">
-          <Button
-            buttonType="secondary"
-            buttonSize="small"
-            onClick={() => setIsFormCollapsed(!isFormCollapsed)}
-          >
-            Add Repository
-          </Button>
-        </div>
-      )}
-
-      {/* Show form only when appropriate */}
-      {shouldShowForm && <RepositoryForm />}
-
       <div className="rounded-lg border border-panel-border bg-panel-input p-4">
-        <div className="mb-4 flex flex-col gap-y-1">
-          <div className="text-lg font-semibold">Configured Repositories</div>
-          {isSearching && <div className="text-sm opacity-70">Clear the search field to add a new repository.</div>}
-        </div>
-        {repositoriesQuery.data?.length === 0 && (
+        <div className="mb-4 text-lg font-semibold">Configured Repositories</div>
+        {repositoriesQuery.data && repositories.length === 0 && !query && (
           <div className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
             No plugin repositories are configured.
           </div>
         )}
-        {repositoriesQuery.data && repositories.length === 0 && normalizedQuery && (
+        {repositoriesQuery.data && repositories.length === 0 && query && (
           <div className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
             No repositories match the current search.
           </div>
         )}
         <div className="flex flex-col gap-y-3">
           {repositories.map((repository) => {
-            const isLocalRepository = repository.ID === '00000000-0000-0000-0000-000000000000';
-            const isSyncing = syncRepositoryStatus === 'pending' && syncingArgs?.repositoryId === repository.ID;
-            const isDeleting = deleteRepositoryStatus === 'pending' && deletingId === repository.ID;
+            const isSyncing = isSyncPending && syncingRepositoryId === repository.ID;
+            const isDeleting = isDeletePending && deletingId === repository.ID;
 
             return (
               <div key={repository.ID} className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
@@ -109,28 +87,19 @@ const RepositoryPanel = ({ query }: Props) => {
                     <div className="font-semibold">{repository.Name}</div>
                     <div className="text-sm opacity-80">{repository.Url}</div>
                   </div>
-                  {isLocalRepository && (
-                    <span className="rounded-lg border border-panel-border px-2 py-1 text-xs">Local</span>
-                  )}
                 </div>
                 <div className="mb-3 flex flex-wrap gap-x-1 text-sm opacity-65">
                   <span>Last sync:</span>
                   <span>
-                    {repository.LastFetchedAt ? new Date(repository.LastFetchedAt).toLocaleString() : 'Never'}
+                    {repository.LastFetchedAt ? dayjs(repository.LastFetchedAt).format('D MMMM YYYY, HH:mm') : 'Never'}
                   </span>
                 </div>
-                {repository.StaleTime && (
-                  <div className="mb-3 flex flex-wrap gap-x-1 text-sm opacity-65">
-                    <span>Refresh interval:</span>
-                    <span>{repository.StaleTime}</span>
-                  </div>
-                )}
                 <div className="flex flex-wrap justify-start gap-3 sm:justify-end">
                   <Button
                     buttonType="secondary"
                     buttonSize="small"
                     onClick={() =>
-                      syncRepository({ repositoryId: repository.ID }, {
+                      syncRepository(repository.ID, {
                         onSuccess: () =>
                           toast.success('Repository synchronized', repository.Name),
                       })}
@@ -141,7 +110,6 @@ const RepositoryPanel = ({ query }: Props) => {
                   <Button
                     buttonType="danger"
                     buttonSize="small"
-                    disabled={isLocalRepository}
                     onClick={() => setRepositoryToDelete({ ID: repository.ID, Name: repository.Name })}
                     loading={isDeleting}
                   >
@@ -153,6 +121,11 @@ const RepositoryPanel = ({ query }: Props) => {
           })}
         </div>
       </div>
+
+      <RepositoryForm
+        show={isAddRepositoryOpen}
+        onClose={() => setIsAddRepositoryOpen(false)}
+      />
 
       <ConfirmationPromptModal
         show={!!repositoryToDelete}

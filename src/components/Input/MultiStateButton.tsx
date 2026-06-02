@@ -4,7 +4,7 @@ import cx from 'classnames';
 import Button from './Button';
 
 type Props = {
-  states: { label?: string, value: string }[];
+  states: readonly { label?: string, value: string }[];
   className?: string;
   alternateColor?: boolean;
   activeState: string;

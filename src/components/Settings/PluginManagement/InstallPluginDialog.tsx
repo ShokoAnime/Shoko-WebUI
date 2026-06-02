@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import ShokoMarkdown from '@/components/ShokoMarkdown';
 import toast from '@/components/Toast';
 import { getPackageInstallArgs } from '@/core/react-query/plugin-package/helpers';
 import { useInstallPluginPackageMutation } from '@/core/react-query/plugin-package/mutations';
@@ -14,6 +15,7 @@ import type {
 
 type Props = {
   entry?: PluginPackageCatalogEntryType;
+  currentVersion?: string;
   initialReleaseVersion?: string;
   show: boolean;
   onClose: () => void;
@@ -25,29 +27,26 @@ const releaseHasCompatibleArchive = (release: PluginPackageCatalogReleaseType) =
 const getPreferredArchive = (release?: PluginPackageCatalogReleaseType) =>
   release?.Archives.find(archive => archive.IsCompatible) ?? release?.Archives[0];
 
-const InstallPluginDialog = ({ entry, initialReleaseVersion, onClose, show }: Props) => {
+const InstallPluginDialog = ({ currentVersion, entry, initialReleaseVersion, onClose, show }: Props) => {
   const { mutate: installPlugin, status } = useInstallPluginPackageMutation();
-  const [selectedReleaseVersion, setSelectedReleaseVersion] = useState('');
-
-  useEffect(() => {
-    if (!entry || !show) return;
-
-    const preferredRelease = entry.Releases.find(release => release.Version === initialReleaseVersion)
-      ?? entry.Releases.find(releaseHasCompatibleArchive)
-      ?? entry.Releases[0];
-
-    setSelectedReleaseVersion(preferredRelease?.Version ?? '');
-  }, [entry, initialReleaseVersion, show]);
 
   const selectedRelease = useMemo<PluginPackageCatalogReleaseType | undefined>(
-    () => entry?.Releases.find(release => release.Version === selectedReleaseVersion),
-    [entry, selectedReleaseVersion],
+    () =>
+      entry?.Releases.find(release => release.Version === initialReleaseVersion)
+        ?? entry?.Releases.find(releaseHasCompatibleArchive)
+        ?? entry?.Releases[0],
+    [entry, initialReleaseVersion],
   );
 
   const selectedArchive = useMemo<PluginPackageCatalogArchiveType | undefined>(
     () => getPreferredArchive(selectedRelease),
     [selectedRelease],
   );
+  const selectedReleaseLabel = selectedRelease
+    ? `${selectedRelease.Version} (${selectedRelease.Channel})`
+    : '';
+  const isUpgrade = !!currentVersion && !!selectedRelease;
+  const releaseNotes = selectedRelease?.ReleaseNotes ?? 'No release notes available!';
 
   const canInstall = !!entry
     && !!selectedRelease
@@ -89,41 +88,39 @@ const InstallPluginDialog = ({ entry, initialReleaseVersion, onClose, show }: Pr
         </div>
       }
     >
-      {!entry
-        ? null
-        : (
-          <div className="flex flex-col gap-y-4 pb-6">
-            <div>{entry.Overview}</div>
-
-            <div className="flex flex-col gap-y-2">
-              <div className="text-base font-semibold">Version</div>
-              <div className="flex flex-wrap gap-2">
-                {entry.Releases.map(release => (
-                  <Button
-                    key={release.Version}
-                    buttonType={selectedReleaseVersion === release.Version ? 'primary' : 'secondary'}
-                    buttonSize="small"
-                    onClick={() => setSelectedReleaseVersion(release.Version)}
-                  >
-                    {release.Version}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {selectedRelease?.IsInstalled && (
-              <div className="rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 text-sm">
-                This version is already installed.
-              </div>
-            )}
-
-            {!selectedRelease?.IsInstalled && !selectedArchive?.IsCompatible && (
-              <div className="rounded-lg border border-button-danger-border bg-panel-background-alt px-4 py-3 text-sm text-button-danger-text">
-                This version is not compatible with the current server.
-              </div>
-            )}
+      {entry && selectedRelease && (
+        <>
+          <div className="grid w-74 grid-cols-2">
+            {isUpgrade
+              ? (
+                <>
+                  <div>Current Version:</div>
+                  <div className="font-bold">{currentVersion}</div>
+                  <div>Latest Version:</div>
+                </>
+              )
+              : <div>Version:</div>}
+            <div className="font-bold">{selectedReleaseLabel}</div>
           </div>
-        )}
+          <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-input p-4">
+            <ShokoMarkdown>
+              {releaseNotes}
+            </ShokoMarkdown>
+          </div>
+        </>
+      )}
+
+      {entry && selectedRelease?.IsInstalled && (
+        <div className="rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 text-sm">
+          This version is already installed.
+        </div>
+      )}
+
+      {entry && !selectedRelease?.IsInstalled && !selectedArchive?.IsCompatible && (
+        <div className="rounded-lg border border-button-danger-border bg-panel-background-alt px-4 py-3 text-sm text-button-danger-text">
+          This version is not compatible with the current server.
+        </div>
+      )}
     </ModalPanel>
   );
 };

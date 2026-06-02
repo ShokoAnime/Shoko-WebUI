@@ -9,10 +9,10 @@ export const usePluginsQuery = (filters: PluginListFilters = {}) =>
   useQuery<PluginInfoType[]>({
     queryKey: ['plugin', 'list', filters],
     queryFn: () => axios.get('Plugin', { params: filters }),
-    placeholderData: previousData => previousData,
+    select: plugins => plugins.filter(plugin => plugin.LoadOrder !== 0),
   });
 
-export const usePluginVersionsQuery = (pluginId: string | undefined) =>
+export const usePluginVersionsQuery = (pluginId?: string) =>
   useQuery<PluginInfoType[]>({
     queryKey: ['plugin', 'versions', pluginId],
     queryFn: () => axios.get(`Plugin/${pluginId}/All`),

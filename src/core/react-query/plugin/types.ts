@@ -9,13 +9,13 @@ export type PluginListFilters = {
   allVersions?: boolean;
 };
 
-export type UpdatePluginMutationArgs = {
+export type UpdatePluginRequestType = {
   pluginId: string;
-  isEnabled: boolean;
+  IsEnabled?: boolean;
   pluginVersion?: string;
 };
 
-export type DeletePluginMutationArgs = {
+export type DeletePluginRequestType = {
   pluginId: string;
   purgeConfiguration?: boolean;
   pluginVersion?: string;

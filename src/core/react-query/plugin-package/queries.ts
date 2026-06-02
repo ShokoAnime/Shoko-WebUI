@@ -20,19 +20,18 @@ export const usePluginPackagesQuery = (filters: PluginPackageListFilters) =>
   useQuery<ListResultType<PackageInfoType>>({
     queryKey: ['plugin-package', 'list', filters],
     queryFn: () => axios.get('Plugin/Package', { params: filters }),
-    placeholderData: previousData => previousData,
   });
 
-export const usePluginPackageVersionsQuery = (packageId: string | undefined) =>
+export const usePluginPackageVersionsQuery = (packageId?: string) =>
   useQuery<PackageInfoType[]>({
     queryKey: ['plugin-package', 'versions', packageId],
     queryFn: () => axios.get(`Plugin/Package/${packageId}`),
     enabled: !!packageId,
   });
 
-export const usePluginPackageManifestQuery = (packageId: string | undefined) =>
+export const usePluginPackageManifestQuery = (packageId?: string) =>
   useQuery<PackageManifestInfoType>({
-    queryKey: ['plugin-package', 'manifest', packageId],
+    queryKey: ['plugin-package', packageId, 'manifest'],
     queryFn: () => axios.get(`Plugin/Package/${packageId}/Manifest`),
     enabled: !!packageId,
   });

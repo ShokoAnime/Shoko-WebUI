@@ -4,8 +4,8 @@ export type PackageRepositoryInfoType = {
   ID: string;
   Name: string;
   Url: string;
-  LastFetchedAt?: string | null;
-  StaleTime?: string | null;
+  LastFetchedAt?: string;
+  StaleTime?: string;
 };
 
 export type PackageArchiveInfoType = {
@@ -16,22 +16,14 @@ export type PackageArchiveInfoType = {
   IsCompatible: boolean;
 };
 
-export type PluginPackageArchiveType = {
-  RuntimeIdentifier: string;
-  AbstractionVersion: string;
-  ArchiveUrl: string;
-  ArchiveChecksum: string;
-  IsCompatible: boolean;
-};
-
 export type PackageReleaseInfoType = {
   RepositoryID: string;
   Version: string;
-  Tag?: string | null;
-  SourceRevision?: string | null;
+  Tag?: string;
+  SourceRevision?: string;
   ReleasedAt: string;
   Channel: string;
-  ReleaseNotes?: string | null;
+  ReleaseNotes?: string;
   Archives: PackageArchiveInfoType[];
 };
 
@@ -45,26 +37,15 @@ export type PackageManifestInfoType = {
     MimeType: string;
     Width: number;
     Height: number;
-  } | null;
+  };
   Releases: PackageReleaseInfoType[];
   LastFetchedAt: string;
 };
 
 export type PackageInfoType = {
-  Repository?: PackageRepositoryInfoType | null;
+  Repository?: PackageRepositoryInfoType;
   Manifest: PackageManifestInfoType;
   Release: PackageReleaseInfoType;
   Archive: PackageArchiveInfoType;
-  Plugin?: PluginInfoType | null;
-};
-
-export type AddPackageRepositoryBodyType = {
-  name: string;
-  url: string;
-  staleTime?: string;
-};
-
-export type CheckForUpdatesBodyType = {
-  forceSync?: boolean;
-  performUpgrade?: boolean;
+  Plugin?: PluginInfoType;
 };

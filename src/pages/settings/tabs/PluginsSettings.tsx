@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Navigate, useParams } from 'react-router';
 import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -16,27 +17,37 @@ import {
   groupPluginPackages,
 } from '@/core/react-query/plugin-package/helpers';
 import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const sections = [
   { label: 'Installed', value: 'installed' },
   { label: 'Browse', value: 'browse' },
   { label: 'Updates', value: 'updates' },
   { label: 'Repositories', value: 'repositories' },
-];
+] as const;
 
-const PluginsSettings = () => {
-  const [section, setSection] = useState('installed');
+const defaultSection = 'installed';
+
+const isValidSection = (section?: string): section is typeof sections[number]['value'] =>
+  !!section && sections.some(item => item.value === section);
+
+const PluginManagementSettings = () => {
+  const navigate = useNavigateVoid();
+  const { section } = useParams();
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounceValue(query, 300);
+  const normalizedQuery = debouncedQuery.trim().toLocaleLowerCase();
+  const packageQuery = debouncedQuery.trim() || undefined;
+  const selectedSection = isValidSection(section) ? section : defaultSection;
 
   const packagesQuery = usePluginPackagesQuery({
     allowSync: false,
     onlyCompatible: false,
     onlyLatest: false,
     pageSize: 0,
-    query: debouncedQuery || undefined,
+    query: packageQuery,
   });
-  const pluginsQuery = usePluginsQuery({ allVersions: true, query: debouncedQuery || undefined });
+  const pluginsQuery = usePluginsQuery({ allVersions: true, query: packageQuery });
   const updatePackagesQuery = usePluginPackagesQuery({
     allowSync: false,
     onlyCompatible: false,
@@ -61,8 +72,6 @@ const PluginsSettings = () => {
     [updateEntries],
   );
   const filteredPluginUpdates = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase();
-
     if (!normalizedQuery) return pluginUpdates;
 
     return pluginUpdates.filter(
@@ -70,7 +79,7 @@ const PluginsSettings = () => {
         update.Name.toLocaleLowerCase().includes(normalizedQuery) || update.CurrentVersion.includes(normalizedQuery)
         || update.LatestVersion.includes(normalizedQuery),
     );
-  }, [pluginUpdates, query]);
+  }, [normalizedQuery, pluginUpdates]);
   const filteredUpdateEntries = useMemo(() => {
     const matchingPackageIds = new Set(filteredPluginUpdates.map(update => update.PackageID));
 
@@ -79,6 +88,32 @@ const PluginsSettings = () => {
 
   const isLoading = !packagesQuery.data || !pluginsQuery.data;
   const updatesLoading = !updatePackagesQuery.data;
+  let content = (
+    <>
+      {selectedSection === 'repositories' && <RepositoryPanel query={normalizedQuery} />}
+      {selectedSection === 'browse' && <CatalogPanel entries={groupedPackages} />}
+      {selectedSection === 'installed' && (
+        <InstalledPluginsPanel groupedPackages={groupedPackages} groupedPlugins={groupedPlugins} />
+      )}
+      {selectedSection === 'updates' && (
+        <PluginUpdatesPanel
+          entries={filteredUpdateEntries}
+          isLoading={updatesLoading}
+          updates={filteredPluginUpdates}
+        />
+      )}
+    </>
+  );
+
+  if (!isValidSection(section)) {
+    content = <Navigate replace to={`/webui/settings/plugins/${defaultSection}`} />;
+  } else if (isLoading) {
+    content = (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} spin size={4} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -93,8 +128,8 @@ const PluginsSettings = () => {
       <div className="border-b border-panel-border" />
 
       <MultiStateButton
-        activeState={section}
-        onStateChange={setSection}
+        activeState={selectedSection}
+        onStateChange={state => navigate(`/webui/settings/plugins/${state}`)}
         states={sections}
       />
 
@@ -107,30 +142,9 @@ const PluginsSettings = () => {
         startIcon={mdiMagnify}
       />
 
-      {isLoading
-        ? (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} spin size={4} />
-          </div>
-        )
-        : (
-          <>
-            {section === 'repositories' && <RepositoryPanel query={query} />}
-            {section === 'browse' && <CatalogPanel entries={groupedPackages} />}
-            {section === 'installed' && (
-              <InstalledPluginsPanel groupedPackages={groupedPackages} groupedPlugins={groupedPlugins} />
-            )}
-            {section === 'updates' && (
-              <PluginUpdatesPanel
-                entries={filteredUpdateEntries}
-                isLoading={updatesLoading}
-                updates={filteredPluginUpdates}
-              />
-            )}
-          </>
-        )}
+      {content}
     </>
   );
 };
 
-export default PluginsSettings;
+export default PluginManagementSettings;

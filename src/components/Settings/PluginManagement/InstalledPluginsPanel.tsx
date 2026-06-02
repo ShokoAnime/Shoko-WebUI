@@ -7,10 +7,17 @@ import { sortInstalledPluginGroups } from '@/core/react-query/plugin-package/hel
 
 import type { PluginGroupsType } from '@/core/react-query/plugin/types';
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
+import type { PluginInfoType } from '@/core/types/api/plugin';
 
 type Props = {
   groupedPackages: PluginPackageCatalogEntryType[];
   groupedPlugins: PluginGroupsType;
+};
+
+type SelectedUpgradeType = {
+  currentVersion: string;
+  packageId: string;
+  releaseVersion: string;
 };
 
 type BadgeProps = {
@@ -24,16 +31,47 @@ const Badge = ({ children, className }: BadgeProps) => (
   </span>
 );
 
+const releaseMatchesPlugin = (
+  release: PluginPackageCatalogEntryType['Releases'][number],
+  plugin: PluginInfoType,
+) =>
+  release.Version === plugin.Version
+  && (
+    (!!plugin.SourceRevision && release.SourceRevision === plugin.SourceRevision)
+    || (!!plugin.ReleaseTag && release.Tag === plugin.ReleaseTag)
+    || (!plugin.SourceRevision && !plugin.ReleaseTag)
+  );
+
+const findPackageEntryForPluginGroup = (
+  entries: PluginPackageCatalogEntryType[],
+  pluginId: string,
+  plugins: PluginInfoType[],
+) => {
+  const directMatch = entries.find(entry => entry.Plugin?.ID === pluginId || entry.PackageID === pluginId);
+  if (directMatch) return directMatch;
+
+  return entries.find((entry) => {
+    const hasMatchingPlugin = plugins.some((plugin) => {
+      if (entry.Plugin?.Name === plugin.Name) return true;
+      if (entry.Name !== plugin.Name) return false;
+
+      return entry.Releases.some(release => releaseMatchesPlugin(release, plugin));
+    });
+
+    return hasMatchingPlugin;
+  });
+};
+
 const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
-  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+  const [expandedPluginId, setExpandedPluginId] = useState<string>();
   const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Record<string, boolean>>({});
-  const [selectedPackageId, setSelectedPackageId] = useState<string>();
+  const [selectedUpgrade, setSelectedUpgrade] = useState<SelectedUpgradeType>();
 
   const pluginGroups = useMemo(
     () => sortInstalledPluginGroups(groupedPlugins, groupedPackages),
     [groupedPackages, groupedPlugins],
   );
-  const selectedEntry = groupedPackages.find(entry => entry.PackageID === selectedPackageId);
+  const selectedEntry = groupedPackages.find(entry => entry.PackageID === selectedUpgrade?.packageId);
 
   useEffect(() => {
     setFailedThumbnailUrls({});
@@ -47,9 +85,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
     <div className="flex flex-col gap-y-4">
       {pluginGroups.map(([pluginId, plugins]) => {
         const plugin = plugins[0];
-        const matchingEntry = groupedPackages.find(
-          entry => entry.Plugin?.ID === pluginId || entry.PackageID === pluginId,
-        );
+        const matchingEntry = findPackageEntryForPluginGroup(groupedPackages, pluginId, plugins);
         const thumbnailPlugin = plugins.find(item => item.Thumbnail);
         const thumbnailCandidates = [
           matchingEntry?.Thumbnail ? `/api/v3/Plugin/Package/${matchingEntry.PackageID}/Thumbnail` : undefined,
@@ -57,22 +93,29 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
           thumbnailPlugin?.Thumbnail ? `/api/v3/Plugin/${thumbnailPlugin.ID}/Thumbnail` : undefined,
         ].filter(candidate => !!candidate && !failedThumbnailUrls[candidate]);
         const thumbnailUrl = thumbnailCandidates[0];
-        const expanded = !!expandedIds[pluginId];
+        const expanded = expandedPluginId === pluginId;
         const updateEntry = groupedPackages.find(entry => entry.Plugin?.ID === pluginId && entry.HasUpdateAvailable);
         const hasReadOnlyVersions = plugins.every(
           installedPlugin => installedPlugin.RestartPending || !installedPlugin.CanUninstall,
         );
 
         return (
-          <article
+          <div
             key={pluginId}
             className="overflow-hidden rounded-xl border border-panel-border bg-panel-input"
           >
             <div className="flex flex-col p-4 lg:flex-row lg:items-start lg:gap-3">
-              <button
-                type="button"
-                className="flex min-w-0 flex-1 flex-col gap-4 text-left lg:flex-row"
-                onClick={() => setExpandedIds(state => ({ ...state, [pluginId]: !expanded }))}
+              <div
+                role="button"
+                tabIndex={0}
+                className="flex min-w-0 flex-1 cursor-pointer flex-col gap-4 text-left lg:flex-row"
+                onClick={() => setExpandedPluginId(currentId => (currentId === pluginId ? undefined : pluginId))}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return;
+
+                  event.preventDefault();
+                  setExpandedPluginId(currentId => (currentId === pluginId ? undefined : pluginId));
+                }}
               >
                 <div className="w-full shrink-0 lg:w-44 lg:flex-none">
                   {thumbnailUrl
@@ -81,14 +124,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                         src={thumbnailUrl}
                         alt={plugin.Name}
                         className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt object-contain"
-                        onError={() => {
-                          if (!thumbnailUrl) return;
-
-                          setFailedThumbnailUrls(prev => ({
-                            ...prev,
-                            [thumbnailUrl]: true,
-                          }));
-                        }}
+                        onError={() => setFailedThumbnailUrls(prev => ({ ...prev, [thumbnailUrl]: true }))}
                       />
                     )
                     : (
@@ -135,38 +171,42 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                       </Badge>
                     )}
                   </div>
-
-                  <div className="flex flex-wrap justify-end gap-3 pt-1">
-                    {updateEntry && (
-                      <Button
-                        buttonType="primary"
-                        buttonSize="small"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setSelectedPackageId(updateEntry.PackageID);
-                        }}
-                      >
-                        Upgrade
-                      </Button>
-                    )}
-                  </div>
                 </div>
-              </button>
+              </div>
+
+              {updateEntry && (
+                <div className="flex shrink-0 flex-wrap justify-end gap-3 pt-3 lg:pt-1">
+                  <Button
+                    buttonType="primary"
+                    buttonSize="small"
+                    onClick={() =>
+                      setSelectedUpgrade({
+                        currentVersion: updateEntry.Plugin?.Version ?? plugin.Version,
+                        packageId: updateEntry.PackageID,
+                        releaseVersion: updateEntry.Releases[0].Version,
+                      })}
+                  >
+                    Upgrade
+                  </Button>
+                </div>
+              )}
             </div>
 
             {expanded && (
               <div className="bg-panel-background-alt/30 px-4 pb-4">
-                <InstalledPluginVersions plugins={plugins} />
+                <InstalledPluginVersions packageEntry={matchingEntry} plugins={plugins} />
               </div>
             )}
-          </article>
+          </div>
         );
       })}
 
       <InstallPluginDialog
+        currentVersion={selectedUpgrade?.currentVersion}
         entry={selectedEntry}
+        initialReleaseVersion={selectedUpgrade?.releaseVersion}
         show={!!selectedEntry}
-        onClose={() => setSelectedPackageId(undefined)}
+        onClose={() => setSelectedUpgrade(undefined)}
       />
     </div>
   );

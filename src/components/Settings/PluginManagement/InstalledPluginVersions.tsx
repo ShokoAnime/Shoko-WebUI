@@ -1,17 +1,27 @@
 import React from 'react';
+import dayjs from 'dayjs';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import toast from '@/components/Toast';
 import {
   useDeleteAllPluginVersionsMutation,
   useDeletePluginMutation,
   useUpdatePluginMutation,
 } from '@/core/react-query/plugin/mutations';
+import { getPackageInstallArgs } from '@/core/react-query/plugin-package/helpers';
+import { useInstallPluginPackageMutation } from '@/core/react-query/plugin-package/mutations';
 
+import type {
+  PluginPackageCatalogArchiveType,
+  PluginPackageCatalogEntryType,
+  PluginPackageCatalogReleaseType,
+} from '@/core/react-query/plugin-package/types';
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
 type Props = {
+  packageEntry?: PluginPackageCatalogEntryType;
   plugins: PluginInfoType[];
 };
 
@@ -36,12 +46,41 @@ const Badge = ({ children, className }: BadgeProps) => (
   </span>
 );
 
-const InstalledPluginVersions = ({ plugins }: Props) => {
+const formatPluginDate = (date: string) => dayjs(date).format('D MMMM YYYY');
+
+const getPreferredArchive = (
+  plugin: PluginInfoType,
+  release?: PluginPackageCatalogReleaseType,
+): PluginPackageCatalogArchiveType | undefined =>
+  release?.Archives.find(
+    archive =>
+      archive.IsCompatible
+      && archive.RuntimeIdentifier === plugin.RuntimeIdentifier
+      && archive.AbstractionVersion === plugin.AbstractionVersion,
+  )
+    ?? release?.Archives.find(archive => archive.IsCompatible)
+    ?? release?.Archives[0];
+
+const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
   const { mutate: updatePlugin, status: updateStatus, variables: updateArgs } = useUpdatePluginMutation();
   const { mutate: deletePlugin, status: deleteStatus, variables: deleteArgs } = useDeletePluginMutation();
   const { mutate: deleteAllPluginVersions, status: deleteAllStatus, variables: deleteAllArgs } =
     useDeleteAllPluginVersionsMutation();
+  const { mutate: installPlugin, status: installStatus, variables: installArgs } = useInstallPluginPackageMutation();
   const [pendingDelete, setPendingDelete] = React.useState<PendingDeleteType | null>(null);
+  const [purgeConfiguration, setPurgeConfiguration] = React.useState(false);
+  const isUndoInstall = pendingDelete?.kind === 'version'
+    && pendingDelete.plugin.RestartPending
+    && pendingDelete.plugin.IsInstalled
+    && !pendingDelete.plugin.IsActive;
+  const showPurgeConfigurationOption = !!pendingDelete && !isUndoInstall;
+  const deleteModalTitle = pendingDelete?.kind === 'all'
+    ? 'Uninstall All Plugin Versions'
+    : 'Uninstall Plugin Version';
+  const closeDeletePrompt = () => {
+    setPendingDelete(null);
+    setPurgeConfiguration(false);
+  };
 
   // Get the first plugin in the list as a representative for the group
   const representativePlugin = plugins[0];
@@ -55,7 +94,10 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
             buttonType="danger"
             buttonSize="small"
             disabled={!representativePlugin.IsInstalled || !representativePlugin.CanUninstall}
-            onClick={() => setPendingDelete({ kind: 'all', plugin: representativePlugin })}
+            onClick={() => {
+              setPurgeConfiguration(false);
+              setPendingDelete({ kind: 'all', plugin: representativePlugin });
+            }}
             loading={deleteAllStatus === 'pending' && deleteAllArgs?.pluginId === representativePlugin.ID}
           >
             Uninstall All Versions
@@ -64,14 +106,19 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
       </div>
 
       {plugins.map((plugin) => {
-        // Determine if plugin is readonly (restart pending)
-        const isReadOnly = plugin.RestartPending;
+        const isPendingUninstall = plugin.RestartPending && !plugin.IsInstalled;
+        const isPendingInstall = plugin.RestartPending && plugin.IsInstalled && !plugin.IsActive;
+        const packageRelease = packageEntry?.Releases.find(release => release.Version === plugin.Version);
+        const packageArchive = getPreferredArchive(plugin, packageRelease);
+        const packageInstallArgs = packageEntry && packageRelease && packageArchive
+          ? getPackageInstallArgs(packageEntry.PackageID, packageRelease, packageArchive)
+          : undefined;
         // Determine if plugin is server-bundled (not user-installed)
         // A plugin is server-bundled if it has no containing directory or is not user-installed
         const isServerBundled = !plugin.IsInstalled || plugin.ContainingDirectory === null
           || plugin.ContainingDirectory === undefined;
-        // Determine if plugin can be uninstalled (user installed plugins that aren't restart pending)
-        const canUninstall = plugin.IsInstalled && !plugin.RestartPending && plugin.CanUninstall;
+        const canUninstall = plugin.IsInstalled && plugin.CanUninstall;
+        const canUndoUninstall = isPendingUninstall && !!packageInstallArgs && !!packageArchive?.IsCompatible;
         // Determine if plugin is core (should never be disabled)
         // Core plugins always have LoadOrder = 0
         const isCorePlugin = plugin.LoadOrder === 0;
@@ -88,6 +135,16 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                 {plugin.RestartPending && (
                   <Badge className="border border-orange-500/30 bg-orange-500/15 text-orange-100">
                     Restart required
+                  </Badge>
+                )}
+                {isPendingUninstall && (
+                  <Badge className="border border-red-500/50 bg-red-500/25 text-red-100">
+                    Pending uninstall
+                  </Badge>
+                )}
+                {isPendingInstall && (
+                  <Badge className="border border-green-500/30 bg-green-500/20 text-green-100">
+                    Pending install
                   </Badge>
                 )}
                 {!plugin.CanLoad && (
@@ -119,7 +176,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
 
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                 <span>Installed:</span>
-                <span>{new Date(plugin.InstalledAt).toLocaleDateString()}</span>
+                <span>{formatPluginDate(plugin.InstalledAt)}</span>
                 <span>•</span>
                 <span>Abstraction:</span>
                 <span>{plugin.AbstractionVersion}</span>
@@ -131,7 +188,10 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
 
             {plugin.RestartPending && (
               <div className="mt-4 rounded-lg border border-panel-border bg-panel-input px-4 py-3 text-sm">
-                Restart the server to finish removing or unloading this plugin.
+                {isPendingUninstall && 'Restart the server to finish uninstalling this plugin.'}
+                {isPendingInstall && 'Restart the server to finish installing this plugin.'}
+                {!isPendingUninstall && !isPendingInstall
+                  && 'Restart the server to apply the pending plugin state changes.'}
               </div>
             )}
 
@@ -142,7 +202,7 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                   buttonSize="small"
                   onClick={() =>
                     updatePlugin(
-                      { pluginId: plugin.ID, pluginVersion: plugin.Version, isEnabled: !plugin.IsEnabled },
+                      { pluginId: plugin.ID, pluginVersion: plugin.Version, IsEnabled: !plugin.IsEnabled },
                       {
                         onSuccess: () =>
                           toast.success(
@@ -152,22 +212,49 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
                         onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
                       },
                     )}
-                  disabled={isReadOnly || !plugin.CanEnableOrDisable}
+                  disabled={isPendingUninstall || !plugin.CanEnableOrDisable}
                   loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
                     && updateArgs?.pluginVersion === plugin.Version}
                 >
                   {plugin.IsEnabled ? 'Disable' : 'Enable'}
                 </Button>
-                <Button
-                  buttonType="danger"
-                  buttonSize="small"
-                  disabled={!canUninstall}
-                  onClick={() => setPendingDelete({ kind: 'version', plugin })}
-                  loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
-                    && deleteArgs?.pluginVersion === plugin.Version}
-                >
-                  Uninstall Version
-                </Button>
+                {isPendingUninstall
+                  ? (
+                    <Button
+                      buttonType="primary"
+                      buttonSize="small"
+                      disabled={!canUndoUninstall}
+                      onClick={() => {
+                        if (!packageInstallArgs) return;
+
+                        installPlugin(packageInstallArgs, {
+                          onSuccess: () =>
+                            toast.success('Pending uninstall undone', `${plugin.Name} ${plugin.Version}`),
+                          onError: () =>
+                            toast.error('Failed to undo pending uninstall', `${plugin.Name} ${plugin.Version}`),
+                        });
+                      }}
+                      loading={installStatus === 'pending' && installArgs?.packageId === packageEntry?.PackageID
+                        && installArgs?.releaseVersion === plugin.Version}
+                    >
+                      Undo Uninstall
+                    </Button>
+                  )
+                  : (
+                    <Button
+                      buttonType="danger"
+                      buttonSize="small"
+                      disabled={!canUninstall}
+                      onClick={() => {
+                        setPurgeConfiguration(false);
+                        setPendingDelete({ kind: 'version', plugin });
+                      }}
+                      loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
+                        && deleteArgs?.pluginVersion === plugin.Version}
+                    >
+                      {isPendingInstall ? 'Undo Install' : 'Uninstall Version'}
+                    </Button>
+                  )}
               </div>
             )}
           </div>
@@ -176,26 +263,36 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
 
       <ConfirmationPromptModal
         show={!!pendingDelete}
-        title={pendingDelete?.kind === 'all' ? 'Uninstall All Plugin Versions' : 'Uninstall Plugin Version'}
+        title={isUndoInstall ? 'Undo Pending Plugin Install' : deleteModalTitle}
         confirmButtonType="danger"
-        confirmText="Uninstall"
-        onClose={() => setPendingDelete(null)}
+        confirmText={isUndoInstall ? 'Undo Install' : 'Uninstall'}
+        onClose={closeDeletePrompt}
         onConfirm={() => {
           if (!pendingDelete) return;
 
           if (pendingDelete.kind === 'all') {
-            deleteAllPluginVersions({ pluginId: pendingDelete.plugin.ID }, {
+            deleteAllPluginVersions({ pluginId: pendingDelete.plugin.ID, purgeConfiguration }, {
               onSuccess: () => toast.success('All plugin versions uninstalled', pendingDelete.plugin.Name),
               onError: () => toast.error('Failed to uninstall all plugin versions', pendingDelete.plugin.Name),
             });
             return;
           }
 
-          deletePlugin({ pluginId: pendingDelete.plugin.ID, pluginVersion: pendingDelete.plugin.Version }, {
+          deletePlugin({
+            pluginId: pendingDelete.plugin.ID,
+            pluginVersion: pendingDelete.plugin.Version,
+            purgeConfiguration: isUndoInstall ? false : purgeConfiguration,
+          }, {
             onSuccess: () =>
-              toast.success('Plugin uninstalled', `${pendingDelete.plugin.Name} ${pendingDelete.plugin.Version}`),
+              toast.success(
+                isUndoInstall ? 'Pending install undone' : 'Plugin uninstalled',
+                `${pendingDelete.plugin.Name} ${pendingDelete.plugin.Version}`,
+              ),
             onError: () =>
-              toast.error('Failed to uninstall plugin', `${pendingDelete.plugin.Name} ${pendingDelete.plugin.Version}`),
+              toast.error(
+                isUndoInstall ? 'Failed to undo pending install' : 'Failed to uninstall plugin',
+                `${pendingDelete.plugin.Name} ${pendingDelete.plugin.Version}`,
+              ),
           });
         }}
       >
@@ -209,12 +306,26 @@ const InstalledPluginVersions = ({ plugins }: Props) => {
           )
           : (
             <div className="flex flex-wrap gap-x-1">
-              <span>Uninstall</span>
+              <span>{isUndoInstall ? 'Undo the pending install for' : 'Uninstall'}</span>
               <span className="font-semibold">{pendingDelete?.plugin.Name}</span>
               <span className="font-semibold">{pendingDelete?.plugin.Version}</span>
               <span>?</span>
             </div>
           )}
+        {showPurgeConfigurationOption && (
+          <div className="rounded-lg border border-panel-border bg-panel-input px-4 py-3">
+            <Checkbox
+              id="plugin-uninstall-purge-configuration"
+              isChecked={purgeConfiguration}
+              label="Also remove plugin configuration"
+              labelRight
+              onChange={event => setPurgeConfiguration(event.target.checked)}
+            />
+            <div className="mt-2 text-sm opacity-70">
+              Leave unchecked to keep configuration if the plugin is reinstalled later.
+            </div>
+          </div>
+        )}
       </ConfirmationPromptModal>
     </div>
   );

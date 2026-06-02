@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
+import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useAddPluginPackageRepositoryMutation } from '@/core/react-query/plugin-package/mutations';
 
-const RepositoryForm = () => {
-  const { mutate: addRepository, status } = useAddPluginPackageRepositoryMutation();
+type Props = {
+  show: boolean;
+  onClose: () => void;
+};
+
+const RepositoryForm = ({ onClose, show }: Props) => {
+  const { isPending, mutate: addRepository } = useAddPluginPackageRepositoryMutation();
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
 
@@ -14,6 +20,11 @@ const RepositoryForm = () => {
     setName('');
     setUrl('');
   };
+
+  useLayoutEffect(() => {
+    if (!show) return;
+    reset();
+  }, [show]);
 
   const handleSubmit = () => {
     if (!name.trim() || !url.trim()) {
@@ -25,13 +36,18 @@ const RepositoryForm = () => {
       onSuccess: () => {
         toast.success('Repository added', `${name.trim()} has been added.`);
         reset();
+        onClose();
       },
     });
   };
 
   return (
-    <div className="rounded-lg border border-panel-border bg-panel-input p-3">
-      <div className="mb-3 text-lg font-semibold">Add Repository</div>
+    <ModalPanel
+      show={show}
+      onRequestClose={onClose}
+      size="sm"
+      header="Add Repository"
+    >
       <div className="flex flex-col gap-y-3">
         <Input
           id="plugin-repository-name"
@@ -49,13 +65,16 @@ const RepositoryForm = () => {
           onChange={event => setUrl(event.target.value)}
           placeholder="https://example.com/manifest.json"
         />
-        <div className="flex justify-end">
-          <Button buttonType="primary" buttonSize="normal" onClick={handleSubmit} loading={status === 'pending'}>
-            Add Repository
-          </Button>
-        </div>
       </div>
-    </div>
+      <div className="mt-6 flex justify-end gap-x-3">
+        <Button buttonType="secondary" buttonSize="normal" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button buttonType="primary" buttonSize="normal" onClick={handleSubmit} loading={isPending}>
+          Add Repository
+        </Button>
+      </div>
+    </ModalPanel>
   );
 };
 

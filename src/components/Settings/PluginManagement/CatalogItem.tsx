@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import dayjs from 'dayjs';
 
 import Button from '@/components/Input/Button';
 
@@ -33,6 +34,8 @@ const getReleaseActionLabel = (release: PluginPackageCatalogReleaseType) => {
   return 'Unavailable';
 };
 
+const formatPluginDate = (date: string) => dayjs(date).format('D MMMM YYYY');
+
 const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
   const hasCompatibleArchive = release.Archives.some(archive => archive.IsCompatible);
 
@@ -52,7 +55,7 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
         </div>
 
         <div className="text-sm opacity-65 sm:shrink-0">
-          {`Released ${new Date(release.ReleasedAt).toLocaleDateString()}`}
+          {`Released ${formatPluginDate(release.ReleasedAt)}`}
         </div>
 
         <div className="flex w-full justify-start sm:w-auto sm:shrink-0 sm:justify-end">
@@ -216,7 +219,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                       </span>
                     </div>
                     <div className="mt-1 text-sm opacity-65">
-                      {`Released ${new Date(newestRelease.ReleasedAt).toLocaleDateString()}`}
+                      {`Released ${formatPluginDate(newestRelease.ReleasedAt)}`}
                     </div>
                   </div>
 

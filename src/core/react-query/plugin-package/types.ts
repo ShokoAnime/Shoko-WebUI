@@ -42,11 +42,22 @@ export type PluginPackageCatalogEntryType = {
   HasUpdateAvailable: boolean;
 };
 
-export type PackageInstallMutationArgs = {
+export type PackageInstallRequestType = {
   packageId: string;
   releaseVersion?: string;
   abstractionVersion?: string;
   runtimeIdentifier?: string;
+};
+
+export type AddPackageRepositoryRequestType = {
+  name: string;
+  url: string;
+  staleTime?: string;
+};
+
+export type CheckForUpdatesRequestType = {
+  forceSync?: boolean;
+  performUpgrade?: boolean;
 };
 
 export type PackageManifestLookup = Record<string, PluginPackageCatalogEntryType>;
