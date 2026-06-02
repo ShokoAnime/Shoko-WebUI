@@ -219,7 +219,6 @@ const SettingsPage = () => {
                               tabIndex={-1}
                               data-tooltip-id="tooltip"
                               data-tooltip-content={`Open ${page.Name} in new tab`}
-                              title={`Open ${page.Name} in new tab`}
                               onClick={event => event.stopPropagation()}
                               className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center justify-center rounded-md p-1 text-panel-text-primary opacity-60 transition-opacity hover:opacity-100"
                             >
