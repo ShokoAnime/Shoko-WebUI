@@ -18,10 +18,10 @@ const PluginPageEmbed = () => {
   // Reset height when navigating to a different page
   useEffect(() => {
     setIframeHeight(null);
-  // `pages` is a dependency because the iframe is only rendered once data
-  // loads (see the isPending early return below). Without it, the effect
-  // would fire on mount when the iframe doesn't exist yet, and then never
-  // re-run when pages arrive and the iframe enters the DOM.
+    // `pages` is a dependency because the iframe is only rendered once data
+    // loads (see the isPending early return below). Without it, the effect
+    // would fire on mount when the iframe doesn't exist yet, and then never
+    // re-run when pages arrive and the iframe enters the DOM.
   }, [pluginId, pageId, pages]);
 
   // Same-origin: track content height via ResizeObserver on the iframe document.
