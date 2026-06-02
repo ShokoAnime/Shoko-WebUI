@@ -126,7 +126,7 @@ const PluginPageEmbed = () => {
         ref={iframeRef}
         src={page.Url}
         title={page.Name}
-        sandbox="allow-scripts allow-forms allow-same-origin"
+        sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
         className="w-full rounded-lg"
         style={{ height: iframeHeight ?? undefined }}
       />
