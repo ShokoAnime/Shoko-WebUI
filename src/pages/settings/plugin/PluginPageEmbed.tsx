@@ -38,12 +38,9 @@ const PluginPageEmbed = () => {
         if (!doc?.body) return;
 
         const updateHeight = () => {
-          // The settings content container has 1.5rem padding on each side.
-          // The wrapper div applies `-m-6` (1.5rem per side) to cancel that
-          // padding so the iframe sits flush against the container edges. The
-          // iframe still measures from the content area, so we add 48px
-          // (3rem = 2× the padding) to restore the full visual height.
-          const height = doc.body.scrollHeight + 48;
+          // Without this offset the iframe clips its content.
+          // The exact source of the 24px discrepancy is unknown — revisit.
+          const height = doc.body.scrollHeight + 24;
           if (height > 0) setIframeHeight(height);
         };
 
@@ -94,9 +91,8 @@ const PluginPageEmbed = () => {
         && 'height' in data
         && typeof data.height === 'number'
       ) {
-        // The +48 offset mirrors the same-origin logic above — see the
-        // updateHeight comment in the ResizeObserver effect for details.
-        const safeHeight = Math.max(50, Math.min(data.height, 8000)) + 48;
+        // + 24 offset mirrors the same-origin logic above — revisit.
+        const safeHeight = Math.max(50, Math.min(data.height, 8000)) + 24;
         setIframeHeight(safeHeight);
       }
     };
@@ -121,7 +117,7 @@ const PluginPageEmbed = () => {
   }
 
   return (
-    <div className="-m-6 flex w-[calc(100%+3rem)] grow rounded-lg">
+    <div className="flex w-full grow rounded-lg">
       <iframe
         ref={iframeRef}
         src={page.Url}

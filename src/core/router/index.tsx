@@ -126,7 +126,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKeys />} />
-            <Route path="plugin/:pluginId/:pageId" element={<PluginPageEmbed />} />
+            <Route path="plugin/config/:pluginId/:pageId" element={<PluginPageEmbed />} />
           </Route>
         </Route>
       </Route>

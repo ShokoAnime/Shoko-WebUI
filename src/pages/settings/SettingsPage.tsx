@@ -4,6 +4,7 @@ import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { groupBy, isEmpty, isEqual, map } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -30,7 +31,6 @@ const items = [
   // { name: 'Themes', path: 'themes' },
   { name: 'API Keys', path: 'api-keys' },
 ];
-
 const SettingsPage = () => {
   const dispatch = useDispatch();
 
@@ -69,6 +69,8 @@ const SettingsPage = () => {
     if (pathname.includes('settings/dynamic/') || pathname.includes('settings/plugin/')) return true;
     return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
+
+  const isPluginConfigPage = pathname.includes('settings/plugin/config/');
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
   useEffect(() => {
@@ -189,25 +191,26 @@ const SettingsPage = () => {
                       page.CanEmbed
                         ? (
                           <NavLink
-                            to={`plugin/${groupId}/${page.ID}`}
+                            to={`plugin/config/${groupId}/${page.ID}`}
                             className={({ isActive }) => (isActive
                               ? 'relative w-full text-center bg-panel-menu-item-background py-2 px-10 rounded-lg text-panel-menu-item-text'
                               : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
                             key={page.ID}
                           >
-                            <span>{page.Name}</span>
-                            <a
-                              href={page.Url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              tabIndex={-1}
+                            {page.Name}
+                            <button
+                              type="button"
                               data-tooltip-id="tooltip"
                               data-tooltip-content={`Open ${page.Name} in new tab`}
-                              onClick={event => event.stopPropagation()}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                window.open(page.Url, '_blank', 'noopener,noreferrer');
+                              }}
                               className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center justify-center rounded-md p-1 text-panel-text-primary opacity-60 transition-opacity hover:opacity-100"
                             >
                               <Icon path={mdiOpenInNew} size={0.7} />
-                            </a>
+                            </button>
                           </NavLink>
                         )
                         : (
@@ -230,7 +233,12 @@ const SettingsPage = () => {
           </div>
         </div>
       </div>
-      <div className="flex min-h-full w-175 flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+      <div
+        className={cx(
+          'flex min-h-full w-175 flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent',
+          !isPluginConfigPage && 'p-6',
+        )}
+      >
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
