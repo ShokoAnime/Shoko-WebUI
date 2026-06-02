@@ -207,11 +207,25 @@ const SettingsPage = () => {
                           <NavLink
                             to={`plugin/${group.id}/${page.ID}`}
                             className={({ isActive }) => (isActive
-                              ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
-                              : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
+                              ? 'relative w-full text-center bg-panel-menu-item-background py-2 px-10 rounded-lg text-panel-menu-item-text'
+                              : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
                             key={page.ID}
                           >
-                            {page.Name}
+                            <span>{page.Name}</span>
+                            <a
+                              role="button"
+                              href={page.Url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              tabIndex={-1}
+                              data-tooltip-id="tooltip"
+                              data-tooltip-content={`Open ${page.Name} in new tab`}
+                              title={`Open ${page.Name} in new tab`}
+                              onClick={event => event.stopPropagation()}
+                              className="absolute top-1/2 right-2 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-md p-1 opacity-60 transition-opacity hover:opacity-100"
+                            >
+                              <Icon path={mdiOpenInNew} size={0.7} />
+                            </a>
                           </NavLink>
                         )
                         : (
