@@ -4,7 +4,7 @@ import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { isEqual } from 'lodash';
+import { groupBy, isEmpty, isEqual, map } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -15,7 +15,6 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 import { useDispatch } from '@/core/store';
 
-import type { SharedPluginPageType } from '@/core/types/api/plugin';
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
 const items = [
@@ -45,22 +44,7 @@ const SettingsPage = () => {
 
   const pluginPages = usePluginPagesQuery().data;
 
-  const pluginGroups = useMemo(() => {
-    if (!pluginPages) return [];
-    const groups: { id: string, name: string, pages: SharedPluginPageType[] }[] = [];
-    const seen = new Map<string, SharedPluginPageType[]>();
-    for (const page of pluginPages) {
-      const pluginId = page.PluginInfo.ID;
-      if (!seen.has(pluginId)) {
-        seen.set(pluginId, []);
-      }
-      seen.get(pluginId)!.push(page);
-    }
-    for (const [id, pages] of seen.entries()) {
-      groups.push({ id, name: pages[0].PluginInfo.Name, pages });
-    }
-    return groups;
-  }, [pluginPages]);
+  const pluginGroups = groupBy(pluginPages, page => page.PluginInfo.ID);
 
   const [newSettings, setNewSettings] = useState(settings);
 
@@ -193,19 +177,19 @@ const SettingsPage = () => {
                 {item.name}
               </NavLink>
             ))}
-            {pluginGroups.length > 0 && (
+            {!isEmpty(pluginGroups) && (
               <div className="mt-6 w-full border-t border-panel-border pt-6">
                 <div className="mb-4 text-center text-lg">Plugins</div>
-                {pluginGroups.map(group => (
-                  <div className="mb-4 flex flex-col gap-y-2" key={group.id}>
+                {map(pluginGroups, (group, groupId) => (
+                  <div className="mb-4 flex flex-col gap-y-2" key={groupId}>
                     <div className="px-2 text-center text-sm text-panel-text-primary opacity-60">
-                      {group.name}
+                      {group[0].Name}
                     </div>
-                    {group.pages.map(page => (
+                    {group.map(page => (
                       page.CanEmbed
                         ? (
                           <NavLink
-                            to={`plugin/${group.id}/${page.ID}`}
+                            to={`plugin/${groupId}/${page.ID}`}
                             className={({ isActive }) => (isActive
                               ? 'relative w-full text-center bg-panel-menu-item-background py-2 px-10 rounded-lg text-panel-menu-item-text'
                               : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
