@@ -1,13 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 
-import type { ReleaseInfoSettingsType, ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
+import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
   initialized: boolean;
   providers: ReleaseProviderInfoType[];
-  releaseInfoSettings: ReleaseInfoSettingsType;
   webuiProviders: ReleaseProviderInfoType[];
 };
 
@@ -31,7 +30,6 @@ type ToggleProviderActionType = {
 const initialState: State = {
   initialized: false,
   providers: [],
-  releaseInfoSettings: { ParallelMode: false },
   webuiProviders: [],
 };
 
@@ -46,9 +44,6 @@ const release = createSlice({
       sliceState.providers = action.payload.providers;
       sliceState.webuiProviders = action.payload.webuiProviders;
       sliceState.initialized = true;
-    },
-    setReleaseInfoSettings(sliceState, action: PayloadAction<ReleaseInfoSettingsType>) {
-      sliceState.releaseInfoSettings = action.payload;
     },
     reorderProvider(sliceState, action: PayloadAction<ReorderProviderActionType>) {
       const { destinationIndex, sourceIndex, type } = action.payload;
@@ -74,7 +69,6 @@ export const {
   clearReleaseSettings,
   reorderProvider,
   setProviders,
-  setReleaseInfoSettings,
   toggleProvider,
 } = release.actions;
 

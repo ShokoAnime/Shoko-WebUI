@@ -2,13 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 
-import type { ReleaseInfoSettingsType, ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
-
-export const useReleaseInfoSummaryQuery = () =>
-  useQuery<ReleaseInfoSettingsType>({
-    queryKey: ['release-info', 'summary'],
-    queryFn: () => axios.get('ReleaseInfo/Summary'),
-  });
+import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
 
 export const useReleaseInfoProvidersQuery = (noStale = false) =>
   useQuery<ReleaseProviderInfoType[]>({
