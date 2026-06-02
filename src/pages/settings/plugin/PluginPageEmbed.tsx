@@ -8,7 +8,7 @@ import { usePluginPagesForPluginQuery } from '@/core/react-query/plugin/queries'
 const PluginPageEmbed = () => {
   const { pageId = '', pluginId = '' } = useParams();
 
-  const { data: pages, isPending } = usePluginPagesForPluginQuery(pluginId);
+  const { data: pages, isPending } = usePluginPagesForPluginQuery(pluginId, pluginId !== '');
 
   const page = pages?.find(pgEntry => pgEntry.ID === pageId);
 
@@ -34,7 +34,12 @@ const PluginPageEmbed = () => {
         if (!doc?.body) return;
 
         const updateHeight = () => {
-          const height = doc.body.scrollHeight + 48; // We have a 3rem margin we need to negate.
+          // The settings content container has 1.5rem padding on each side.
+          // The wrapper div applies `-m-6` (1.5rem per side) to cancel that
+          // padding so the iframe sits flush against the container edges. The
+          // iframe still measures from the content area, so we add 48px
+          // (3rem = 2× the padding) to restore the full visual height.
+          const height = doc.body.scrollHeight + 48;
           if (height > 0) setIframeHeight(height);
         };
 
@@ -57,7 +62,7 @@ const PluginPageEmbed = () => {
       iframe.removeEventListener('load', setupObserver);
       resizeObserver?.disconnect();
     };
-  }, [pluginId, pageId, pages]);
+  }, [pluginId, pageId]);
 
   // Cross-origin: listen for postMessage from cooperating plugin pages.
   // Plugin pages send: { type: 'shoko-plugin-resize', height: <number> }
@@ -74,6 +79,7 @@ const PluginPageEmbed = () => {
 
     const handler = (event: MessageEvent) => {
       if (event.origin !== expectedOrigin) return;
+      if (event.source !== iframeRef.current?.contentWindow) return;
 
       const data: unknown = event.data;
       if (
@@ -84,7 +90,10 @@ const PluginPageEmbed = () => {
         && 'height' in data
         && typeof data.height === 'number'
       ) {
-        setIframeHeight(data.height);
+        // The +48 offset mirrors the same-origin logic above — see the
+        // updateHeight comment in the ResizeObserver effect for details.
+        const safeHeight = Math.max(50, Math.min(data.height, 8000)) + 48;
+        setIframeHeight(safeHeight);
       }
     };
     globalThis.addEventListener('message', handler);
@@ -113,6 +122,7 @@ const PluginPageEmbed = () => {
         ref={iframeRef}
         src={page.Url}
         title={page.Name}
+        sandbox="allow-scripts allow-forms allow-same-origin"
         className="w-full rounded-lg"
         style={{ height: iframeHeight ?? undefined }}
       />

@@ -40,5 +40,8 @@ export type PluginPageType = {
   Name: string;
   Url: string;
   CanEmbed: boolean;
-  PluginInfo?: PluginInfoType;
+};
+
+export type SharedPluginPageType = PluginPageType & {
+  PluginInfo: PluginInfoType;
 };

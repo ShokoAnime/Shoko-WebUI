@@ -15,6 +15,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 import { useDispatch } from '@/core/store';
 
+import type { SharedPluginPageType } from '@/core/types/api/plugin';
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
 const items = [
@@ -46,17 +47,20 @@ const SettingsPage = () => {
 
   const pluginGroups = useMemo(() => {
     if (!pluginPages) return [];
-    const groups: { id: string, name: string, pages: typeof pluginPages }[] = [];
-    const seen = new Map<string, typeof pluginPages>();
-    for (const page of pluginPages) {
-      const pluginId = page.PluginInfo!.ID;
+    const sharedPages = pluginPages.filter(
+      (page): page is SharedPluginPageType => 'PluginInfo' in page,
+    );
+    const groups: { id: string, name: string, pages: SharedPluginPageType[] }[] = [];
+    const seen = new Map<string, SharedPluginPageType[]>();
+    for (const page of sharedPages) {
+      const pluginId = page.PluginInfo.ID;
       if (!seen.has(pluginId)) {
         seen.set(pluginId, []);
       }
       seen.get(pluginId)!.push(page);
     }
     for (const [id, pages] of seen.entries()) {
-      groups.push({ id, name: pages[0].PluginInfo!.Name, pages });
+      groups.push({ id, name: pages[0].PluginInfo.Name, pages });
     }
     return groups;
   }, [pluginPages]);
@@ -81,7 +85,7 @@ const SettingsPage = () => {
   const isSpecialPage = useMemo(() => {
     const path = pathname.split('/').pop();
     if (!path) return false;
-    if (pathname.includes('settings/dynamic/') || pathname.includes('settings/plugin')) return true;
+    if (pathname.includes('settings/dynamic/') || pathname.includes('settings/plugin/')) return true;
     return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
 
@@ -208,7 +212,7 @@ const SettingsPage = () => {
                             className={({ isActive }) => (isActive
                               ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
                               : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
-                            key={page.Name}
+                            key={page.ID}
                           >
                             {page.Name}
                           </NavLink>
@@ -219,7 +223,7 @@ const SettingsPage = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex w-full items-center justify-center gap-x-2 rounded-lg p-2 transition-colors hover:bg-panel-menu-item-background-hover"
-                            key={page.Name}
+                            key={page.ID}
                           >
                             {page.Name}
                             <Icon path={mdiOpenInNew} size={0.7} />
