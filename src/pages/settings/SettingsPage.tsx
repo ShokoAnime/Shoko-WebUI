@@ -43,7 +43,7 @@ const SettingsPage = () => {
   const settings = settingsQuery.data;
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
-  const { data: pluginPages } = usePluginPagesQuery();
+  const pluginPages = usePluginPagesQuery().data;
 
   const pluginGroups = useMemo(() => {
     if (!pluginPages) return [];
