@@ -54,6 +54,13 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.43",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.43/Shoko-WebUI-v2.6.0-dev.43.zip",
+      "checksum": "sha256:174e6b9d4570d998b835f2d880dd38811cc5f53d6b48efe7be4ce5078deb959c",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* remove: ReleaseInfo parallel mode and settings endpoint by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1343\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.42...v2.6.0-dev.43\n"
+    },
+    {
       "version": "2.6.0-dev.42",
       "minServerVersion": "6.0.0-dev.73",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.42/Shoko-WebUI-v2.6.0-dev.42.zip",
