@@ -8,11 +8,13 @@ export const usePluginPagesQuery = () =>
   useQuery<PluginPageType[]>({
     queryKey: ['plugin', 'pages'],
     queryFn: () => axios.get('Plugin/Pages'),
+    staleTime: 86400 * 100000,
   });
 
 export const usePluginPagesForPluginQuery = (pluginId: string, enabled = true) =>
   useQuery<PluginPageType[]>({
     queryKey: ['plugin', 'pages', pluginId],
     queryFn: () => axios.get(`Plugin/${pluginId}/Pages`),
+    staleTime: 86400 * 100000,
     enabled,
   });
