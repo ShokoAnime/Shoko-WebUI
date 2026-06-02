@@ -36,6 +36,7 @@ export type PluginInfoType = {
 };
 
 export type PluginPageType = {
+  ID: string;
   Name: string;
   Url: string;
   CanEmbed: boolean;

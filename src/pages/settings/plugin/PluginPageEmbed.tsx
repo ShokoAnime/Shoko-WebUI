@@ -6,10 +6,11 @@ import { Icon } from '@mdi/react';
 import { usePluginPagesForPluginQuery } from '@/core/react-query/plugin/queries';
 
 const PluginPageEmbed = () => {
-  const { pageIndex: pageIndexStr = '0', pluginId = '' } = useParams();
-  const pageIndex = Number(pageIndexStr);
+  const { pageId = '', pluginId = '' } = useParams();
 
   const { data: pages, isPending } = usePluginPagesForPluginQuery(pluginId);
+
+  const page = pages?.find(pgEntry => pgEntry.ID === pageId);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeHeight, setIframeHeight] = useState<number | null>(null);
@@ -17,7 +18,7 @@ const PluginPageEmbed = () => {
   // Reset height when navigating to a different page
   useEffect(() => {
     setIframeHeight(null);
-  }, [pluginId, pageIndex]);
+  }, [pluginId, pageId]);
 
   // Same-origin: track content height via ResizeObserver on the iframe document.
   // Cross-origin iframes throw on contentDocument access — caught silently.
@@ -56,7 +57,7 @@ const PluginPageEmbed = () => {
       iframe.removeEventListener('load', setupObserver);
       resizeObserver?.disconnect();
     };
-  }, [pluginId, pageIndex, pages]);
+  }, [pluginId, pageId, pages]);
 
   // Cross-origin: listen for postMessage from cooperating plugin pages.
   // Plugin pages send: { type: 'shoko-plugin-resize', height: <number> }
@@ -85,8 +86,6 @@ const PluginPageEmbed = () => {
       </div>
     );
   }
-
-  const page = pages?.[pageIndex];
 
   if (!page) {
     return (
