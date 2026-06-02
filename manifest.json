@@ -54,6 +54,13 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.42",
+      "minServerVersion": "6.0.0-dev.73",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.42/Shoko-WebUI-v2.6.0-dev.42.zip",
+      "checksum": "sha256:6c63438ff3e4023071e06bd441cc83b5edf417dc2cfa165860eb92766799efbd",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Migrate renamers to new system, add dynamic UI by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1342\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.41...v2.6.0-dev.42\n"
+    },
+    {
       "version": "2.6.0-dev.41",
       "minServerVersion": "6.0.0-dev.73",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.41/Shoko-WebUI-v2.6.0-dev.41.zip",
