@@ -49,14 +49,14 @@ const SettingsPage = () => {
     const groups: { id: string, name: string, pages: typeof pluginPages }[] = [];
     const seen = new Map<string, typeof pluginPages>();
     for (const page of pluginPages) {
-      const pluginId = page.PluginInfo?.ID ?? '_unknown';
+      const pluginId = page.PluginInfo!.ID;
       if (!seen.has(pluginId)) {
         seen.set(pluginId, []);
       }
       seen.get(pluginId)!.push(page);
     }
     for (const [id, pages] of seen.entries()) {
-      groups.push({ id, name: pages[0].PluginInfo?.Name ?? id, pages });
+      groups.push({ id, name: pages[0].PluginInfo!.Name, pages });
     }
     return groups;
   }, [pluginPages]);
@@ -200,11 +200,11 @@ const SettingsPage = () => {
                     <div className="px-2 text-sm text-panel-text-primary opacity-60">
                       {group.name}
                     </div>
-                    {group.pages.map((page, pageIdx) => (
+                    {group.pages.map(page => (
                       page.CanEmbed
                         ? (
                           <NavLink
-                            to={`plugin/${group.id}/${pageIdx}`}
+                            to={`plugin/${group.id}/${page.ID}`}
                             className={({ isActive }) => (isActive
                               ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
                               : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
