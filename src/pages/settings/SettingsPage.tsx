@@ -2,13 +2,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
-import { mdiLoading } from '@mdi/js';
+import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { isEqual } from 'lodash';
+import { groupBy, isEmpty, isEqual, map } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
+import { usePluginPagesQuery } from '@/core/react-query/plugin/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
@@ -41,6 +42,10 @@ const SettingsPage = () => {
   const settings = settingsQuery.data;
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
+  const pluginPages = usePluginPagesQuery().data;
+
+  const pluginGroups = groupBy(pluginPages, page => page.PluginInfo.ID);
+
   const [newSettings, setNewSettings] = useState(settings);
 
   useEffect(() => {
@@ -61,7 +66,7 @@ const SettingsPage = () => {
   const isSpecialPage = useMemo(() => {
     const path = pathname.split('/').pop();
     if (!path) return false;
-    if (pathname.includes('settings/dynamic/')) return true;
+    if (pathname.includes('settings/dynamic/') || pathname.includes('settings/plugin/')) return true;
     return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
 
@@ -172,6 +177,56 @@ const SettingsPage = () => {
                 {item.name}
               </NavLink>
             ))}
+            {!isEmpty(pluginGroups) && (
+              <div className="mt-6 w-full border-t border-panel-border pt-6">
+                <div className="mb-4 text-center text-lg">Plugins</div>
+                {map(pluginGroups, (group, groupId) => (
+                  <div className="mb-4 flex flex-col gap-y-2" key={groupId}>
+                    <div className="px-2 text-center text-sm text-panel-text-primary opacity-60">
+                      {group[0].PluginInfo.Name}
+                    </div>
+                    {group.map(page => (
+                      page.CanEmbed
+                        ? (
+                          <NavLink
+                            to={`plugin/${groupId}/${page.ID}`}
+                            className={({ isActive }) => (isActive
+                              ? 'relative w-full text-center bg-panel-menu-item-background py-2 px-10 rounded-lg text-panel-menu-item-text'
+                              : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
+                            key={page.ID}
+                          >
+                            <span>{page.Name}</span>
+                            <a
+                              href={page.Url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              tabIndex={-1}
+                              data-tooltip-id="tooltip"
+                              data-tooltip-content={`Open ${page.Name} in new tab`}
+                              onClick={event => event.stopPropagation()}
+                              className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center justify-center rounded-md p-1 text-panel-text-primary opacity-60 transition-opacity hover:opacity-100"
+                            >
+                              <Icon path={mdiOpenInNew} size={0.7} />
+                            </a>
+                          </NavLink>
+                        )
+                        : (
+                          <a
+                            href={page.Url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex w-full items-center justify-center gap-x-2 rounded-lg p-2 transition-colors hover:bg-panel-menu-item-background-hover"
+                            key={page.ID}
+                          >
+                            {page.Name}
+                            <Icon path={mdiOpenInNew} size={0.7} />
+                          </a>
+                        )
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

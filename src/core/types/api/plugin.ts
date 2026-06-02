@@ -34,3 +34,14 @@ export type PluginInfoType = {
   ContainingDirectory?: string;
   DLLs: string[];
 };
+
+export type PluginPageType = {
+  ID: string;
+  Name: string;
+  Url: string;
+  CanEmbed: boolean;
+};
+
+export type SharedPluginPageType = PluginPageType & {
+  PluginInfo: PluginInfoType;
+};
