@@ -117,7 +117,7 @@ const PluginPageEmbed = () => {
   }
 
   return (
-    <div className="-m-6 w-[calc(100%+3rem)] rounded-lg">
+    <div className="flex grow -m-6 w-[calc(100%+3rem)] rounded-lg">
       <iframe
         ref={iframeRef}
         src={page.Url}
