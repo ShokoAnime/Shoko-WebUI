@@ -183,7 +183,7 @@ const SettingsPage = () => {
                 {map(pluginGroups, (group, groupId) => (
                   <div className="mb-4 flex flex-col gap-y-2" key={groupId}>
                     <div className="px-2 text-center text-sm text-panel-text-primary opacity-60">
-                      {group[0].Name}
+                      {group[0].PluginInfo.Name}
                     </div>
                     {group.map(page => (
                       page.CanEmbed
