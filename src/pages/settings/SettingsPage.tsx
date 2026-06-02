@@ -198,7 +198,7 @@ const SettingsPage = () => {
                 <div className="mb-4 text-center text-lg">Plugins</div>
                 {pluginGroups.map(group => (
                   <div className="mb-4 flex flex-col gap-y-2" key={group.id}>
-                    <div className="px-2 text-sm text-panel-text-primary opacity-60">
+                    <div className="px-2 text-center text-sm text-panel-text-primary opacity-60">
                       {group.name}
                     </div>
                     {group.pages.map(page => (
@@ -213,7 +213,6 @@ const SettingsPage = () => {
                           >
                             <span>{page.Name}</span>
                             <a
-                              role="button"
                               href={page.Url}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -222,7 +221,7 @@ const SettingsPage = () => {
                               data-tooltip-content={`Open ${page.Name} in new tab`}
                               title={`Open ${page.Name} in new tab`}
                               onClick={event => event.stopPropagation()}
-                              className="absolute top-1/2 right-2 flex -translate-y-1/2 cursor-pointer items-center justify-center rounded-md p-1 opacity-60 transition-opacity hover:opacity-100"
+                              className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center justify-center rounded-md p-1 text-panel-text-primary opacity-60 transition-opacity hover:opacity-100"
                             >
                               <Icon path={mdiOpenInNew} size={0.7} />
                             </a>
