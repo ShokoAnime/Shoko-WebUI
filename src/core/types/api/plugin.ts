@@ -1,3 +1,5 @@
+import type { ReleaseChannelType } from '@/core/types/api/init';
+
 export type PackageThumbnailInfoType = {
   MimeType: string;
   Width: number;
