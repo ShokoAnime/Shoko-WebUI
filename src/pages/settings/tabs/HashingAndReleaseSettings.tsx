@@ -13,15 +13,12 @@ import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/Rel
 import toast from '@/components/Toast';
 import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
-import {
-  useUpdateReleaseInfoProvidersMutation,
-  useUpdateReleaseInfoSettingsMutation,
-} from '@/core/react-query/release-info/mutations';
-import { useReleaseInfoProvidersQuery, useReleaseInfoSummaryQuery } from '@/core/react-query/release-info/queries';
+import { useUpdateReleaseInfoProvidersMutation } from '@/core/react-query/release-info/mutations';
+import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
-import { clearReleaseSettings, setProviders, setReleaseInfoSettings } from '@/core/slices/settings/release';
+import { clearReleaseSettings, setProviders } from '@/core/slices/settings/release';
 import { useDispatch, useSelector } from '@/core/store';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
@@ -30,22 +27,15 @@ import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized
 
 const HashingAndReleaseSettings = () => {
   const dispatch = useDispatch();
-  const {
-    initialized,
-    providers,
-    releaseInfoSettings,
-    webuiProviders,
-  } = useSelector(state => state.settings.release);
+  const { initialized, providers, webuiProviders } = useSelector(state => state.settings.release);
   const { show: showProviderInfoModal } = useSelector(state => state.modals.providerInfo);
 
   const settings = useSettingsQuery().data;
   const releaseProvidersQuery = useReleaseInfoProvidersQuery();
-  const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
   const hashingProvidersQuery = useHashingProvidersQuery();
   const hashingSummaryQuery = useHashingSummaryQuery();
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
-  const { mutate: updateReleaseInfoSettings } = useUpdateReleaseInfoSettingsMutation();
   const { mutate: updateReleaseInfoProviders } = useUpdateReleaseInfoProvidersMutation();
   const { mutate: updateHashingSettings } = useUpdateHashingSettingsMutation();
 
@@ -58,12 +48,9 @@ const HashingAndReleaseSettings = () => {
 
   useEffect(() => {
     if (
-      !releaseProvidersQuery.data || !releaseProviderSummaryQuery.data || !hashingProvidersQuery.data
-      || !hashingSummaryQuery.data
+      !releaseProvidersQuery.data || !hashingProvidersQuery.data || !hashingSummaryQuery.data
     ) return;
     setHashingSettings(hashingSummaryQuery.data);
-
-    dispatch(setReleaseInfoSettings({ ParallelMode: releaseProviderSummaryQuery.data.ParallelMode ?? false }));
 
     const cleanWebuiProviders = settings.WebUI_Settings.releaseInfoProviders
       .map((webuiProvider) => {
@@ -83,7 +70,6 @@ const HashingAndReleaseSettings = () => {
   }, [
     hashingProvidersQuery.data,
     hashingSummaryQuery.data,
-    releaseProviderSummaryQuery.data,
     releaseProvidersQuery.data,
     settings,
     dispatch,
@@ -98,11 +84,9 @@ const HashingAndReleaseSettings = () => {
 
   const hashingSettingsChanged = hashingSummaryQuery.data?.ParallelMode !== hashingSettings.ParallelMode;
   const releaseProvidersChanged = !isEqual(releaseProvidersQuery.data, providers);
-  const releaseInfoSettingsChanged =
-    releaseProviderSummaryQuery.data?.ParallelMode !== releaseInfoSettings.ParallelMode;
   const webuiProvidersChanged = !isEqual(settings.WebUI_Settings.releaseInfoProviders, newWebuiProviderOrder);
   const unsavedChanges = initialized
-    && (hashingSettingsChanged || releaseProvidersChanged || releaseInfoSettingsChanged || webuiProvidersChanged);
+    && (hashingSettingsChanged || releaseProvidersChanged || webuiProvidersChanged);
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
@@ -135,10 +119,6 @@ const HashingAndReleaseSettings = () => {
 
     if (releaseProvidersChanged) {
       updateReleaseInfoProviders(providers);
-    }
-
-    if (releaseInfoSettingsChanged) {
-      updateReleaseInfoSettings({ ParallelMode: releaseInfoSettings.ParallelMode });
     }
 
     if (webuiProvidersChanged) {

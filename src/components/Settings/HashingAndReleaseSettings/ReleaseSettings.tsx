@@ -5,9 +5,9 @@ import { Icon } from '@mdi/react';
 import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
-import { useReleaseInfoProvidersQuery, useReleaseInfoSummaryQuery } from '@/core/react-query/release-info/queries';
+import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { showProviderInfo } from '@/core/slices/modals/providerInfo';
-import { reorderProvider, setReleaseInfoSettings, toggleProvider } from '@/core/slices/settings/release';
+import { reorderProvider, toggleProvider } from '@/core/slices/settings/release';
 import { useDispatch, useSelector } from '@/core/store';
 
 import type { DropResult } from '@hello-pangea/dnd';
@@ -15,17 +15,9 @@ import type { DropResult } from '@hello-pangea/dnd';
 const ReleaseSettings = () => {
   const dispatch = useDispatch();
 
-  const { providers, releaseInfoSettings, webuiProviders } = useSelector(state => state.settings.release);
+  const { providers, webuiProviders } = useSelector(state => state.settings.release);
 
   const releaseProvidersQuery = useReleaseInfoProvidersQuery();
-  const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
-
-  const handleToggleParallelMode = () => {
-    dispatch(setReleaseInfoSettings({
-      ParallelMode: !releaseInfoSettings.ParallelMode,
-    }));
-  };
-
   const handleProviderReorder = (result: DropResult, type: 'server' | 'webui') => {
     if (!result.destination || result.destination.index === result.source.index) {
       return;
@@ -45,29 +37,13 @@ const ReleaseSettings = () => {
     dispatch(toggleProvider({ checked, id, type }));
   };
 
-  if (!releaseProvidersQuery.isSuccess || !releaseProviderSummaryQuery.isSuccess) {
+  if (!releaseProvidersQuery.isSuccess) {
     return <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
   }
 
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex items-center font-semibold">Release Provider Options</div>
-
-      <div className="flex flex-col">
-        <Checkbox
-          id="release-provider-parallel-mode"
-          isChecked={!!releaseInfoSettings.ParallelMode}
-          onChange={handleToggleParallelMode}
-          label="Parallel Mode"
-          justify
-        />
-
-        <div className="w-[95%] text-xs opacity-65">
-          {releaseInfoSettings.ParallelMode
-            ? 'Run all enabled providers in parallel, and wait for the highest priority valid result.'
-            : 'Run each provider in sequential order defined by the priority below until a valid result is found.'}
-        </div>
-      </div>
 
       <div className="flex flex-col gap-y-2">
         <div className="flex items-center">
