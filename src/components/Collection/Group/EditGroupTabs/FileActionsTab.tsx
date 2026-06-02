@@ -13,7 +13,7 @@ const FileActionsTab = ({ groupId }: Props) => {
   return (
     <div className="flex h-88 grow flex-col gap-y-4 overflow-y-auto">
       <Action
-        name="Rename/Move Files"
+        name="Relocate Files"
         description="Rename/Move every file associated with the group."
         onClick={relocateGroupFiles}
       />

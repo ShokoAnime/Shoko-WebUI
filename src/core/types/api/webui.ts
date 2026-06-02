@@ -66,7 +66,7 @@ export type WebuiSeriesFileSummaryGroupType = {
   Locations?: {
     ID: number;
     FileID: number;
-    ImportFolderID: number;
+    ManagedFolderID: number;
     IsAccessible: boolean;
     RelativePath: string;
   }[];

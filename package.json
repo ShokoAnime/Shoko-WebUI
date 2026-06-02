@@ -64,6 +64,7 @@
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/eslint-plugin-query": "^5.97.0",
     "@types/format-thousands": "^2.0.3",
+    "@types/json-schema": "^7.0.15",
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",

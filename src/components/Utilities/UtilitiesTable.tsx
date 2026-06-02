@@ -161,7 +161,7 @@ const UtilitiesTable = (props: Props) => {
     skipSort,
     sortCriteria,
   } = props;
-  const renamerPreviews = useSelector(state => state.utilities.renamer.renameResults);
+  const renamerPreviews = useSelector(state => state.utilities.renamer.results);
 
   const parentRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
