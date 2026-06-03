@@ -10,16 +10,18 @@ import type {
   PackageRepositoryInfoType,
 } from '@/core/types/api/plugin-package';
 
-export const usePluginPackageRepositoriesQuery = () =>
+export const usePluginPackageRepositoriesQuery = (enabled = true) =>
   useQuery<PackageRepositoryInfoType[]>({
     queryKey: ['plugin-package', 'repositories'],
     queryFn: () => axios.get('Plugin/Package/Repository'),
+    enabled,
   });
 
-export const usePluginPackagesQuery = (filters: PluginPackageListFilters) =>
+export const usePluginPackagesQuery = (filters: PluginPackageListFilters, enabled = true) =>
   useQuery<ListResultType<PackageInfoType>>({
     queryKey: ['plugin-package', 'list', filters],
     queryFn: () => axios.get('Plugin/Package', { params: filters }),
+    enabled,
   });
 
 export const usePluginPackageVersionsQuery = (packageId?: string) =>

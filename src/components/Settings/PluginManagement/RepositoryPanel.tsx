@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import dayjs from 'dayjs';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
@@ -39,17 +41,50 @@ const RepositoryPanel = ({ query }: Props) => {
 
     return repositoriesQuery.data.filter(repository => [repository.Name, repository.Url].some(matchesQuery));
   }, [query, repositoriesQuery.data]);
+  const retryRepositories = () => {
+    repositoriesQuery.refetch().catch(console.error);
+  };
+
+  if (repositoriesQuery.isPending) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} spin size={4} />
+      </div>
+    );
+  }
+
+  if (repositoriesQuery.isError) {
+    return (
+      <div className="rounded-lg border border-panel-border bg-panel-input p-6">
+        <div className="text-lg font-semibold">Repositories unavailable</div>
+        <div className="mt-2 opacity-80">
+          Repository data could not be loaded. Retry to continue managing plugin repositories.
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button
+            buttonType="secondary"
+            buttonSize="normal"
+            onClick={retryRepositories}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-wrap justify-start gap-3 sm:justify-end">
-        <Button
-          buttonType="secondary"
-          buttonSize="normal"
-          onClick={() => setIsAddRepositoryOpen(true)}
-        >
-          Add Repository
-        </Button>
+        {!query && (
+          <Button
+            buttonType="secondary"
+            buttonSize="normal"
+            onClick={() => setIsAddRepositoryOpen(true)}
+          >
+            Add Repository
+          </Button>
+        )}
         <Button
           buttonType="secondary"
           buttonSize="normal"

@@ -6,11 +6,11 @@ import { STALE_TIME } from '@/core/util';
 import type { PluginListFilters } from '@/core/react-query/plugin/types';
 import type { PluginInfoType, PluginPageType, SharedPluginPageType } from '@/core/types/api/plugin';
 
-export const usePluginsQuery = (filters: PluginListFilters = {}) =>
+export const usePluginsQuery = (filters: PluginListFilters = {}, enabled = true) =>
   useQuery<PluginInfoType[]>({
     queryKey: ['plugin', 'list', filters],
     queryFn: () => axios.get('Plugin', { params: filters }),
-    select: plugins => plugins.filter(plugin => plugin.LoadOrder !== 0),
+    enabled,
   });
 
 export const usePluginVersionsQuery = (pluginId?: string) =>

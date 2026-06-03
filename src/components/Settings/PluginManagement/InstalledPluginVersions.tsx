@@ -70,9 +70,9 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
   const [pendingDelete, setPendingDelete] = React.useState<PendingDeleteType | null>(null);
   const [purgeConfiguration, setPurgeConfiguration] = React.useState(false);
   const isUndoInstall = pendingDelete?.kind === 'version'
-    && pendingDelete.plugin.RestartPending
     && pendingDelete.plugin.IsInstalled
-    && !pendingDelete.plugin.IsActive;
+    && !pendingDelete.plugin.IsActive
+    && pendingDelete.plugin.RestartPending;
   const showPurgeConfigurationOption = !!pendingDelete && !isUndoInstall;
   const deleteModalTitle = pendingDelete?.kind === 'all'
     ? 'Uninstall All Plugin Versions'
@@ -109,15 +109,20 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
       </div>
 
       {plugins.map((plugin) => {
-        const isPendingUninstall = plugin.RestartPending && !plugin.IsInstalled;
-        const isPendingInstall = plugin.RestartPending && plugin.IsInstalled && !plugin.IsActive;
+        // The server uses UninstalledAt to derive IsInstalled, so any installed-then-uninstalled
+        // plugin in the current session reports IsInstalled=false until restart. RestartPending
+        // is derived from IsEnabled !== IsActive on the server, which misses uninstalled inactive
+        // versions, so we use IsInstalled as the primary pending-uninstall signal.
+        const isPendingUninstall = !plugin.IsInstalled;
+        const isPendingInstall = plugin.IsInstalled && plugin.RestartPending && !plugin.IsActive;
+        const restartRequired = plugin.RestartPending || isPendingUninstall;
         const packageRelease = packageEntry?.Releases.find(release => release.Version === plugin.Version);
         const packageArchive = getPreferredArchive(plugin, packageRelease);
         const packageInstallArgs = packageEntry && packageRelease && packageArchive
           ? getPackageInstallArgs(packageEntry.PackageID, packageRelease, packageArchive)
           : undefined;
-        const isBuiltIn = !groupCanUninstall;
-        const canUninstall = groupCanUninstall && !isPendingUninstall;
+        const isBuiltIn = !plugin.CanUninstall;
+        const canUninstall = plugin.CanUninstall && !isPendingUninstall;
         const canUndoUninstall = isPendingUninstall && !!packageInstallArgs && !!packageArchive?.IsCompatible;
         // Determine if plugin is core (should never be disabled)
         // Core plugins always have LoadOrder = 0
@@ -132,7 +137,7 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
               <div className="font-semibold">{`Version ${plugin.Version}`}</div>
 
               <div className="flex flex-wrap gap-2">
-                {plugin.RestartPending && (
+                {restartRequired && (
                   <Badge className="border border-orange-500/30 bg-orange-500/15 text-orange-100">
                     Restart required
                   </Badge>
@@ -157,14 +162,14 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
                     Active
                   </Badge>
                 )}
-                {isBuiltIn && !plugin.RestartPending && (
+                {isBuiltIn && !restartRequired && (
                   <Badge className="border border-panel-border bg-panel-input text-inherit">
                     Built-in
                   </Badge>
                 )}
                 {plugin.IsPinned && (
                   <Badge className="border border-panel-border bg-panel-input text-inherit">
-                    Pinned
+                    Pinned (read-only)
                   </Badge>
                 )}
                 {plugin.CanLoad && (
@@ -186,7 +191,7 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
               </div>
             </div>
 
-            {plugin.RestartPending && (
+            {restartRequired && (
               <div className="mt-4 rounded-lg border border-panel-border bg-panel-input px-4 py-3 text-sm">
                 {isPendingUninstall && 'Restart the server to finish uninstalling this plugin.'}
                 {isPendingInstall && 'Restart the server to finish installing this plugin.'}

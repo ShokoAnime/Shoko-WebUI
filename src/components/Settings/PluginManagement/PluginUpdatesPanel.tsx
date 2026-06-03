@@ -1,28 +1,83 @@
 import React from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import toast from '@/components/Toast';
+import { getPluginUpdates, getReleaseKey, groupPluginPackages } from '@/core/react-query/plugin-package/helpers';
 import { useCheckPluginPackageUpdatesMutation } from '@/core/react-query/plugin-package/mutations';
+import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
-import type { PluginPackageCatalogEntryType, PluginUpdateSummaryType } from '@/core/react-query/plugin-package/types';
+import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 
 type Props = {
-  entries: PluginPackageCatalogEntryType[];
-  isLoading: boolean;
-  updates: PluginUpdateSummaryType[];
+  query: string;
 };
 
 type SelectedUpdateType = {
   currentVersion: string;
   packageId: string;
-  releaseVersion: string;
+  release: PluginPackageCatalogEntryType['Releases'][number];
 };
 
-const PluginUpdatesPanel = ({ entries, isLoading, updates }: Props) => {
+const PluginUpdatesPanel = ({ query }: Props) => {
   const { isPending, mutate: checkUpdates } = useCheckPluginPackageUpdatesMutation();
   const [selectedUpdate, setSelectedUpdate] = React.useState<SelectedUpdateType>();
+  const packagesQuery = usePluginPackagesQuery({
+    allowSync: false,
+    onlyCompatible: false,
+    onlyLatest: false,
+    pageSize: 0,
+  });
+  const entries = React.useMemo(
+    () => groupPluginPackages(packagesQuery.data?.List ?? []),
+    [packagesQuery.data?.List],
+  );
+  const updates = React.useMemo(() => {
+    const pluginUpdates = getPluginUpdates(entries);
+
+    if (!query) return pluginUpdates;
+
+    return pluginUpdates.filter(
+      update =>
+        update.Name.toLocaleLowerCase().includes(query)
+        || update.CurrentVersion.includes(query)
+        || update.LatestVersion.includes(query),
+    );
+  }, [entries, query]);
   const selectedEntry = entries.find(entry => entry.PackageID === selectedUpdate?.packageId);
+  const retryPackages = () => {
+    packagesQuery.refetch().catch(console.error);
+  };
+
+  if (packagesQuery.isPending) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} spin size={4} />
+      </div>
+    );
+  }
+
+  if (packagesQuery.isError) {
+    return (
+      <div className="rounded-lg border border-panel-border bg-panel-input p-6">
+        <div className="text-lg font-semibold">Updates unavailable</div>
+        <div className="mt-2 opacity-80">
+          Plugin update data could not be loaded. Retry to refresh the available updates list.
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button
+            buttonType="secondary"
+            buttonSize="normal"
+            onClick={retryPackages}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -42,13 +97,12 @@ const PluginUpdatesPanel = ({ entries, isLoading, updates }: Props) => {
 
       <div className="rounded-lg border border-panel-border bg-panel-input p-4">
         <div className="mb-4 text-lg font-semibold">Available Updates</div>
-        {isLoading && <div>Loading available updates...</div>}
-        {!isLoading && updates.length === 0 && <div>No plugin updates are currently available.</div>}
-        {!isLoading && updates.length > 0 && (
+        {updates.length === 0 && <div>No plugin updates are currently available.</div>}
+        {updates.length > 0 && (
           <div className="flex flex-col gap-y-3">
             {updates.map(update => (
               <div
-                key={`${update.ID}-${update.LatestVersion}`}
+                key={`${update.PackageID}-${getReleaseKey(update.Release)}`}
                 className="rounded-lg border border-panel-border bg-panel-background-alt p-4"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-4">
@@ -67,7 +121,7 @@ const PluginUpdatesPanel = ({ entries, isLoading, updates }: Props) => {
                       setSelectedUpdate({
                         currentVersion: update.CurrentVersion,
                         packageId: update.PackageID,
-                        releaseVersion: update.LatestVersion,
+                        release: update.Release,
                       })}
                   >
                     Upgrade
@@ -82,7 +136,7 @@ const PluginUpdatesPanel = ({ entries, isLoading, updates }: Props) => {
       <InstallPluginDialog
         currentVersion={selectedUpdate?.currentVersion}
         entry={selectedEntry}
-        initialReleaseVersion={selectedUpdate?.releaseVersion}
+        initialRelease={selectedUpdate?.release}
         show={!!selectedEntry}
         onClose={() => setSelectedUpdate(undefined)}
       />

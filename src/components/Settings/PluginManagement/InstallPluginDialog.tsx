@@ -4,7 +4,7 @@ import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import ShokoMarkdown from '@/components/ShokoMarkdown';
 import toast from '@/components/Toast';
-import { getPackageInstallArgs } from '@/core/react-query/plugin-package/helpers';
+import { getPackageInstallArgs, getReleaseKey } from '@/core/react-query/plugin-package/helpers';
 import { useInstallPluginPackageMutation } from '@/core/react-query/plugin-package/mutations';
 
 import type {
@@ -16,7 +16,7 @@ import type {
 type Props = {
   entry?: PluginPackageCatalogEntryType;
   currentVersion?: string;
-  initialReleaseVersion?: string;
+  initialRelease?: PluginPackageCatalogReleaseType;
   show: boolean;
   onClose: () => void;
 };
@@ -27,15 +27,15 @@ const releaseHasCompatibleArchive = (release: PluginPackageCatalogReleaseType) =
 const getPreferredArchive = (release?: PluginPackageCatalogReleaseType) =>
   release?.Archives.find(archive => archive.IsCompatible) ?? release?.Archives[0];
 
-const InstallPluginDialog = ({ currentVersion, entry, initialReleaseVersion, onClose, show }: Props) => {
+const InstallPluginDialog = ({ currentVersion, entry, initialRelease, onClose, show }: Props) => {
   const { mutate: installPlugin, status } = useInstallPluginPackageMutation();
 
   const selectedRelease = useMemo<PluginPackageCatalogReleaseType | undefined>(
     () =>
-      entry?.Releases.find(release => release.Version === initialReleaseVersion)
+      entry?.Releases.find(release => initialRelease && getReleaseKey(release) === getReleaseKey(initialRelease))
         ?? entry?.Releases.find(releaseHasCompatibleArchive)
         ?? entry?.Releases[0],
-    [entry, initialReleaseVersion],
+    [entry, initialRelease],
   );
 
   const selectedArchive = useMemo<PluginPackageCatalogArchiveType | undefined>(

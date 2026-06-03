@@ -1,11 +1,16 @@
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
+// Mirrors `Shoko.Server.API.v3.Models.Common.IncludeOnlyFilter`. The server
+// defaults each filter to `True`, which means "include everything"; `Only`
+// keeps just matching entries and `False` excludes them.
+export type PluginIncludeOnlyFilter = 'True' | 'False' | 'Only';
+
 export type PluginListFilters = {
   query?: string;
-  active?: 'True' | 'False' | 'All';
-  installed?: 'True' | 'False' | 'All';
-  enabled?: 'True' | 'False' | 'All';
-  restartPending?: 'True' | 'False' | 'All';
+  active?: PluginIncludeOnlyFilter;
+  installed?: PluginIncludeOnlyFilter;
+  enabled?: PluginIncludeOnlyFilter;
+  restartPending?: PluginIncludeOnlyFilter;
   allVersions?: boolean;
 };
 

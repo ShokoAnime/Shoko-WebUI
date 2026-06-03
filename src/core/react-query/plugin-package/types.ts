@@ -22,6 +22,7 @@ export type PluginPackageCatalogArchiveType = PackageArchiveInfoType & {
 
 export type PluginPackageCatalogReleaseType = Omit<PackageReleaseInfoType, 'Archives'> & {
   Archives: PluginPackageCatalogArchiveType[];
+  InstalledPlugins: PluginInfoType[];
   IsInstalled: boolean;
   IsLatest: boolean;
   IsUpdateAvailable: boolean;
@@ -35,7 +36,7 @@ export type PluginPackageCatalogEntryType = {
   Tags: string[];
   Thumbnail?: PackageManifestInfoType['Thumbnail'];
   LastFetchedAt: string;
-  Plugin?: PluginInfoType | null;
+  InstalledPlugins: PluginInfoType[];
   Releases: PluginPackageCatalogReleaseType[];
   HasCompatibleInstallOption: boolean;
   HasInstalledVersion: boolean;
@@ -63,12 +64,11 @@ export type CheckForUpdatesRequestType = {
 export type PackageManifestLookup = Record<string, PluginPackageCatalogEntryType>;
 
 export type PluginUpdateSummaryType = {
-  ID: string;
   PackageID: string;
   Name: string;
   CurrentVersion: string;
   LatestVersion: string;
-  RuntimeIdentifier: string;
+  Release: PluginPackageCatalogReleaseType;
 };
 
 export type PackageVersionsLookupType = Record<string, PackageInfoType[]>;

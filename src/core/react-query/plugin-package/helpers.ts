@@ -12,32 +12,49 @@ import type { PackageInfoType } from '@/core/types/api/plugin-package';
 
 const getInstalledPluginVersion = (plugin?: PluginInfoType | null) => plugin?.Version ?? null;
 
+const isManageablePlugin = (plugin: PluginInfoType) => plugin.LoadOrder !== 0;
+
 const isVersionGreaterThan = (
   left: string,
   right: string,
 ) => (semver.valid(left) && semver.valid(right) ? semver.gt(left, right) : false);
 
-const isSameRelease = (release: PluginPackageCatalogReleaseType, repositoryId: string, version: string) =>
-  release.Version === version && release.RepositoryID === repositoryId;
+const compareVersionsDescending = (leftVersion?: string, rightVersion?: string) => {
+  if (!leftVersion || !rightVersion) {
+    if (leftVersion) return -1;
+    if (rightVersion) return 1;
+    return 0;
+  }
+
+  const leftIsValid = semver.valid(leftVersion);
+  const rightIsValid = semver.valid(rightVersion);
+
+  if (leftIsValid && rightIsValid) {
+    return semver.compare(rightVersion, leftVersion);
+  }
+
+  if (leftIsValid) return -1;
+  if (rightIsValid) return 1;
+
+  return rightVersion.localeCompare(leftVersion);
+};
+
+export const getReleaseKey = (
+  release: Pick<PluginPackageCatalogReleaseType, 'RepositoryID' | 'SourceRevision' | 'Tag' | 'Version'>,
+) => [release.RepositoryID, release.Version, release.Tag ?? '', release.SourceRevision ?? ''].join('::');
+
+const isSameRelease = (
+  left: Pick<PluginPackageCatalogReleaseType, 'RepositoryID' | 'SourceRevision' | 'Tag' | 'Version'>,
+  right: Pick<PluginPackageCatalogReleaseType, 'RepositoryID' | 'SourceRevision' | 'Tag' | 'Version'>,
+) => getReleaseKey(left) === getReleaseKey(right);
 
 const sortReleasesByVersionDescending = (
   left: PluginPackageCatalogReleaseType,
   right: PluginPackageCatalogReleaseType,
-) => {
-  // Handle cases where version might be missing or invalid
-  if (!left.Version || !right.Version) {
-    if (left.Version) return -1;
-    if (right.Version) return 1;
-    return 0;
-  }
-
-  try {
-    return semver.compare(right.Version, left.Version);
-  } catch {
-    // Fallback to string comparison if semver fails
-    return right.Version.localeCompare(left.Version);
-  }
-};
+) =>
+  compareVersionsDescending(left.Version, right.Version)
+  || right.ReleasedAt.localeCompare(left.ReleasedAt)
+  || getReleaseKey(left).localeCompare(getReleaseKey(right));
 
 const sortArchivesByRuntimeIdentifier = (
   left: PluginPackageCatalogArchiveType,
@@ -55,6 +72,30 @@ const sortInstalledPluginGroupEntries = (
 ) =>
   Number(right.hasUpdateAvailable) - Number(left.hasUpdateAvailable)
   || left.plugins[0].Name.localeCompare(right.plugins[0].Name);
+
+const getLatestInstalledPlugin = (plugins: PluginInfoType[]) =>
+  [...plugins].sort(
+    (left, right) =>
+      compareVersionsDescending(left.Version, right.Version)
+      || right.InstalledAt.localeCompare(left.InstalledAt)
+      || left.ID.localeCompare(right.ID),
+  )[0];
+
+const getPluginKey = (plugin: Pick<PluginInfoType, 'ID' | 'Version'>) => `${plugin.ID}::${plugin.Version}`;
+
+// Plugin management hides core plugins for now. Keep the API hook raw so other consumers
+// are not surprised by filtered results, and centralize the temporary UI rule here.
+export const getManageablePlugins = (plugins: PluginInfoType[]) => plugins.filter(isManageablePlugin);
+
+export const getLatestRelease = (entry: PluginPackageCatalogEntryType) => entry.Releases[0];
+
+export const getLatestInstalledRelease = (entry: PluginPackageCatalogEntryType) =>
+  [...entry.Releases]
+    .filter(release => release.InstalledPlugins.length > 0)
+    .sort(sortReleasesByVersionDescending)[0];
+
+export const getUpdateRelease = (entry: PluginPackageCatalogEntryType) =>
+  entry.Releases.find(release => release.IsUpdateAvailable);
 
 export const groupPluginPackages = (packages: PackageInfoType[]) => {
   const map = new Map<string, PluginPackageCatalogEntryType>();
@@ -75,7 +116,7 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
       Tags: Manifest.Tags,
       Thumbnail: Manifest.Thumbnail,
       LastFetchedAt: Manifest.LastFetchedAt,
-      Plugin,
+      InstalledPlugins: [],
       Releases: [],
       HasCompatibleInstallOption: false,
       HasInstalledVersion: false,
@@ -87,8 +128,7 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
       IsCompatible: Archive.IsCompatible,
       IsInstalled: !!Plugin,
     };
-    const isMatchingRelease = (item: PluginPackageCatalogReleaseType) =>
-      isSameRelease(item, Release.RepositoryID, Release.Version);
+    const isMatchingRelease = (item: PluginPackageCatalogReleaseType) => isSameRelease(item, Release);
 
     let releaseInfo: PluginPackageCatalogReleaseType | undefined = existingEntry.Releases.find(isMatchingRelease);
 
@@ -96,6 +136,7 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
       releaseInfo = {
         ...Release,
         Archives: [],
+        InstalledPlugins: [],
         IsInstalled: false,
         IsLatest: false,
         IsUpdateAvailable: false,
@@ -104,11 +145,24 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
     }
 
     releaseInfo.Archives.push(archiveInfo);
-    releaseInfo.IsInstalled = releaseInfo.IsInstalled || !!Plugin;
+    if (Plugin) {
+      if (
+        !releaseInfo.InstalledPlugins.some(installedPlugin => getPluginKey(installedPlugin) === getPluginKey(Plugin))
+      ) {
+        releaseInfo.InstalledPlugins.push(Plugin);
+      }
+
+      if (
+        !existingEntry.InstalledPlugins.some(installedPlugin => getPluginKey(installedPlugin) === getPluginKey(Plugin))
+      ) {
+        existingEntry.InstalledPlugins.push(Plugin);
+      }
+    }
+
+    releaseInfo.IsInstalled = releaseInfo.InstalledPlugins.length > 0;
 
     existingEntry.HasCompatibleInstallOption = existingEntry.HasCompatibleInstallOption || archiveInfo.IsCompatible;
-    existingEntry.HasInstalledVersion = existingEntry.HasInstalledVersion || !!Plugin;
-    existingEntry.Plugin ??= Plugin;
+    existingEntry.HasInstalledVersion = existingEntry.InstalledPlugins.length > 0;
 
     map.set(Manifest.PackageID, existingEntry);
   });
@@ -116,7 +170,8 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
   return [...map.values()]
     .map((entry) => {
       const sortedReleases = [...entry.Releases].sort(sortReleasesByVersionDescending);
-      const installedVersion = getInstalledPluginVersion(entry.Plugin);
+      const latestInstalledPlugin = getLatestInstalledPlugin(entry.InstalledPlugins);
+      const installedVersion = getInstalledPluginVersion(latestInstalledPlugin);
       const latestVersion = sortedReleases[0]?.Version;
 
       const releases = sortedReleases.map((release, index): PluginPackageCatalogReleaseType => ({
@@ -128,7 +183,14 @@ export const groupPluginPackages = (packages: PackageInfoType[]) => {
 
       return {
         ...entry,
+        InstalledPlugins: [...entry.InstalledPlugins].sort(
+          (left, right) =>
+            compareVersionsDescending(left.Version, right.Version)
+            || right.InstalledAt.localeCompare(left.InstalledAt)
+            || left.ID.localeCompare(right.ID),
+        ),
         Releases: releases,
+        HasInstalledVersion: entry.InstalledPlugins.length > 0,
         HasUpdateAvailable: !!installedVersion
           && !!latestVersion
           && isVersionGreaterThan(latestVersion, installedVersion),
@@ -141,7 +203,13 @@ export const groupInstalledPlugins = (plugins: PluginInfoType[]) => {
   const groups = new Map<string, PluginInfoType[]>();
 
   [...plugins]
-    .sort((left, right) => left.Name.localeCompare(right.Name) || semver.compare(right.Version, left.Version))
+    .sort(
+      (left, right) =>
+        left.Name.localeCompare(right.Name)
+        || compareVersionsDescending(left.Version, right.Version)
+        || right.InstalledAt.localeCompare(left.InstalledAt)
+        || left.ID.localeCompare(right.ID),
+    )
     .forEach((plugin) => {
       const pluginGroup = groups.get(plugin.ID) ?? [];
       pluginGroup.push(plugin);
@@ -157,7 +225,9 @@ export const sortInstalledPluginGroups = (
 ) =>
   Object.entries(groupedPlugins)
     .map(([pluginId, plugins]) => {
-      const updateEntry = groupedPackages.find(entry => entry.Plugin?.ID === pluginId && entry.HasUpdateAvailable);
+      const updateEntry = groupedPackages.find(
+        entry => entry.InstalledPlugins.some(plugin => plugin.ID === pluginId) && entry.HasUpdateAvailable,
+      );
 
       return {
         hasUpdateAvailable: !!updateEntry,
@@ -170,14 +240,13 @@ export const sortInstalledPluginGroups = (
 
 export const getPluginUpdates = (entries: PluginPackageCatalogEntryType[]) =>
   entries
-    .filter(entry => entry.Plugin && entry.HasUpdateAvailable)
+    .filter(entry => getManageablePlugins(entry.InstalledPlugins).length > 0 && entry.HasUpdateAvailable)
     .map<PluginUpdateSummaryType>(entry => ({
-      ID: entry.Plugin!.ID,
       PackageID: entry.PackageID,
       Name: entry.Name,
-      CurrentVersion: entry.Plugin!.Version,
-      LatestVersion: entry.Releases[0].Version,
-      RuntimeIdentifier: entry.Plugin!.RuntimeIdentifier,
+      CurrentVersion: getLatestInstalledRelease(entry)?.Version ?? '',
+      LatestVersion: getLatestRelease(entry)?.Version ?? '',
+      Release: getUpdateRelease(entry) ?? getLatestRelease(entry),
     }));
 
 export const getPackageInstallArgs = (

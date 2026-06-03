@@ -1,23 +1,31 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import InstalledPluginVersions from '@/components/Settings/PluginManagement/InstalledPluginVersions';
-import { sortInstalledPluginGroups } from '@/core/react-query/plugin-package/helpers';
+import { usePluginsQuery } from '@/core/react-query/plugin/queries';
+import {
+  getManageablePlugins,
+  getUpdateRelease,
+  groupInstalledPlugins,
+  groupPluginPackages,
+  sortInstalledPluginGroups,
+} from '@/core/react-query/plugin-package/helpers';
+import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
-import type { PluginGroupsType } from '@/core/react-query/plugin/types';
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
 type Props = {
-  groupedPackages: PluginPackageCatalogEntryType[];
-  groupedPlugins: PluginGroupsType;
+  query: string;
 };
 
 type SelectedUpgradeType = {
   currentVersion: string;
   packageId: string;
-  releaseVersion: string;
+  release: PluginPackageCatalogEntryType['Releases'][number];
 };
 
 type BadgeProps = {
@@ -47,12 +55,12 @@ const findPackageEntryForPluginGroup = (
   pluginId: string,
   plugins: PluginInfoType[],
 ) => {
-  const directMatch = entries.find(entry => entry.Plugin?.ID === pluginId || entry.PackageID === pluginId);
+  const directMatch = entries.find(entry => entry.InstalledPlugins.some(plugin => plugin.ID === pluginId));
   if (directMatch) return directMatch;
 
   return entries.find((entry) => {
     const hasMatchingPlugin = plugins.some((plugin) => {
-      if (entry.Plugin?.Name === plugin.Name) return true;
+      if (entry.InstalledPlugins.some(installedPlugin => installedPlugin.ID === plugin.ID)) return true;
       if (entry.Name !== plugin.Name) return false;
 
       return entry.Releases.some(release => releaseMatchesPlugin(release, plugin));
@@ -62,20 +70,68 @@ const findPackageEntryForPluginGroup = (
   });
 };
 
-const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
+const InstalledPluginsPanel = ({ query }: Props) => {
   const [expandedPluginId, setExpandedPluginId] = useState<string>();
   const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Record<string, boolean>>({});
   const [selectedUpgrade, setSelectedUpgrade] = useState<SelectedUpgradeType>();
+  const packagesQuery = usePluginPackagesQuery({
+    allowSync: false,
+    onlyCompatible: false,
+    onlyLatest: false,
+    pageSize: 0,
+    query: query || undefined,
+  });
+  const pluginsQuery = usePluginsQuery({ allVersions: true, query: query || undefined });
+  const groupedPackages = useMemo(
+    () => groupPluginPackages(packagesQuery.data?.List ?? []),
+    [packagesQuery.data?.List],
+  );
+  const groupedPlugins = useMemo(
+    () => groupInstalledPlugins(getManageablePlugins(pluginsQuery.data ?? [])),
+    [pluginsQuery.data],
+  );
 
   const pluginGroups = useMemo(
     () => sortInstalledPluginGroups(groupedPlugins, groupedPackages),
     [groupedPackages, groupedPlugins],
   );
   const selectedEntry = groupedPackages.find(entry => entry.PackageID === selectedUpgrade?.packageId);
+  const retryInstalled = () => {
+    if (packagesQuery.isError) packagesQuery.refetch().catch(console.error);
+    if (pluginsQuery.isError) pluginsQuery.refetch().catch(console.error);
+  };
 
   useEffect(() => {
     setFailedThumbnailUrls({});
   }, [pluginGroups]);
+
+  if (packagesQuery.isPending || pluginsQuery.isPending) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} spin size={4} />
+      </div>
+    );
+  }
+
+  if (packagesQuery.isError || pluginsQuery.isError) {
+    return (
+      <div className="rounded-lg border border-panel-border bg-panel-input p-6">
+        <div className="text-lg font-semibold">Installed plugins unavailable</div>
+        <div className="mt-2 opacity-80">
+          Installed plugin data could not be loaded. Retry to refresh the installed plugins view.
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button
+            buttonType="secondary"
+            buttonSize="normal"
+            onClick={retryInstalled}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (pluginGroups.length === 0) {
     return <div className="rounded-lg border border-panel-border bg-panel-input p-6">No installed plugins found.</div>;
@@ -89,13 +145,17 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
         const thumbnailPlugin = plugins.find(item => item.Thumbnail);
         const thumbnailCandidates = [
           matchingEntry?.Thumbnail ? `/api/v3/Plugin/Package/${matchingEntry.PackageID}/Thumbnail` : undefined,
-          matchingEntry?.Plugin?.Thumbnail ? `/api/v3/Plugin/${matchingEntry.Plugin.ID}/Thumbnail` : undefined,
+          matchingEntry?.InstalledPlugins[0]?.Thumbnail
+            ? `/api/v3/Plugin/${matchingEntry.InstalledPlugins[0].ID}/Thumbnail`
+            : undefined,
           thumbnailPlugin?.Thumbnail ? `/api/v3/Plugin/${thumbnailPlugin.ID}/Thumbnail` : undefined,
         ].filter(candidate => !!candidate && !failedThumbnailUrls[candidate]);
         const thumbnailUrl = thumbnailCandidates[0];
         const expanded = expandedPluginId === pluginId;
-        const updateEntry = groupedPackages.find(entry => entry.Plugin?.ID === pluginId && entry.HasUpdateAvailable);
-        const hasOnlyBuiltInVersions = plugins.every(installedPlugin => !installedPlugin.CanUninstall);
+        const updateRelease = matchingEntry ? getUpdateRelease(matchingEntry) : undefined;
+        const hasPendingRestart = plugins.some(
+          installedPlugin => installedPlugin.RestartPending || !installedPlugin.IsInstalled,
+        );
 
         return (
           <div
@@ -106,6 +166,8 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
               <div
                 role="button"
                 tabIndex={0}
+                aria-controls={`plugin-details-${pluginId}`}
+                aria-expanded={expanded}
                 className="flex min-w-0 flex-1 cursor-pointer flex-col gap-4 text-left lg:flex-row"
                 onClick={() => setExpandedPluginId(currentId => (currentId === pluginId ? undefined : pluginId))}
                 onKeyDown={(event) => {
@@ -148,12 +210,12 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {updateEntry && (
+                    {updateRelease && (
                       <Badge className="border border-green-500/30 bg-green-500/20 text-green-100">
                         Update available
                       </Badge>
                     )}
-                    {plugin.RestartPending && (
+                    {hasPendingRestart && (
                       <Badge className="border border-orange-500/30 bg-orange-500/15 text-orange-100">
                         Restart required
                       </Badge>
@@ -163,25 +225,20 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                         Incompatible
                       </Badge>
                     )}
-                    {hasOnlyBuiltInVersions && (
-                      <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
-                        Built-in
-                      </Badge>
-                    )}
                   </div>
                 </div>
               </div>
 
-              {updateEntry && (
+              {matchingEntry && updateRelease && (
                 <div className="flex shrink-0 flex-wrap justify-end gap-3 pt-3 lg:pt-1">
                   <Button
                     buttonType="primary"
                     buttonSize="small"
                     onClick={() =>
                       setSelectedUpgrade({
-                        currentVersion: updateEntry.Plugin?.Version ?? plugin.Version,
-                        packageId: updateEntry.PackageID,
-                        releaseVersion: updateEntry.Releases[0].Version,
+                        currentVersion: plugins[0]?.Version ?? plugin.Version,
+                        packageId: matchingEntry.PackageID,
+                        release: updateRelease,
                       })}
                   >
                     Upgrade
@@ -191,7 +248,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
             </div>
 
             {expanded && (
-              <div className="bg-panel-background-alt/30 px-4 pb-4">
+              <div id={`plugin-details-${pluginId}`} className="bg-panel-background-alt/30 px-4 pb-4">
                 <InstalledPluginVersions packageEntry={matchingEntry} plugins={plugins} />
               </div>
             )}
@@ -202,7 +259,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
       <InstallPluginDialog
         currentVersion={selectedUpgrade?.currentVersion}
         entry={selectedEntry}
-        initialReleaseVersion={selectedUpgrade?.releaseVersion}
+        initialRelease={selectedUpgrade?.release}
         show={!!selectedEntry}
         onClose={() => setSelectedUpgrade(undefined)}
       />

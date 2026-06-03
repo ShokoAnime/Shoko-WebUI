@@ -32,6 +32,18 @@ const RepositoryForm = ({ onClose, show }: Props) => {
       return;
     }
 
+    try {
+      const repositoryUrl = new URL(url.trim());
+
+      if (repositoryUrl.protocol !== 'http:' && repositoryUrl.protocol !== 'https:') {
+        toast.warning('Invalid repository URL', 'Repository URLs must use http or https.');
+        return;
+      }
+    } catch {
+      toast.warning('Invalid repository URL', 'Provide a valid repository manifest URL.');
+      return;
+    }
+
     addRepository({ name: name.trim(), url: url.trim() }, {
       onSuccess: () => {
         toast.success('Repository added', `${name.trim()} has been added.`);

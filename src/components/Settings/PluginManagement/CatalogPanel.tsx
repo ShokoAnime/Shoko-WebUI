@@ -1,21 +1,68 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
+import Button from '@/components/Input/Button';
 import CatalogItem from '@/components/Settings/PluginManagement/CatalogItem';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
+import { groupPluginPackages } from '@/core/react-query/plugin-package/helpers';
+import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 
 type SelectedInstallType = {
   entry: PluginPackageCatalogEntryType;
-  releaseVersion?: string;
+  release?: PluginPackageCatalogEntryType['Releases'][number];
 };
 
 type Props = {
-  entries: PluginPackageCatalogEntryType[];
+  query: string;
 };
 
-const CatalogPanel = ({ entries }: Props) => {
+const CatalogPanel = ({ query }: Props) => {
   const [selectedInstall, setSelectedInstall] = useState<SelectedInstallType | undefined>();
+  const packagesQuery = usePluginPackagesQuery({
+    allowSync: false,
+    onlyCompatible: false,
+    onlyLatest: false,
+    pageSize: 0,
+    query: query || undefined,
+  });
+  const entries = useMemo(
+    () => groupPluginPackages(packagesQuery.data?.List ?? []),
+    [packagesQuery.data?.List],
+  );
+  const retryPackages = () => {
+    packagesQuery.refetch().catch(console.error);
+  };
+
+  if (packagesQuery.isPending) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} spin size={4} />
+      </div>
+    );
+  }
+
+  if (packagesQuery.isError) {
+    return (
+      <div className="rounded-lg border border-panel-border bg-panel-input p-6">
+        <div className="text-lg font-semibold">Catalog unavailable</div>
+        <div className="mt-2 opacity-80">
+          The plugin catalog could not be loaded. Retry the request to browse available packages.
+        </div>
+        <div className="mt-4 flex justify-end">
+          <Button
+            buttonType="secondary"
+            buttonSize="normal"
+            onClick={retryPackages}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -27,8 +74,7 @@ const CatalogPanel = ({ entries }: Props) => {
               <CatalogItem
                 key={entry.PackageID}
                 entry={entry}
-                onInstall={(installEntry, releaseVersion) =>
-                  setSelectedInstall({ entry: installEntry, releaseVersion })}
+                onInstall={(installEntry, release) => setSelectedInstall({ entry: installEntry, release })}
               />
             ))}
           </div>
@@ -36,7 +82,7 @@ const CatalogPanel = ({ entries }: Props) => {
 
       <InstallPluginDialog
         entry={selectedInstall?.entry}
-        initialReleaseVersion={selectedInstall?.releaseVersion}
+        initialRelease={selectedInstall?.release}
         show={!!selectedInstall}
         onClose={() => setSelectedInstall(undefined)}
       />

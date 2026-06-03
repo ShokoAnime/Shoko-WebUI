@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 
 import Button from '@/components/Input/Button';
+import { getReleaseKey } from '@/core/react-query/plugin-package/helpers';
 
 import type {
   PluginPackageCatalogEntryType,
@@ -10,7 +11,7 @@ import type {
 
 type Props = {
   entry: PluginPackageCatalogEntryType;
-  onInstall: (entry: PluginPackageCatalogEntryType, releaseVersion?: string) => void;
+  onInstall: (entry: PluginPackageCatalogEntryType, release?: PluginPackageCatalogReleaseType) => void;
 };
 
 type ReleaseCardProps = Props & {
@@ -62,7 +63,7 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
           <Button
             buttonType={release.IsInstalled ? 'secondary' : 'primary'}
             buttonSize="small"
-            onClick={() => onInstall(entry, release.Version)}
+            onClick={() => onInstall(entry, release)}
             disabled={release.IsInstalled || !hasCompatibleArchive}
             className="min-w-28 justify-center"
           >
@@ -84,6 +85,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
   const [packageThumbnailFailed, setPackageThumbnailFailed] = useState(false);
   const [pluginThumbnailFailed, setPluginThumbnailFailed] = useState(false);
   const [showOlderVersions, setShowOlderVersions] = useState(false);
+  const pluginMetadata = entry.InstalledPlugins[0];
 
   const newestRelease = entry.Releases[0];
   const olderReleases = entry.Releases.slice(1);
@@ -91,15 +93,15 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
   useEffect(() => {
     setPackageThumbnailFailed(false);
     setPluginThumbnailFailed(false);
-  }, [entry.PackageID, entry.Plugin, entry.Thumbnail]);
+  }, [entry.PackageID, entry.Thumbnail, pluginMetadata]);
 
   const packageThumbnailUrl = useMemo(
     () => (entry.Thumbnail ? `/api/v3/Plugin/Package/${entry.PackageID}/Thumbnail` : undefined),
     [entry.PackageID, entry.Thumbnail],
   );
   const pluginThumbnailUrl = useMemo(
-    () => (entry.Plugin?.Thumbnail ? `/api/v3/Plugin/${entry.Plugin.ID}/Thumbnail` : undefined),
-    [entry.Plugin],
+    () => (pluginMetadata?.Thumbnail ? `/api/v3/Plugin/${pluginMetadata.ID}/Thumbnail` : undefined),
+    [pluginMetadata],
   );
   let thumbnailSrc: string | undefined;
 
@@ -147,9 +149,9 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs opacity-65">
               <span>{`By ${entry.Authors}`}</span>
 
-              {entry.Plugin?.RepositoryUrl && (
+              {pluginMetadata?.RepositoryUrl && (
                 <a
-                  href={entry.Plugin.RepositoryUrl}
+                  href={pluginMetadata.RepositoryUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold text-button-primary transition-opacity hover:opacity-80"
@@ -159,9 +161,9 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                 </a>
               )}
 
-              {entry.Plugin?.HomepageUrl && (
+              {pluginMetadata?.HomepageUrl && (
                 <a
-                  href={entry.Plugin.HomepageUrl}
+                  href={pluginMetadata.HomepageUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold text-button-primary transition-opacity hover:opacity-80"
@@ -226,7 +228,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                   <Button
                     buttonType={newestRelease.IsInstalled ? 'secondary' : 'primary'}
                     buttonSize="small"
-                    onClick={() => onInstall(entry, newestRelease.Version)}
+                    onClick={() => onInstall(entry, newestRelease)}
                     disabled={newestRelease.IsInstalled
                       || !newestRelease.Archives.some(archive => archive.IsCompatible)}
                     className="min-w-28 justify-center"
@@ -251,7 +253,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                   {showOlderVersions
                     && olderReleases.map(release => (
                       <ReleaseCard
-                        key={`${entry.PackageID}-${release.Version}`}
+                        key={`${entry.PackageID}-${getReleaseKey(release)}`}
                         entry={entry}
                         onInstall={onInstall}
                         release={release}
