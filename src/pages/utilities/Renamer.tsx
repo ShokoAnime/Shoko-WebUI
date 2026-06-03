@@ -310,7 +310,7 @@ const Renamer = () => {
 
   const defaultPreset = find(relocationPresetsQuery.data, preset => preset.IsDefault);
 
-  const [newConfig, setNewConfig] = useImmer<RelocationConfigurationType | undefined>(undefined);
+  const [newConfig, setNewConfig] = useImmer<RelocationConfigurationType>({});
 
   const [selectedPreset, setSelectedPreset] = useState<RelocationPresetType>();
 
@@ -345,9 +345,10 @@ const Renamer = () => {
   const [presetRename, setPresetRename] = useState(false);
 
   const configEdited = !isEqual(configQuery.data, newConfig);
+  const configInitialized = !isEqual({}, newConfig);
 
   const fetchPreviewPage = async (index: number) => {
-    if (!renamer || (renamer.Configuration && !newConfig)) return;
+    if (!renamer || (renamer.Configuration && !configInitialized)) return;
     const pageSize = 20;
     const pageNumber = Math.floor(index / pageSize);
     const pendingPreviews = addedFiles
@@ -604,7 +605,7 @@ const Renamer = () => {
                       )}
                     </Select>
 
-                    {renamer?.Configuration?.ID && newConfig && (
+                    {renamer?.Configuration?.ID && configInitialized && (
                       <>
                         <div className="flex grow overflow-y-auto pr-2">
                           <DynamicForm
@@ -639,7 +640,7 @@ const Renamer = () => {
                 </div>
 
                 <ShokoPanel title="Script" className="w-2/3" disableOverflow>
-                  {newConfig && renamer?.Configuration?.ID && (
+                  {configInitialized && renamer?.Configuration?.ID && (
                     <RenamerScript
                       newConfig={newConfig}
                       setNewConfig={setNewConfig}
