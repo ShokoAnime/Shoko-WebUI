@@ -95,9 +95,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
         const thumbnailUrl = thumbnailCandidates[0];
         const expanded = expandedPluginId === pluginId;
         const updateEntry = groupedPackages.find(entry => entry.Plugin?.ID === pluginId && entry.HasUpdateAvailable);
-        const hasReadOnlyVersions = plugins.every(
-          installedPlugin => installedPlugin.RestartPending || !installedPlugin.CanUninstall,
-        );
+        const hasOnlyBuiltInVersions = plugins.every(installedPlugin => !installedPlugin.CanUninstall);
 
         return (
           <div
@@ -165,7 +163,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                         Incompatible
                       </Badge>
                     )}
-                    {hasReadOnlyVersions && (
+                    {hasOnlyBuiltInVersions && (
                       <Badge className="border border-panel-border bg-panel-background-alt text-inherit">
                         Built-in
                       </Badge>

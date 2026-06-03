@@ -84,16 +84,19 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
 
   // Get the first plugin in the list as a representative for the group
   const representativePlugin = plugins[0];
+  const groupCanEnableOrDisable = plugins.some(plugin => plugin.CanEnableOrDisable);
+  const groupCanUninstall = plugins.some(plugin => plugin.CanUninstall);
+  const groupIsCore = plugins.every(plugin => plugin.LoadOrder === 0);
 
   return (
     <div className="flex flex-col gap-y-3">
       {/* Uninstall All button at the top of the plugin group */}
       <div className="flex justify-end pt-4">
-        {plugins.length > 1 && representativePlugin.LoadOrder !== 0 && (
+        {plugins.length > 1 && !groupIsCore && (
           <Button
             buttonType="danger"
             buttonSize="small"
-            disabled={!representativePlugin.IsInstalled || !representativePlugin.CanUninstall}
+            disabled={!groupCanUninstall || !plugins.some(plugin => plugin.IsInstalled)}
             onClick={() => {
               setPurgeConfiguration(false);
               setPendingDelete({ kind: 'all', plugin: representativePlugin });
@@ -113,15 +116,12 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
         const packageInstallArgs = packageEntry && packageRelease && packageArchive
           ? getPackageInstallArgs(packageEntry.PackageID, packageRelease, packageArchive)
           : undefined;
-        // Determine if plugin is server-bundled (not user-installed)
-        // A plugin is server-bundled if it has no containing directory or is not user-installed
-        const isServerBundled = !plugin.IsInstalled || plugin.ContainingDirectory === null
-          || plugin.ContainingDirectory === undefined;
-        const canUninstall = plugin.IsInstalled && plugin.CanUninstall;
+        const isBuiltIn = !groupCanUninstall;
+        const canUninstall = groupCanUninstall && !isPendingUninstall;
         const canUndoUninstall = isPendingUninstall && !!packageInstallArgs && !!packageArchive?.IsCompatible;
         // Determine if plugin is core (should never be disabled)
         // Core plugins always have LoadOrder = 0
-        const isCorePlugin = plugin.LoadOrder === 0;
+        const isCorePlugin = groupIsCore;
 
         return (
           <div
@@ -157,7 +157,7 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
                     Active
                   </Badge>
                 )}
-                {isServerBundled && !plugin.RestartPending && (
+                {isBuiltIn && !plugin.RestartPending && (
                   <Badge className="border border-panel-border bg-panel-input text-inherit">
                     Built-in
                   </Badge>
@@ -212,7 +212,7 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
                         onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
                       },
                     )}
-                  disabled={isPendingUninstall || !plugin.CanEnableOrDisable}
+                  disabled={isPendingUninstall || !groupCanEnableOrDisable}
                   loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
                     && updateArgs?.pluginVersion === plugin.Version}
                 >
