@@ -2,20 +2,20 @@
     "compilerOptions": {
         "outDir": "./dist/",
         "sourceMap": true,
+        "strict": false,
         "strictNullChecks": true,
         "module": "es2022",
         "jsx": "react",
         "target": "esnext",
         "allowJs": true,
         "checkJs": false,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "baseUrl": "./src",
         "paths": {
             "@/*": [
-                "*"
+                "./src/*"
             ]
         }
     },

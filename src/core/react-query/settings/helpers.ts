@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { merge, toNumber } from 'lodash';
 
 import { webuiSettingsPatches } from '@/core/patches';
 import { LanguageSource } from '@/core/types/api/settings';
@@ -431,7 +431,7 @@ export const transformSettings = (response: SettingsServerType) => {
   const currentSettingsRevision = webuiSettings.settingsRevision ?? 0;
   const versionedInitialSettings: WebUISettingsType = {
     ...initialSettings.WebUI_Settings,
-    settingsRevision: Number(Object.keys(webuiSettingsPatches).pop()),
+    settingsRevision: toNumber(Object.keys(webuiSettingsPatches).pop()),
   };
 
   if (currentSettingsRevision < 4) {

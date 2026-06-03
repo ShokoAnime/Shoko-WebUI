@@ -83,7 +83,7 @@ const DynamicField = ({ onChange, propertyName, propertySchema, value }: Props) 
         >
           <CodeEditor
             language={language}
-            onChange={onChange as (v: string) => void}
+            onChange={onChange}
             value={(value as string) ?? ''}
           />
         </Suspense>

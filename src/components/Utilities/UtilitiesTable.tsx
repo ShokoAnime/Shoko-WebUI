@@ -3,7 +3,7 @@ import { mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce } from 'lodash';
+import { debounce, toNumber } from 'lodash';
 
 import { criteriaMap } from '@/components/Utilities/constants';
 import { useSelector } from '@/core/store';
@@ -122,14 +122,14 @@ const HeaderItem = (
   const sortIndicator = (headerId: string) => {
     if (skipSort || !isCriteriaMapKey(headerId)) return null;
     const criteria = criteriaMap[headerId];
-    if (!criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria as number) return null;
+    if (!criteria || !sortCriteria || Math.abs(sortCriteria) !== toNumber(criteria)) return null;
 
     return (
       <Icon
         path={mdiMenuUp}
         size={1}
         className="ml-2 inline text-panel-text-primary transition-transform"
-        rotate={sortCriteria as number === (criteria * -1) ? 180 : 0}
+        rotate={toNumber(sortCriteria) === (criteria * -1) ? 180 : 0}
       />
     );
   };
