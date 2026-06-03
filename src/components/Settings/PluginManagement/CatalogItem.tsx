@@ -226,32 +226,37 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
           {(newestRelease || olderReleases.length > 0) && (
             <div className="pt-1">
               {newestRelease && (
-                <div className="flex flex-wrap items-center justify-between gap-2.5 rounded-xl border border-panel-border bg-panel-background-alt px-3 py-2.5">
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold">
-                      {newestRelease.Version}
-                      <span className="text-sm opacity-65">
-                        {' '}
-                        (
-                        {newestRelease.Channel}
-                        )
-                      </span>
+                <div className="rounded-xl border border-panel-border bg-panel-background-alt px-3 py-2.5">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                    <div className="min-w-0 sm:flex-1">
+                      <div className="text-sm font-semibold">
+                        {newestRelease.Version}
+                        <span className="text-sm opacity-65">
+                          {' '}
+                          (
+                          {newestRelease.Channel}
+                          )
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-1 text-sm opacity-65">
+
+                    <div className="text-sm opacity-65 sm:shrink-0">
                       {`Released ${formatPluginDate(newestRelease.ReleasedAt)}`}
                     </div>
-                  </div>
 
-                  <Button
-                    buttonType={newestRelease.IsInstalled ? 'secondary' : 'primary'}
-                    buttonSize="small"
-                    onClick={() => onInstall(entry, newestRelease)}
-                    disabled={newestRelease.IsInstalled
-                      || !newestRelease.Archives.some(archive => archive.IsCompatible)}
-                    className="min-w-28 justify-center"
-                  >
-                    {getReleaseActionLabel(newestRelease)}
-                  </Button>
+                    <div className="flex w-full justify-start sm:w-auto sm:shrink-0 sm:justify-end">
+                      <Button
+                        buttonType={newestRelease.IsInstalled ? 'secondary' : 'primary'}
+                        buttonSize="small"
+                        onClick={() => onInstall(entry, newestRelease)}
+                        disabled={newestRelease.IsInstalled
+                          || !newestRelease.Archives.some(archive => archive.IsCompatible)}
+                        className="min-w-28 justify-center"
+                      >
+                        {getReleaseActionLabel(newestRelease)}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               )}
 
