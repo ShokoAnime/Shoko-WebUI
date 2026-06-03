@@ -23,24 +23,26 @@ const initialQueueStatus: QueueStatusType = {
   CurrentlyExecuting: [],
 };
 
+const initialState: State = {
+  fetched: {},
+  queueStatus: initialQueueStatus,
+  banStatus: {
+    http: {
+      UpdateType: 2,
+      Value: false,
+    },
+    udp: {
+      UpdateType: 1,
+      Value: false,
+    },
+  } as AniDBBanType,
+  networkStatus: NetworkAvailabilityEnum.Internet,
+  layoutEditMode: false,
+};
+
 const mainpageSlice = createSlice({
   name: 'mainpage',
-  initialState: {
-    fetched: {},
-    queueStatus: initialQueueStatus,
-    banStatus: {
-      http: {
-        UpdateType: 2,
-        Value: false,
-      },
-      udp: {
-        UpdateType: 1,
-        Value: false,
-      },
-    } as AniDBBanType,
-    networkStatus: NetworkAvailabilityEnum.Internet,
-    layoutEditMode: false,
-  } as State,
+  initialState,
   reducers: {
     setFetched(sliceState, action) {
       sliceState.fetched = { ...sliceState.fetched, [action.payload]: true };

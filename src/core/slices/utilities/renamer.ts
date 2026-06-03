@@ -9,12 +9,14 @@ type State = {
   results: Record<number, RelocationResultType>;
 };
 
+const initialState: State = {
+  files: [],
+  results: {},
+};
+
 const renamerSlice = createSlice({
   name: 'renamer',
-  initialState: {
-    files: [],
-    results: {},
-  } as State,
+  initialState,
   reducers: {
     addFiles(sliceState, action: PayloadAction<FileType[]>) {
       const existingFileIds = sliceState.files.map(file => file.ID);

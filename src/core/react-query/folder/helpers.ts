@@ -8,4 +8,4 @@ const getNextId = () => {
 };
 
 export const transformNode = <T extends DriveType | FolderType>(response: T[]) =>
-  response.map((item: T) => ({ ...item, nodeId: getNextId() } as T));
+  response.map((item: T) => ({ ...item, nodeId: getNextId() }));

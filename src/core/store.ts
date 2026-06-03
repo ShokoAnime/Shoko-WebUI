@@ -30,8 +30,7 @@ const store = configureStore({
       signalRMiddleware,
     ),
   preloadedState: loadState(),
-  // eslint-disable-next-line no-undef
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: import.meta.env.DEV,
 });
 
 export const useDispatch = useReduxDispatch.withTypes<typeof store.dispatch>();

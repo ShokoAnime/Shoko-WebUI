@@ -11,16 +11,18 @@ type State = {
   webuiPreviewTheme: string;
 };
 
+const initialState: State = {
+  plex: {
+    url: '',
+    authenticated: false,
+  },
+  webuiUpdateAvailable: false,
+  webuiPreviewTheme: '',
+};
+
 const miscSlice = createSlice({
   name: 'misc',
-  initialState: {
-    plex: {
-      url: '',
-      authenticated: false,
-    },
-    webuiUpdateAvailable: false,
-    webuiPreviewTheme: '',
-  } as State,
+  initialState,
   reducers: {
     setItem(sliceState, action: PayloadAction<object>) {
       return { ...sliceState, ...action.payload };
