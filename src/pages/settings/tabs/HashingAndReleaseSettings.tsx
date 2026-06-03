@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from '@/core/store';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
-import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
 
 const HashingAndReleaseSettings = () => {
   const dispatch = useDispatch();
@@ -44,7 +43,7 @@ const HashingAndReleaseSettings = () => {
   const [hashingSettings, setHashingSettings] = useState<HashingSummaryType>({ ParallelMode: false });
 
   const newWebuiProviderOrder = webuiProviders
-    .map(provider => ({ id: provider.ID, enabled: provider.IsEnabled } as ManualLinkProviderType));
+    .map(provider => ({ id: provider.ID, enabled: provider.IsEnabled }));
 
   useEffect(() => {
     if (

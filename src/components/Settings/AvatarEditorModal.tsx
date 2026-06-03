@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AvatarEditor, { useAvatarEditor } from 'react-avatar-editor';
 import { mdiImageMinusOutline, mdiImagePlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -66,7 +67,7 @@ const AvatarEditorModal = (props: Props) => {
           max="2"
           step="0.01"
           value={scale}
-          onChange={event => setScale(Number(event.target.value))}
+          onChange={event => setScale(toNumber(event.target.value))}
           className="grow"
         />
         <Icon path={mdiImagePlusOutline} size={1.2} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ReactNode } from 'react';
-import type { Components, Options } from 'react-markdown';
+import type { Options } from 'react-markdown';
 import Markdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -9,7 +9,7 @@ type Props = Readonly<Options> & {
   children: ReactNode;
 };
 
-const ShokoMarkdown = ({ children, components = {} as Components, ...options }: Props) => (
+const ShokoMarkdown = ({ children, components = {}, ...options }: Props) => (
   <Markdown
     remarkPlugins={[remarkGfm, remarkBreaks]}
     components={{

@@ -19,12 +19,14 @@ type State = {
   sessionMap: Record<number, number>;
 };
 
+const initialState: State = {
+  sessions: {},
+  sessionMap: {},
+};
+
 const avdumpSlice = createSlice({
   name: 'avdump',
-  initialState: {
-    sessionMap: {},
-    sessions: {},
-  } as State,
+  initialState,
   reducers: {
     updateAVDumpEvent(sliceState, action: PayloadAction<AVDumpEventType>) {
       const event = action.payload;

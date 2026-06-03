@@ -10,6 +10,6 @@ type NavigateFunctionVoid = {
 // React Router v7 uses return type for `navigate` function as Promise<void> | void
 // This causes the linter to complain about not catching errors on navigate calls
 // But the return type is actually void for BrowserRouter, so we can safely ignore the type
-const useNavigateVoid = () => useNavigate() as NavigateFunctionVoid;
+const useNavigateVoid: () => NavigateFunctionVoid = () => useNavigate();
 
 export default useNavigateVoid;
