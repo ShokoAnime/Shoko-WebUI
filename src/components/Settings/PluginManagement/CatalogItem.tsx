@@ -257,6 +257,12 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                       </Button>
                     </div>
                   </div>
+
+                  {!newestRelease.Archives.some(archive => archive.IsCompatible) && !newestRelease.IsInstalled && (
+                    <div className="mt-2 rounded-lg border border-orange-500/25 bg-orange-500/8 px-3 py-1.5 text-sm text-orange-100">
+                      This version is not compatible with your server version.
+                    </div>
+                  )}
                 </div>
               )}
 

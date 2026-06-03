@@ -84,7 +84,6 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
 
   // Get the first plugin in the list as a representative for the group
   const representativePlugin = plugins[0];
-  const groupCanEnableOrDisable = plugins.some(plugin => plugin.CanEnableOrDisable);
   const groupCanUninstall = plugins.some(plugin => plugin.CanUninstall);
 
   return (
@@ -212,7 +211,7 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
                       onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
                     },
                   )}
-                disabled={isPendingUninstall || !groupCanEnableOrDisable}
+                disabled={isPendingUninstall || !plugin.CanEnableOrDisable}
                 loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
                   && updateArgs?.pluginVersion === plugin.Version}
               >

@@ -88,6 +88,7 @@ const PluginUpdatesPanel = ({ query }: Props) => {
           onClick={() =>
             checkUpdates({ forceSync: true, performUpgrade: false }, {
               onSuccess: () => toast.success('Update check complete'),
+              onError: () => toast.error('Failed to check for updates'),
             })}
           loading={isPending}
         >

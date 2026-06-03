@@ -91,6 +91,7 @@ const RepositoryPanel = ({ query }: Props) => {
           onClick={() =>
             syncAll(true, {
               onSuccess: () => toast.success('Repositories synchronized'),
+              onError: () => toast.error('Failed to synchronize repositories'),
             })}
           loading={isSyncAllPending}
         >
@@ -137,6 +138,8 @@ const RepositoryPanel = ({ query }: Props) => {
                       syncRepository(repository.ID, {
                         onSuccess: () =>
                           toast.success('Repository synchronized', repository.Name),
+                        onError: () =>
+                          toast.error('Failed to synchronize repository', repository.Name),
                       })}
                     loading={isSyncing}
                   >
@@ -173,6 +176,7 @@ const RepositoryPanel = ({ query }: Props) => {
 
           deleteRepository(repositoryToDelete.ID, {
             onSuccess: () => toast.success('Repository removed', repositoryToDelete.Name),
+            onError: () => toast.error('Failed to remove repository', repositoryToDelete.Name),
           });
         }}
       >

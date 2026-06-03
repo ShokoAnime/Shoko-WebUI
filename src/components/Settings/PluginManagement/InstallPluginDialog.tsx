@@ -62,6 +62,7 @@ const InstallPluginDialog = ({ currentVersion, entry, initialRelease, onClose, s
         toast.success('Plugin installed', `${entry.Name} ${selectedRelease.Version} installed successfully.`);
         onClose();
       },
+      onError: () => toast.error('Failed to install plugin', `${entry.Name} ${selectedRelease.Version}`),
     });
   };
 
