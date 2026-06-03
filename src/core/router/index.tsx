@@ -38,7 +38,7 @@ import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
-import PluginManagementSettings from '@/pages/settings/tabs/PluginsSettings';
+import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';

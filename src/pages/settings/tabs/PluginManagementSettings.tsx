@@ -117,9 +117,9 @@ const PluginManagementSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Plugins | Shoko</title>
+      <title>Settings &gt; Plugin Management | Shoko</title>
       <div className="flex flex-col gap-y-1 sm:gap-y-2">
-        <div className="text-xl font-semibold">Plugins</div>
+        <div className="text-xl font-semibold">Plugin Management</div>
         <div className="max-w-3xl">
           Manage plugin repositories, browse plugin packages, review installed plugins, and manually apply updates.
         </div>

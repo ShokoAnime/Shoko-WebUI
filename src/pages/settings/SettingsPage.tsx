@@ -26,7 +26,7 @@ const items = [
   { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
-  { name: 'Plugins', path: 'plugins' },
+  { name: 'Plugin Management', path: 'plugins' },
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
