@@ -121,7 +121,7 @@ const InstalledPluginsPanel = ({ groupedPackages, groupedPlugins }: Props) => {
                       <img
                         src={thumbnailUrl}
                         alt={plugin.Name}
-                        className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt object-contain"
+                        className="block w-full rounded-lg border border-panel-border"
                         onError={() => setFailedThumbnailUrls(prev => ({ ...prev, [thumbnailUrl]: true }))}
                       />
                     )

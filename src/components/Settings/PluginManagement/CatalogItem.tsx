@@ -119,7 +119,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                 <img
                   src={thumbnailSrc}
                   alt={entry.Name}
-                  className="block aspect-video w-full rounded-lg border border-panel-border bg-panel-background-alt object-contain"
+                  className="block w-full rounded-lg border border-panel-border"
                   onError={() => {
                     if (thumbnailSrc === packageThumbnailUrl) {
                       setPackageThumbnailFailed(true);
