@@ -30,6 +30,7 @@ import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
+import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
@@ -130,6 +131,7 @@ const router = sentryCreateBrowserRouter(
             </Route>
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKeys />} />
+            <Route path="plugin/config/:pluginId/:pageId" element={<PluginPageEmbed />} />
           </Route>
         </Route>
       </Route>
