@@ -54,7 +54,7 @@ const RepositoryPanel = ({ query }: Props) => {
           buttonType="secondary"
           buttonSize="normal"
           onClick={() =>
-            syncAll({ forceSync: true }, {
+            syncAll(true, {
               onSuccess: () => toast.success('Repositories synchronized'),
             })}
           loading={isSyncAllPending}

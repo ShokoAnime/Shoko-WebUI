@@ -39,8 +39,8 @@ export const useSyncPluginPackageRepositoryMutation = () =>
 
 export const useSyncAllPluginPackageRepositoriesMutation = () =>
   useMutation({
-    mutationFn: ({ forceSync = true }: { forceSync?: boolean } = {}) =>
-      axios.post('Plugin/Package/Repository/Sync', undefined, { params: { forceSync } }),
+    mutationFn: (forceSync?: boolean) =>
+      axios.post('Plugin/Package/Repository/Sync', undefined, { params: { forceSync: forceSync ?? true } }),
     onSuccess: () => {
       invalidateQueries(['plugin-package', 'repositories']);
       invalidateQueries(['plugin-package', 'list']);
