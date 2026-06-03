@@ -81,14 +81,31 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
   );
 };
 
+const OLDER_VERSIONS_PAGE_SIZE = 5;
+
 const CatalogItem = ({ entry, onInstall }: Props) => {
   const [packageThumbnailFailed, setPackageThumbnailFailed] = useState(false);
   const [pluginThumbnailFailed, setPluginThumbnailFailed] = useState(false);
   const [showOlderVersions, setShowOlderVersions] = useState(false);
+  const [olderVersionsVisible, setOlderVersionsVisible] = useState(OLDER_VERSIONS_PAGE_SIZE);
   const pluginMetadata = entry.InstalledPlugins[0];
 
   const newestRelease = entry.Releases[0];
   const olderReleases = entry.Releases.slice(1);
+  const visibleOlderReleases = olderReleases.slice(0, olderVersionsVisible);
+  const hiddenOlderCount = olderReleases.length - visibleOlderReleases.length;
+  const remainingToShow = Math.min(OLDER_VERSIONS_PAGE_SIZE, hiddenOlderCount);
+
+  const toggleOlderVersions = () => {
+    setShowOlderVersions((value) => {
+      if (value) {
+        setOlderVersionsVisible(OLDER_VERSIONS_PAGE_SIZE);
+        return false;
+      }
+
+      return true;
+    });
+  };
 
   useEffect(() => {
     setPackageThumbnailFailed(false);
@@ -243,7 +260,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                   <button
                     type="button"
                     className="self-start text-sm font-semibold text-button-primary transition-opacity hover:opacity-80"
-                    onClick={() => setShowOlderVersions(value => !value)}
+                    onClick={toggleOlderVersions}
                   >
                     {showOlderVersions
                       ? 'Hide older versions'
@@ -251,7 +268,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                   </button>
 
                   {showOlderVersions
-                    && olderReleases.map(release => (
+                    && visibleOlderReleases.map(release => (
                       <ReleaseCard
                         key={`${entry.PackageID}-${getReleaseKey(release)}`}
                         entry={entry}
@@ -259,6 +276,16 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                         release={release}
                       />
                     ))}
+
+                  {showOlderVersions && hiddenOlderCount > 0 && (
+                    <button
+                      type="button"
+                      className="self-start text-sm font-semibold text-button-primary transition-opacity hover:opacity-80"
+                      onClick={() => setOlderVersionsVisible(value => value + OLDER_VERSIONS_PAGE_SIZE)}
+                    >
+                      {`Show ${remainingToShow} more`}
+                    </button>
+                  )}
                 </div>
               )}
             </div>

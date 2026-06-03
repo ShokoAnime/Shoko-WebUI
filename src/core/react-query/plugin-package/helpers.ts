@@ -12,8 +12,6 @@ import type { PackageInfoType } from '@/core/types/api/plugin-package';
 
 const getInstalledPluginVersion = (plugin?: PluginInfoType | null) => plugin?.Version ?? null;
 
-const isManageablePlugin = (plugin: PluginInfoType) => plugin.LoadOrder !== 0;
-
 const isVersionGreaterThan = (
   left: string,
   right: string,
@@ -82,10 +80,6 @@ const getLatestInstalledPlugin = (plugins: PluginInfoType[]) =>
   )[0];
 
 const getPluginKey = (plugin: Pick<PluginInfoType, 'ID' | 'Version'>) => `${plugin.ID}::${plugin.Version}`;
-
-// Plugin management hides core plugins for now. Keep the API hook raw so other consumers
-// are not surprised by filtered results, and centralize the temporary UI rule here.
-export const getManageablePlugins = (plugins: PluginInfoType[]) => plugins.filter(isManageablePlugin);
 
 export const getLatestRelease = (entry: PluginPackageCatalogEntryType) => entry.Releases[0];
 
@@ -240,7 +234,7 @@ export const sortInstalledPluginGroups = (
 
 export const getPluginUpdates = (entries: PluginPackageCatalogEntryType[]) =>
   entries
-    .filter(entry => getManageablePlugins(entry.InstalledPlugins).length > 0 && entry.HasUpdateAvailable)
+    .filter(entry => entry.InstalledPlugins.length > 0 && entry.HasUpdateAvailable)
     .map<PluginUpdateSummaryType>(entry => ({
       PackageID: entry.PackageID,
       Name: entry.Name,

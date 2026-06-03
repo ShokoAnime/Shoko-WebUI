@@ -7,7 +7,6 @@ import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallP
 import InstalledPluginVersions from '@/components/Settings/PluginManagement/InstalledPluginVersions';
 import { usePluginsQuery } from '@/core/react-query/plugin/queries';
 import {
-  getManageablePlugins,
   getUpdateRelease,
   groupInstalledPlugins,
   groupPluginPackages,
@@ -87,7 +86,7 @@ const InstalledPluginsPanel = ({ query }: Props) => {
     [packagesQuery.data?.List],
   );
   const groupedPlugins = useMemo(
-    () => groupInstalledPlugins(getManageablePlugins(pluginsQuery.data ?? [])),
+    () => groupInstalledPlugins(pluginsQuery.data ?? []),
     [pluginsQuery.data],
   );
 

@@ -86,13 +86,12 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
   const representativePlugin = plugins[0];
   const groupCanEnableOrDisable = plugins.some(plugin => plugin.CanEnableOrDisable);
   const groupCanUninstall = plugins.some(plugin => plugin.CanUninstall);
-  const groupIsCore = plugins.every(plugin => plugin.LoadOrder === 0);
 
   return (
     <div className="flex flex-col gap-y-3">
       {/* Uninstall All button at the top of the plugin group */}
       <div className="flex justify-end pt-4">
-        {plugins.length > 1 && !groupIsCore && (
+        {plugins.length > 1 && (
           <Button
             buttonType="danger"
             buttonSize="small"
@@ -124,9 +123,6 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
         const isBuiltIn = !plugin.CanUninstall;
         const canUninstall = plugin.CanUninstall && !isPendingUninstall;
         const canUndoUninstall = isPendingUninstall && !!packageInstallArgs && !!packageArchive?.IsCompatible;
-        // Determine if plugin is core (should never be disabled)
-        // Core plugins always have LoadOrder = 0
-        const isCorePlugin = groupIsCore;
 
         return (
           <div
@@ -200,68 +196,65 @@ const InstalledPluginVersions = ({ packageEntry, plugins }: Props) => {
               </div>
             )}
 
-            {isCorePlugin ? null : (
-              <div className="mt-4 flex flex-wrap justify-end gap-3">
-                <Button
-                  buttonType="secondary"
-                  buttonSize="small"
-                  onClick={() =>
-                    updatePlugin(
-                      { pluginId: plugin.ID, pluginVersion: plugin.Version, IsEnabled: !plugin.IsEnabled },
-                      {
-                        onSuccess: () =>
-                          toast.success(
-                            'Plugin updated',
-                            `${plugin.Name} ${plugin.IsEnabled ? 'disabled' : 'enabled'}.`,
-                          ),
-                        onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
-                      },
-                    )}
-                  disabled={isPendingUninstall || !groupCanEnableOrDisable}
-                  loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
-                    && updateArgs?.pluginVersion === plugin.Version}
-                >
-                  {plugin.IsEnabled ? 'Disable' : 'Enable'}
-                </Button>
-                {isPendingUninstall
-                  ? (
-                    <Button
-                      buttonType="primary"
-                      buttonSize="small"
-                      disabled={!canUndoUninstall}
-                      onClick={() => {
-                        if (!packageInstallArgs) return;
-
-                        installPlugin(packageInstallArgs, {
-                          onSuccess: () =>
-                            toast.success('Pending uninstall undone', `${plugin.Name} ${plugin.Version}`),
-                          onError: () =>
-                            toast.error('Failed to undo pending uninstall', `${plugin.Name} ${plugin.Version}`),
-                        });
-                      }}
-                      loading={installStatus === 'pending' && installArgs?.packageId === packageEntry?.PackageID
-                        && installArgs?.releaseVersion === plugin.Version}
-                    >
-                      Undo Uninstall
-                    </Button>
-                  )
-                  : (
-                    <Button
-                      buttonType="danger"
-                      buttonSize="small"
-                      disabled={!canUninstall}
-                      onClick={() => {
-                        setPurgeConfiguration(false);
-                        setPendingDelete({ kind: 'version', plugin });
-                      }}
-                      loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
-                        && deleteArgs?.pluginVersion === plugin.Version}
-                    >
-                      {isPendingInstall ? 'Undo Install' : 'Uninstall Version'}
-                    </Button>
+            <div className="mt-4 flex flex-wrap justify-end gap-3">
+              <Button
+                buttonType="secondary"
+                buttonSize="small"
+                onClick={() =>
+                  updatePlugin(
+                    { pluginId: plugin.ID, pluginVersion: plugin.Version, IsEnabled: !plugin.IsEnabled },
+                    {
+                      onSuccess: () =>
+                        toast.success(
+                          'Plugin updated',
+                          `${plugin.Name} ${plugin.IsEnabled ? 'disabled' : 'enabled'}.`,
+                        ),
+                      onError: () => toast.error('Failed to update plugin', `Could not update ${plugin.Name}`),
+                    },
                   )}
-              </div>
-            )}
+                disabled={isPendingUninstall || !groupCanEnableOrDisable}
+                loading={updateStatus === 'pending' && updateArgs?.pluginId === plugin.ID
+                  && updateArgs?.pluginVersion === plugin.Version}
+              >
+                {plugin.IsEnabled ? 'Disable' : 'Enable'}
+              </Button>
+              {isPendingUninstall
+                ? (
+                  <Button
+                    buttonType="primary"
+                    buttonSize="small"
+                    disabled={!canUndoUninstall}
+                    onClick={() => {
+                      if (!packageInstallArgs) return;
+
+                      installPlugin(packageInstallArgs, {
+                        onSuccess: () => toast.success('Pending uninstall undone', `${plugin.Name} ${plugin.Version}`),
+                        onError: () =>
+                          toast.error('Failed to undo pending uninstall', `${plugin.Name} ${plugin.Version}`),
+                      });
+                    }}
+                    loading={installStatus === 'pending' && installArgs?.packageId === packageEntry?.PackageID
+                      && installArgs?.releaseVersion === plugin.Version}
+                  >
+                    Undo Uninstall
+                  </Button>
+                )
+                : (
+                  <Button
+                    buttonType="danger"
+                    buttonSize="small"
+                    disabled={!canUninstall}
+                    onClick={() => {
+                      setPurgeConfiguration(false);
+                      setPendingDelete({ kind: 'version', plugin });
+                    }}
+                    loading={deleteStatus === 'pending' && deleteArgs?.pluginId === plugin.ID
+                      && deleteArgs?.pluginVersion === plugin.Version}
+                  >
+                    {isPendingInstall ? 'Undo Install' : 'Uninstall Version'}
+                  </Button>
+                )}
+            </div>
           </div>
         );
       })}
