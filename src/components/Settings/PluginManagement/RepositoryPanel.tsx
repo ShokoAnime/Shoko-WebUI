@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import dayjs from 'dayjs';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
@@ -13,6 +12,7 @@ import {
   useSyncPluginPackageRepositoryMutation,
 } from '@/core/react-query/plugin-package/mutations';
 import { usePluginPackageRepositoriesQuery } from '@/core/react-query/plugin-package/queries';
+import { dayjs } from '@/core/util';
 
 type RepositoryDeleteStateType = {
   ID: string;
@@ -37,7 +37,7 @@ const RepositoryPanel = ({ query }: Props) => {
     if (!repositoriesQuery.data) return [];
     if (!query) return repositoriesQuery.data;
 
-    const matchesQuery = (value: string) => value.toLocaleLowerCase().includes(query);
+    const matchesQuery = (value: string) => value.toLowerCase().includes(query.toLowerCase());
 
     return repositoriesQuery.data.filter(repository => [repository.Name, repository.Url].some(matchesQuery));
   }, [query, repositoriesQuery.data]);

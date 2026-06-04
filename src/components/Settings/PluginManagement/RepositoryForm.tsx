@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -21,7 +21,7 @@ const RepositoryForm = ({ onClose, show }: Props) => {
     setUrl('');
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!show) return;
     reset();
   }, [show]);

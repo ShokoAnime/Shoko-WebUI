@@ -1,9 +1,10 @@
 import React from 'react';
-import dayjs from 'dayjs';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import { Badge } from '@/components/Settings/PluginManagement/Badge';
+import { formatPluginDate } from '@/components/Settings/PluginManagement/PluginManagement.utils';
 import toast from '@/components/Toast';
 import {
   useDeleteAllPluginVersionsMutation,
@@ -34,19 +35,6 @@ type PendingDeleteType =
     kind: 'all';
     plugin: PluginInfoType;
   };
-
-type BadgeProps = {
-  children: React.ReactNode;
-  className?: string;
-};
-
-const Badge = ({ children, className }: BadgeProps) => (
-  <span className={`rounded-lg px-2.5 py-1 text-xs font-medium ${className ?? ''}`.trim()}>
-    {children}
-  </span>
-);
-
-const formatPluginDate = (date: string) => dayjs(date).format('D MMMM YYYY');
 
 const getPreferredArchive = (
   plugin: PluginInfoType,

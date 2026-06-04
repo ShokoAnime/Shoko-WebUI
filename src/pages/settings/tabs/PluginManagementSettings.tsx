@@ -28,15 +28,15 @@ const PluginManagementSettings = () => {
   const { section } = useParams();
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounceValue(query, 300);
-  const normalizedQuery = debouncedQuery.trim().toLocaleLowerCase();
+  const trimmedQuery = debouncedQuery.trim();
   const selectedSection = isValidSection(section) ? section : defaultSection;
 
   let content = (
     <>
-      {selectedSection === 'repositories' && <RepositoryPanel query={normalizedQuery} />}
-      {selectedSection === 'browse' && <CatalogPanel query={debouncedQuery.trim()} />}
-      {selectedSection === 'installed' && <InstalledPluginsPanel query={debouncedQuery.trim()} />}
-      {selectedSection === 'updates' && <PluginUpdatesPanel query={normalizedQuery} />}
+      {selectedSection === 'repositories' && <RepositoryPanel query={trimmedQuery} />}
+      {selectedSection === 'browse' && <CatalogPanel query={trimmedQuery} />}
+      {selectedSection === 'installed' && <InstalledPluginsPanel query={trimmedQuery} />}
+      {selectedSection === 'updates' && <PluginUpdatesPanel query={trimmedQuery} />}
     </>
   );
 

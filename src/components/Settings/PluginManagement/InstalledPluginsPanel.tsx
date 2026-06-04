@@ -3,6 +3,7 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
+import { Badge } from '@/components/Settings/PluginManagement/Badge';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import InstalledPluginVersions from '@/components/Settings/PluginManagement/InstalledPluginVersions';
 import { usePluginsQuery } from '@/core/react-query/plugin/queries';
@@ -26,17 +27,6 @@ type SelectedUpgradeType = {
   packageId: string;
   release: PluginPackageCatalogEntryType['Releases'][number];
 };
-
-type BadgeProps = {
-  children: React.ReactNode;
-  className?: string;
-};
-
-const Badge = ({ children, className }: BadgeProps) => (
-  <span className={`rounded-lg px-2.5 py-1 text-xs font-medium ${className ?? ''}`.trim()}>
-    {children}
-  </span>
-);
 
 const releaseMatchesPlugin = (
   release: PluginPackageCatalogEntryType['Releases'][number],

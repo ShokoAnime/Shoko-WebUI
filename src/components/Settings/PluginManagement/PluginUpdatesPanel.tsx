@@ -39,11 +39,13 @@ const PluginUpdatesPanel = ({ query }: Props) => {
 
     if (!query) return pluginUpdates;
 
+    const lowerQuery = query.toLowerCase();
+
     return pluginUpdates.filter(
       update =>
-        update.Name.toLocaleLowerCase().includes(query)
-        || update.CurrentVersion.includes(query)
-        || update.LatestVersion.includes(query),
+        update.Name.toLowerCase().includes(lowerQuery)
+        || update.CurrentVersion.toLowerCase().includes(lowerQuery)
+        || update.LatestVersion.toLowerCase().includes(lowerQuery),
     );
   }, [entries, query]);
   const selectedEntry = entries.find(entry => entry.PackageID === selectedUpdate?.packageId);

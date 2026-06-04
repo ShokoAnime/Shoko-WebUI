@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import dayjs from 'dayjs';
 
 import Button from '@/components/Input/Button';
+import { Badge } from '@/components/Settings/PluginManagement/Badge';
+import { formatPluginDate } from '@/components/Settings/PluginManagement/PluginManagement.utils';
 import { getReleaseKey } from '@/core/react-query/plugin-package/helpers';
 
 import type {
@@ -18,24 +19,11 @@ type ReleaseCardProps = Props & {
   release: PluginPackageCatalogReleaseType;
 };
 
-type BadgeProps = {
-  children: React.ReactNode;
-  className?: string;
-};
-
-const Badge = ({ children, className }: BadgeProps) => (
-  <span className={`rounded-lg px-2.5 py-1 text-xs font-medium ${className ?? ''}`.trim()}>
-    {children}
-  </span>
-);
-
 const getReleaseActionLabel = (release: PluginPackageCatalogReleaseType) => {
   if (release.IsInstalled) return 'Installed';
   if (release.Archives.some(archive => archive.IsCompatible)) return 'Install';
   return 'Unavailable';
 };
-
-const formatPluginDate = (date: string) => dayjs(date).format('D MMMM YYYY');
 
 const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
   const hasCompatibleArchive = release.Archives.some(archive => archive.IsCompatible);
