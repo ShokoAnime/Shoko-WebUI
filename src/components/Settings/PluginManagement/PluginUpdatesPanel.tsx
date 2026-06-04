@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -23,18 +23,22 @@ type SelectedUpdateType = {
 
 const PluginUpdatesPanel = ({ query }: Props) => {
   const { isPending, mutate: checkUpdates } = useCheckPluginPackageUpdatesMutation();
-  const [selectedUpdate, setSelectedUpdate] = React.useState<SelectedUpdateType>();
+  const [selectedUpdate, setSelectedUpdate] = useState<SelectedUpdateType>();
+  // No query param is passed to the API here. The Updates tab must always see the full
+  // package set so it can detect every installed package that has an update available.
+  // Passing query would exclude non-matching packages and hide their updates from view.
+  // The search string is applied client-side to the already-computed update list instead.
   const packagesQuery = usePluginPackagesQuery({
     allowSync: false,
     onlyCompatible: false,
     onlyLatest: false,
     pageSize: 0,
   });
-  const entries = React.useMemo(
+  const entries = useMemo(
     () => groupPluginPackages(packagesQuery.data?.List ?? []),
     [packagesQuery.data?.List],
   );
-  const updates = React.useMemo(() => {
+  const updates = useMemo(() => {
     const pluginUpdates = getPluginUpdates(entries);
 
     if (!query) return pluginUpdates;

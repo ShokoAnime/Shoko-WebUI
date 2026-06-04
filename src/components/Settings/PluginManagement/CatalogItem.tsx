@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import { Badge } from '@/components/Settings/PluginManagement/Badge';
@@ -100,14 +100,12 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
     setPluginThumbnailFailed(false);
   }, [entry.PackageID, entry.Thumbnail, pluginMetadata]);
 
-  const packageThumbnailUrl = useMemo(
-    () => (entry.Thumbnail ? `/api/v3/Plugin/Package/${entry.PackageID}/Thumbnail` : undefined),
-    [entry.PackageID, entry.Thumbnail],
-  );
-  const pluginThumbnailUrl = useMemo(
-    () => (pluginMetadata?.Thumbnail ? `/api/v3/Plugin/${pluginMetadata.ID}/Thumbnail` : undefined),
-    [pluginMetadata],
-  );
+  const packageThumbnailUrl = entry.Thumbnail
+    ? `/api/v3/Plugin/Package/${entry.PackageID}/Thumbnail`
+    : undefined;
+  const pluginThumbnailUrl = pluginMetadata?.Thumbnail
+    ? `/api/v3/Plugin/${pluginMetadata.ID}/Thumbnail`
+    : undefined;
   let thumbnailSrc: string | undefined;
 
   if (packageThumbnailUrl && !packageThumbnailFailed) {
