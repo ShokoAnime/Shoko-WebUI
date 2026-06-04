@@ -20,7 +20,7 @@ pnpm eslint:fix     # eslint --fix --cache src (auto-fix lint rules)
 pnpm lint           # tscheck -> dprint -> eslint -> stylelint
 ```
 
-**Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`.
+**Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`. The dev server auto-opens the browser at `/webui/`.
 
 ## Repo Structure
 
@@ -42,15 +42,15 @@ pnpm lint           # tscheck -> dprint -> eslint -> stylelint
   - `axiosExternal` — Unconfigured base for external calls
   - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`.
 - **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware.
-- **Redux:** Store in `src/core/store.ts` — root reducer clears all state on `AUTH_LOGOUT`. The full store is persisted to `sessionStorage`; only `apiSession` is persisted to `localStorage` (when `rememberUser` is true). Re-exported `useDispatch`/`useSelector` from this module (not `react-redux` directly).
+- **Redux:** Single-file store at `src/core/store.ts`. Root reducer clears all state on `AUTH_LOGOUT`. Full store persisted to `sessionStorage`; only `apiSession` persisted to `localStorage` (when `rememberUser` is true). Store is throttled to persist at most once per second. Re-exports typed `useDispatch`/`useSelector` — import from `@/core/store`, never from `react-redux` directly.
 - **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/` with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts`.
-- **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`.
+- **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`. `version.json` is auto-generated at build time from git hash + package version.
 - **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 - **Path alias:** `@/` maps to `src/` (configured in `vite.config.mjs` and `tsconfig.json`).
 
 ## React Patterns
 
-This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The compiler automatically memoizes components and values, so **do not use `useMemo`, `useCallback`, or `React.memo` unless absolutely required** (e.g., for a library boundary or a very specific measured performance issue). Let the compiler handle optimization instead of manually adding memoization.
+This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The compiler automatically memoizes components and values, so **do not use `useMemo`, `useCallback`, or `React.memo` unless absolutely required** (e.g., for a library boundary or a measured performance issue).
 
 ## Code Style
 
@@ -65,7 +65,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **Destructuring:** Object destructuring keys must be sorted alphabetically.
 - **Restricted imports** (will error if imported directly):
   - `../*` (relative parent imports) → use `@/` alias instead
-  - `react-redux`: `useDispatch`, `useSelector` → use `@/core/store/useDispatch` and `@/core/store/useSelector`
+  - `react-redux`: `useDispatch`, `useSelector` → use `@/core/store`
   - `react-router`: `useNavigate` → use `@/hooks/useNavigateVoid`
   - `react-toastify`: `toast` → use `@/components/Toast`
   - `usehooks-ts`: `useCopyToClipboard` → use `copyToClipboard` from `@/core/util`
@@ -77,7 +77,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 ## Verification & CI
 
 - **No unit/integration tests** are configured. Verification is `pnpm lint`.
-- **Pre-commit:** Husky runs `lint-staged`, which executes `tsc --noEmit`, `dprint fmt`, `eslint --cache`, and `stylelint` on staged files.
+- **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `tsc --noEmit` on all TS/TSX files (not just staged), plus `dprint fmt`, `eslint --cache`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
 - **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`.
 
 ## Guardrails
@@ -87,6 +87,15 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
 - If you modify files, styles, structures, configurations, or workflows mentioned in this file, update the corresponding `AGENTS.md` sections to keep them accurate.
+- **Use `semver` for version comparisons** — hand-rolling version parsing with `Number.parseInt`/`split('.')` silently mishandles pre-release suffixes.
+- **Use `dayjs` for date formatting/manipulation** — never use `new Date()` / `.toLocaleString()` for display. Always import from `@/core/util`: `import { dayjs } from '@/core/util'`. Plugins and locale are pre-configured there.
+- **`lodash`** — before writing custom utility functions for grouping, sorting, filtering, debouncing, throttling, or deep equality, check if lodash already provides it.
+- **Immutable state → `immer` or `useImmer`.** Do not hand-write reducers with O(n²) object spreads.
+- **`pretty-bytes`** — use for human-readable file sizes. Do not hand-roll byte formatting with `if/else` size thresholds.
+- **`format-thousands` → `formatThousand` from `@/core/util`** — use for number formatting with thousands separators. Do not use `.toLocaleString()` or string concatenation.
+- **`fast-json-patch`** — use for JSON Patch (RFC 6902) operations. Do not write custom diff/patch logic for API settings updates.
+- **`classnames` (imported as `cx`)** — use for conditional CSS class joining. Do not construct class strings with template literals or string concatenation.
+
 
 ## Specifications
 
