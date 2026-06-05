@@ -1,6 +1,5 @@
 import semver from 'semver';
 
-import type { PluginGroupsType } from '@/core/react-query/plugin/types';
 import type {
   PluginPackageCatalogArchiveType,
   PluginPackageCatalogEntryType,
@@ -214,7 +213,7 @@ export const groupInstalledPlugins = (plugins: PluginInfoType[]) => {
 };
 
 export const sortInstalledPluginGroups = (
-  groupedPlugins: PluginGroupsType,
+  groupedPlugins: Record<string, PluginInfoType[]>,
   groupedPackages: PluginPackageCatalogEntryType[],
 ) =>
   Object.entries(groupedPlugins)

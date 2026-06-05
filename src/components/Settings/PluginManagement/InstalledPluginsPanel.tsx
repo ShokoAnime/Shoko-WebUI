@@ -200,17 +200,17 @@ const InstalledPluginsPanel = ({ query }: Props) => {
 
                   <div className="flex flex-wrap gap-2">
                     {updateRelease && (
-                      <Badge className="border border-green-500/30 bg-green-500/20 text-green-100">
+                      <Badge className="bg-panel-text-important text-button-primary-text">
                         Update available
                       </Badge>
                     )}
                     {hasPendingRestart && (
-                      <Badge className="border border-orange-500/30 bg-orange-500/15 text-orange-100">
+                      <Badge className="bg-panel-text-warning text-button-primary-text">
                         Restart required
                       </Badge>
                     )}
                     {!plugin.CanLoad && (
-                      <Badge className="border border-red-500/50 bg-red-500/25 text-red-100">
+                      <Badge className="bg-panel-text-danger text-button-primary-text">
                         Incompatible
                       </Badge>
                     )}

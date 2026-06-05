@@ -26,12 +26,9 @@ const RepositoryForm = ({ onClose, show }: Props) => {
     reset();
   }, [show]);
 
-  const handleSubmit = () => {
-    if (!name.trim() || !url.trim()) {
-      toast.warning('Repository details required', 'Provide both a repository name and manifest URL.');
-      return;
-    }
+  const isSubmitDisabled = !name.trim() || !url.trim();
 
+  const handleSubmit = () => {
     try {
       const repositoryUrl = new URL(url.trim());
 
@@ -50,6 +47,7 @@ const RepositoryForm = ({ onClose, show }: Props) => {
         reset();
         onClose();
       },
+      onError: () => toast.error('Failed to add repository', name.trim()),
     });
   };
 
@@ -82,7 +80,14 @@ const RepositoryForm = ({ onClose, show }: Props) => {
         <Button buttonType="secondary" buttonSize="normal" onClick={onClose}>
           Cancel
         </Button>
-        <Button buttonType="primary" buttonSize="normal" onClick={handleSubmit} loading={isPending}>
+        <Button
+          buttonType="primary"
+          buttonSize="normal"
+          onClick={handleSubmit}
+          loading={isPending}
+          disabled={isSubmitDisabled}
+          tooltip={isSubmitDisabled ? 'Provide both a repository name and URL.' : undefined}
+        >
           Add Repository
         </Button>
       </div>

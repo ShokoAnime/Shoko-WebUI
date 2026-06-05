@@ -2,7 +2,6 @@ import type { PaginationType } from '@/core/types/api';
 import type { PluginInfoType } from '@/core/types/api/plugin';
 import type {
   PackageArchiveInfoType,
-  PackageInfoType,
   PackageManifestInfoType,
   PackageReleaseInfoType,
 } from '@/core/types/api/plugin-package';
@@ -16,7 +15,6 @@ export type PluginPackageListFilters = PaginationType & {
 };
 
 export type PluginPackageCatalogArchiveType = PackageArchiveInfoType & {
-  IsCompatible: boolean;
   IsInstalled: boolean;
 };
 
@@ -61,8 +59,6 @@ export type CheckForUpdatesRequestType = {
   performUpgrade?: boolean;
 };
 
-export type PackageManifestLookup = Record<string, PluginPackageCatalogEntryType>;
-
 export type PluginUpdateSummaryType = {
   PackageID: string;
   Name: string;
@@ -70,5 +66,3 @@ export type PluginUpdateSummaryType = {
   LatestVersion: string;
   Release: PluginPackageCatalogReleaseType;
 };
-
-export type PackageVersionsLookupType = Record<string, PackageInfoType[]>;

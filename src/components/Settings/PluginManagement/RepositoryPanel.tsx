@@ -14,9 +14,58 @@ import {
 import { usePluginPackageRepositoriesQuery } from '@/core/react-query/plugin-package/queries';
 import { dayjs } from '@/core/util';
 
+import type { PackageRepositoryInfoType } from '@/core/types/api/plugin-package';
+
 type RepositoryDeleteStateType = {
   ID: string;
   Name: string;
+};
+
+type RepositoryCardProps = {
+  isDeleting: boolean;
+  repository: PackageRepositoryInfoType;
+  onDelete: (repository: RepositoryDeleteStateType) => void;
+};
+
+const RepositoryCard = ({ isDeleting, onDelete, repository }: RepositoryCardProps) => {
+  const { isPending: isSyncing, mutate: syncRepository } = useSyncPluginPackageRepositoryMutation();
+
+  const handleSync = () => {
+    syncRepository(repository.ID, {
+      onSuccess: () => toast.success('Repository synchronized', repository.Name),
+      onError: () => toast.error('Failed to synchronize repository', repository.Name),
+    });
+  };
+
+  return (
+    <div className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
+      <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-3">
+        <div>
+          <div className="font-semibold">{repository.Name}</div>
+          <div className="text-sm opacity-65">{repository.Url}</div>
+        </div>
+      </div>
+      <div className="mb-3 flex flex-wrap gap-x-1 text-sm opacity-65">
+        <span>Last sync:</span>
+        <span>
+          {repository.LastFetchedAt ? dayjs(repository.LastFetchedAt).format('MMMM Do, YYYY HH:mm') : 'Never'}
+        </span>
+      </div>
+      <div className="flex flex-wrap justify-start gap-3 sm:justify-end">
+        <Button buttonType="secondary" buttonSize="small" onClick={handleSync} loading={isSyncing}>
+          Sync
+        </Button>
+        <Button
+          buttonType="danger"
+          buttonSize="small"
+          onClick={() => onDelete({ ID: repository.ID, Name: repository.Name })}
+          loading={isDeleting}
+        >
+          Remove
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 type Props = {
@@ -25,24 +74,26 @@ type Props = {
 
 const RepositoryPanel = ({ query }: Props) => {
   const repositoriesQuery = usePluginPackageRepositoriesQuery();
-  const { isPending: isDeletePending, mutate: deleteRepository, variables: deletingId } =
+  const { isPending: isDeletePending, mutate: deleteRepository, variables: deletingRepositoryId } =
     useDeletePluginPackageRepositoryMutation();
-  const { isPending: isSyncPending, mutate: syncRepository, variables: syncingRepositoryId } =
-    useSyncPluginPackageRepositoryMutation();
   const { isPending: isSyncAllPending, mutate: syncAll } = useSyncAllPluginPackageRepositoriesMutation();
   const [isAddRepositoryOpen, setIsAddRepositoryOpen] = useState(false);
-  const [repositoryToDelete, setRepositoryToDelete] = useState<RepositoryDeleteStateType | null>(null);
+  const [repositoryToDelete, setRepositoryToDelete] = useState<RepositoryDeleteStateType | undefined>();
 
   const repositories = useMemo(() => {
     if (!repositoriesQuery.data) return [];
     if (!query) return repositoriesQuery.data;
 
-    const matchesQuery = (value: string) => value.toLowerCase().includes(query.toLowerCase());
+    const matchesQuery = (value: string) => value.toLowerCase().includes(query);
 
     return repositoriesQuery.data.filter(repository => [repository.Name, repository.Url].some(matchesQuery));
   }, [query, repositoriesQuery.data]);
-  const retryRepositories = () => {
-    repositoriesQuery.refetch().catch(console.error);
+
+  const handleSyncAll = () => {
+    syncAll(undefined, {
+      onSuccess: () => toast.success('Repositories synchronized'),
+      onError: () => toast.error('Failed to synchronize repositories'),
+    });
   };
 
   if (repositoriesQuery.isPending) {
@@ -57,14 +108,16 @@ const RepositoryPanel = ({ query }: Props) => {
     return (
       <div className="rounded-lg border border-panel-border bg-panel-input p-6">
         <div className="text-lg font-semibold">Repositories unavailable</div>
-        <div className="mt-2 opacity-80">
+        <div className="mt-2 opacity-65">
           Repository data could not be loaded. Retry to continue managing plugin repositories.
         </div>
         <div className="mt-4 flex justify-end">
           <Button
             buttonType="secondary"
             buttonSize="normal"
-            onClick={retryRepositories}
+            onClick={() => {
+              repositoriesQuery.refetch().catch(console.error);
+            }}
           >
             Retry
           </Button>
@@ -85,78 +138,27 @@ const RepositoryPanel = ({ query }: Props) => {
             Add Repository
           </Button>
         )}
-        <Button
-          buttonType="secondary"
-          buttonSize="normal"
-          onClick={() =>
-            syncAll(true, {
-              onSuccess: () => toast.success('Repositories synchronized'),
-              onError: () => toast.error('Failed to synchronize repositories'),
-            })}
-          loading={isSyncAllPending}
-        >
+        <Button buttonType="secondary" buttonSize="normal" onClick={handleSyncAll} loading={isSyncAllPending}>
           Sync All
         </Button>
       </div>
 
       <div className="rounded-lg border border-panel-border bg-panel-input p-4">
         <div className="mb-4 text-lg font-semibold">Configured Repositories</div>
-        {repositoriesQuery.data && repositories.length === 0 && !query && (
+        {repositories.length === 0 && (
           <div className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
-            No plugin repositories are configured.
-          </div>
-        )}
-        {repositoriesQuery.data && repositories.length === 0 && query && (
-          <div className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
-            No repositories match the current search.
+            {query ? 'No repositories match the current search.' : 'No plugin repositories are configured.'}
           </div>
         )}
         <div className="flex flex-col gap-y-3">
-          {repositories.map((repository) => {
-            const isSyncing = isSyncPending && syncingRepositoryId === repository.ID;
-            const isDeleting = isDeletePending && deletingId === repository.ID;
-
-            return (
-              <div key={repository.ID} className="rounded-lg border border-panel-border bg-panel-background-alt p-4">
-                <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-x-3">
-                  <div>
-                    <div className="font-semibold">{repository.Name}</div>
-                    <div className="text-sm opacity-80">{repository.Url}</div>
-                  </div>
-                </div>
-                <div className="mb-3 flex flex-wrap gap-x-1 text-sm opacity-65">
-                  <span>Last sync:</span>
-                  <span>
-                    {repository.LastFetchedAt ? dayjs(repository.LastFetchedAt).format('D MMMM YYYY, HH:mm') : 'Never'}
-                  </span>
-                </div>
-                <div className="flex flex-wrap justify-start gap-3 sm:justify-end">
-                  <Button
-                    buttonType="secondary"
-                    buttonSize="small"
-                    onClick={() =>
-                      syncRepository(repository.ID, {
-                        onSuccess: () =>
-                          toast.success('Repository synchronized', repository.Name),
-                        onError: () =>
-                          toast.error('Failed to synchronize repository', repository.Name),
-                      })}
-                    loading={isSyncing}
-                  >
-                    Sync
-                  </Button>
-                  <Button
-                    buttonType="danger"
-                    buttonSize="small"
-                    onClick={() => setRepositoryToDelete({ ID: repository.ID, Name: repository.Name })}
-                    loading={isDeleting}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+          {repositories.map(repository => (
+            <RepositoryCard
+              key={repository.ID}
+              isDeleting={isDeletePending && deletingRepositoryId === repository.ID}
+              repository={repository}
+              onDelete={setRepositoryToDelete}
+            />
+          ))}
         </div>
       </div>
 
@@ -170,7 +172,7 @@ const RepositoryPanel = ({ query }: Props) => {
         title="Remove Plugin Repository"
         confirmButtonType="danger"
         confirmText="Remove"
-        onClose={() => setRepositoryToDelete(null)}
+        onClose={() => setRepositoryToDelete(undefined)}
         onConfirm={() => {
           if (!repositoryToDelete) return;
 

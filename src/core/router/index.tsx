@@ -125,7 +125,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
-            <Route path="plugins">
+            <Route path="plugin-management">
               <Route index element={<Navigate to="installed" replace />} />
               <Route path=":section" element={<PluginManagementSettings />} />
             </Route>

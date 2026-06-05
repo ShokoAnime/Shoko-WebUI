@@ -9,65 +9,50 @@ import type {
   PackageInstallRequestType,
 } from '@/core/react-query/plugin-package/types';
 
+const invalidateRepositoryQueries = () => {
+  invalidateQueries(['plugin-package', 'repositories']);
+  invalidateQueries(['plugin-package', 'list']);
+};
+
+export const invalidatePluginAndPackageQueries = () => {
+  invalidateQueries(['plugin']);
+  invalidateQueries(['plugin-package', 'list']);
+};
+
 export const useAddPluginPackageRepositoryMutation = () =>
   useMutation({
     mutationFn: (body: AddPackageRepositoryRequestType) => axios.post('Plugin/Package/Repository', body),
-    onSuccess: () => {
-      invalidateQueries(['plugin-package', 'repositories']);
-      invalidateQueries(['plugin-package', 'list']);
-    },
+    onSuccess: invalidateRepositoryQueries,
   });
 
 export const useDeletePluginPackageRepositoryMutation = () =>
   useMutation({
     mutationFn: (repositoryId: string) => axios.delete(`Plugin/Package/Repository/${repositoryId}`),
-    onSuccess: () => {
-      invalidateQueries(['plugin-package', 'repositories']);
-      invalidateQueries(['plugin-package', 'list']);
-    },
+    onSuccess: invalidateRepositoryQueries,
   });
 
 export const useSyncPluginPackageRepositoryMutation = () =>
   useMutation({
     mutationFn: (repositoryId: string) =>
       axios.post(`Plugin/Package/Repository/${repositoryId}/Sync`, undefined, { params: { forceSync: true } }),
-    onSuccess: () => {
-      invalidateQueries(['plugin-package', 'repositories']);
-      invalidateQueries(['plugin-package', 'list']);
-    },
+    onSuccess: invalidateRepositoryQueries,
   });
 
 export const useSyncAllPluginPackageRepositoriesMutation = () =>
   useMutation({
-    mutationFn: (forceSync?: boolean) =>
-      axios.post('Plugin/Package/Repository/Sync', undefined, { params: { forceSync: forceSync ?? true } }),
-    onSuccess: () => {
-      invalidateQueries(['plugin-package', 'repositories']);
-      invalidateQueries(['plugin-package', 'list']);
-    },
+    mutationFn: () => axios.post('Plugin/Package/Repository/Sync', undefined, { params: { forceSync: true } }),
+    onSuccess: invalidateRepositoryQueries,
   });
 
 export const useInstallPluginPackageMutation = () =>
   useMutation({
-    mutationFn: ({ abstractionVersion, packageId, releaseVersion, runtimeIdentifier }: PackageInstallRequestType) =>
-      axios.post(`Plugin/Package/${packageId}/Install`, undefined, {
-        params: {
-          abstractionVersion,
-          releaseVersion,
-          runtimeIdentifier,
-        },
-      }),
-    onSuccess: () => {
-      invalidateQueries(['plugin-package', 'list']);
-      invalidateQueries(['plugin']);
-    },
+    mutationFn: ({ packageId, ...params }: PackageInstallRequestType) =>
+      axios.post(`Plugin/Package/${packageId}/Install`, undefined, { params }),
+    onSuccess: invalidatePluginAndPackageQueries,
   });
 
 export const useCheckPluginPackageUpdatesMutation = () =>
   useMutation({
     mutationFn: (body: CheckForUpdatesRequestType = {}) => axios.post('Plugin/Package/CheckForUpdates', body),
-    onSuccess: () => {
-      invalidateQueries(['plugin-package', 'list']);
-      invalidateQueries(['plugin']);
-    },
+    onSuccess: invalidatePluginAndPackageQueries,
   });

@@ -1,5 +1,3 @@
-import type { PluginInfoType } from '@/core/types/api/plugin';
-
 // Mirrors `Shoko.Server.API.v3.Models.Common.IncludeOnlyFilter`. The server
 // defaults each filter to `True`, which means "include everything"; `Only`
 // keeps just matching entries and `False` excludes them.
@@ -16,7 +14,7 @@ export type PluginListFilters = {
 
 export type UpdatePluginRequestType = {
   pluginId: string;
-  IsEnabled?: boolean;
+  isEnabled?: boolean;
   pluginVersion?: string;
 };
 
@@ -25,5 +23,3 @@ export type DeletePluginRequestType = {
   purgeConfiguration?: boolean;
   pluginVersion?: string;
 };
-
-export type PluginGroupsType = Record<string, PluginInfoType[]>;

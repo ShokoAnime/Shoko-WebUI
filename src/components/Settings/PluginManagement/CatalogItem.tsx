@@ -61,7 +61,7 @@ const ReleaseCard = ({ entry, onInstall, release }: ReleaseCardProps) => {
       </div>
 
       {!hasCompatibleArchive && !release.IsInstalled && (
-        <div className="mt-2 rounded-lg border border-orange-500/25 bg-orange-500/8 px-3 py-1.5 text-sm text-orange-100">
+        <div className="mt-2 rounded-lg border border-button-danger-border bg-panel-background-alt px-3 py-1.5 text-sm text-button-danger-text">
           This version is not compatible with your server version.
         </div>
       )}
@@ -183,13 +183,13 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
           {(entry.HasUpdateAvailable || !entry.HasCompatibleInstallOption) && (
             <div className="flex flex-wrap gap-2">
               {entry.HasUpdateAvailable && (
-                <Badge className="border border-green-500/30 bg-green-500/20 text-green-100">
+                <Badge className="bg-panel-text-important text-button-primary-text">
                   Update available
                 </Badge>
               )}
 
               {!entry.HasCompatibleInstallOption && (
-                <Badge className="border border-red-500/50 bg-red-500/25 text-red-100">
+                <Badge className="bg-panel-text-danger text-button-primary-text">
                   Incompatible
                 </Badge>
               )}
@@ -245,7 +245,7 @@ const CatalogItem = ({ entry, onInstall }: Props) => {
                   </div>
 
                   {!newestRelease.Archives.some(archive => archive.IsCompatible) && !newestRelease.IsInstalled && (
-                    <div className="mt-2 rounded-lg border border-orange-500/25 bg-orange-500/8 px-3 py-1.5 text-sm text-orange-100">
+                    <div className="mt-2 rounded-lg border border-button-danger-border bg-panel-background-alt px-3 py-1.5 text-sm text-button-danger-text">
                       This version is not compatible with your server version.
                     </div>
                   )}

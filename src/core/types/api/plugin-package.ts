@@ -1,4 +1,4 @@
-import type { PluginInfoType } from '@/core/types/api/plugin';
+import type { PackageThumbnailInfoType, PluginInfoType } from '@/core/types/api/plugin';
 
 export type PackageRepositoryInfoType = {
   ID: string;
@@ -33,11 +33,7 @@ export type PackageManifestInfoType = {
   Overview: string;
   Authors: string;
   Tags: string[];
-  Thumbnail?: {
-    MimeType: string;
-    Width: number;
-    Height: number;
-  };
+  Thumbnail?: PackageThumbnailInfoType;
   Releases: PackageReleaseInfoType[];
   LastFetchedAt: string;
 };

@@ -18,8 +18,6 @@ const sections = [
   { label: 'Repositories', value: 'repositories' },
 ] as const;
 
-const defaultSection = 'installed';
-
 const isValidSection = (section?: string): section is typeof sections[number]['value'] =>
   !!section && sections.some(item => item.value === section);
 
@@ -27,21 +25,10 @@ const PluginManagementSettings = () => {
   const navigate = useNavigateVoid();
   const { section } = useParams();
   const [query, setQuery] = useState('');
-  const [debouncedQuery] = useDebounceValue(query, 300);
-  const trimmedQuery = debouncedQuery.trim();
-  const selectedSection = isValidSection(section) ? section : defaultSection;
-
-  let content = (
-    <>
-      {selectedSection === 'repositories' && <RepositoryPanel query={trimmedQuery} />}
-      {selectedSection === 'browse' && <CatalogPanel query={trimmedQuery} />}
-      {selectedSection === 'installed' && <InstalledPluginsPanel query={trimmedQuery} />}
-      {selectedSection === 'updates' && <PluginUpdatesPanel query={trimmedQuery} />}
-    </>
-  );
+  const [trimmedQuery] = useDebounceValue(query.trim(), 300);
 
   if (!isValidSection(section)) {
-    content = <Navigate replace to={`/webui/settings/plugins/${defaultSection}`} />;
+    return <Navigate replace to="../installed" />;
   }
 
   return (
@@ -57,8 +44,8 @@ const PluginManagementSettings = () => {
       <div className="border-b border-panel-border" />
 
       <MultiStateButton
-        activeState={selectedSection}
-        onStateChange={state => navigate(`/webui/settings/plugins/${state}`)}
+        activeState={section}
+        onStateChange={state => navigate(`../${state}`)}
         states={sections}
       />
 
@@ -71,7 +58,10 @@ const PluginManagementSettings = () => {
         startIcon={mdiMagnify}
       />
 
-      {content}
+      {section === 'repositories' && <RepositoryPanel query={trimmedQuery.toLowerCase()} />}
+      {section === 'browse' && <CatalogPanel query={trimmedQuery} />}
+      {section === 'installed' && <InstalledPluginsPanel query={trimmedQuery} />}
+      {section === 'updates' && <PluginUpdatesPanel query={trimmedQuery.toLowerCase()} />}
     </>
   );
 };
