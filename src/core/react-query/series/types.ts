@@ -1,18 +1,13 @@
+import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType } from '@/core/types/api/common';
 import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 
-export enum IncludeOnlyFilterEnum {
-  true = 'true',
-  false = 'false',
-  only = 'only',
-}
-
 type SeriesEpisodesBaseRequestType = {
-  includeMissing?: IncludeOnlyFilterEnum;
-  includeHidden?: IncludeOnlyFilterEnum;
-  includeWatched?: IncludeOnlyFilterEnum;
-  includeUnaired?: IncludeOnlyFilterEnum;
+  includeMissing?: IncludeOnlyFilterType;
+  includeHidden?: IncludeOnlyFilterType;
+  includeWatched?: IncludeOnlyFilterType;
+  includeUnaired?: IncludeOnlyFilterType;
   type?: EpisodeTypeEnum[];
   search?: string;
   fuzzy?: boolean;
@@ -37,7 +32,7 @@ export type SeriesEpisodesInfiniteRequestType =
     includeFiles?: boolean;
     includeAbsolutePaths?: boolean;
     includeMediaInfo?: boolean;
-    includeManuallyLinked?: IncludeOnlyFilterEnum;
+    includeManuallyLinked?: IncludeOnlyFilterType;
   }
   & SeriesEpisodesBaseRequestType
   & PaginationType;

@@ -42,7 +42,6 @@ import {
   useSeriesAniDBSearchQuery,
   useSeriesEpisodesInfiniteQuery,
 } from '@/core/react-query/series/queries';
-import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
@@ -215,9 +214,9 @@ const LinkFilesTab = () => {
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
     selectedSeries?.ShokoID ?? 0,
     {
-      includeMissing: IncludeOnlyFilterEnum.true,
-      includeHidden: IncludeOnlyFilterEnum.true,
-      includeUnaired: IncludeOnlyFilterEnum.true,
+      includeMissing: 'true',
+      includeHidden: 'true',
+      includeUnaired: 'true',
       pageSize: 0,
     },
     false,
@@ -226,8 +225,8 @@ const LinkFilesTab = () => {
     selectedSeries.ID,
     {
       pageSize: 0,
-      includeMissing: IncludeOnlyFilterEnum.true,
-      includeUnaired: IncludeOnlyFilterEnum.true,
+      includeMissing: 'true',
+      includeUnaired: 'true',
     },
     !!selectedSeries.ID && selectedSeries.Type !== SeriesTypeEnum.Unknown,
   );

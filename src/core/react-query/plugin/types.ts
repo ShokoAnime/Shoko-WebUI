@@ -1,14 +1,11 @@
-// Mirrors `Shoko.Server.API.v3.Models.Common.IncludeOnlyFilter`. The server
-// defaults each filter to `True`, which means "include everything"; `Only`
-// keeps just matching entries and `False` excludes them.
-export type PluginIncludeOnlyFilter = 'True' | 'False' | 'Only';
+import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 
 export type PluginListFilters = {
   query?: string;
-  active?: PluginIncludeOnlyFilter;
-  installed?: PluginIncludeOnlyFilter;
-  enabled?: PluginIncludeOnlyFilter;
-  restartPending?: PluginIncludeOnlyFilter;
+  active?: IncludeOnlyFilterType;
+  installed?: IncludeOnlyFilterType;
+  enabled?: IncludeOnlyFilterType;
+  restartPending?: IncludeOnlyFilterType;
   allVersions?: boolean;
 };
 
