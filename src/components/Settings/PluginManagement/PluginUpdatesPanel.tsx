@@ -5,9 +5,10 @@ import { Icon } from '@mdi/react';
 import Button from '@/components/Input/Button';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import toast from '@/components/Toast';
+import { usePluginsQuery } from '@/core/react-query/plugin/queries';
 import { getPluginUpdates, getReleaseKey } from '@/core/react-query/plugin-package/helpers';
 import { useCheckPluginPackageUpdatesMutation } from '@/core/react-query/plugin-package/mutations';
-import { selectGroupedPluginPackages, usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import { usePluginPackageCatalogQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 
@@ -30,14 +31,13 @@ const PluginUpdatesPanel = ({ query }: Props) => {
   // package set so it can detect every installed package that has an update available.
   // Passing query would exclude non-matching packages and hide their updates from view.
   // The search string is applied client-side to the already-computed update list instead.
-  const packagesQuery = usePluginPackagesQuery(
+  const pluginsQuery = usePluginsQuery({ allVersions: true });
+  const packagesQuery = usePluginPackageCatalogQuery(
     {
       allowSync: false,
-      onlyCompatible: false,
-      onlyLatest: false,
       pageSize: 0,
     },
-    { select: selectGroupedPluginPackages },
+    pluginsQuery.data,
   );
   const entries = packagesQuery.data ?? emptyEntries;
   const updates = useMemo(() => {
@@ -56,10 +56,11 @@ const PluginUpdatesPanel = ({ query }: Props) => {
   }, [entries, query]);
   const selectedEntry = entries.find(entry => entry.PackageID === selectedUpdate?.packageId);
   const retryPackages = () => {
-    packagesQuery.refetch().catch(console.error);
+    if (packagesQuery.isError) packagesQuery.refetch().catch(console.error);
+    if (pluginsQuery.isError) pluginsQuery.refetch().catch(console.error);
   };
 
-  if (packagesQuery.isPending) {
+  if (packagesQuery.isPending || pluginsQuery.isPending) {
     return (
       <div className="flex grow items-center justify-center text-panel-text-primary">
         <Icon path={mdiLoading} spin size={4} />
@@ -67,7 +68,7 @@ const PluginUpdatesPanel = ({ query }: Props) => {
     );
   }
 
-  if (packagesQuery.isError) {
+  if (packagesQuery.isError || pluginsQuery.isError) {
     return (
       <div className="rounded-lg border border-panel-border bg-panel-input p-6">
         <div className="text-lg font-semibold">Updates unavailable</div>

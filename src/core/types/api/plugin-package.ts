@@ -14,6 +14,7 @@ export type PackageArchiveInfoType = {
   ArchiveUrl: string;
   ArchiveChecksum: string;
   IsCompatible: boolean;
+  IsInstalled: boolean;
 };
 
 export type PackageReleaseInfoType = {
@@ -24,7 +25,8 @@ export type PackageReleaseInfoType = {
   ReleasedAt: string;
   Channel: string;
   ReleaseNotes?: string;
-  Archives: PackageArchiveInfoType[];
+  IsInstalled: boolean;
+  Archives?: PackageArchiveInfoType[];
 };
 
 export type PackageManifestInfoType = {
@@ -34,7 +36,7 @@ export type PackageManifestInfoType = {
   Authors: string;
   Tags: string[];
   Thumbnail?: PackageThumbnailInfoType;
-  Releases: PackageReleaseInfoType[];
+  Releases?: PackageReleaseInfoType[];
   LastFetchedAt: string;
 };
 

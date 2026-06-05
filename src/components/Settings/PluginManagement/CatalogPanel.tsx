@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react';
 import Button from '@/components/Input/Button';
 import CatalogItem from '@/components/Settings/PluginManagement/CatalogItem';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
-import { selectGroupedPluginPackages, usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import { usePluginPackageCatalogQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 
@@ -22,16 +22,11 @@ const emptyEntries: PluginPackageCatalogEntryType[] = [];
 
 const CatalogPanel = ({ query }: Props) => {
   const [selectedInstall, setSelectedInstall] = useState<SelectedInstallType | undefined>();
-  const packagesQuery = usePluginPackagesQuery(
-    {
-      allowSync: false,
-      onlyCompatible: false,
-      onlyLatest: false,
-      pageSize: 0,
-      query: query || undefined,
-    },
-    { select: selectGroupedPluginPackages },
-  );
+  const packagesQuery = usePluginPackageCatalogQuery({
+    allowSync: false,
+    pageSize: 0,
+    query: query || undefined,
+  });
   const entries = packagesQuery.data ?? emptyEntries;
   const retryPackages = () => {
     packagesQuery.refetch().catch(console.error);

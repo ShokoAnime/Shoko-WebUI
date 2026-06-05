@@ -12,7 +12,7 @@ import {
   groupInstalledPlugins,
   sortInstalledPluginGroups,
 } from '@/core/react-query/plugin-package/helpers';
-import { selectGroupedPluginPackages, usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import { usePluginPackageCatalogQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 import type { PluginInfoType } from '@/core/types/api/plugin';
@@ -64,17 +64,15 @@ const InstalledPluginsPanel = ({ query }: Props) => {
   const [expandedPluginId, setExpandedPluginId] = useState<string>();
   const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Record<string, boolean>>({});
   const [selectedUpgrade, setSelectedUpgrade] = useState<SelectedUpgradeType>();
-  const packagesQuery = usePluginPackagesQuery(
+  const pluginsQuery = usePluginsQuery({ allVersions: true, query: query || undefined });
+  const packagesQuery = usePluginPackageCatalogQuery(
     {
       allowSync: false,
-      onlyCompatible: false,
-      onlyLatest: false,
       pageSize: 0,
       query: query || undefined,
     },
-    { select: selectGroupedPluginPackages },
+    pluginsQuery.data,
   );
-  const pluginsQuery = usePluginsQuery({ allVersions: true, query: query || undefined });
   const groupedPackages = packagesQuery.data ?? emptyEntries;
   const groupedPlugins = useMemo(
     () => groupInstalledPlugins(pluginsQuery.data ?? []),
