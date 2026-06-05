@@ -1,10 +1,6 @@
 import type { PaginationType } from '@/core/types/api';
-import type { PluginInfoType } from '@/core/types/api/plugin';
-import type {
-  PackageArchiveInfoType,
-  PackageManifestInfoType,
-  PackageReleaseInfoType,
-} from '@/core/types/api/plugin-package';
+import type { PackageThumbnailInfoType, PluginInfoType } from '@/core/types/api/plugin';
+import type { PackageArchiveInfoType, PackageReleaseInfoType } from '@/core/types/api/plugin-package';
 
 export type PluginPackageListFilters = PaginationType & {
   query?: string;
@@ -32,7 +28,7 @@ export type PluginPackageCatalogEntryType = {
   Overview: string;
   Authors: string;
   Tags: string[];
-  Thumbnail?: PackageManifestInfoType['Thumbnail'];
+  Thumbnail?: PackageThumbnailInfoType;
   LastFetchedAt: string;
   InstalledPlugins: PluginInfoType[];
   Releases: PluginPackageCatalogReleaseType[];

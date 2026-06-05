@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import CatalogItem from '@/components/Settings/PluginManagement/CatalogItem';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
-import { groupPluginPackages } from '@/core/react-query/plugin-package/helpers';
-import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import { selectGroupedPluginPackages, usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 
@@ -19,19 +18,21 @@ type Props = {
   query: string;
 };
 
+const emptyEntries: PluginPackageCatalogEntryType[] = [];
+
 const CatalogPanel = ({ query }: Props) => {
   const [selectedInstall, setSelectedInstall] = useState<SelectedInstallType | undefined>();
-  const packagesQuery = usePluginPackagesQuery({
-    allowSync: false,
-    onlyCompatible: false,
-    onlyLatest: false,
-    pageSize: 0,
-    query: query || undefined,
-  });
-  const entries = useMemo(
-    () => groupPluginPackages(packagesQuery.data?.List ?? []),
-    [packagesQuery.data?.List],
+  const packagesQuery = usePluginPackagesQuery(
+    {
+      allowSync: false,
+      onlyCompatible: false,
+      onlyLatest: false,
+      pageSize: 0,
+      query: query || undefined,
+    },
+    { select: selectGroupedPluginPackages },
   );
+  const entries = packagesQuery.data ?? emptyEntries;
   const retryPackages = () => {
     packagesQuery.refetch().catch(console.error);
   };

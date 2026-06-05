@@ -5,15 +5,17 @@ import { Icon } from '@mdi/react';
 import Button from '@/components/Input/Button';
 import InstallPluginDialog from '@/components/Settings/PluginManagement/InstallPluginDialog';
 import toast from '@/components/Toast';
-import { getPluginUpdates, getReleaseKey, groupPluginPackages } from '@/core/react-query/plugin-package/helpers';
+import { getPluginUpdates, getReleaseKey } from '@/core/react-query/plugin-package/helpers';
 import { useCheckPluginPackageUpdatesMutation } from '@/core/react-query/plugin-package/mutations';
-import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import { selectGroupedPluginPackages, usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 
 type Props = {
   query: string;
 };
+
+const emptyEntries: PluginPackageCatalogEntryType[] = [];
 
 type SelectedUpdateType = {
   currentVersion: string;
@@ -28,16 +30,16 @@ const PluginUpdatesPanel = ({ query }: Props) => {
   // package set so it can detect every installed package that has an update available.
   // Passing query would exclude non-matching packages and hide their updates from view.
   // The search string is applied client-side to the already-computed update list instead.
-  const packagesQuery = usePluginPackagesQuery({
-    allowSync: false,
-    onlyCompatible: false,
-    onlyLatest: false,
-    pageSize: 0,
-  });
-  const entries = useMemo(
-    () => groupPluginPackages(packagesQuery.data?.List ?? []),
-    [packagesQuery.data?.List],
+  const packagesQuery = usePluginPackagesQuery(
+    {
+      allowSync: false,
+      onlyCompatible: false,
+      onlyLatest: false,
+      pageSize: 0,
+    },
+    { select: selectGroupedPluginPackages },
   );
+  const entries = packagesQuery.data ?? emptyEntries;
   const updates = useMemo(() => {
     const pluginUpdates = getPluginUpdates(entries);
 

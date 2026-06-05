@@ -10,10 +10,9 @@ import { usePluginsQuery } from '@/core/react-query/plugin/queries';
 import {
   getUpdateRelease,
   groupInstalledPlugins,
-  groupPluginPackages,
   sortInstalledPluginGroups,
 } from '@/core/react-query/plugin-package/helpers';
-import { usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
+import { selectGroupedPluginPackages, usePluginPackagesQuery } from '@/core/react-query/plugin-package/queries';
 
 import type { PluginPackageCatalogEntryType } from '@/core/react-query/plugin-package/types';
 import type { PluginInfoType } from '@/core/types/api/plugin';
@@ -21,6 +20,8 @@ import type { PluginInfoType } from '@/core/types/api/plugin';
 type Props = {
   query: string;
 };
+
+const emptyEntries: PluginPackageCatalogEntryType[] = [];
 
 type SelectedUpgradeType = {
   currentVersion: string;
@@ -63,18 +64,18 @@ const InstalledPluginsPanel = ({ query }: Props) => {
   const [expandedPluginId, setExpandedPluginId] = useState<string>();
   const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Record<string, boolean>>({});
   const [selectedUpgrade, setSelectedUpgrade] = useState<SelectedUpgradeType>();
-  const packagesQuery = usePluginPackagesQuery({
-    allowSync: false,
-    onlyCompatible: false,
-    onlyLatest: false,
-    pageSize: 0,
-    query: query || undefined,
-  });
-  const pluginsQuery = usePluginsQuery({ allVersions: true, query: query || undefined });
-  const groupedPackages = useMemo(
-    () => groupPluginPackages(packagesQuery.data?.List ?? []),
-    [packagesQuery.data?.List],
+  const packagesQuery = usePluginPackagesQuery(
+    {
+      allowSync: false,
+      onlyCompatible: false,
+      onlyLatest: false,
+      pageSize: 0,
+      query: query || undefined,
+    },
+    { select: selectGroupedPluginPackages },
   );
+  const pluginsQuery = usePluginsQuery({ allVersions: true, query: query || undefined });
+  const groupedPackages = packagesQuery.data ?? emptyEntries;
   const groupedPlugins = useMemo(
     () => groupInstalledPlugins(pluginsQuery.data ?? []),
     [pluginsQuery.data],
