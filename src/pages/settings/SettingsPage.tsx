@@ -67,7 +67,11 @@ const SettingsPage = () => {
   const isSpecialPage = useMemo(() => {
     const path = pathname.split('/').pop();
     if (!path) return false;
-    if (pathname.includes('settings/dynamic/') || pathname.includes('settings/plugin')) return true;
+    if (
+      pathname.includes('settings/dynamic/')
+      || pathname.includes('settings/plugin-management')
+      || pathname.includes('settings/plugin/')
+    ) return true;
     return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
 
