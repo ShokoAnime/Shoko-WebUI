@@ -12,21 +12,21 @@ import EpisodeWatchModal from '@/components/Collection/Episode/EpisodeWatchModal
 import Button from '@/components/Input/Button';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
-import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
+import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 
 const pageSize = 26;
 
 type FilterOptionsType = {
   type: EpisodeTypeEnum[];
-  includeMissing: IncludeOnlyFilterEnum;
-  includeWatched: IncludeOnlyFilterEnum;
-  includeHidden: IncludeOnlyFilterEnum;
-  includeUnaired: IncludeOnlyFilterEnum;
+  includeMissing: IncludeOnlyFilterType;
+  includeWatched: IncludeOnlyFilterType;
+  includeHidden: IncludeOnlyFilterType;
+  includeUnaired: IncludeOnlyFilterType;
   search: string;
 };
 
@@ -43,10 +43,10 @@ const SeriesEpisodes = () => {
 
   const filterOptions = useMemo(() => ({
     type: [searchParams.get('type') ?? EpisodeTypeEnum.Episode],
-    includeMissing: searchParams.get('includeMissing') ?? IncludeOnlyFilterEnum.false,
-    includeWatched: searchParams.get('includeWatched') ?? IncludeOnlyFilterEnum.true,
-    includeHidden: searchParams.get('includeHidden') ?? IncludeOnlyFilterEnum.false,
-    includeUnaired: searchParams.get('includeUnaired') ?? IncludeOnlyFilterEnum.false,
+    includeMissing: searchParams.get('includeMissing') ?? 'false',
+    includeWatched: searchParams.get('includeWatched') ?? 'true',
+    includeHidden: searchParams.get('includeHidden') ?? 'false',
+    includeUnaired: searchParams.get('includeUnaired') ?? 'false',
     search: debouncedSearch,
   } as FilterOptionsType), [debouncedSearch, searchParams]);
 

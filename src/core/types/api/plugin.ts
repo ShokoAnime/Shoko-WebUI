@@ -1,9 +1,9 @@
 import type { ReleaseChannelType } from '@/core/types/api/init';
 
 export type PackageThumbnailInfoType = {
-  ID: string;
-  URL: string;
   MimeType: string;
+  Width: number;
+  Height: number;
 };
 
 export type PluginInfoType = {

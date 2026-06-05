@@ -1,6 +1,8 @@
 import type { PaginationType } from '@/core/types/api';
 import type { FileSortCriteriaEnum } from '@/core/types/api/file';
 
+export type IncludeOnlyFilterType = 'true' | 'false' | 'only';
+
 type FileIncludeType =
   | 'Ignored'
   | 'MediaInfo'

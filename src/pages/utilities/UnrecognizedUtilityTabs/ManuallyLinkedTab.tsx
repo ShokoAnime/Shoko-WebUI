@@ -29,7 +29,6 @@ import {
   useSeriesEpisodesInfiniteQuery,
   useSeriesWithLinkedFilesInfiniteQuery,
 } from '@/core/react-query/series/queries';
-import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -183,7 +182,7 @@ const ManuallyLinkedTab = () => {
 
   const episodesQuery = useSeriesEpisodesInfiniteQuery(
     selectedSeries,
-    { pageSize: 25, includeDataFrom: ['AniDB'], includeFiles: true, includeManuallyLinked: IncludeOnlyFilterEnum.only },
+    { pageSize: 25, includeDataFrom: ['AniDB'], includeFiles: true, includeManuallyLinked: 'only' },
     selectedSeries > 0,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);

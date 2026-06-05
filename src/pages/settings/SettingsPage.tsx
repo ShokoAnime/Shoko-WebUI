@@ -26,6 +26,7 @@ const items = [
   { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
+  { name: 'Plugin Management', path: 'plugin-management' },
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
@@ -66,7 +67,11 @@ const SettingsPage = () => {
   const isSpecialPage = useMemo(() => {
     const path = pathname.split('/').pop();
     if (!path) return false;
-    if (pathname.includes('settings/dynamic/') || pathname.includes('settings/plugin/')) return true;
+    if (
+      pathname.includes('settings/dynamic/')
+      || pathname.includes('settings/plugin-management')
+      || pathname.includes('settings/plugin/')
+    ) return true;
     return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
 

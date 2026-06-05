@@ -96,3 +96,8 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **`fast-json-patch`** — use for JSON Patch (RFC 6902) operations. Do not write custom diff/patch logic for API settings updates.
 - **`classnames` (imported as `cx`)** — use for conditional CSS class joining. Do not construct class strings with template literals or string concatenation.
 
+
+## Specifications
+
+Implementation specs and planning artifacts may exist under `specs/`.
+Use them as historical/reference material when relevant, but prefer the current source code and API contracts as the source of truth.
