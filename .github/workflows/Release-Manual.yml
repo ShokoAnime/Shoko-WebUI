@@ -19,7 +19,7 @@ jobs:
   release:
     outputs:
       version: ${{ github.event.inputs.version }}
-      prerelease: ${{ github.event.inputs.prerelease }}
+      prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
     runs-on: ubuntu-latest
     environment: production
     name: Build & release
