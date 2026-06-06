@@ -63,7 +63,7 @@
   "Dev": [
     {
       "version": "2.6.0-dev.49",
-      "minServerVersion": "6.0.0-dev.73",
+      "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.49/Shoko-WebUI-v2.6.0-dev.49.zip",
       "checksum": "sha256:1bff681b859a42301efc7d95f018f6ab08cdffbed4d009265e2b59931d896619",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update AGENTS.md (#1348) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1348\n* feat: implement plugin management UI (#1329) [no ci] by @krbrs in https://github.com/ShokoAnime/Shoko-WebUI/pull/1329\n* Unrecognised episode select add ability to filter by name (#1349) [no ci] by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1349\n* Fix manual release workflow (#1350) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1350\n* simplify: flatten PluginManagement into a cleaner layout by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1351\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.48...v2.6.0-dev.49\n"
