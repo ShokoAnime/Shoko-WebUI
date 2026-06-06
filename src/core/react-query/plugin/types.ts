@@ -1,6 +1,6 @@
 import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 
-export type PluginListFilters = {
+export type PluginListFilterType = {
   query?: string;
   active?: IncludeOnlyFilterType;
   installed?: IncludeOnlyFilterType;

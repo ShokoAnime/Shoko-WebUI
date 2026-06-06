@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import { STALE_TIME } from '@/core/util';
 
-import type { PluginListFilters } from '@/core/react-query/plugin/types';
+import type { PluginListFilterType } from '@/core/react-query/plugin/types';
 import type { PluginInfoType, PluginPageType, SharedPluginPageType } from '@/core/types/api/plugin';
 
-export const usePluginsQuery = (filters: PluginListFilters, enabled = true) =>
+export const usePluginsQuery = (filters: PluginListFilterType, enabled = true) =>
   useQuery<PluginInfoType[]>({
     queryKey: ['plugin', 'list', filters],
     queryFn: () => axios.get('Plugin', { params: filters }),
