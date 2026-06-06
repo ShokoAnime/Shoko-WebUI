@@ -69,7 +69,7 @@ const UpdateModal = (props: Props) => {
         <div>Latest Version:</div>
         <div className="font-bold">{latestVersion ?? 'Unknown'}</div>
       </div>
-      <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-input p-4">
+      <div className="flex flex-col gap-y-6 overflow-auto rounded-lg border border-panel-border bg-panel-input p-4">
         <ShokoMarkdown>
           {children}
         </ShokoMarkdown>
