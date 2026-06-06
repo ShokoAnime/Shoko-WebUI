@@ -49,7 +49,6 @@ import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
@@ -270,12 +269,11 @@ const UnrecognizedTab = () => {
     return [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
   }, [debouncedSearch, sortCriteria]);
 
-  const showImportLimboFiles = useIsFeatureSupported(FeatureType.ShowImportLimboInUnrecognized);
   const filesQuery = useFilesInfiniteQuery(
     {
       pageSize: 200,
       include: ['AbsolutePaths'],
-      include_only: showImportLimboFiles ? ['Unrecognized', 'ImportLimbo'] : ['Unrecognized'],
+      include_only: ['Unrecognized', 'ImportLimbo'],
       sortOrder,
     },
     debouncedSearch,

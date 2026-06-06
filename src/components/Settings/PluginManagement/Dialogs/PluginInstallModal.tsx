@@ -86,7 +86,7 @@ const PluginInstallModal = (props: Props) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-input p-4">
+      <div className="flex flex-col gap-y-6 overflow-auto rounded-lg border border-panel-border bg-panel-input p-4">
         <ShokoMarkdown>
           {newPackage.Release.ReleaseNotes ?? 'No release notes available'}
         </ShokoMarkdown>
