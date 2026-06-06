@@ -18,8 +18,7 @@ const useRouteLink = (item: CollectionGroupType | SeriesType) => {
     // No groupId → item is CollectionGroupType
     const group = item as CollectionGroupType;
 
-    // TODO: Remove `?? group.Size` fallback once minimum server version is bumped
-    if ((group.TotalSize ?? group.Size) === 1) {
+    if (group.TotalSize === 1) {
       return `${link}/series/${group.IDs.MainSeries}`;
     }
 

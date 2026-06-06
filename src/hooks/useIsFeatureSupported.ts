@@ -7,7 +7,6 @@ import type { VersionType } from '@/core/types/api/init';
 
 export enum FeatureType {
   Placeholder = '5.0.0-dev.1', // This is as a placeholder so the string conversion for `parseServerVersion` works and also serves as an example
-  ShowImportLimboInUnrecognized = '6.0.0-dev.151',
 }
 
 const useIsFeatureSupported = (supportedVersion: FeatureType) => {
