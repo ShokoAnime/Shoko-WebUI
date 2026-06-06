@@ -5,10 +5,10 @@ import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import MultiStateButton from '@/components/Input/MultiStateButton';
-import CatalogPanel from '@/components/Settings/PluginManagement/CatalogPanel';
-import InstalledPluginsPanel from '@/components/Settings/PluginManagement/InstalledPluginsPanel';
-import PluginUpdatesPanel from '@/components/Settings/PluginManagement/PluginUpdatesPanel';
-import RepositoryPanel from '@/components/Settings/PluginManagement/RepositoryPanel';
+import BrowseSection from '@/components/Settings/PluginManagement/Sections/BrowseSection';
+import InstalledSection from '@/components/Settings/PluginManagement/Sections/InstalledSection';
+import RepositoriesSection from '@/components/Settings/PluginManagement/Sections/RepositoriesSection';
+import UpdatesSection from '@/components/Settings/PluginManagement/Sections/UpdatesSection';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const sections = [
@@ -25,7 +25,7 @@ const PluginManagementSettings = () => {
   const navigate = useNavigateVoid();
   const { section } = useParams();
   const [query, setQuery] = useState('');
-  const [trimmedQuery] = useDebounceValue(query.trim(), 300);
+  const [debouncedQuery] = useDebounceValue(query?.toLowerCase().trim(), 300);
 
   if (!isValidSection(section)) {
     return <Navigate replace to="../installed" />;
@@ -58,10 +58,10 @@ const PluginManagementSettings = () => {
         startIcon={mdiMagnify}
       />
 
-      {section === 'repositories' && <RepositoryPanel query={trimmedQuery.toLowerCase()} />}
-      {section === 'browse' && <CatalogPanel query={trimmedQuery} />}
-      {section === 'installed' && <InstalledPluginsPanel query={trimmedQuery} />}
-      {section === 'updates' && <PluginUpdatesPanel query={trimmedQuery.toLowerCase()} />}
+      {section === 'installed' && <InstalledSection query={debouncedQuery} />}
+      {section === 'browse' && <BrowseSection query={debouncedQuery} />}
+      {section === 'updates' && <UpdatesSection query={debouncedQuery} />}
+      {section === 'repositories' && <RepositoriesSection query={debouncedQuery} />}
     </>
   );
 };

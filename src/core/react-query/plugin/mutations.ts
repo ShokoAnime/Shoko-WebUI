@@ -14,18 +14,9 @@ export const useUpdatePluginMutation = () =>
     onSuccess: invalidatePluginAndPackageQueries,
   });
 
-export const useDeletePluginMutation = () =>
-  useMutation({
-    mutationFn: ({ pluginId, pluginVersion, purgeConfiguration = false }: DeletePluginRequestType) =>
-      axios.delete(pluginVersion ? `Plugin/${pluginId}/${pluginVersion}` : `Plugin/${pluginId}`, {
-        params: { purgeConfiguration },
-      }),
-    onSuccess: invalidatePluginAndPackageQueries,
-  });
-
 export const useDeleteAllPluginVersionsMutation = () =>
   useMutation({
-    mutationFn: ({ pluginId, purgeConfiguration = false }: DeletePluginRequestType) =>
+    mutationFn: ({ pluginId, purgeConfiguration }: DeletePluginRequestType) =>
       axios.delete(`Plugin/${pluginId}/All`, { params: { purgeConfiguration } }),
     onSuccess: invalidatePluginAndPackageQueries,
   });

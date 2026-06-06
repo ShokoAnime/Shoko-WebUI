@@ -11,7 +11,7 @@ type Props = {
   onClose: () => void;
 };
 
-const RepositoryForm = ({ onClose, show }: Props) => {
+const RepositoryModal = ({ onClose, show }: Props) => {
   const { isPending, mutate: addRepository } = useAddPluginPackageRepositoryMutation();
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
@@ -67,6 +67,7 @@ const RepositoryForm = ({ onClose, show }: Props) => {
           onChange={event => setName(event.target.value)}
           placeholder="Community Plugins"
         />
+
         <Input
           id="plugin-repository-url"
           type="text"
@@ -76,10 +77,12 @@ const RepositoryForm = ({ onClose, show }: Props) => {
           placeholder="https://example.com/manifest.json"
         />
       </div>
+
       <div className="mt-6 flex justify-end gap-x-3">
         <Button buttonType="secondary" buttonSize="normal" onClick={onClose}>
           Cancel
         </Button>
+
         <Button
           buttonType="primary"
           buttonSize="normal"
@@ -95,4 +98,4 @@ const RepositoryForm = ({ onClose, show }: Props) => {
   );
 };
 
-export default RepositoryForm;
+export default RepositoryModal;

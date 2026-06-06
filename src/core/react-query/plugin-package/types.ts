@@ -1,6 +1,4 @@
 import type { PaginationType } from '@/core/types/api';
-import type { PackageThumbnailInfoType, PluginInfoType } from '@/core/types/api/plugin';
-import type { PackageArchiveInfoType, PackageReleaseInfoType } from '@/core/types/api/plugin-package';
 
 export type PluginPackageListFilters = PaginationType & {
   query?: string;
@@ -10,34 +8,7 @@ export type PluginPackageListFilters = PaginationType & {
   forceSyncNow?: boolean;
 };
 
-export type PluginPackageCatalogArchiveType = PackageArchiveInfoType & {
-  IsInstalled: boolean;
-};
-
-export type PluginPackageCatalogReleaseType = Omit<PackageReleaseInfoType, 'Archives'> & {
-  Archives: PluginPackageCatalogArchiveType[];
-  InstalledPlugins: PluginInfoType[];
-  IsInstalled: boolean;
-  IsLatest: boolean;
-  IsUpdateAvailable: boolean;
-};
-
-export type PluginPackageCatalogEntryType = {
-  PackageID: string;
-  Name: string;
-  Overview: string;
-  Authors: string;
-  Tags: string[];
-  Thumbnail?: PackageThumbnailInfoType;
-  LastFetchedAt: string;
-  InstalledPlugins: PluginInfoType[];
-  Releases: PluginPackageCatalogReleaseType[];
-  HasCompatibleInstallOption: boolean;
-  HasInstalledVersion: boolean;
-  HasUpdateAvailable: boolean;
-};
-
-export type PackageInstallRequestType = {
+export type PluginPackageInstallRequestType = {
   packageId: string;
   releaseVersion?: string;
   abstractionVersion?: string;
@@ -50,15 +21,7 @@ export type AddPackageRepositoryRequestType = {
   staleTime?: string;
 };
 
-export type CheckForUpdatesRequestType = {
+export type CheckForPluginUpdatesRequestType = {
   forceSync?: boolean;
   performUpgrade?: boolean;
-};
-
-export type PluginUpdateSummaryType = {
-  PackageID: string;
-  Name: string;
-  CurrentVersion: string;
-  LatestVersion: string;
-  Release: PluginPackageCatalogReleaseType;
 };

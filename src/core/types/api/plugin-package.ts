@@ -1,3 +1,4 @@
+import type { ReleaseChannelType } from '@/core/types/api/init';
 import type { PackageThumbnailInfoType, PluginInfoType } from '@/core/types/api/plugin';
 
 export type PackageRepositoryInfoType = {
@@ -23,7 +24,7 @@ export type PackageReleaseInfoType = {
   Tag?: string;
   SourceRevision?: string;
   ReleasedAt: string;
-  Channel: string;
+  Channel: ReleaseChannelType;
   ReleaseNotes?: string;
   IsInstalled: boolean;
   Archives?: PackageArchiveInfoType[];
@@ -46,4 +47,11 @@ export type PackageInfoType = {
   Release: PackageReleaseInfoType;
   Archive: PackageArchiveInfoType;
   Plugin?: PluginInfoType;
+};
+
+export type PluginPackageUpdateInfoType = {
+  PackageID: string;
+  Name: string;
+  Current: PackageInfoType;
+  Latest: PackageInfoType;
 };
