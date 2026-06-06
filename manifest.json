@@ -62,6 +62,13 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.50",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.50/Shoko-WebUI-v2.6.0-dev.50.zip",
+      "checksum": "sha256:0ae4cc5423cd9e527f5c2f78f636a862045ae16314952ef9eb75565f3798bb1d",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add overflow scroll to update modals by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1352\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.49...v2.6.0-dev.50\n"
+    },
+    {
       "version": "2.6.0-dev.49",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.49/Shoko-WebUI-v2.6.0-dev.49.zip",
