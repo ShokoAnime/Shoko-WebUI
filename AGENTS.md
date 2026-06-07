@@ -79,6 +79,8 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **No unit/integration tests** are configured. Verification is `pnpm lint`.
 - **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `tsc --noEmit` on all TS/TSX files (not just staged), plus `dprint fmt`, `eslint --cache`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
 - **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`.
+- **Never skip pre-commit hooks.** Always let Husky run — do not use `--no-verify` or equivalent.
+- **Don't run the linter frequently during development.** Run it only at the end of completing a feature or when preparing a commit. Let pre-commit hooks handle the rest.
 
 ## Guardrails
 
