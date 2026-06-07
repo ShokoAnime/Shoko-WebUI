@@ -20,6 +20,7 @@ jobs:
     outputs:
       version: ${{ github.event.inputs.version }}
       prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
+      commit: ${{ steps.commit.outputs.sha }}
     runs-on: ubuntu-latest
     environment: production
     name: Build & release
@@ -52,6 +53,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref }}
           fetch-depth: 0
+
+      - name: Get commit SHA
+        id: commit
+        run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Get previous release tag
         id: prev-tag
@@ -112,3 +117,4 @@ jobs:
     with:
       version: ${{ needs.release.outputs.version }}
       prerelease: ${{ needs.release.outputs.prerelease }}
+      commit: ${{ needs.release.outputs.commit }}

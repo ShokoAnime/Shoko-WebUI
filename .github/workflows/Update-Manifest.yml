@@ -9,6 +9,9 @@ on:
       prerelease:
         required: true
         type: boolean
+      commit:
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -68,8 +71,9 @@ jobs:
             --arg minServerVersion "${{ steps.parse.outputs.min_server_version }}" \
             --arg downloadUrl "${{ steps.release-data.outputs.download_url }}" \
             --arg checksum "${{ steps.release-data.outputs.checksum }}" \
+            --arg commit "${{ inputs.commit }}" \
             --rawfile releaseNotes /tmp/release-body.txt \
-            '{version: $version, minServerVersion: $minServerVersion, downloadUrl: $downloadUrl, checksum: $checksum, releaseNotes: $releaseNotes}')
+            '{version: $version, minServerVersion: $minServerVersion, downloadUrl: $downloadUrl, checksum: $checksum, commit: $commit, releaseNotes: $releaseNotes}')
 
           jq --argjson e "$NEW_ENTRY" --arg t "$TARGET" '
             .[$t] = ([$e] + (.[$t] | map(select(.version != $e.version))))

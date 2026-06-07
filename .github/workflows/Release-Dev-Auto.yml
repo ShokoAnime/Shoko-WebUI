@@ -7,6 +7,7 @@ jobs:
   release-dev-auto:
     outputs:
       version_tag: ${{ steps.semver.outputs.version_tag }}
+      commit: ${{ github.sha }}
     runs-on: ubuntu-latest
     environment: production
     name: Build & release dev version
@@ -111,3 +112,4 @@ jobs:
     with:
       version: ${{ needs.release-dev-auto.outputs.version_tag }}
       prerelease: true
+      commit: ${{ needs.release-dev-auto.outputs.commit }}
