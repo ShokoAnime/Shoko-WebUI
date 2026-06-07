@@ -3,6 +3,7 @@
     {
       "version": "2.5.8",
       "minServerVersion": "5.3.3.0",
+      "maxServerVersion": "5.3.3.0",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.8/Shoko-WebUI-v2.5.8.zip",
       "checksum": "sha256:15f9b51d9fedb199f8feb5545d29dc5705280ad1241e772238c9472ad4e8f8e7",
       "commit": "ac43d31e1fc299d4fbc54727bca874ef6a24c580",
