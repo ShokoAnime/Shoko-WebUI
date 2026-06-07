@@ -34,7 +34,7 @@ const PluginPageEmbed = () => {
         src={page.Url}
         title={page.Name}
         sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
-        className="w-full h-full border-none rounded-lg"
+        className="size-full rounded-lg border-none"
       />
     </div>
   );
