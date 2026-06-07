@@ -6,6 +6,7 @@
       "maxServerVersion": "5.3.3.0",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.5.7/Shoko-WebUI-v2.5.7.zip",
       "checksum": "sha256:a4cd8812283de82d9505815216d45228ce63bb97a7088069884782cd5cf682f3",
+      "commit": "9c6b5adf7ded16743b2e27184e8fd894d2c4f803",
       "releaseNotes": "<!-- Minimum Server Version: **5.3.3.0** -->\r\n> [!Warning]\r\n> This version requires a **Shoko Server** of at least version **5.3.3.0** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\r\n\r\n\r\n\r\n## What's Changed\r\n* Unrecognised episode select add ability to filter by name by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1349\r\n\r\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.5.6...v2.5.7\n"
     },
     {
