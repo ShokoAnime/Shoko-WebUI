@@ -83,6 +83,11 @@ const SelectEpisodeList = React.memo((
 
   const handleEpFilter = (event: React.ChangeEvent<HTMLInputElement>) => setEpFilter(event.target.value);
 
+  // Headless UI throws errors if keypresses bubble sepcifically space is treated as select item and causes errors if list is filtered to empty
+  const suppressKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+  };
+
   const selectOption = (selectedOption: Option) => {
     setSelected(selectedOption);
     onChange(selectedOption?.value ?? 0);
@@ -108,7 +113,7 @@ const SelectEpisodeList = React.memo((
                 padding: '1rem',
                 gap: '0.25rem',
               }}
-              className="z-[110] w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-hidden"
+              className="z-[110] w-(--button-width) origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-hidden"
             >
               <Input
                 autoFocus
@@ -117,6 +122,7 @@ const SelectEpisodeList = React.memo((
                 type="text"
                 value={epFilter}
                 onChange={handleEpFilter}
+                onKeyDown={suppressKeydown}
                 inputClassName="py-4 px-3"
                 startIcon={mdiMagnify}
                 placeholder="Filter by Episode Number or Name..."
