@@ -82,6 +82,7 @@
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.51/Shoko-WebUI-v2.6.0-dev.51.zip",
       "checksum": "sha256:ee86f9230143f0442eb9f9e643538e6218ddbfc27d9620e9366f0c91326468c2",
+      "commit": "2b19d4420118ed2dd8f512946110f667ec7fad0f",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add pr-review skill, update AGENTS.md by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1353\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.50...v2.6.0-dev.51\n"
     },
     {
@@ -89,6 +90,7 @@
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.50/Shoko-WebUI-v2.6.0-dev.50.zip",
       "checksum": "sha256:0ae4cc5423cd9e527f5c2f78f636a862045ae16314952ef9eb75565f3798bb1d",
+      "commit": "ad7a19d68d27ae6ff780fffe1da39a3de1dd66c1",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add overflow scroll to update modals by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1352\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.49...v2.6.0-dev.50\n"
     },
     {
@@ -96,6 +98,7 @@
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.49/Shoko-WebUI-v2.6.0-dev.49.zip",
       "checksum": "sha256:1bff681b859a42301efc7d95f018f6ab08cdffbed4d009265e2b59931d896619",
+      "commit": "77471e45d4281584c37ecfe29aca39ce70c7b13d",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update AGENTS.md (#1348) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1348\n* feat: implement plugin management UI (#1329) [no ci] by @krbrs in https://github.com/ShokoAnime/Shoko-WebUI/pull/1329\n* Unrecognised episode select add ability to filter by name (#1349) [no ci] by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1349\n* Fix manual release workflow (#1350) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1350\n* simplify: flatten PluginManagement into a cleaner layout by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1351\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.48...v2.6.0-dev.49\n"
     },
     {
@@ -103,6 +106,7 @@
       "minServerVersion": "6.0.0-dev.73",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.48/Shoko-WebUI-v2.6.0-dev.48.zip",
       "checksum": "sha256:42516be21dddf4770e0efb3922c0d4fd4bc101345182e7244530f65b92196ab2",
+      "commit": "bdc07435e16f2aacce358c286ca68307bd4ad2bd",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Upgrade to Typescript 6 by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1347\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.47...v2.6.0-dev.48\n"
     },
     {
@@ -110,6 +114,7 @@
       "minServerVersion": "6.0.0-dev.73",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.47/Shoko-WebUI-v2.6.0-dev.47.zip",
       "checksum": "sha256:9ee3cf9ccdc043cea09e3bc0d0075a211d5e88ea9f221f6538736c35f45ab155",
+      "commit": "e405f10af6593c96e68d64799939810fa2a1f53c",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update deps by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1346\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.46...v2.6.0-dev.47\n"
     },
     {
@@ -117,6 +122,7 @@
       "minServerVersion": "6.0.0-dev.73",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.46/Shoko-WebUI-v2.6.0-dev.46.zip",
       "checksum": "sha256:6ec17df1ca088b97c106ec5d3d924885ebb5fc95b6f4efb815fa25c07ac4b283",
+      "commit": "628058d7d9e0ea3c54a960ba2a5649980fd21d59",
       "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.73** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.73** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update dependencies by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1345\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.45...v2.6.0-dev.46\n"
     },
     {
