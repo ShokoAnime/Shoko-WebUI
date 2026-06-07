@@ -19,7 +19,7 @@ jobs:
   release:
     outputs:
       version: ${{ github.event.inputs.version }}
-      prerelease: ${{ fromJSON(github.event.inputs.prerelease) }}
+      prerelease: ${{ github.event.inputs.prerelease }}
       commit: ${{ steps.commit.outputs.sha }}
     runs-on: ubuntu-latest
     environment: production
@@ -116,5 +116,5 @@ jobs:
     uses: ./.github/workflows/Update-Manifest.yml
     with:
       version: ${{ needs.release.outputs.version }}
-      prerelease: ${{ needs.release.outputs.prerelease }}
+      prerelease: ${{ fromJSON(needs.release.outputs.prerelease) }}
       commit: ${{ needs.release.outputs.commit }}

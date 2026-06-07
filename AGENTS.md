@@ -8,19 +8,19 @@ React 19 + Vite frontend for the Shoko Anime Management Server.
 
 ```bash
 pnpm install          # Also sets up Husky via the `prepare` script
-pnpm start            # Dev server at http://localhost:3000, base /webui/
-pnpm build            # Production build (dist/)
-pnpm build:debug      # Development build
+pnpm start          # Dev server at http://localhost:3000, base /webui/
+pnpm build          # Production build (dist/)
+pnpm build:debug    # Development build
 ```
 
 **Lint chain (runs in this exact order):**
 ```bash
-pnpm dprint:fix       # dprint fmt (auto-fix formatting)
-pnpm eslint:fix       # eslint --fix --cache src (auto-fix lint rules)
-pnpm lint             # tscheck -> dprint -> eslint -> stylelint
+pnpm dprint:fix     # dprint fmt (auto-fix formatting)
+pnpm eslint:fix     # eslint --fix --cache src (auto-fix lint rules)
+pnpm lint           # tscheck -> dprint -> eslint -> stylelint
 ```
 
-**Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`. The dev server auto-opens the browser at `/webui/`. The proxy also forwards SignalR WebSocket connections.
+**Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`. The dev server auto-opens the browser at `/webui/`.
 
 ## Repo Structure
 
@@ -45,13 +45,8 @@ pnpm lint             # tscheck -> dprint -> eslint -> stylelint
 - **Redux:** Single-file store at `src/core/store.ts`. Root reducer clears all state on `AUTH_LOGOUT`. Full store persisted to `sessionStorage`; only `apiSession` persisted to `localStorage` (when `rememberUser` is true). Store is throttled to persist at most once per second. Re-exports typed `useDispatch`/`useSelector` — import from `@/core/store`, never from `react-redux` directly.
 - **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/` with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts`.
 - **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`. `version.json` is auto-generated at build time from git hash + package version.
+- **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 - **Path alias:** `@/` maps to `src/` (configured in `vite.config.mjs` and `tsconfig.json`).
-
-## Tailwind & Theming
-
-- **Tailwind v4** via Vite plugin. Entry point is `src/css/tailwind.css`.
-- **Server-driven theming:** `index.html` loads a theme stylesheet from the Shoko Server at `/api/v3/WebUI/Theme.css`. This stylesheet defines CSS custom properties (e.g. `--button-primary`, `--panel-background`, `--panel-text`) that are mapped to Tailwind tokens in `tailwind.css`. Use these Tailwind tokens (e.g. `bg-panel-background`, `text-panel-text`) — never hardcode colors.
-- **Font:** The Sora typeface is configured as the default `--font-body` via `@fontsource/sora`.
 
 ## React Patterns
 
@@ -87,7 +82,6 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 
 ## Guardrails
 
-- **Code reviews:** Load the `pr-review` skill before reviewing PRs, code diffs, or proposed changes. It provides a structured review framework aligned with this project's conventions.
 - Do NOT modify `pnpm-lock.yaml`, `eslint.config.mjs`, or `.dprint.json` unless explicitly asked.
 - Do NOT use `npm` or `yarn`; always use `pnpm add` / `pnpm remove`.
 - Do not add explicit type annotations where TS inference is sufficient.
