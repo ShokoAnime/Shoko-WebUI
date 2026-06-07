@@ -70,6 +70,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.53",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.53/Shoko-WebUI-v2.6.0-dev.53.zip",
+      "checksum": "sha256:fa195814c3978f25c177aded3326ff0e678b0eda3384863d4958d6b52911a248",
+      "commit": "3ca199fdc83119f216683e117f73419c7d29e22f",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Unrecognised episode select fixes by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1355\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.52...v2.6.0-dev.53\n"
+    },
+    {
       "version": "2.6.0-dev.52",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.52/Shoko-WebUI-v2.6.0-dev.52.zip",
