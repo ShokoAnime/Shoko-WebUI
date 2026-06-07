@@ -62,6 +62,13 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.51",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.51/Shoko-WebUI-v2.6.0-dev.51.zip",
+      "checksum": "sha256:ee86f9230143f0442eb9f9e643538e6218ddbfc27d9620e9366f0c91326468c2",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add pr-review skill, update AGENTS.md by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1353\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.50...v2.6.0-dev.51\n"
+    },
+    {
       "version": "2.6.0-dev.50",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.50/Shoko-WebUI-v2.6.0-dev.50.zip",
