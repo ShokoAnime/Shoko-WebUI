@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import dayjs from 'dayjs';
-import { map, some } from 'lodash';
+import { find, map, some } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
@@ -23,12 +23,6 @@ const Version = ({ manifest, version }: { manifest: PackageManifestInfoType, ver
 
   const isCompatible = some(version.Archives, archive => archive.IsCompatible);
 
-  const installTooltip = useMemo(() => {
-    if (!isCompatible) return 'Incompatible';
-    if (version.IsInstalled) return 'Already installed';
-    return '';
-  }, [isCompatible, version.IsInstalled]);
-
   const cannotInstall = version.IsInstalled || !isCompatible;
 
   return (
@@ -38,6 +32,11 @@ const Version = ({ manifest, version }: { manifest: PackageManifestInfoType, ver
           {version.Version}
           <span className="opacity-65">{version.Channel === 'Dev' && ' (Dev)'}</span>
           <span className="opacity-65">{!isCompatible && ' [Incompatible]'}</span>
+          {version.IsInstalled && (
+            <Badge className="ml-2 bg-panel-text-important text-button-primary-text">
+              Installed
+            </Badge>
+          )}
         </div>
 
         <div className="opacity-65">
@@ -50,7 +49,7 @@ const Version = ({ manifest, version }: { manifest: PackageManifestInfoType, ver
           buttonSize="small"
           onClick={toggleInstallModal}
           disabled={cannotInstall}
-          tooltip={installTooltip}
+          tooltip={!isCompatible ? 'Incompatible' : ''}
         >
           Install
         </Button>
@@ -75,6 +74,8 @@ const Package = ({ plugin }: { plugin: PackageManifestInfoType }) => {
   const thumbnailUrl = plugin.Thumbnail ? `/api/v3/Plugin/Package/${plugin.PackageID}/Thumbnail` : null;
   const [latestVersion, ...oldVersions] = plugin.Releases ?? [];
 
+  const installedVersion = find(plugin.Releases, release => release.IsInstalled)?.Version;
+
   return (
     <div className="flex flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-input p-4">
       <div className="flex gap-x-4">
@@ -88,6 +89,11 @@ const Package = ({ plugin }: { plugin: PackageManifestInfoType }) => {
             <div className="text-lg font-semibold">
               {plugin.Name}
             </div>
+            {installedVersion && (
+              <Badge className="bg-panel-text-important text-button-primary-text">
+                {`Installed: ${installedVersion}`}
+              </Badge>
+            )}
           </div>
 
           <div className="text-sm opacity-65">
