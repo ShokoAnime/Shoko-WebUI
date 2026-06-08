@@ -94,11 +94,6 @@
     "typescript-eslint": "8.60.1",
     "vite": "^8.0.16"
   },
-  "pnpm": {
-    "overrides": {
-      "dompurify": "^3.4.7"
-    }
-  },
   "scripts": {
     "eslint": "eslint src",
     "eslint:fix": "eslint --fix --cache src",
