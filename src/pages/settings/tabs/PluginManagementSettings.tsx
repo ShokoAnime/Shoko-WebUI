@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { mdiCogOutline, mdiMagnify } from '@mdi/js';
+import Icon from '@mdi/react';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
-import IconButton from '@/components/Input/IconButton';
+import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import PluginUpdateSettingsModal from '@/components/Settings/PluginManagement/Dialogs/PluginUpdateSettingsModal';
@@ -37,21 +38,15 @@ const PluginManagementSettings = () => {
   return (
     <>
       <title>Settings &gt; Plugin Management | Shoko</title>
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-y-1 sm:gap-y-2">
+      <div className="flex flex-col gap-y-1 sm:gap-y-2">
+        <div className="flex items-center justify-between">
           <div className="text-xl font-semibold">Plugin Management</div>
-          <div className="max-w-3xl">
-            Manage plugin repositories, browse plugin packages, review installed plugins, and manually apply updates.
-          </div>
+          <Button onClick={toggleSettingsModal} tooltip="Settings">
+            <Icon className="text-panel-icon-action" path={mdiCogOutline} size={1} />
+          </Button>
         </div>
-        <div className="flex gap-x-2">
-          <IconButton
-            icon={mdiCogOutline}
-            buttonType="secondary"
-            buttonSize="normal"
-            onClick={toggleSettingsModal}
-            tooltip="Settings"
-          />
+        <div>
+          Manage plugin repositories, browse plugin packages, review installed plugins, and manually apply updates.
         </div>
       </div>
 

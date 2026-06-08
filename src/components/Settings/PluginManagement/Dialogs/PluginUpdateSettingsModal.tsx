@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { produce } from 'immer';
 import { isEqual, toNumber } from 'lodash';
 
@@ -28,10 +28,6 @@ const PluginUpdateSettingsModal = ({ onClose, show }: Props) => {
 
   const [updatesSettings, setUpdatesSettings] = useState(settings.Plugins.Updates);
 
-  useEffect(() => {
-    setUpdatesSettings(settings.Plugins.Updates);
-  }, [settings.Plugins.Updates]);
-
   const unsavedChanges = !isEqual(settings.Plugins.Updates, updatesSettings);
 
   const {
@@ -56,12 +52,11 @@ const PluginUpdateSettingsModal = ({ onClose, show }: Props) => {
   };
 
   const handleSave = () => {
-    patchSettings(
-      produce(settings, (draft) => {
-        draft.Plugins.Updates = updatesSettings;
-      }),
-      { onSuccess: () => onClose() },
-    );
+    const newSettings = produce(settings, (draft) => {
+      draft.Plugins.Updates = updatesSettings;
+    });
+
+    patchSettings(newSettings, { onSuccess: () => onClose() });
   };
 
   return (
@@ -111,42 +106,40 @@ const PluginUpdateSettingsModal = ({ onClose, show }: Props) => {
           </>
         )}
 
-        <div className="flex flex-col gap-y-6">
-          <div className="flex items-center font-semibold">Plugin Updates</div>
-          <div className="flex flex-col gap-y-1">
-            <Checkbox
-              justify
-              label="Automatically Sync Repositories"
-              id="is-auto-sync-enabled"
-              isChecked={IsAutoSyncEnabled}
-              onChange={event => updateUpdatesSetting('IsAutoSyncEnabled', event.target.checked)}
-            />
-            <Checkbox
-              justify
-              label="Automatically Upgrade Plugins"
-              id="is-auto-upgrade-enabled"
-              isChecked={IsAutoUpgradeEnabled}
-              onChange={event => updateUpdatesSetting('IsAutoUpgradeEnabled', event.target.checked)}
-            />
-            <div className="flex items-center justify-between">
-              <span>Inactive Version Retention</span>
-              <SelectSmall
-                id="inactive-plugin-version-retention"
-                value={Math.round(dayjs.duration(convertTimeSpanToMs(InactivePluginVersionRetention)).asDays())}
-                onChange={event =>
-                  updateUpdatesSetting(
-                    'InactivePluginVersionRetention',
-                    convertMsToTimeSpan(dayjs.duration(toNumber(event.target.value), 'days').asMilliseconds()),
-                  )}
-              >
-                <option value={7}>7 Days</option>
-                <option value={14}>14 Days</option>
-                <option value={30}>30 Days</option>
-                <option value={90}>90 Days</option>
-                <option value={180}>180 Days</option>
-                <option value={365}>1 Year</option>
-              </SelectSmall>
-            </div>
+        <div className="flex items-center font-semibold">Plugin Updates</div>
+        <div className="flex flex-col gap-y-1">
+          <Checkbox
+            justify
+            label="Automatically Sync Repositories"
+            id="is-auto-sync-enabled"
+            isChecked={IsAutoSyncEnabled}
+            onChange={event => updateUpdatesSetting('IsAutoSyncEnabled', event.target.checked)}
+          />
+          <Checkbox
+            justify
+            label="Automatically Upgrade Plugins"
+            id="is-auto-upgrade-enabled"
+            isChecked={IsAutoUpgradeEnabled}
+            onChange={event => updateUpdatesSetting('IsAutoUpgradeEnabled', event.target.checked)}
+          />
+          <div className="flex items-center justify-between">
+            <span>Inactive Version Retention</span>
+            <SelectSmall
+              id="inactive-plugin-version-retention"
+              value={Math.round(dayjs.duration(convertTimeSpanToMs(InactivePluginVersionRetention)).asDays())}
+              onChange={event =>
+                updateUpdatesSetting(
+                  'InactivePluginVersionRetention',
+                  convertMsToTimeSpan(dayjs.duration(toNumber(event.target.value), 'days').asMilliseconds()),
+                )}
+            >
+              <option value={7}>7 Days</option>
+              <option value={14}>14 Days</option>
+              <option value={30}>30 Days</option>
+              <option value={90}>90 Days</option>
+              <option value={180}>180 Days</option>
+              <option value={365}>1 Year</option>
+            </SelectSmall>
           </div>
         </div>
       </div>
