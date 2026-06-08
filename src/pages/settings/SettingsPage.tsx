@@ -18,6 +18,14 @@ import { useDispatch } from '@/core/store';
 
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
+type SettingValueType =
+  | string
+  | string[]
+  | number
+  | boolean
+  | PluginRenamerSettingsType
+  | undefined;
+
 const items = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
@@ -99,13 +107,13 @@ const SettingsPage = () => {
   const updateSetting = (
     type: string,
     key: string,
-    value: string | string[] | number | boolean | PluginRenamerSettingsType | undefined,
+    value: SettingValueType,
   ) => {
     if (key === 'theme' && typeof value === 'string') {
       globalThis.localStorage.setItem('theme', value);
     }
 
-    const tempSettings: Record<string, string | string[] | number | boolean | PluginRenamerSettingsType | undefined> = {
+    const tempSettings: Record<string, SettingValueType> = {
       ...(newSettings[type] as Record<string, string | string[] | boolean>),
       [key]: value,
     };

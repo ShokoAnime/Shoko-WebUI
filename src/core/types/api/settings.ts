@@ -331,10 +331,21 @@ export type PluginRenamerSettingsType = {
   DefaultRenamer: string | null;
 };
 
+export type PluginUpdatesSettingsType = {
+  IsAutoSyncEnabled: boolean;
+  IsAutoUpgradeEnabled: boolean;
+  AutoUpdateFrequency: SettingsUpdateFrequencyType;
+  // .NET TimeSpan string, e.g. "12:00:00" or "30.00:00:00".
+  DefaultRepositoryStaleTime: string;
+  // .NET TimeSpan string, e.g. "12:00:00" or "30.00:00:00".
+  InactivePluginVersionRetention: string;
+};
+
 export type PluginSettingsType = {
   EnabledPlugins: Record<string, boolean>;
   Priority: string[];
   Renamer: PluginRenamerSettingsType;
+  Updates: PluginUpdatesSettingsType;
 };
 
 export type SettingsServerType = {
