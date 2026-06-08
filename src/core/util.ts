@@ -27,7 +27,7 @@ dayjs.extend(customParseFormatPlugin);
 export { default as dayjs } from 'dayjs';
 
 /** Shared stale time: ~100 days. Used for relatively static data that rarely changes server-side. */
-export const STALE_TIME = 86400 * 100000;
+export const INFINITE_STALE_TIME = 86400 * 100000;
 
 // Enables immer plugin to support Map and Set
 enableMapSet();
