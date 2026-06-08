@@ -22,7 +22,6 @@ type Props = {
   handleEpisodeChange: (type: 'previous' | 'next') => void;
   isFetching: boolean;
   onClose: () => void;
-  seriesId: number;
   show: boolean;
   type: ReleaseManagementItemType;
 };
@@ -60,7 +59,7 @@ const EpisodeName = ({ episode }: { episode: EpisodeType }) => (
 );
 
 const ReleaseManagementModal = (props: Props) => {
-  const { episode, episodeCount, episodeIndex, handleEpisodeChange, isFetching, onClose, seriesId, show, type } = props;
+  const { episode, episodeCount, episodeIndex, handleEpisodeChange, isFetching, onClose, show, type } = props;
 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
@@ -97,10 +96,7 @@ const ReleaseManagementModal = (props: Props) => {
         {!isFetching && type === 'MultipleReleases' && map(episode.Files, file => (
           <MultipleReleasesInfo
             key={file.ID}
-            episode={episode}
             file={file}
-            handleEpisodeChange={handleEpisodeChange}
-            seriesId={seriesId}
           />
         ))}
 
@@ -109,9 +105,7 @@ const ReleaseManagementModal = (props: Props) => {
             <DuplicatesInfo
               key={location.ID}
               file={file}
-              handleEpisodeChange={handleEpisodeChange}
               location={location}
-              seriesId={seriesId}
             />
           )))}
       </div>

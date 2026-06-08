@@ -2,22 +2,18 @@ import React, { useState } from 'react';
 import { mdiFlagOffOutline, mdiFlagOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { produce } from 'immer';
-import { map, sortBy } from 'lodash';
+import { map } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import { useDeleteFileMutation, useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
-import queryClient from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { dayjs } from '@/core/util';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { ListResultType } from '@/core/types/api';
-import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
-import type { InfiniteData } from '@tanstack/react-query';
 
 const parseFlag = (flag?: boolean) => {
   if (flag == null) return 'N/A';
@@ -25,57 +21,11 @@ const parseFlag = (flag?: boolean) => {
   return 'No';
 };
 
-const getEpisodeForFile = (
-  data: InfiniteData<ListResultType<EpisodeType>>,
-  fileId: number,
-) => {
-  for (const page of data.pages) {
-    for (const episode of page.List) {
-      if (episode.Files?.some(file => file.ID === fileId)) {
-        return episode;
-      }
-    }
-  }
-  return undefined;
-};
-
-const handleSuccess = (fileId: number, seriesId: number, type: 'delete' | 'variation', variation?: boolean) => {
-  queryClient.setQueriesData<InfiniteData<ListResultType<EpisodeType>>>(
-    { queryKey: ['release-management', 'series', 'episodes', 'MultipleReleases', seriesId], type: 'active' },
-    prevData =>
-      produce(prevData, (draft) => {
-        if (!draft) return;
-        const episode = getEpisodeForFile(draft, fileId);
-        if (!episode) return;
-
-        const foundFile = episode.Files?.find(file => file.ID === fileId);
-        if (!foundFile) return;
-
-        if (type === 'delete') {
-          foundFile.Size = -1;
-        } else {
-          foundFile.IsVariation = !!variation;
-        }
-
-        episode.Files = sortBy(episode.Files, [
-          file => file.Size === -1,
-          // eslint-disable-next-line no-nested-ternary
-          file => (file.Size === -1 ? 0 : (file.IsVariation ? 1 : 0)),
-        ]);
-      }),
-  );
-};
-
 type Props = {
-  episode?: EpisodeType;
   file: FileType;
-  handleEpisodeChange: (type: 'previous' | 'next') => void;
-  seriesId: number;
 };
 
-const MultipleReleasesInfo = (props: Props) => {
-  const { episode, file, handleEpisodeChange, seriesId } = props;
-
+const MultipleReleasesInfo = ({ file }: Props) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const managedFoldersQuery = useManagedFoldersQuery();
@@ -85,21 +35,15 @@ const MultipleReleasesInfo = (props: Props) => {
 
   const handleMarkVariation = (fileId: number, variation: boolean) => {
     markVariation({ fileId, variation }, {
-      onSuccess: () => handleSuccess(fileId, seriesId, 'variation', variation),
+      onSuccess: () => invalidateQueries(['release-management', 'series', 'episodes']),
     });
   };
 
   const handleDelete = async () => {
     if (!confirmDelete) return;
 
-    await deleteFile({ fileId: file.ID })
-      .then(() => {
-        handleSuccess(file.ID, seriesId, 'delete');
-        if (!episode?.Files) return;
-        // We check for `=== 2` here since we are checking stale data
-        const oneFileLeft = episode.Files.filter(episodeFile => episodeFile.Size > 0).length === 2;
-        if (oneFileLeft) handleEpisodeChange('next');
-      });
+    await deleteFile({ fileId: file.ID });
+    invalidateQueries(['release-management', 'series', 'episodes']);
   };
 
   // To re-enable the correct keybinds once the delete confirmation modal closes

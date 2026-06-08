@@ -2,67 +2,22 @@ import React, { useState } from 'react';
 import { mdiTrashCanOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { produce } from 'immer';
-import { sortBy } from 'lodash';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import { useDeleteFileLocationMutation } from '@/core/react-query/file/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
-import queryClient from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { ListResultType } from '@/core/types/api';
-import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileLocationType, FileType } from '@/core/types/api/file';
-import type { InfiniteData } from '@tanstack/react-query';
-
-const getFileForLocation = (
-  data: InfiniteData<ListResultType<EpisodeType>>,
-  locationId: number,
-) => {
-  for (const page of data.pages) {
-    for (const episode of page.List) {
-      for (const file of episode.Files ?? []) {
-        if (file?.Locations?.some(loc => loc.ID === locationId)) {
-          return file;
-        }
-      }
-    }
-  }
-  return undefined;
-};
-
-const handleSuccess = (locationId: number, seriesId: number) => {
-  queryClient.setQueriesData<InfiniteData<ListResultType<EpisodeType>>>(
-    { queryKey: ['release-management', 'series', 'episodes', 'DuplicateFiles', seriesId], type: 'active' },
-    prevData =>
-      produce(prevData, (draft) => {
-        if (!draft) return;
-        const file = getFileForLocation(draft, locationId);
-        if (!file) return;
-
-        const foundLocation = file.Locations.find(loc => loc.ID === locationId);
-        if (!foundLocation) return;
-
-        foundLocation.AbsolutePath = '';
-        file.Locations = sortBy(file.Locations, [
-          location => !location.AbsolutePath,
-        ]);
-      }),
-  );
-};
 
 type Props = {
   file: FileType;
-  handleEpisodeChange: (type: 'previous' | 'next') => void;
   location: FileLocationType;
-  seriesId: number;
 };
 
-const DuplicatesInfo = (props: Props) => {
-  const { file, handleEpisodeChange, location, seriesId } = props;
-
+const DuplicatesInfo = ({ file, location }: Props) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const managedFoldersQuery = useManagedFoldersQuery();
@@ -72,13 +27,8 @@ const DuplicatesInfo = (props: Props) => {
   const handleDelete = async () => {
     if (!confirmDelete) return;
 
-    await deleteFileLocation({ locationId: location.ID })
-      .then(() => {
-        handleSuccess(location.ID, seriesId);
-        // We check for `=== 2` here since we are checking stale data
-        const oneLocationLeft = file.Locations.filter(fileLocation => !!fileLocation.AbsolutePath).length === 2;
-        if (oneLocationLeft) handleEpisodeChange('next');
-      });
+    await deleteFileLocation({ locationId: location.ID });
+    invalidateQueries(['release-management', 'series', 'episodes']);
   };
 
   // To re-enable the correct keybinds once the delete confirmation modal closes
