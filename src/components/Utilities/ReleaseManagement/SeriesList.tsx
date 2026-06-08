@@ -205,14 +205,25 @@ const SeriesList = (
     }
   };
 
-  const handleEpisodeChange = (changeType: 'previous' | 'next') => {
-    if (
-      (changeType === 'next' && selectedEpisode === episodes.length - 1)
-      || (changeType === 'previous' && selectedEpisode <= 0)
-    ) return;
+  const handleEpisodeChange = async (changeType: 'previous' | 'next') => {
+    const targetIndex = changeType === 'previous' ? selectedEpisode - 1 : selectedEpisode + 1;
 
-    if (changeType === 'previous') setSelectedEpisode(index => index - 1);
-    else setSelectedEpisode(index => index + 1);
+    if (targetIndex < 0 || targetIndex >= episodeCount) return;
+
+    // Fetch more pages if the target episode hasn't been loaded yet.
+    let loadedCount = episodes.length;
+    while (loadedCount <= targetIndex) {
+      // Each fetchNextPage depends on the previous page completing (getNextPageParam),
+      // so these must run sequentially — parallelizing with Promise.all is not possible.
+      // Valid exception for below rule under eslint
+      // eslint-disable-next-line no-await-in-loop
+      const result = await episodesQuery.fetchNextPage();
+      const newLoadedCount = result.data ? flatMap(result.data.pages, 'List').length : loadedCount;
+      if (newLoadedCount === loadedCount) break; // No more data to load
+      loadedCount = newLoadedCount;
+    }
+
+    setSelectedEpisode(targetIndex);
   };
 
   useEffect(() => {
@@ -309,10 +320,13 @@ const SeriesList = (
           onClose={toggleEpisodeModal}
           show={showEpisodeModal}
           episode={episodes[selectedEpisode]}
-          handleEpisodeChange={handleEpisodeChange}
+          handleEpisodeChange={(changeType) => {
+            handleEpisodeChange(changeType).catch(console.error);
+          }}
           episodeCount={episodeCount}
           episodeIndex={selectedEpisode}
           seriesId={selectedSeries}
+          isFetching={episodesQuery.isFetchingNextPage}
           type={type}
         />
       )}
