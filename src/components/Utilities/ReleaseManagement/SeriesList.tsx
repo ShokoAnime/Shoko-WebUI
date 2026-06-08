@@ -325,7 +325,6 @@ const SeriesList = (
           }}
           episodeCount={episodeCount}
           episodeIndex={selectedEpisode}
-          seriesId={selectedSeries}
           isFetching={episodesQuery.isFetchingNextPage}
           type={type}
         />
