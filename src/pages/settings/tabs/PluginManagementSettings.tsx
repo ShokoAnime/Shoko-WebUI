@@ -38,7 +38,7 @@ const PluginManagementSettings = () => {
   return (
     <>
       <title>Settings &gt; Plugin Management | Shoko</title>
-      <div className="flex flex-col gap-y-1 sm:gap-y-2">
+      <div className="flex flex-col gap-y-2">
         <div className="flex items-center justify-between">
           <div className="text-xl font-semibold">Plugin Management</div>
           <Button onClick={toggleSettingsModal} tooltip="Settings">
