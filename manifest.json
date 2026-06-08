@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.58",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.58/Shoko-WebUI-v2.6.0-dev.58.zip",
+      "checksum": "sha256:496978ee83eaea1d0c85d19db188cf8bfac21db855d77135d86493a7b58f00cc",
+      "commit": "51e2d64207a57fe6ce6bcbfb259d70e9ac6f22b1",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add settings modal for plugin update preferences by @krbrs in https://github.com/ShokoAnime/Shoko-WebUI/pull/1361\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.57...v2.6.0-dev.58\n"
+    },
+    {
       "version": "2.6.0-dev.57",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.57/Shoko-WebUI-v2.6.0-dev.57.zip",
