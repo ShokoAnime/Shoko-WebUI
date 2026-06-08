@@ -414,6 +414,13 @@ export const initialSettings: SettingsType = {
       AllowRelocationInsideDestinationOnImport: true,
       DefaultRenamer: null,
     },
+    Updates: {
+      IsAutoSyncEnabled: false,
+      IsAutoUpgradeEnabled: false,
+      AutoUpdateFrequency: 4,
+      DefaultRepositoryStaleTime: '12:00:00',
+      InactivePluginVersionRetention: '30.00:00:00',
+    },
   },
 };
 
