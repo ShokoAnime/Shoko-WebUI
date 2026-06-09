@@ -62,7 +62,7 @@ const TmdbLinking = () => {
     return !seriesQuery.data.IDs.TMDB[type].includes(tmdbId);
   }, [seriesQuery.data, tmdbId, type]);
 
-  const { fetchNextPage: fetchNextEpisodesPage, ...episodesQuery } = useSeriesEpisodesInfiniteQuery(
+  const episodesQuery = useSeriesEpisodesInfiniteQuery(
     seriesId,
     {
       includeDataFrom: ['AniDB'],
@@ -141,9 +141,9 @@ const TmdbLinking = () => {
   const fetchNextPageDebounced = useMemo(
     () =>
       debounce(() => {
-        fetchNextEpisodesPage().catch(() => {});
+        episodesQuery.fetchNextPage().catch(() => {});
       }, 100),
-    [fetchNextEpisodesPage],
+    [episodesQuery],
   );
 
   const movieXrefCount = useMemo(

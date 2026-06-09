@@ -4,7 +4,7 @@ React 19 + Vite frontend for the Shoko Anime Management Server.
 
 ## Build & Development
 
-> **Node >=22, pnpm only.** CI uses Node 24 and pnpm 10.
+> **Node >=22, pnpm only.** CI uses Node 24 and pnpm 11.
 
 ```bash
 pnpm install          # Also sets up Husky via the `prepare` script
