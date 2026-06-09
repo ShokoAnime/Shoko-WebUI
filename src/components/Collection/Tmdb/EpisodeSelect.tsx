@@ -31,7 +31,7 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
 
-  const { fetchNextPage: fetchNextEpisodesPage, ...episodesQuery } = useTmdbShowEpisodesQuery(tmdbId, {
+  const episodesQuery = useTmdbShowEpisodesQuery(tmdbId, {
     search: debouncedSearch,
     pageSize: 30,
   });
@@ -68,9 +68,9 @@ const EpisodeSelect = React.memo((props: Props) => {
   const fetchNextPageDebounced = useMemo(
     () =>
       debounce(() => {
-        fetchNextEpisodesPage().catch(() => {});
+        episodesQuery.fetchNextPage().catch(() => {});
       }, 100),
-    [fetchNextEpisodesPage],
+    [episodesQuery],
   );
 
   return (
