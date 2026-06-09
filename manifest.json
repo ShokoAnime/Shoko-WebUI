@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.60",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.60/Shoko-WebUI-v2.6.0-dev.60.zip",
+      "checksum": "sha256:27b77b0b539e44333a5537cee4e8a6cd4ca1d5d43aa59d302e7be186b6bc0c65",
+      "commit": "9284fa83fc2bb487d7540e07289a1c7e6eba59b4",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: cancel button now resets unsaved hashing & release settings by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1365\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.59...v2.6.0-dev.60\n"
+    },
+    {
       "version": "2.6.0-dev.59",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.59/Shoko-WebUI-v2.6.0-dev.59.zip",
