@@ -231,6 +231,10 @@ const SeriesList = (
     setSeriesCount(seriesCount);
   }, [selectedSeries, seriesCount, setSelectedSeriesId, setSeriesCount]);
 
+  useEffect(() => {
+    setSelectedSeries(0);
+  }, [seriesQuery.data]);
+
   const episodeColumns = useMemo(() => {
     if (type !== 'MissingEpisodes') {
       return [
@@ -309,6 +313,14 @@ const SeriesList = (
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
                 />
+              )}
+
+              {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount === 0 && (
+                <div className="flex grow items-center justify-center">
+                  All&nbsp;
+                  {type === 'DuplicateFiles' ? 'duplicates' : 'multiples'}
+                  &nbsp;cleared!
+                </div>
               )}
             </>
           )}
