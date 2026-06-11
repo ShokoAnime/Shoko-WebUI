@@ -75,14 +75,14 @@ const Input = React.memo((props: Props) => {
   }, [isOverlay, onToggleOverlay]);
 
   const inputContainerClassName = useMemo(() => {
-    const combier = (input: string) => cx([overlayClassName, input]);
+    const combiner = (input: string) => cx([overlayClassName, input]);
     if (isOverlay && inline) {
-      if (!isShow) return combier('hidden 2xl:flex flex-row justify-center');
-      return combier('flex flex-row justify-center');
+      if (!isShow) return combiner('hidden 2xl:flex flex-row justify-center');
+      return combiner('flex flex-row justify-center');
     }
     if (isOverlay && !inline) {
-      if (!isShow) return combier('hidden 2xl:inline');
-      return combier('');
+      if (!isShow) return combiner('hidden 2xl:inline');
+      return combiner('');
     }
     if (!isOverlay && inline) {
       return 'flex flex-row justify-center';
