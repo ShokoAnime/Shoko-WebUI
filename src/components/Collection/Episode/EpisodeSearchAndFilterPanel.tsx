@@ -35,7 +35,7 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
     <div className="flex flex-col gap-y-6">
       <ShokoPanel
         title="Search & Filter"
-        className="w-100"
+        className="w-full lg:w-100"
         contentClassName="gap-y-6"
         fullHeight={false}
         sticky

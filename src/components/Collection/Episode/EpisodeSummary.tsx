@@ -171,7 +171,10 @@ const EpisodeSummary = React.memo(
                 path={episodeFilesQuery.isFetching ? mdiLoading : mdiChevronDown}
                 size={1}
                 rotate={open ? 180 : 0}
-                className="transition-transform"
+                className={cx(
+                  'transition-transform',
+                  episodeFilesQuery.isFetching && 'text-panel-text-primary',
+                )}
                 spin={episodeFilesQuery.isFetching}
               />
             </div>

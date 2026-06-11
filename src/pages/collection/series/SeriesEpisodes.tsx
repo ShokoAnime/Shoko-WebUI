@@ -156,7 +156,7 @@ const SeriesEpisodes = () => {
   return (
     <>
       <title>{`${series.Name} > Episodes | Shoko`}</title>
-      <div className="flex w-full gap-x-6">
+      <div className="flex w-full flex-col gap-6 lg:flex-row">
         <EpisodeSearchAndFilterPanel
           onFilterChange={onFilterChange}
           search={search}
@@ -172,7 +172,7 @@ const SeriesEpisodes = () => {
           <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
               <span>Episodes</span>
-              <span className="hidden px-2 2xl:inline">|</span>
+              <span className="px-2">|</span>
               <span>
                 <span className="pr-2 text-panel-text-important">
                   {isSuccess ? episodeCount : '-'}
