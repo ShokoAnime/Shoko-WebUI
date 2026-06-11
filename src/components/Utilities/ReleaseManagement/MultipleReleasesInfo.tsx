@@ -91,17 +91,17 @@ const MultipleReleasesInfo = ({ file }: Props) => {
       >
         <div className="flex items-center justify-between">
           <div
-            className="flex flex-col"
+            className="line-clamp-1 flex flex-col"
             data-tooltip-id="tooltip"
             data-tooltip-content={isDeleted ? '' : file.Locations[0].AbsolutePath}
             data-tooltip-delay-show={500}
           >
-            <span className="line-clamp-1 text-sm font-semibold opacity-65">
+            <span className="line-clamp-1 truncate text-sm font-semibold opacity-65">
               {folderName}
               &nbsp;-&nbsp;
               {relativePath}
             </span>
-            <span className="line-clamp-1">
+            <span className="line-clamp-1 truncate">
               {fileName}
             </span>
           </div>
