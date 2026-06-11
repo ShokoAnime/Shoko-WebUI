@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.63",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.63/Shoko-WebUI-v2.6.0-dev.63.zip",
+      "checksum": "sha256:5911a34d4236e8ba350afb6853ecff54a1508c9a97ac7fe1aad67ba02d161579",
+      "commit": "b85b58ceb18fe81c634dee32c91a751ab0dc5fe6",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* episode files: add overflow menu, \"remove release info\" button by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1368\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.62...v2.6.0-dev.63\n"
+    },
+    {
       "version": "2.6.0-dev.62",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.62/Shoko-WebUI-v2.6.0-dev.62.zip",
