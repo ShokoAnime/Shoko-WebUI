@@ -21,6 +21,11 @@ export const useSubmitReleaseInfoForFileByIdMutation = () =>
       axios.post(`ReleaseInfo/File/${fileId}`, release),
   });
 
+export const useDeleteReleaseInfoForFileByIdMutation = () =>
+  useMutation({
+    mutationFn: (fileId: number) => axios.delete(`ReleaseInfo/File/${fileId}`),
+  });
+
 export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
   useMutation<ReleaseInfoType | null, unknown, { fileId: number, providerIDs?: string[] }>({
     mutationFn: ({ fileId, providerIDs = [] }) =>

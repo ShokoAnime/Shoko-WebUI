@@ -1,19 +1,23 @@
 import React, { useMemo, useState } from 'react';
+import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 import {
   mdiClipboardOutline,
   mdiDatabaseSearchOutline,
+  mdiDotsVertical,
   mdiFileDocumentMultipleOutline,
-  mdiLoading,
   mdiOpenInNew,
   mdiPlusCircleOutline,
+  mdiTagRemoveOutline,
   mdiTrashCanOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { map } from 'lodash';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import FileInfo from '@/components/FileInfo';
 import Button from '@/components/Input/Button';
+import DropdownMenuItem from '@/components/Input/DropdownMenuItem';
 import toast from '@/components/Toast';
 import {
   useAddFileToMyListMutation,
@@ -22,6 +26,7 @@ import {
   useRescanFileMutation,
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import { useDeleteReleaseInfoForFileByIdMutation } from '@/core/react-query/release-info/mutations';
 import { copyToClipboard } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
@@ -36,6 +41,7 @@ type Props = {
 const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Props) => {
   const { isPending: isAddMyListPending, mutate: addFileToMyList } = useAddFileToMyListMutation();
   const { mutate: deleteFile } = useDeleteFileMutation(seriesId, episodeId);
+  const { mutate: deleteReleaseInfo } = useDeleteReleaseInfoForFileByIdMutation();
   const { mutate: markFileAsVariation } = useMarkVariationMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -53,6 +59,16 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
         invalidateQueries(['episode', 'files', episodeId]);
       },
       onError: error => toast.error(`Failed to delete file! ${error.message}`),
+    });
+  };
+
+  const handleDeleteReleaseInfo = (fileId: number) => {
+    deleteReleaseInfo(fileId, {
+      onSuccess: () => {
+        toast.success('Removed release info!');
+        invalidateQueries(['episode', 'files', episodeId]);
+      },
+      onError: error => toast.error(`Failed to remove release info! ${error.message}`),
     });
   };
 
@@ -97,37 +113,20 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
           <div className="flex flex-col gap-y-6" key={file.ID}>
             <div className="flex grow gap-x-2">
               <div className="flex grow flex-wrap gap-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
-                <div
-                  className="flex cursor-pointer items-center gap-x-2"
-                  onClick={() => handleRescan(file.ID)}
-                >
-                  <Icon className="hidden text-panel-icon-action lg:inline" path={mdiDatabaseSearchOutline} size={1} />
-                  Force Update Info
-                </div>
-                <div
-                  className="flex cursor-pointer items-center gap-x-2"
-                  onClick={() => handleAddToMyList(file.ID)}
-                >
-                  <Icon
-                    className="hidden text-panel-icon-action lg:inline"
-                    path={isAddMyListPending ? mdiLoading : mdiPlusCircleOutline}
-                    spin={isAddMyListPending}
-                    size={1}
-                  />
-                  Add to MyList
-                </div>
-                <div
-                  className="flex cursor-pointer items-center gap-x-2"
-                  onClick={() => handleMarkVariation(file.ID, !file.IsVariation)}
-                >
-                  <Icon
-                    className="hidden text-panel-icon-action lg:inline"
-                    path={mdiFileDocumentMultipleOutline}
-                    size={1}
-                  />
-                  {file.IsVariation ? 'Unmark' : 'Mark'}
-                  &nbsp;as Variation
-                </div>
+                {episodeFiles.length > 1 && (
+                  <div
+                    className="flex cursor-pointer items-center gap-x-2"
+                    onClick={() => handleMarkVariation(file.ID, !file.IsVariation)}
+                  >
+                    <Icon
+                      className="hidden text-panel-icon-action lg:inline"
+                      path={mdiFileDocumentMultipleOutline}
+                      size={1}
+                    />
+                    {file.IsVariation ? 'Unmark' : 'Mark'}
+                    &nbsp;as Variation
+                  </div>
+                )}
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
                   onClick={() => handleCopyToClipboard(file.ID.toString())}
@@ -166,17 +165,53 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                 {file.IsVariation && <span className="ml-auto font-semibold text-panel-text-important">Variation</span>}
               </div>
               <div className="flex text-center">
-                <Button
-                  buttonType="danger"
-                  className="flex items-center gap-x-2 px-4 py-3"
-                  onClick={() => {
-                    setShowDeleteModal(true);
-                    setSelectedFileToDelete(file);
-                  }}
-                >
-                  <Icon path={mdiTrashCanOutline} size={1} />
-                  <span className="hidden lg:inline">Delete File</span>
-                </Button>
+                <Menu>
+                  <MenuButton>
+                    {({ open }) => (
+                      <Button
+                        buttonType="secondary"
+                        buttonSize="normal"
+                        className={cx('h-full', open && 'bg-button-secondary-hover')}
+                      >
+                        <Icon path={mdiDotsVertical} size={1} />
+                      </Button>
+                    )}
+                  </MenuButton>
+                  <MenuItems
+                    anchor="bottom end"
+                    transition
+                    className="w-auto origin-top-right rounded-lg border border-panel-border bg-panel-background-alt drop-shadow-sm transition [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:opacity-0"
+                  >
+                    <DropdownMenuItem
+                      icon={mdiDatabaseSearchOutline}
+                      text="Force Update Info"
+                      onClick={() => handleRescan(file.ID)}
+                    />
+
+                    <DropdownMenuItem
+                      icon={mdiPlusCircleOutline}
+                      loading={isAddMyListPending}
+                      text="Add to MyList"
+                      onClick={() => handleAddToMyList(file.ID)}
+                    />
+
+                    <DropdownMenuItem
+                      icon={mdiTagRemoveOutline}
+                      onClick={() => handleDeleteReleaseInfo(file.ID)}
+                      text="Remove Release Info"
+                    />
+
+                    <DropdownMenuItem
+                      icon={mdiTrashCanOutline}
+                      text="Delete File"
+                      onClick={() => {
+                        setShowDeleteModal(true);
+                        setSelectedFileToDelete(file);
+                      }}
+                      type="danger"
+                    />
+                  </MenuItems>
+                </Menu>
               </div>
             </div>
             <FileInfo file={file} />
