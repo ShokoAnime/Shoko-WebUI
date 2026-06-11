@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.64",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.64/Shoko-WebUI-v2.6.0-dev.64.zip",
+      "checksum": "sha256:46ba54147b5c015ff32a4278c32444d90ca554d3a79ac11675f8b2e8ee60b59e",
+      "commit": "764d43dbef709c375dcda383ff98823c5c8f3e63",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Make series episodes list visible on mobile devices by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1369\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.63...v2.6.0-dev.64\n"
+    },
+    {
       "version": "2.6.0-dev.63",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.63/Shoko-WebUI-v2.6.0-dev.63.zip",
