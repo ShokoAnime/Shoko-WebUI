@@ -134,21 +134,22 @@ const Series = () => {
         </div>
       </div>
       <SeriesTopPanel series={series} />
-      <div className="flex justify-between rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
-        <div className="flex gap-x-10">
-          <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
-          <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
-          <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
-          <SeriesTab to="images" icon={mdiImageMultipleOutline} text="Images" />
-          <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
-          <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
-        </div>
-        <div>
-          <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={onClickHandler}>
-            <Icon path={mdiPencilCircleOutline} size={1} />
-            Edit Series
-          </Button>
-        </div>
+      <div className="flex flex-wrap gap-x-10 gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+        <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
+        <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
+        <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
+        <SeriesTab to="images" icon={mdiImageMultipleOutline} text="Images" />
+        <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
+        <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
+        <Button
+          buttonType="secondary"
+          buttonSize="normal"
+          className="ml-auto flex gap-x-2"
+          onClick={onClickHandler}
+        >
+          <Icon path={mdiPencilCircleOutline} size={1} />
+          Edit Series
+        </Button>
       </div>
 
       <EditSeriesModal />
