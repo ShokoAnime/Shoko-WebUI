@@ -183,7 +183,7 @@ const SeriesList = (
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
 
-  const [showEpisodeModal, toggleEpisodeModal] = useToggle(false);
+  const [showEpisodeModal, toggleEpisodeModal, setEpisodeModal] = useToggle(false);
   const [selectedEpisode, setSelectedEpisode] = useState(-1);
 
   const {
@@ -196,6 +196,10 @@ const SeriesList = (
   useEffect(() => {
     setSelectedEpisodes(selectedRows);
   }, [selectedRows, setSelectedEpisodes]);
+
+  useEffect(() => {
+    if (!episodeCount) setEpisodeModal(false);
+  }, [episodeCount, setEpisodeModal]);
 
   const handleEpisodeSelect = (episodeId: number, select: boolean) => {
     if (type === 'MissingEpisodes') handleRowSelect(episodeId, select);
@@ -317,9 +321,15 @@ const SeriesList = (
 
               {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount === 0 && (
                 <div className="flex grow items-center justify-center">
-                  All&nbsp;
-                  {type === 'DuplicateFiles' ? 'duplicates' : 'multiples'}
-                  &nbsp;cleared!
+                  {type !== 'MissingEpisodes'
+                    ? (
+                      <>
+                        All&nbsp;
+                        {type === 'DuplicateFiles' ? 'duplicates' : 'multiples'}
+                        &nbsp;cleared!
+                      </>
+                    )
+                    : 'No missing episodes for this series!'}
                 </div>
               )}
             </>
