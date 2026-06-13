@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.67",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.67/Shoko-WebUI-v2.6.0-dev.67.zip",
+      "checksum": "sha256:015fae062c820c7464f3202467889f0e0c3a77e9ad9fb23c69c29a9909413f8d",
+      "commit": "c564f96ee732e8cd87c22679be2093dfccf4eef3",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: duplicates count in release mgmt by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1373\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.66...v2.6.0-dev.67\n"
+    },
+    {
       "version": "2.6.0-dev.66",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.66/Shoko-WebUI-v2.6.0-dev.66.zip",
