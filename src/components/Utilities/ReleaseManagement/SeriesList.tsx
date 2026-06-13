@@ -130,7 +130,7 @@ const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
       episode.Files,
       file => file.Locations,
     ).filter(location => !!location.AbsolutePath).length;
-    count = count === 1 ? 0 : (count / 2);
+    count -= 1;
     return (
       <>
         <span className="text-panel-text-important">{count}</span>
