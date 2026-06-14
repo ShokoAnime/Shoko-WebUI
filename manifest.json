@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.68",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.68/Shoko-WebUI-v2.6.0-dev.68.zip",
+      "checksum": "sha256:b1317fd7880b4173e114b10b7d23a6451eb71da749583d89213b525a0302468d",
+      "commit": "3a240629614591d2904bae23a3e9af5794bbb7b5",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: migrate two deprecated API v3 endpoints by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1374\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.67...v2.6.0-dev.68\n"
+    },
+    {
       "version": "2.6.0-dev.67",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.67/Shoko-WebUI-v2.6.0-dev.67.zip",
