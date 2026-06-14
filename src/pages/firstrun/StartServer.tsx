@@ -4,7 +4,7 @@ import { useOutletContext } from 'react-router';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useLoginMutation } from '@/core/react-query/auth/mutations';
-import { useStartServerMutation } from '@/core/react-query/init/mutations';
+import { useCompleteSetupMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import { useDispatch, useSelector } from '@/core/store';
@@ -23,7 +23,7 @@ const StartServer = () => {
   const [pollingInterval, setPollingInterval] = useState(0);
 
   const { setIsPersistent } = useOutletContext<OutletContextType>();
-  const { mutate: startServer } = useStartServerMutation();
+  const { mutate: completeSetup } = useCompleteSetupMutation();
   const { mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);
 
@@ -47,7 +47,7 @@ const StartServer = () => {
 
   const handleStart = () => {
     setIsPersistent(true);
-    startServer();
+    completeSetup();
     setPollingInterval(500);
   };
 

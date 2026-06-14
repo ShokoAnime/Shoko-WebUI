@@ -59,7 +59,7 @@ export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDB
 export const useSeriesAniDBSearchQuery = (query: string, enabled = true) =>
   useQuery<ListResultType<SeriesAniDBSearchResult>, unknown, SeriesAniDBSearchResult[]>({
     queryKey: ['series', 'anidb-search', query],
-    queryFn: () => axios.get(`Series/AniDB/Search/${encodeURIComponent(query)}`),
+    queryFn: () => axios.get('Series/AniDB/Search', { params: { query } }),
     select: transformListResultSimplified,
     enabled,
   });

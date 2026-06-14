@@ -4,9 +4,9 @@ import { axios } from '@/core/axios';
 
 import type { UserRequestType } from '@/core/react-query/init/types';
 
-export const useStartServerMutation = () =>
+export const useCompleteSetupMutation = () =>
   useMutation({
-    mutationFn: () => axios.get('Init/StartServer'),
+    mutationFn: () => axios.post('Init/CompleteSetup'),
   });
 
 export const useSetDefaultUserMutation = () =>
