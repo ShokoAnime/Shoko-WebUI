@@ -98,7 +98,7 @@ const LogsPage = () => {
                   style={{ height: rowVirtualizer.getTotalSize() }}
                 >
                   <div
-                    className="absolute top-0 left-4 w-[95%]"
+                    className="absolute inset-x-4 top-0"
                     style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
                   >
                     {virtualItems.map((virtualRow) => {
@@ -111,7 +111,7 @@ const LogsPage = () => {
                           ref={rowVirtualizer.measureElement}
                         >
                           <div className="w-44 shrink-0 opacity-65">{row.TimeStamp}</div>
-                          <div className="w-[2.8rem] shrink-0">{row.Level}</div>
+                          <div className="w-32 shrink-0 overflow-hidden whitespace-nowrap">{row.Level}</div>
                           <div className="break-all">{row.Message}</div>
                         </div>
                       );
