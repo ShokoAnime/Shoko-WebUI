@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.69",
+      "minServerVersion": "6.0.0-dev.237",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.69/Shoko-WebUI-v2.6.0-dev.69.zip",
+      "checksum": "sha256:87072da4bffa1826e676c319191ebf18638077cb5915318467142c9859e74d7c",
+      "commit": "7e586d887f73007deea9a99d043f5ee3e002686a",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.237** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.237** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* docs: add agent lint workflow to AGENTS.md (#1375) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1375\n* fix(logs): fix level column overflow and adaptive width by @Foowy in https://github.com/ShokoAnime/Shoko-WebUI/pull/1376\n\n## New Contributors\n* @Foowy made their first contribution in https://github.com/ShokoAnime/Shoko-WebUI/pull/1376\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.68...v2.6.0-dev.69\n"
+    },
+    {
       "version": "2.6.0-dev.68",
       "minServerVersion": "6.0.0-dev.237",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.68/Shoko-WebUI-v2.6.0-dev.68.zip",
