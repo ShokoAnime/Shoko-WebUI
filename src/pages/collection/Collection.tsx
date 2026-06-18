@@ -39,10 +39,7 @@ const getFilter = (
   const cleanFilterConditions = filterConditions.filter(condition => !!condition);
   if (query) {
     let searchCondition: FilterCondition = {
-      Type: 'AnyContains',
-      Left: {
-        Type: 'NamesSelector',
-      },
+      Type: 'HasFuzzyName',
       Parameter: query,
     };
 
