@@ -12,6 +12,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
+import MultipleReleasesPage from '@/components/Utilities/ReleaseManagement/MultipleReleasesPage';
 import QuickSelectModal from '@/components/Utilities/ReleaseManagement/QuickSelectModal';
 import SeriesList from '@/components/Utilities/ReleaseManagement/SeriesList';
 import Title from '@/components/Utilities/ReleaseManagement/Title';
@@ -31,6 +32,7 @@ const titleMap = {
 
 const ReleaseManagement = () => {
   const { type = 'MultipleReleases' } = useParams() as { type?: ReleaseManagementItemType };
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'series'] }) > 0;
@@ -88,6 +90,8 @@ const ReleaseManagement = () => {
 
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
 
+  if (type === 'MultipleReleases') return <MultipleReleasesPage />;
+
   return (
     <>
       <title>{`${titleMap[type]} | Shoko`}</title>
@@ -107,16 +111,6 @@ const ReleaseManagement = () => {
                 loading={isSeriesQueryFetching}
                 keybinding="R"
               />
-
-              {type === 'MultipleReleases' && (
-                <Checkbox
-                  id="ignoreVariations"
-                  isChecked={filterOptions.ignoreVariations}
-                  onChange={handleFilterChange}
-                  label="Ignore Variations"
-                  labelRight
-                />
-              )}
 
               {type === 'MissingEpisodes' && (
                 <Checkbox
@@ -149,7 +143,7 @@ const ReleaseManagement = () => {
             {/*   </Button> */}
             {/* )} */}
 
-            {(type !== 'MissingEpisodes') && (
+            {type === 'DuplicateFiles' && (
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
