@@ -10,11 +10,11 @@ import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModa
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import { useDeleteFilterMutation } from '@/core/react-query/filter/mutations';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FilterType } from '@/core/types/api/filter';

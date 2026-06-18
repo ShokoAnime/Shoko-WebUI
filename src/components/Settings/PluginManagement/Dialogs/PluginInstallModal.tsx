@@ -3,8 +3,8 @@ import React from 'react';
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import ShokoMarkdown from '@/components/ShokoMarkdown';
-import toast from '@/components/Toast';
 import { useInstallPluginPackageMutation } from '@/core/react-query/plugin-package/mutations';
+import toast from '@/core/toast';
 
 import type { PackageReleaseInfoType } from '@/core/types/api/plugin-package';
 

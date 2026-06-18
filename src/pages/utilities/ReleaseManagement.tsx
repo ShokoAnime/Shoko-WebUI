@@ -11,7 +11,6 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import ItemCount from '@/components/Utilities/ItemCount';
 import QuickSelectModal from '@/components/Utilities/ReleaseManagement/QuickSelectModal';
 import SeriesList from '@/components/Utilities/ReleaseManagement/SeriesList';
@@ -19,6 +18,7 @@ import Title from '@/components/Utilities/ReleaseManagement/Title';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { useHideEpisodeMutation } from '@/core/react-query/episode/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
+import toast from '@/core/toast';
 
 import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { EpisodeType } from '@/core/types/api/episode';

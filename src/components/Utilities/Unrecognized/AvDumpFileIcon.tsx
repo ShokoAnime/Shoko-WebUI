@@ -11,9 +11,9 @@ import Icon from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import { copyToClipboard, processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 

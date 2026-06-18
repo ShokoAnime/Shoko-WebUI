@@ -4,12 +4,12 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import {
   useCreateRelocationPresetMutation,
   useUpdateRelocationPresetMutation,
 } from '@/core/react-query/relocation/mutations';
 import { useRelocationProvidersQuery } from '@/core/react-query/relocation/queries';
+import toast from '@/core/toast';
 
 import type { RelocationPresetType } from '@/core/types/api/relocation';
 

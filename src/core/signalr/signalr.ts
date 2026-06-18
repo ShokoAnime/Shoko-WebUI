@@ -8,7 +8,6 @@ import {
 } from '@microsoft/signalr';
 import { throttle } from 'lodash';
 
-import toast from '@/components/Toast';
 import Events from '@/core/events';
 import { handleEvent } from '@/core/signalr/eventHandlers';
 import { AVDumpEventTypeEnum } from '@/core/signalr/types';
@@ -21,6 +20,7 @@ import {
   setUdpBanStatus,
 } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
+import toast from '@/core/toast';
 
 import type {
   AVDumpEventType,
@@ -214,11 +214,7 @@ async (action: UnknownAction) => {
         );
       });
 
-      startSignalRConnection(connectionEvents)
-        .then(() => {
-        })
-        .catch(() => {
-        });
+      startSignalRConnection(connectionEvents).catch(console.error);
     } else if (action.type === Events.AUTH_LOGOUT) {
       await connectionEvents?.stop();
     }

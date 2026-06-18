@@ -5,9 +5,9 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import { useCreateFilterMutation } from '@/core/react-query/filter/mutations';
 import { useFiltersQuery } from '@/core/react-query/filter/queries';
+import toast from '@/core/toast';
 
 import type { FilterCondition } from '@/core/types/api/filter';
 

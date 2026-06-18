@@ -5,10 +5,10 @@ import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import { useSetPreferredTmdbShowOrderingMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbShowOrderingQuery } from '@/core/react-query/tmdb/queries';
 import { AlternateOrderingTypeEnum } from '@/core/react-query/tmdb/types';
+import toast from '@/core/toast';
 
 type Props = {
   onClose: () => void;

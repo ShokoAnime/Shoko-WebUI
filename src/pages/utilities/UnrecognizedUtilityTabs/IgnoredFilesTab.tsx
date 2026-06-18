@@ -5,7 +5,6 @@ import { countBy, find } from 'lodash';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -16,6 +15,7 @@ import { useIgnoreFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import toast from '@/core/toast';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';

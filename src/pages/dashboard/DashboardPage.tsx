@@ -6,12 +6,12 @@ import { Icon } from '@mdi/react';
 import { produce } from 'immer';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { initialSettings } from '@/core/react-query/settings/helpers';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import WelcomeModal from '@/pages/dashboard/components/WelcomeModal';
 
 import CollectionStats from './panels/CollectionStats';

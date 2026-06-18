@@ -1,9 +1,9 @@
 import { MutationCache, QueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
-import toast from '@/components/Toast';
 import Events from '@/core/events';
 import store from '@/core/store';
+import toast from '@/core/toast';
 
 import type { QueryKey } from '@tanstack/react-query';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';

@@ -27,7 +27,6 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import AddFilesModal from '@/components/Utilities/Renamer/AddFilesModal';
 import PresetModal from '@/components/Utilities/Renamer/PresetModal';
 import RenamerScript from '@/components/Utilities/Renamer/RenamerScript';
@@ -50,6 +49,7 @@ import {
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearResults, removeFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';

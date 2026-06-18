@@ -15,7 +15,6 @@ import TmdbLinkSelectPanel from '@/components/Collection/Tmdb/TmdbLinkSelectPane
 import TopPanel from '@/components/Collection/Tmdb/TopPanel';
 import TmdbShowSettingsModal from '@/components/Dialogs/TmdbShowSettingsModal';
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import {
@@ -30,6 +29,7 @@ import {
   useTmdbMovieXrefsQuery,
   useTmdbShowOrMovieQuery,
 } from '@/core/react-query/tmdb/queries';
+import toast from '@/core/toast';
 import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -141,7 +141,7 @@ const TmdbLinking = () => {
   const fetchNextPageDebounced = useMemo(
     () =>
       debounce(() => {
-        episodesQuery.fetchNextPage().catch(() => {});
+        episodesQuery.fetchNextPage().catch(console.error);
       }, 100),
     [episodesQuery],
   );

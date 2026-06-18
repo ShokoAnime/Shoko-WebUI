@@ -10,7 +10,7 @@ import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
 import { reduce, toNumber } from 'lodash';
 
-import toast from '@/components/Toast';
+import toast from '@/core/toast';
 
 import type { EpisodeType } from './types/api/episode';
 import type { FileType } from './types/api/file';

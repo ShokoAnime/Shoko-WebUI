@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 
-import toast from '@/components/Toast';
 import { AVDumpEventTypeEnum } from '@/core/signalr/types';
+import toast from '@/core/toast';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/signalr/types';
 import type { SliceActions } from '@/core/types/util';

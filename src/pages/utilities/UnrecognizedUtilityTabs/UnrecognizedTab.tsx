@@ -24,7 +24,6 @@ import Button from '@/components/Input/Button';
 import DropdownButton from '@/components/Input/DropdownButton';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
@@ -45,6 +44,7 @@ import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/querie
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';

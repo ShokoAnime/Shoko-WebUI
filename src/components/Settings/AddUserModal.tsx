@@ -5,11 +5,11 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import Events from '@/core/events';
 import { useAddUserMutation, useChangePasswordMutation } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 
 export type AddUserModalProps = {
   show: boolean;

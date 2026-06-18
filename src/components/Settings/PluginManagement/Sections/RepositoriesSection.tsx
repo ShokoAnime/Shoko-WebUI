@@ -6,13 +6,13 @@ import { useToggle } from 'usehooks-ts';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import RepositoryModal from '@/components/Settings/PluginManagement/Dialogs/RepositoryModal';
-import toast from '@/components/Toast';
 import {
   useDeletePluginPackageRepositoryMutation,
   useSyncAllPluginPackageRepositoriesMutation,
   useSyncPluginPackageRepositoryMutation,
 } from '@/core/react-query/plugin-package/mutations';
 import { usePluginPackageRepositoriesQuery } from '@/core/react-query/plugin-package/queries';
+import toast from '@/core/toast';
 import { dayjs } from '@/core/util';
 
 import type { PackageRepositoryInfoType } from '@/core/types/api/plugin-package';
