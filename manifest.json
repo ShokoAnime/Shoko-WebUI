@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.73",
+      "minServerVersion": "6.0.0-dev.297",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.73/Shoko-WebUI-v2.6.0-dev.73.zip",
+      "checksum": "sha256:de522ab2869aeae43839b382d97c1e657f5bb5bc8d40a024933c63191f9f8e59",
+      "commit": "b50639d05cb54da52d9fe52293715fcbf288dab9",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.297** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.297** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update README.md (#1380) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1380\n* fix: re-derive filter expression when conditions change by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1381\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.72...v2.6.0-dev.73\n"
+    },
+    {
       "version": "2.6.0-dev.72",
       "minServerVersion": "6.0.0-dev.297",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.72/Shoko-WebUI-v2.6.0-dev.72.zip",
