@@ -40,6 +40,9 @@ const collapseToRanges = (numbers: number[]): string => {
   return ranges.join(', ');
 };
 
+export const buildEpisodeSet = (episodes: EpisodeCoverageType[]): Set<string> =>
+  new Set(episodes.map(episode => `${episode.Type}:${episode.Number}`));
+
 export const buildEpisodeCoverageString = (episodes: EpisodeCoverageType[]): string => {
   if (episodes.length === 0) return '';
 

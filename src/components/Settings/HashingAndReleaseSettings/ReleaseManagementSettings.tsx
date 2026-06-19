@@ -106,7 +106,7 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
           <Select
             id="rm-episode-type-scope"
             value={preferences.EpisodeTypeScope}
-            onChange={event => set('EpisodeTypeScope', Number(event.target.value))}
+            onChange={event => set('EpisodeTypeScope', Number(event.target.value) as 0 | 1)}
             className="w-52"
           >
             <option value={0}>All Together</option>

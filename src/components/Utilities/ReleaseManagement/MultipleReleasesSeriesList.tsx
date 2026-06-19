@@ -14,7 +14,6 @@ import type { Updater } from 'use-immer';
 type Props = {
   onlyFinishedSeries: boolean;
   onlyWithRedundant: boolean;
-  activeSeriesId: number;
   autoDeleteMode?: boolean;
   rowSelection?: Record<number, boolean>;
   setRowSelection?: Updater<Record<number, boolean>>;
@@ -28,7 +27,6 @@ type Props = {
 const SeriesRow = ({
   autoDeleteMode,
   index,
-  isActive,
   onDetailOpen,
   onRowClick,
   onToggle,
@@ -37,7 +35,6 @@ const SeriesRow = ({
 }: {
   series: SeriesWithCandidatesType;
   index: number;
-  isActive: boolean;
   autoDeleteMode: boolean;
   rowSelection?: Record<number, boolean>;
   onDetailOpen: () => void;
@@ -51,14 +48,9 @@ const SeriesRow = ({
   const primary = series.Candidates[0];
   const isSelected = rowSelection?.[series.SeriesID] ?? true;
 
-  let rowBgClass: string;
-  if (autoDeleteMode && isSelected) {
-    rowBgClass = 'bg-panel-background-selected-row';
-  } else if (isActive) {
-    rowBgClass = 'bg-panel-background-selected-row';
-  } else {
-    rowBgClass = 'bg-panel-background';
-  }
+  const rowBgClass = autoDeleteMode && isSelected
+    ? 'bg-panel-background-selected-row'
+    : 'bg-panel-background';
 
   return (
     <div
@@ -145,7 +137,6 @@ const SeriesRow = ({
 };
 
 const MultipleReleasesSeriesList = ({
-  activeSeriesId,
   autoDeleteMode = false,
   onRowSelect,
   onSeriesCountChange,
@@ -238,7 +229,6 @@ const MultipleReleasesSeriesList = ({
           key={ser.SeriesID}
           series={ser}
           index={idx}
-          isActive={activeSeriesId === ser.SeriesID}
           autoDeleteMode={autoDeleteMode}
           rowSelection={rowSelection}
           onDetailOpen={() => onSeriesDetailOpen(ser.SeriesID)}

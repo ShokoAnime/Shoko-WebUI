@@ -5,8 +5,7 @@ import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 
 import Button from '@/components/Input/Button';
-import Checkbox from '@/components/Input/Checkbox';
-import { buildEpisodeCoverageString } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeCoverageString, buildEpisodeSet } from '@/core/utilities/buildEpisodeCoverageString';
 
 import type { EpisodeCoverageType, ReleaseCandidateType } from '@/core/types/api/release-management';
 
@@ -19,13 +18,8 @@ type Props = {
   isPartial?: boolean;
   onSelectAsPrimary: () => void;
   onViewMixMatch?: () => void;
-  perFileChecks: Set<number>;
-  onFileCheckToggle: (placeId: number) => void;
   onMarkAllAsVariations?: () => void;
 };
-
-const buildPrimaryEpisodeSet = (episodes: EpisodeCoverageType[]): Set<string> =>
-  new Set(episodes.map(episode => `${episode.Type}:${episode.Number}`));
 
 const parseMixedFlag = (
   value: boolean | null,
@@ -44,16 +38,14 @@ const CandidateCard = ({
   isOverrideActive,
   isPartial = false,
   isPrimary,
-  onFileCheckToggle,
   onMarkAllAsVariations,
   onSelectAsPrimary,
   onViewMixMatch,
-  perFileChecks,
   primaryEpisodes,
 }: Props) => {
   const [filesExpanded, setFilesExpanded] = useState(false);
 
-  const primaryEpisodeSet = buildPrimaryEpisodeSet(primaryEpisodes);
+  const primaryEpisodeSet = buildEpisodeSet(primaryEpisodes);
 
   const coverageString = buildEpisodeCoverageString(candidate.Episodes);
   const totalSize = candidate.Files.reduce((sum, file) => sum + file.FileSize, 0);
@@ -64,15 +56,13 @@ const CandidateCard = ({
 
   const groupLabel = candidate.Name;
 
-  const versionStrategyLabel = (): string | null => {
+  const strategyLabel = ((): string | null => {
     if (candidate.VersionStrategy === 'Consistent') return `v${candidate.Version} Consistent`;
     if (candidate.VersionStrategy === 'BestAvailable') {
-      if (candidate.Version > 1) return `Best Available (up to v${candidate.Version})`;
-      return 'Best Available';
+      return candidate.Version > 1 ? `Best Available (up to v${candidate.Version})` : 'Best Available';
     }
     return null;
-  };
-  const strategyLabel = versionStrategyLabel();
+  })();
 
   const redundancyBadge = () => {
     if (isPrimary) return null;
@@ -344,11 +334,6 @@ const CandidateCard = ({
               fileState = allCovered ? 'also-delete' : 'required';
             }
 
-            const showCheckbox = fileState === 'redundant' || fileState === 'also-delete';
-            const isChecked = fileState === 'redundant'
-              ? !perFileChecks.has(file.PlaceID)
-              : perFileChecks.has(file.PlaceID);
-
             const fileName = file.AbsolutePath?.split(/[/\\]/).pop() ?? `Place ${file.PlaceID}`;
             const dirPath = file.AbsolutePath
               ? file.AbsolutePath.substring(
@@ -402,21 +387,11 @@ const CandidateCard = ({
                     </div>
                   )}
                 </div>
-                <div
-                  className="flex shrink-0 items-center gap-2"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                >
-                  {showCheckbox && (
-                    <Checkbox
-                      id={`file-check-${file.PlaceID}`}
-                      isChecked={isChecked}
-                      onChange={() => onFileCheckToggle(file.PlaceID)}
-                      label={fileState === 'also-delete' ? 'Also delete' : 'Delete'}
-                      labelRight
-                    />
+                <div className="flex shrink-0 items-center gap-2">
+                  {fileState === 'redundant' && (
+                    <span className="text-xs text-panel-text-danger">Would be deleted</span>
                   )}
+                  {fileState === 'also-delete' && <span className="text-xs opacity-65">Could also delete</span>}
                   {fileState === 'kept' && <span className="text-xs opacity-65">Kept</span>}
                   {fileState === 'required' && (
                     <span className="text-xs text-panel-text-warning">Required — no other copy</span>
