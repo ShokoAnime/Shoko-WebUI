@@ -88,10 +88,11 @@ export const useMultipleReleaseSeriesQuery = (params: MultipleReleasesSeriesRequ
 export const useMultipleReleaseSeriesDetailQuery = (seriesId: number, includeVariations = false, enabled = true) =>
   useQuery<SeriesWithCandidatesType>({
     queryKey: ['release-management', 'multiple-releases', 'series', seriesId, { includeVariations }],
-    queryFn: () => axios.get(
-      `ReleaseManagement/MultipleReleases/Series/${seriesId}`,
-      includeVariations ? { params: { includeVariations: true } } : undefined,
-    ),
+    queryFn: () =>
+      axios.get(
+        `ReleaseManagement/MultipleReleases/Series/${seriesId}`,
+        includeVariations ? { params: { includeVariations: true } } : undefined,
+      ),
     enabled: enabled && seriesId > 0,
     staleTime: Infinity,
   });

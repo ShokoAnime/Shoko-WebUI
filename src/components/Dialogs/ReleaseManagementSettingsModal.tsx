@@ -46,7 +46,7 @@ const ReleaseManagementSettingsModal = ({ onClose, show }: Props) => {
       onRequestClose={onClose}
       header="Release Management Settings"
       size="md"
-      footer={(
+      footer={
         <div className="flex justify-end gap-x-3">
           <Button onClick={onClose} buttonType="secondary" buttonSize="normal">
             Cancel
@@ -55,7 +55,7 @@ const ReleaseManagementSettingsModal = ({ onClose, show }: Props) => {
             Save
           </Button>
         </div>
-      )}
+      }
     >
       <ReleaseManagementSettings preferences={preferences} onChange={setPreferences} />
     </ModalPanel>

@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router';
 import { mdiArrowLeft, mdiFlagOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
+import toast from '@/core/toast';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
@@ -39,7 +39,7 @@ const MultipleReleasesSeriesDetailPage = () => {
 
   const { mutateAsync: markVariation } = useMarkVariationMutation();
 
-  const handleOverrideChange = useCallback((seriesID: number, candidateKey: string) => {
+  const handleOverrideChange = (seriesID: number, candidateKey: string) => {
     setOverrides((draft) => {
       if (draft.get(seriesID) === candidateKey) {
         draft.delete(seriesID);
@@ -47,17 +47,17 @@ const MultipleReleasesSeriesDetailPage = () => {
         draft.set(seriesID, candidateKey);
       }
     });
-  }, [setOverrides]);
+  };
 
-  const handlePreviewSingle = useCallback(() => {
+  const handlePreviewSingle = () => {
     setMixMatchPreviewData(undefined);
     setPreviewOpen(true);
-  }, []);
+  };
 
-  const handleMixMatchPreviewReady = useCallback((data: ReleaseDeletionPreviewType) => {
+  const handleMixMatchPreviewReady = (data: ReleaseDeletionPreviewType) => {
     setMixMatchPreviewData([data]);
     setPreviewOpen(true);
-  }, []);
+  };
 
   const handleTabChange = (tab: string) => {
     setSearchParams((prev) => {
@@ -72,7 +72,7 @@ const MultipleReleasesSeriesDetailPage = () => {
     setMixMatchPreviewData(undefined);
   };
 
-  const handleMarkAllAsVariations = useCallback(async (videoLocalIds: number[]) => {
+  const handleMarkAllAsVariations = async (videoLocalIds: number[]) => {
     try {
       await Promise.all(videoLocalIds.map(fileId => markVariation({ fileId, variation: true })));
       resetQueries(['release-management']);
@@ -80,7 +80,7 @@ const MultipleReleasesSeriesDetailPage = () => {
     } catch (_error) {
       toast.error('Failed to mark files as variations');
     }
-  }, [markVariation]);
+  };
 
   if (seriesId <= 0) {
     return (
@@ -104,7 +104,8 @@ const MultipleReleasesSeriesDetailPage = () => {
             buttonType="secondary"
             buttonSize="small"
             className="flex items-center gap-x-1"
-            onClick={() => navigate(`/webui/utilities/release-management/MultipleReleases${listSearch ? `?${listSearch}` : ''}`)}
+            onClick={() =>
+              navigate(`/webui/utilities/release-management/MultipleReleases${listSearch ? `?${listSearch}` : ''}`)}
           >
             <Icon path={mdiArrowLeft} size={0.8333} />
             Back
@@ -145,26 +146,22 @@ const MultipleReleasesSeriesDetailPage = () => {
         <div className="flex gap-1 border-b border-panel-border">
           <button
             type="button"
-            className={
-              `px-4 py-2 text-sm font-semibold transition-colors ${
-                activeTab === 'candidates'
-                  ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
-                  : 'opacity-65 hover:opacity-100'
-              }`
-            }
+            className={`px-4 py-2 text-sm font-semibold transition-colors ${
+              activeTab === 'candidates'
+                ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
+                : 'opacity-65 hover:opacity-100'
+            }`}
             onClick={() => handleTabChange('candidates')}
           >
             Candidates
           </button>
           <button
             type="button"
-            className={
-              `px-4 py-2 text-sm font-semibold transition-colors ${
-                activeTab === 'mixmatch'
-                  ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
-                  : 'opacity-65 hover:opacity-100'
-              }`
-            }
+            className={`px-4 py-2 text-sm font-semibold transition-colors ${
+              activeTab === 'mixmatch'
+                ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
+                : 'opacity-65 hover:opacity-100'
+            }`}
             onClick={() => handleTabChange('mixmatch')}
           >
             Mix &amp; Match

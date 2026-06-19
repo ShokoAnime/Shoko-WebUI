@@ -38,8 +38,7 @@ export const useReleaseOverrideMutation = (seriesId: number) =>
 
 export const useReleaseExecuteMutation = () =>
   useMutation({
-    mutationFn: (body: DeleteReleasesBody) =>
-      axios.post('ReleaseManagement/MultipleReleases/Execute', body),
+    mutationFn: (body: DeleteReleasesBody) => axios.post('ReleaseManagement/MultipleReleases/Execute', body),
     onSuccess: () => {
       resetQueries(['release-management']);
     },

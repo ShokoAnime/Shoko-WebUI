@@ -71,12 +71,12 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
           isChecked={preferences.AutoDeleteOnImport}
           onChange={event => set('AutoDeleteOnImport', event.target.checked)}
           justify
-          label={(
+          label={
             <span className="flex items-center">
               Auto Delete on Import
               <InfoIcon tooltip="Automatically delete redundant files when a higher-ranked release is imported." />
             </span>
-          )}
+          }
         />
 
         <Checkbox
@@ -84,12 +84,12 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
           isChecked={preferences.PerFileDeletionForAiringSeries}
           onChange={event => set('PerFileDeletionForAiringSeries', event.target.checked)}
           justify
-          label={(
+          label={
             <span className="flex items-center">
               Per-file Deletion for Airing Series
               <InfoIcon tooltip="For airing series, delete individual redundant files rather than whole candidates. Files covering episodes not yet in the primary candidate are kept." />
             </span>
-          )}
+          }
         />
       </div>
 
@@ -137,25 +137,26 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
             }))}
           </DnDList>
         </div>
-
       </div>
 
       <div className="border-t border-panel-border" />
 
       <div className="flex flex-col gap-y-4">
-        <div className="text-xs opacity-65">Enter values comma-separated, most preferred first. Leave empty to use server defaults.</div>
+        <div className="text-xs opacity-65">
+          Enter values comma-separated, most preferred first. Leave empty to use server defaults.
+        </div>
 
         <Checkbox
           id="rm-prefer-higher-bit-depth"
           isChecked={preferences.PreferHigherBitDepth}
           onChange={event => set('PreferHigherBitDepth', event.target.checked)}
           justify
-          label={(
+          label={
             <span className="flex items-center">
               Prefer Higher Bit Depth
               <InfoIcon tooltip="Prefer 10-bit video over 8-bit when ranking candidates. Disable to prefer 8-bit." />
             </span>
-          )}
+          }
         />
 
         <div className="flex items-center justify-between">

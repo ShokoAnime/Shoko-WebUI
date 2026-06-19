@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { mdiCog, mdiMagnify, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -50,39 +50,39 @@ const MultipleReleasesPage = () => {
     resetQueries(['release-management', 'multiple-releases']);
   };
 
-  const handleDetailOpen = useCallback((seriesId: number) => {
+  const handleDetailOpen = (seriesId: number) => {
     navigate(
       `/webui/utilities/release-management/MultipleReleases/${seriesId}`,
       { state: { listSearch: searchParams.toString() } },
     );
-  }, [navigate, searchParams]);
+  };
 
-  const handleRowSelect = useCallback((seriesId: number) => {
+  const handleRowSelect = (seriesId: number) => {
     setRowSelection((draft) => {
       draft[seriesId] = !(draft[seriesId] ?? true);
     });
-  }, [setRowSelection]);
+  };
 
-  const handleToggleAutoDelete = useCallback(() => {
+  const handleToggleAutoDelete = () => {
     if (!autoDeleteMode) {
       setRowSelection(Object.fromEntries(allSeriesIds.map(id => [id, true])));
     }
     setAutoDeleteMode(prev => !prev);
-  }, [autoDeleteMode, allSeriesIds, setRowSelection]);
+  };
 
-  const allDeselected = allSeriesIds.length > 0 && allSeriesIds.every(id => rowSelection[id] === false);
+  const allDeselected = allSeriesIds.length > 0 && allSeriesIds.every(id => !rowSelection[id]);
 
-  const handleSelectDeselectAll = useCallback(() => {
+  const handleSelectDeselectAll = () => {
     if (allDeselected) {
       setRowSelection(Object.fromEntries(allSeriesIds.map(id => [id, true])));
     } else {
       setRowSelection(Object.fromEntries(allSeriesIds.map(id => [id, false])));
     }
-  }, [allDeselected, allSeriesIds, setRowSelection]);
+  };
 
   const isFiltered = !!searchQuery || onlyFinishedSeries || onlyWithRedundant;
-  const includedForPreview = isFiltered ? allSeriesIds.filter(id => rowSelection[id] !== false) : undefined;
-  const excludedForPreview = !isFiltered ? allSeriesIds.filter(id => rowSelection[id] === false) : undefined;
+  const includedForPreview = isFiltered ? allSeriesIds.filter(id => rowSelection[id]) : undefined;
+  const excludedForPreview = !isFiltered ? allSeriesIds.filter(id => !rowSelection[id]) : undefined;
 
   return (
     <>

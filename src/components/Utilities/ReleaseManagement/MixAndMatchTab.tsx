@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { mdiAlertOutline, mdiChevronDown, mdiChevronUp, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -163,17 +163,9 @@ const buildOptionSummary = (option: FileOption): string => {
 };
 
 const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
-  const overrides = useMemo(() => series.Overrides ?? [], [series.Overrides]);
-
-  const allEpisodes = useMemo(
-    () => buildEpisodeRows(series.Candidates, overrides),
-    [series.Candidates, overrides],
-  );
-
-  const autofillGroups = useMemo(
-    () => deriveAutofillGroups(series.Candidates, overrides),
-    [series.Candidates, overrides],
-  );
+  const overrides = series.Overrides ?? [];
+  const allEpisodes = buildEpisodeRows(series.Candidates, overrides);
+  const autofillGroups = deriveAutofillGroups(series.Candidates, overrides);
 
   const [selections, setSelections] = useState<Map<string, number>>(
     () => autoSelectSingleOptions(buildEpisodeRows(series.Candidates, series.Overrides ?? [])),
@@ -216,10 +208,9 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
     setSelections(autoSelectSingleOptions(allEpisodes));
   };
 
-  const unassignedCount = useMemo(
-    () => allEpisodes.filter(episode => episode.options.length > 0 && !selections.has(episode.key)).length,
-    [allEpisodes, selections],
-  );
+  const unassignedCount = allEpisodes.filter(
+    episode => episode.options.length > 0 && !selections.has(episode.key),
+  ).length;
 
   const hasGaps = unassignedCount > 0;
 
@@ -310,9 +301,7 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
                   <div className="text-sm font-semibold">{episodeLabel}</div>
                   {!hasNoFiles && (
                     <div className="text-xs opacity-50">
-                      {episode.options.length}
-                      {' '}
-                      {episode.options.length === 1 ? 'file' : 'files'}
+                      {episode.options.length} {episode.options.length === 1 ? 'file' : 'files'}
                     </div>
                   )}
                 </div>
@@ -331,15 +320,9 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
                   )}
                   {selectedOption && (
                     <>
-                      <span className="font-semibold">{selectedOption.groupLabel}</span>
-                      {' '}
+                      <span className="font-semibold">{selectedOption.groupLabel}</span>{' '}
                       <span className="opacity-65">
-                        —
-                        {' '}
-                        {buildOptionSummary(selectedOption)}
-                        {' '}
-                        ·
-                        {' '}
+                        — {buildOptionSummary(selectedOption)} ·{' '}
                         {prettyBytes(selectedOption.fileSize, { binary: true })}
                       </span>
                     </>

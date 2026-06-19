@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { mdiFlagOffOutline, mdiFlagOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
@@ -7,7 +7,7 @@ import { useImmer } from 'use-immer';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
+import toast from '@/core/toast';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
@@ -31,7 +31,7 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
 
   const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, true, open && seriesId > 0);
 
-  const allFiles = useMemo(() => {
+  const allFiles = (() => {
     if (!seriesQuery.data) return [];
     const seen = new Set<number>();
     return seriesQuery.data.Candidates
@@ -41,24 +41,23 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
         seen.add(file.VideoLocalID);
         return true;
       });
-  }, [seriesQuery.data]);
+  })();
 
-  const allVideoLocalIds = useMemo(() => allFiles.map(file => file.VideoLocalID), [allFiles]);
-
+  const allVideoLocalIds = allFiles.map(file => file.VideoLocalID);
   const allSelected = allVideoLocalIds.length > 0 && selectedIds.size === allVideoLocalIds.length;
 
-  const handleSelectAll = useCallback(() => {
+  const handleSelectAll = () => {
     setSelectedIds(allSelected ? new Set() : new Set(allVideoLocalIds));
-  }, [allVideoLocalIds, allSelected, setSelectedIds]);
+  };
 
-  const handleToggle = useCallback((videoLocalId: number) => {
+  const handleToggle = (videoLocalId: number) => {
     setSelectedIds((draft) => {
       if (draft.has(videoLocalId)) draft.delete(videoLocalId);
       else draft.add(videoLocalId);
     });
-  }, [setSelectedIds]);
+  };
 
-  const handleMarkVariation = useCallback(async (variation: boolean) => {
+  const handleMarkVariation = async (variation: boolean) => {
     const ids = [...selectedIds];
     if (ids.length === 0) return;
     setIsApplying(true);
@@ -66,18 +65,20 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
       await Promise.all(ids.map(fileId => markVariation({ fileId, variation })));
       setSelectedIds(new Set());
       resetQueries(['release-management']);
-      toast.success(`${variation ? 'Marked' : 'Unmarked'} ${ids.length} file${ids.length !== 1 ? 's' : ''} as variation`);
+      toast.success(
+        `${variation ? 'Marked' : 'Unmarked'} ${ids.length} file${ids.length !== 1 ? 's' : ''} as variation`,
+      );
     } catch {
       toast.error(`Failed to ${variation ? 'mark' : 'unmark'} files as variations`);
     } finally {
       setIsApplying(false);
     }
-  }, [selectedIds, markVariation, setSelectedIds]);
+  };
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setSelectedIds(new Set());
     onClose();
-  }, [onClose, setSelectedIds]);
+  };
 
   return (
     <ModalPanel
@@ -85,7 +86,7 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
       size="lg"
       onRequestClose={handleClose}
       header={`Manage Variations${seriesTitle ? ` — ${seriesTitle}` : ''}`}
-      subHeader={(
+      subHeader={
         <div className="flex items-center gap-3">
           <Checkbox
             id="variation-select-all"
@@ -101,8 +102,8 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
             {' files selected'}
           </span>
         </div>
-      )}
-      footer={(
+      }
+      footer={
         <div className="flex items-center justify-end gap-3">
           <Button buttonType="secondary" className="px-4 py-2" onClick={handleClose}>
             Cancel
@@ -132,7 +133,7 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
             Mark as Variations
           </Button>
         </div>
-      )}
+      }
       fullHeight
     >
       {seriesQuery.isPending && (
@@ -172,9 +173,7 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
                   />
                 </div>
                 <div className="flex min-w-0 grow flex-col gap-1">
-                  {dirPath && (
-                    <div className="truncate text-xs opacity-65">{dirPath}</div>
-                  )}
+                  {dirPath && <div className="truncate text-xs opacity-65">{dirPath}</div>}
                   <div className="truncate font-semibold">{fileName}</div>
                   <div className="flex flex-wrap gap-x-4 text-xs opacity-65">
                     {coverage && <span>{coverage}</span>}

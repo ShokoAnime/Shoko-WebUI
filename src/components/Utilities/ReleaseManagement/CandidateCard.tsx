@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  mdiAlertOutline,
-  mdiChevronDown,
-  mdiChevronUp,
-  mdiFlagOutline,
-  mdiStar,
-  mdiSwapVertical,
-} from '@mdi/js';
+import { mdiAlertOutline, mdiChevronDown, mdiChevronUp, mdiFlagOutline, mdiStar, mdiSwapVertical } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
@@ -108,9 +101,7 @@ const CandidateCard = ({
     >
       {/* Header row */}
       <div className="flex flex-wrap items-center gap-2">
-        {isPrimary && (
-          <Icon path={mdiStar} size={0.8333} className="shrink-0 text-panel-text-primary" />
-        )}
+        {isPrimary && <Icon path={mdiStar} size={0.8333} className="shrink-0 text-panel-text-primary" />}
         <span className="font-semibold">
           Rank&nbsp;
           {candidate.Rank}
@@ -256,7 +247,12 @@ const CandidateCard = ({
         </div>
         <div>
           Censored:&nbsp;
-          <span className={cx('font-semibold', candidate.IsCensored && !candidate.IsCensoredMixed && 'text-panel-text-warning')}>
+          <span
+            className={cx(
+              'font-semibold',
+              candidate.IsCensored && !candidate.IsCensoredMixed && 'text-panel-text-warning',
+            )}
+          >
             {parseMixedFlag(candidate.IsCensored, candidate.IsCensoredMixed, 'Censored', 'Uncensored')}
           </span>
         </div>
@@ -266,9 +262,7 @@ const CandidateCard = ({
             {parseMixedFlag(candidate.IsCreditless, candidate.IsCreditlessMixed, 'Creditless', 'Not Creditless')}
           </span>
         </div>
-        {candidate.IsCorrupted && (
-          <div className="font-semibold text-panel-text-danger">Corrupted</div>
-        )}
+        {candidate.IsCorrupted && <div className="font-semibold text-panel-text-danger">Corrupted</div>}
       </div>
 
       {/* Languages */}
@@ -318,9 +312,7 @@ const CandidateCard = ({
             <>
               &nbsp;(
               <span className="text-panel-text-danger">
-                {redundantFileCount}
-                {' '}
-                to delete
+                {redundantFileCount} to delete
               </span>
               )
             </>
@@ -359,9 +351,12 @@ const CandidateCard = ({
 
             const fileName = file.AbsolutePath?.split(/[/\\]/).pop() ?? `Place ${file.PlaceID}`;
             const dirPath = file.AbsolutePath
-              ? file.AbsolutePath.substring(0, file.AbsolutePath.lastIndexOf('/') !== -1
-                ? file.AbsolutePath.lastIndexOf('/')
-                : file.AbsolutePath.lastIndexOf('\\'))
+              ? file.AbsolutePath.substring(
+                0,
+                file.AbsolutePath.lastIndexOf('/') !== -1
+                  ? file.AbsolutePath.lastIndexOf('/')
+                  : file.AbsolutePath.lastIndexOf('\\'),
+              )
               : null;
 
             const fileAnomalies: string[] = [];
@@ -386,16 +381,12 @@ const CandidateCard = ({
                 )}
               >
                 <div className="flex min-w-0 grow flex-col gap-1">
-                  {dirPath && (
-                    <div className="truncate text-xs opacity-65">{dirPath}</div>
-                  )}
+                  {dirPath && <div className="truncate text-xs opacity-65">{dirPath}</div>}
                   <div className="truncate font-semibold">{fileName}</div>
                   <div className="flex flex-wrap gap-x-4 text-xs opacity-65">
                     {fileCoverage && <span>{fileCoverage}</span>}
                     <span>{prettyBytes(file.FileSize, { binary: true })}</span>
-                    {file.AbsolutePath == null && (
-                      <span className="text-panel-text-warning">Path unavailable</span>
-                    )}
+                    {file.AbsolutePath == null && <span className="text-panel-text-warning">Path unavailable</span>}
                   </div>
                   {fileAnomalies.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-0.5">
@@ -426,9 +417,7 @@ const CandidateCard = ({
                       labelRight
                     />
                   )}
-                  {fileState === 'kept' && (
-                    <span className="text-xs opacity-65">Kept</span>
-                  )}
+                  {fileState === 'kept' && <span className="text-xs opacity-65">Kept</span>}
                   {fileState === 'required' && (
                     <span className="text-xs text-panel-text-warning">Required — no other copy</span>
                   )}
