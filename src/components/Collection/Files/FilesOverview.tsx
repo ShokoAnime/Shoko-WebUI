@@ -29,7 +29,7 @@ const FileTypeSummary = ({ sources, type }: FileTypeSummaryProps) => {
       </span>
       <span className="font-normal">
         {sourceMap.map((source, index) => (
-          // eslint-disable-next-line react/no-array-index-key -- will not change between renders
+          // oxlint-disable-next-line react/no-array-index-key -- will not change between renders
           <React.Fragment key={index}>
             {source}
             <br />

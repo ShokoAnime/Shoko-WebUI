@@ -10,9 +10,9 @@ import type { FileType } from '@/core/types/api/file';
 type Props = {
   selectedFiles: FileType[];
   show: boolean;
-  removeFile(this: void, fileId: number): void;
-  onConfirm(this: void): void;
-  onClose(this: void): void;
+  removeFile: (fileId: number) => void;
+  onConfirm: () => void;
+  onClose: () => void;
 };
 
 const Title = ({ fileCount }: { fileCount: number }) => (

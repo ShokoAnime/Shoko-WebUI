@@ -240,7 +240,7 @@ const LinkFilesTab = () => {
     new Map(
       selectedRows
         .map((file) => {
-          const path = file?.Locations?.[0]?.RelativePath || '';
+          const path = file?.Locations?.[0]?.RelativePath || '<missing file path>';
           const details = detectShow(path);
           return { file, path, details };
         })
@@ -304,9 +304,8 @@ const LinkFilesTab = () => {
 
   const changeSelectedSeries = async (series: SeriesAniDBSearchResult) => {
     setLinks((linkState) => {
-      forEach(linkState, (link) => {
-        // eslint-disable-next-line no-param-reassign
-        link.EpisodeID = 0;
+      forEach(linkState, (draftLink) => {
+        draftLink.EpisodeID = 0;
       });
     });
 

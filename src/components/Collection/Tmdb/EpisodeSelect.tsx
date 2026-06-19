@@ -68,7 +68,7 @@ const EpisodeSelect = React.memo((props: Props) => {
   const fetchNextPageDebounced = useMemo(
     () =>
       debounce(() => {
-        episodesQuery.fetchNextPage().catch(() => {});
+        episodesQuery.fetchNextPage().catch(console.error);
       }, 100),
     [episodesQuery],
   );
@@ -93,7 +93,7 @@ const EpisodeSelect = React.memo((props: Props) => {
         {({ open }) => (
           <>
             <div className="w-8 shrink-0">
-              {/* eslint-disable-next-line no-nested-ternary */}
+              {/* oxlint-disable-next-line no-nested-ternary */}
               {tmdbEpisode?.SeasonNumber != null
                 ? (tmdbEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(tmdbEpisode.SeasonNumber)}`)
                 : 'XX'}

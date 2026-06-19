@@ -49,7 +49,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
     <div className="flex gap-x-0.5" id="-1" onMouseLeave={handleClear}>
       {Array.from({ length: 10 }).map((_, index) => (
         <StarIcon
-          // eslint-disable-next-line react/no-array-index-key
+          // oxlint-disable-next-line react/no-array-index-key -- will not change between renders
           key={`star-${index}`}
           index={index.toString()}
           hovered={hoveredStar >= index}

@@ -20,7 +20,7 @@ const useLogsSubscription = () => {
   useEffect(() => {
     const connectionLogHub = '/signalr/logging';
     const protocol = new JsonHubProtocol();
-    // eslint-disable-next-line no-bitwise
+    // oxlint-disable-next-line no-bitwise
     const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
     const options = {
       transport,

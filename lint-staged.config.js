@@ -1,8 +1,7 @@
 module.exports = {
-  "*.ts?(x)": () => "tsc --noEmit",
   "*.{ts,tsx}": [
-    "dprint fmt",
-    "eslint --cache"
+    "dprint check",
+    "oxlint"
   ],
   "*.css": "stylelint"
 };

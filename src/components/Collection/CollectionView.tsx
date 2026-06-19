@@ -71,7 +71,7 @@ const CollectionView = (props: Props) => {
   const fetchNextPageDebounced = useMemo(
     () =>
       debounce(() => {
-        fetchNextPage().catch(() => {});
+        fetchNextPage().catch(console.error);
       }, 100),
     [fetchNextPage],
   );

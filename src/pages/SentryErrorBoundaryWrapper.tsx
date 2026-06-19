@@ -33,7 +33,7 @@ const SentryErrorBoundaryWrapper = () => {
 
   return (
     <Sentry.ErrorBoundary
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- Not our code, so we cannot fix it
+      // oxlint-disable-next-line typescript/unbound-method -- Not our code, so we cannot fix it
       fallback={({ error, resetError }) => <ErrorBoundary error={error as Error} resetError={resetError} />}
     >
       <Outlet />

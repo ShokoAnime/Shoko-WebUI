@@ -91,7 +91,7 @@ const SeriesTags = () => {
       ) => (
         !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
         && ((debouncedSearch === '')
-          || [Name, Description].some(str => cleanString(str).match(debouncedSearch)))
+          || [Name, Description].some(str => cleanString(str).includes(debouncedSearch)))
       )).sort((tagA, tagB) => (sort ? tagA.Name.localeCompare(tagB.Name) : 0)),
     [debouncedSearch, showSpoilers, sort, tagSourceFilter, tagsQueryData],
   );

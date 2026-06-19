@@ -405,7 +405,7 @@ const Renamer = () => {
     dispatch(clearResults());
     // initialClear is used to skip the effect on initial render, adding it to deps would cause the effect to run
     // an extra time
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedConfig, dispatch]);
 
   const handleSaveConfig = () => {
@@ -459,7 +459,7 @@ const Renamer = () => {
     else changeSelectedPresetEvent(defaultPreset?.ID ?? '');
     // This shouldn't run when `selectedConfig.Name` changes.
     // We are resetting `selectedConfig` when new data arrives so that it is up-to-date for `configEdited` flag
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [relocationPresetsQuery.data, relocationPresetsQuery.isSuccess, settings]);
 
   const {

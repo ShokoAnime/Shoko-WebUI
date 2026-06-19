@@ -46,9 +46,10 @@ const MissingEpisode = ({ episode, rowId }: FileMissingEpisodeProps) => (
 );
 
 type Props = {
-  missingEps?: WebuiSeriesFileSummaryMissingEpisodeType[];
+  missingEps: WebuiSeriesFileSummaryMissingEpisodeType[];
 };
-const FileMissingEpisodes = ({ missingEps = [] }: Props) => (
+
+const FileMissingEpisodes = ({ missingEps }: Props) => (
   missingEps.length === 0
     ? (
       <div className="flex h-full flex-col justify-center rounded-lg border border-panel-border bg-panel-background-transparent p-6 text-center font-semibold transition-colors">

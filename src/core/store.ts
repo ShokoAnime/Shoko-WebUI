@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports
 import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
@@ -6,7 +6,7 @@ import { throttle } from 'lodash';
 
 import Events from './events';
 import { clearApiSession, clearSessionStorage, loadState, saveState } from './localStorage';
-// eslint-disable-next-line import-x/no-rename-default
+// oxlint-disable-next-line import/no-rename-default
 import combinedReducer from './reducers';
 import signalRMiddleware from './signalr/signalr';
 

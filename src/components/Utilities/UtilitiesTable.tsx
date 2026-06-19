@@ -174,9 +174,9 @@ const UtilitiesTable = (props: Props) => {
 
   const fetchNextPageDebounced = useMemo(
     () => {
-      if (!fetchNextPage) return () => {};
+      if (!fetchNextPage) return () => ({});
       return debounce(() => {
-        fetchNextPage().catch(() => {});
+        fetchNextPage().catch(console.error);
       }, 50);
     },
     [fetchNextPage],
@@ -184,9 +184,9 @@ const UtilitiesTable = (props: Props) => {
 
   const fetchPageDebounced = useMemo(
     () => {
-      if (!fetchNextPreviewPage) return () => {};
+      if (!fetchNextPreviewPage) return () => ({});
       return debounce((itemIndex: number) => {
-        fetchNextPreviewPage(itemIndex).catch(() => {});
+        fetchNextPreviewPage(itemIndex).catch(console.error);
       }, 50);
     },
     [fetchNextPreviewPage],
