@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-// eslint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports
 import { toast } from 'react-toastify';
 import type { ToastOptions } from 'react-toastify';
 import { mdiAlertCircleOutline, mdiCheckboxMarkedCircleOutline, mdiInformationOutline } from '@mdi/js';

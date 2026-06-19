@@ -239,7 +239,7 @@ const LoginPage = () => {
                 )}
                 onClick={setRedirect}
               >
-                {/* eslint-disable-next-line no-nested-ternary */}
+                {/* oxlint-disable-next-line no-nested-ternary */}
                 {imageMetadataQuery.isError
                   ? 'One Piece'
                   : imageMetadataQuery.data?.Series === undefined

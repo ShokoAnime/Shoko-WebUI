@@ -88,7 +88,7 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
   const fetchNextDebounced = useMemo(() =>
     debounce(() => {
       if (!isFetchingNextPage && seriesData.length !== seriesCount) {
-        fetchNextPage().catch(() => {});
+        fetchNextPage().catch(console.error);
       }
     }, 50), [fetchNextPage, isFetchingNextPage, seriesCount, seriesData.length]);
 

@@ -241,7 +241,7 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
       userTagsQuery.refetch().catch(console.error);
       activeTagSetQuery.refetch().catch(console.error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [show, seriesId]);
 
   return (

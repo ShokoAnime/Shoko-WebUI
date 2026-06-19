@@ -67,8 +67,10 @@ const Series = () => {
       title => title.Language === languageMapping[tempMainTitle?.Language ?? ''] && title.Type === 'Official',
     );
     return [
-      (tempMainTitle && tempMainTitle.Name !== series.Name) ? <span>{tempMainTitle.Name}</span> : null,
-      (tempOriginalTitle && tempOriginalTitle.Name !== series.Name) ? <span>{tempOriginalTitle.Name}</span> : null,
+      (tempMainTitle && tempMainTitle.Name !== series.Name) ? <span key="main-title">{tempMainTitle.Name}</span> : null,
+      (tempOriginalTitle && tempOriginalTitle.Name !== series.Name)
+        ? <span key="original-title">{tempOriginalTitle.Name}</span>
+        : null,
     ];
   }, [series]);
 

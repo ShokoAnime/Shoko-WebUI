@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 
 import Checkbox from '@/components/Input/Checkbox';

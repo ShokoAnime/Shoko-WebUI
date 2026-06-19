@@ -33,7 +33,7 @@ import useRowSelection from '@/hooks/useRowSelection';
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
-export type LinksType = Record<number, ManualLinkType>;
+type LinksType = Record<number, ManualLinkType>;
 
 let lastLinkId = 0;
 const generateLinkId = () => {

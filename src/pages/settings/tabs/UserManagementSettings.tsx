@@ -93,7 +93,7 @@ const UserManagementSettings = () => {
 
   const openAvatarModal = (event: React.ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0];
-    // eslint-disable-next-line no-param-reassign
+    // oxlint-disable-next-line no-param-reassign
     event.target.value = ''; // This is a hack (yes, another) to make the onChange trigger even when same file is selected
     if (!avatar) return;
     setAvatarFile(avatar);

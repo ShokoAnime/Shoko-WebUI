@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* oxlint-disable typescript/no-unsafe-return */
+/* oxlint-disable typescript/no-unsafe-assignment */
+/* oxlint-disable typescript/no-unsafe-member-access */
 // Feel free to to remove the above lines if you can fix this file without deleting it.
 // oldWebuiSettings's actual type is unknown
 import type { WebUISettingsType } from './types/api/settings';
@@ -49,13 +49,13 @@ export const webuiSettingsPatches = {
     const webuiSettings = oldWebuiSettings;
     webuiSettings.dashboard.hideManagedFolders = webuiSettings.dashboard.hideImportFolders;
     delete webuiSettings.dashboard.hideImportFolders;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-call
     let layoutItem = webuiSettings.layout.dashboard.lg.find(item => item.i === 'importFolders');
     if (layoutItem) layoutItem.i = 'managedFolders';
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-call
     layoutItem = webuiSettings.layout.dashboard.md.find(item => item.i === 'importFolders');
     if (layoutItem) layoutItem.i = 'managedFolders';
     return { ...webuiSettings, settingsRevision: 11 };
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

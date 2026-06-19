@@ -16,8 +16,8 @@ pnpm build:debug    # Development build
 **Lint chain (runs in this exact order):**
 ```bash
 pnpm dprint:fix     # dprint fmt (auto-fix formatting)
-pnpm eslint:fix     # eslint --fix --cache src (auto-fix lint rules)
-pnpm lint           # tscheck -> dprint -> eslint -> stylelint
+pnpm oxlint:fix     # oxlint --fix (auto-fix lint rules)
+pnpm lint           # dprint -> oxlint -> stylelint
 ```
 
 **Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`. The dev server auto-opens the browser at `/webui/`.
@@ -55,7 +55,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 ## Code Style
 
 - **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes (double quotes in JSX), always semicolons.
-- **Linter:** ESLint flat config (`eslint.config.mjs`). Airbnb Extended + TypeScript + React + Tailwind + Query + typescript-eslint (type-checked + stylistic) + @stylistic + react-refresh + sort-destructure-keys.
+- **Linter:** Oxlint (`.oxlintrc.json`). Migrated from ESLint. Uses built-in plugins (typescript, react, import, jsx-a11y) and JS plugins (@tanstack/query, better-tailwindcss, sort-destructure-keys, @stylistic).
 - **TypeScript:** Prefer `type` over `interface`. Prefer `T[]` syntax. Use consistent type imports. Multiline type members use semicolons; single-line members use commas.
 - **Functions:** Arrow-function expressions only (`const Foo = () => ...`). Omit parens for single parameters; require them for block bodies.
 - **Identifiers:** Minimum 3 characters. Exceptions: `cx`, `ID`, `id`, `_`, `__`. Object properties are exempt.
@@ -77,16 +77,16 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 ## Verification & CI
 
 - **No unit/integration tests** are configured. Verification is `pnpm lint`.
-- **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `tsc --noEmit` on all TS/TSX files (not just staged), plus `dprint fmt`, `eslint --cache`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
+- **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `dprint fmt`, `oxlint`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
 - **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`.
 - **Agent lint workflow:**
   - After every file edit, run `./node_modules/.bin/dprint fmt <file>` to format just that file.
-  - After completing edits on a file, run `./node_modules/.bin/eslint --cache <file>` to catch lint errors early — fix them before moving on.
+  - After completing edits on a file, run `./node_modules/.bin/oxlint <file>` to catch lint errors early — fix them before moving on.
 - **Never skip pre-commit hooks.** Always let Husky run — do not use `--no-verify` or equivalent.
 
 ## Guardrails
 
-- Do NOT modify `pnpm-lock.yaml`, `eslint.config.mjs`, or `.dprint.json` unless explicitly asked.
+- Do NOT modify `pnpm-lock.yaml`, `.oxlintrc.json`, or `.dprint.json` unless explicitly asked.
 - Do NOT use `npm` or `yarn`; always use `pnpm add` / `pnpm remove`.
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.

@@ -27,13 +27,12 @@ export type PathMatchRule = {
   regex: RegExp;
   parentRegex?: RegExp;
   grandParentRegex?: RegExp;
-  transform?(
-    this: void,
+  transform?: (
     pathDetails: PathDetails,
     match: RegExpExecArray,
     parentMatch: RegExpExecArray | null,
     grandparentMatch: RegExpExecArray | null,
-  ): PathDetails | null | false;
+  ) => PathDetails | null | false;
   defaults?: Partial<PathDetails>;
 };
 

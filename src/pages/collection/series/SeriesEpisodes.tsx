@@ -141,7 +141,7 @@ const SeriesEpisodes = () => {
   const fetchNextPageDebounced = useMemo(
     () =>
       debounce(() => {
-        fetchNextPage().catch(() => {});
+        fetchNextPage().catch(console.error);
       }, 50),
     [fetchNextPage],
   );
