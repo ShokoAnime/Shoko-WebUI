@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.72",
+      "minServerVersion": "6.0.0-dev.297",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.72/Shoko-WebUI-v2.6.0-dev.72.zip",
+      "checksum": "sha256:ae6d88d2bfa04b81e084e9e2140c3f5a747c430723747b3ed4fe5f93d9387a79",
+      "commit": "0911442562fc484393ca560ba2fd9165d7c0b37d",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.297** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.297** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Migrate from eslint to oxlint by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1379\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.71...v2.6.0-dev.72\n"
+    },
+    {
       "version": "2.6.0-dev.71",
       "minServerVersion": "6.0.0-dev.297",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.71/Shoko-WebUI-v2.6.0-dev.71.zip",
