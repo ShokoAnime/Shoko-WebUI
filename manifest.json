@@ -79,6 +79,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.71",
+      "minServerVersion": "6.0.0-dev.297",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.71/Shoko-WebUI-v2.6.0-dev.71.zip",
+      "checksum": "sha256:c9d431ce7f4209c8ba9e87b12910189a1cbfdbfe0c39f8e161781b25098901e2",
+      "commit": "f687265c80bb7ddbec87871743d1d53299b39366",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.297** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.297** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* refactor: move Toast from components/ to core/ and update all imports by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1378\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.70...v2.6.0-dev.71\n"
+    },
+    {
       "version": "2.6.0-dev.70",
       "minServerVersion": "6.0.0-dev.297",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.70/Shoko-WebUI-v2.6.0-dev.70.zip",
