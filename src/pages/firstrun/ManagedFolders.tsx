@@ -4,13 +4,13 @@ import { Icon } from '@mdi/react';
 
 import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useDeleteManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import { setEdit as setFolderModalEdit, setStatus as setFolderModalStatus } from '@/core/slices/modals/managedFolder';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 
 import Footer from './Footer';
 

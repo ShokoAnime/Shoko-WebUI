@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import { useAddPluginPackageRepositoryMutation } from '@/core/react-query/plugin-package/mutations';
+import toast from '@/core/toast';
 
 type Props = {
   show: boolean;

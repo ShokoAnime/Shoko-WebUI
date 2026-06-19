@@ -6,7 +6,7 @@ import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
+import toast from '@/core/toast';
 
 type Props = {
   show: boolean;

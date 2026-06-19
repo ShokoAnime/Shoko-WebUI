@@ -8,10 +8,10 @@ import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
-import toast from '@/components/Toast';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTmdbRefreshMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/tmdb/queries';
+import toast from '@/core/toast';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 
 import type { TmdbSearchResultType } from '@/core/types/api/tmdb';

@@ -8,10 +8,10 @@ import { useDebounceValue } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
+import toast from '@/core/toast';
 
 type Props = {
   show: boolean;

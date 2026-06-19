@@ -194,7 +194,7 @@ export default [
             { name: 'react-redux', importNames: ['useDispatch'], message: 'Use @/core/store/useDispatch instead.' },
             { name: 'react-redux', importNames: ['useSelector'], message: 'Use @/core/store/useSelector instead.' },
             { name: 'react-router', importNames: ['useNavigate'], message: 'Use @/hooks/useNavigateVoid instead.' },
-            { name: 'react-toastify', importNames: ['toast'], message: 'Use @/components/Toast instead.' },
+            { name: 'react-toastify', importNames: ['toast'], message: 'Use @/core/toast instead.' },
           ]
         }
       ],

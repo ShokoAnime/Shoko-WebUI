@@ -5,11 +5,11 @@ import { useImmer } from 'use-immer';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import { useDeleteFileLocationsMutation, useDeleteFilesMutation } from '@/core/react-query/file/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
+import toast from '@/core/toast';
 
 import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';

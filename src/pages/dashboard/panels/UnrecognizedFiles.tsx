@@ -5,11 +5,11 @@ import Icon from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';

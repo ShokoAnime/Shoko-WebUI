@@ -5,10 +5,10 @@ import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { useRescanManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
 import { setEdit } from '@/core/slices/modals/managedFolder';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 import { formatThousand } from '@/core/util';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';

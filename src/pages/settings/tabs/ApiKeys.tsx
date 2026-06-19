@@ -5,9 +5,9 @@ import { map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
-import toast from '@/components/Toast';
 import { useCreateApiToken, useDeleteApiToken } from '@/core/react-query/auth/mutations';
 import { useApiKeyQuery } from '@/core/react-query/auth/queries';
+import toast from '@/core/toast';
 import { copyToClipboard } from '@/core/util';
 
 import type { AuthToken } from '@/core/types/api/authToken';

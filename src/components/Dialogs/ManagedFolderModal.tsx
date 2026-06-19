@@ -7,7 +7,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import {
   useCreateManagedFolderMutation,
   useDeleteManagedFolderMutation,
@@ -17,6 +16,7 @@ import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/querie
 import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import { setStatus } from '@/core/slices/modals/managedFolder';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 
 import BrowseFolderModal from './BrowseFolderModal';
 import ConfirmationPromptModal from './ConfirmationPromptModal';

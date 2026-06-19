@@ -22,7 +22,6 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -42,6 +41,7 @@ import {
   useSeriesAniDBSearchQuery,
   useSeriesEpisodesInfiniteQuery,
 } from '@/core/react-query/series/queries';
+import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
@@ -510,7 +510,7 @@ const LinkFilesTab = () => {
 
     forEach(none, ({ FileID }) => {
       if (FileID === 0) return;
-      const { path = '<missing file path>' } = showDataMap.get(FileID)!;
+      const { path } = showDataMap.get(FileID)!;
       toast.warning('Episode linking skipped!', `Path: ${path}`);
     });
 

@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 
-import toast from '@/components/Toast';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import toast from '@/core/toast';
 
 import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/react-query/group/types';
 import type { SeriesType } from '@/core/types/api/series';

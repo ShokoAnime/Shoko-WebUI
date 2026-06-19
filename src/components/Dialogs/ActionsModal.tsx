@@ -3,10 +3,10 @@ import cx from 'classnames';
 import { map } from 'lodash';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
+import toast from '@/core/toast';
 
 const actions = {
   import: {

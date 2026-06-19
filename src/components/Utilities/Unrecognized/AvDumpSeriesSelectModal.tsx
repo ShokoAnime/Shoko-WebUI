@@ -7,12 +7,12 @@ import { useDebounceValue } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
 import AniDbRulesModal from '@/components/Utilities/Unrecognized/AniDbRulesModal';
 import { ANIDB_RULES_SNOOZE_KEY, anidbPrompts } from '@/components/Utilities/Unrecognized/AniDbRulesModal.constants';
 import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import { copyToClipboard, dayjs } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 

@@ -8,9 +8,9 @@ import { Badge } from '@/components/Badge';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
-import toast from '@/components/Toast';
 import { useDeleteAllPluginVersionsMutation, useUpdatePluginMutation } from '@/core/react-query/plugin/mutations';
 import { usePluginsQuery } from '@/core/react-query/plugin/queries';
+import toast from '@/core/toast';
 
 import type { PluginInfoType } from '@/core/types/api/plugin';
 

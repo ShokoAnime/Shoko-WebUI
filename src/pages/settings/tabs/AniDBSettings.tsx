@@ -6,8 +6,8 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import UpdateFrequencyValues from '@/components/Settings/UpdateFrequencyValues';
-import toast from '@/components/Toast';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
+import toast from '@/core/toast';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const AniDBSettings = () => {

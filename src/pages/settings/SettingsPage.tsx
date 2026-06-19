@@ -9,12 +9,12 @@ import { groupBy, isEmpty, isEqual, map } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { usePluginPagesQuery } from '@/core/react-query/plugin/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
