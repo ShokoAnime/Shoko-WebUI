@@ -1,9 +1,9 @@
 import React from 'react';
 import { mdiAlertOutline, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
+import { buildEpisodeSet } from '@/core/utilities/buildEpisodeCoverageString';
 
 import CandidateCard from './CandidateCard';
 
@@ -33,9 +33,6 @@ const computeEffectivePrimary = (
   return candidates[0];
 };
 
-const buildEpisodeSet = (episodes: EpisodeCoverageType[]): Set<string> =>
-  new Set(episodes.map(episode => `${episode.Type}:${episode.Number}`));
-
 const isSubsetOf = (subset: EpisodeCoverageType[], superset: Set<string>): boolean =>
   subset.every(episode => superset.has(`${episode.Type}:${episode.Number}`));
 
@@ -47,8 +44,6 @@ const CandidatesTab = ({
   overrides,
   series,
 }: Props) => {
-  const [perFileChecks, setPerFileChecks] = useImmer<Set<number>>(new Set());
-
   const overrideKey = overrides.get(series.SeriesID);
   const effectivePrimary = computeEffectivePrimary(series.Candidates, overrideKey);
   const primaryEpisodeSet = buildEpisodeSet(effectivePrimary.Episodes);
@@ -85,18 +80,6 @@ const CandidatesTab = ({
       return { ...candidate, IsRedundant: redundant };
     })
     : series.Candidates;
-
-  const handleFileCheckToggle = (placeId: number) => {
-    setPerFileChecks((draft) => {
-      if (draft.has(placeId)) draft.delete(placeId);
-      else draft.add(placeId);
-    });
-  };
-
-  const handleSelectAsPrimary = (candidateKey: string) => {
-    onOverrideChange(series.SeriesID, candidateKey);
-    setPerFileChecks(new Set());
-  };
 
   const allCandidatesLackReleaseInfo = series.Candidates.every(candidate => !candidate.HasReleaseInfo);
 
@@ -142,10 +125,8 @@ const CandidatesTab = ({
             isPrimary={isPrimary}
             isOverrideActive={isOverrideActive}
             isPartial={isPartial}
-            onSelectAsPrimary={() => handleSelectAsPrimary(candidate.Key)}
+            onSelectAsPrimary={() => onOverrideChange(series.SeriesID, candidate.Key)}
             onViewMixMatch={onViewMixMatch}
-            perFileChecks={perFileChecks}
-            onFileCheckToggle={handleFileCheckToggle}
             onMarkAllAsVariations={onMarkAllAsVariations
               ? () => onMarkAllAsVariations(candidate.Files.map(file => file.VideoLocalID))
               : undefined}

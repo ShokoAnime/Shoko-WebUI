@@ -173,7 +173,6 @@ const MultipleReleasesPage = () => {
           <MultipleReleasesSeriesList
             onlyFinishedSeries={onlyFinishedSeries}
             onlyWithRedundant={onlyWithRedundant}
-            activeSeriesId={0}
             autoDeleteMode={autoDeleteMode}
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}

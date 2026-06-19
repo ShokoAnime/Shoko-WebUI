@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router';
 import { mdiArrowLeft, mdiFlagOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
@@ -146,22 +147,24 @@ const MultipleReleasesSeriesDetailPage = () => {
         <div className="flex gap-1 border-b border-panel-border">
           <button
             type="button"
-            className={`px-4 py-2 text-sm font-semibold transition-colors ${
+            className={cx(
+              'px-4 py-2 text-sm font-semibold transition-colors',
               activeTab === 'candidates'
                 ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
-                : 'opacity-65 hover:opacity-100'
-            }`}
+                : 'opacity-65 hover:opacity-100',
+            )}
             onClick={() => handleTabChange('candidates')}
           >
             Candidates
           </button>
           <button
             type="button"
-            className={`px-4 py-2 text-sm font-semibold transition-colors ${
+            className={cx(
+              'px-4 py-2 text-sm font-semibold transition-colors',
               activeTab === 'mixmatch'
                 ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
-                : 'opacity-65 hover:opacity-100'
-            }`}
+                : 'opacity-65 hover:opacity-100',
+            )}
             onClick={() => handleTabChange('mixmatch')}
           >
             Mix &amp; Match

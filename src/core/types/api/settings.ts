@@ -334,7 +334,7 @@ export type ReleaseComparisonPreferencesType = {
   AllowDeletion: boolean;
   AutoDeleteOnImport: boolean;
   PerFileDeletionForAiringSeries: boolean;
-  EpisodeTypeScope: number;
+  EpisodeTypeScope: 0 | 1;
 };
 
 export type PluginRenamerSettingsType = {
