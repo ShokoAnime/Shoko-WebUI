@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports
 import { useNavigate } from 'react-router';
 import type { NavigateOptions, To } from 'react-router';
 

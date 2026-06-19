@@ -27,7 +27,6 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import AddFilesModal from '@/components/Utilities/Renamer/AddFilesModal';
 import PresetModal from '@/components/Utilities/Renamer/PresetModal';
 import RenamerScript from '@/components/Utilities/Renamer/RenamerScript';
@@ -50,6 +49,7 @@ import {
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearResults, removeFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -405,7 +405,7 @@ const Renamer = () => {
     dispatch(clearResults());
     // initialClear is used to skip the effect on initial render, adding it to deps would cause the effect to run
     // an extra time
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedConfig, dispatch]);
 
   const handleSaveConfig = () => {
@@ -459,7 +459,7 @@ const Renamer = () => {
     else changeSelectedPresetEvent(defaultPreset?.ID ?? '');
     // This shouldn't run when `selectedConfig.Name` changes.
     // We are resetting `selectedConfig` when new data arrives so that it is up-to-date for `configEdited` flag
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [relocationPresetsQuery.data, relocationPresetsQuery.isSuccess, settings]);
 
   const {

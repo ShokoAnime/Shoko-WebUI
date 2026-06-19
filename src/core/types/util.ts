@@ -1,3 +1,3 @@
 export type SliceActions<T> = {
-  [K in keyof T]: T[K] extends (...args: never[]) => infer A ? A : never;
+  [Key in keyof T]: T[Key] extends (...args: never[]) => infer Action ? Action : never;
 }[keyof T];

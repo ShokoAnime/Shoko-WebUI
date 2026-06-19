@@ -8,9 +8,9 @@ import { Badge } from '@/components/Badge';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
-import toast from '@/components/Toast';
 import { useDeleteAllPluginVersionsMutation, useUpdatePluginMutation } from '@/core/react-query/plugin/mutations';
 import { usePluginsQuery } from '@/core/react-query/plugin/queries';
+import toast from '@/core/toast';
 
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
@@ -53,7 +53,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
               loading={isUpdatePending}
               disabled={!plugin.CanEnableOrDisable}
               tooltip={
-                /* eslint-disable-next-line no-nested-ternary */
+                /* oxlint-disable-next-line no-nested-ternary */
                 plugin.CanEnableOrDisable
                   ? (plugin.IsEnabled ? 'Disable' : 'Enable')
                   : 'Cannot be enabled/disabled'
@@ -70,7 +70,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
               loading={isUninstallPending}
               disabled={!plugin.CanUninstall || !plugin.IsInstalled}
               tooltip={
-                /* eslint-disable-next-line no-nested-ternary */
+                /* oxlint-disable-next-line no-nested-ternary */
                 plugin.IsInstalled
                   ? (plugin.CanUninstall ? 'Uninstall' : 'Cannot be uninstalled')
                   : 'Already uninstalled'

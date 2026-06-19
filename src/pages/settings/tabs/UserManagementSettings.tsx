@@ -11,10 +11,10 @@ import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import AddUserModal from '@/components/Settings/AddUserModal';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
-import toast from '@/components/Toast';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
 import { useDeleteUserMutation, usePutUserMutation } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
+import toast from '@/core/toast';
 
 import type { UserType } from '@/core/types/api/user';
 
@@ -93,7 +93,7 @@ const UserManagementSettings = () => {
 
   const openAvatarModal = (event: React.ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0];
-    // eslint-disable-next-line no-param-reassign
+    // oxlint-disable-next-line no-param-reassign
     event.target.value = ''; // This is a hack (yes, another) to make the onChange trigger even when same file is selected
     if (!avatar) return;
     setAvatarFile(avatar);

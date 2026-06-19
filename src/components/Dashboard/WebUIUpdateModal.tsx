@@ -2,10 +2,10 @@ import React from 'react';
 
 import UpdateModal from '@/components/Dashboard/UpdateModal';
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
+import toast from '@/core/toast';
 import { getUiVersion, isDebug } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 

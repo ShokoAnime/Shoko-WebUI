@@ -4,10 +4,10 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 
-import toast from '@/components/Toast';
 import { useFolderDrivesQuery, useFolderQuery } from '@/core/react-query/folder/queries';
 import { setSelectedNode } from '@/core/slices/modals/browseFolder';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 
 import type { DriveType, FolderType } from '@/core/types/api/folder';
 

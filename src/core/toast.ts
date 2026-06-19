@@ -1,5 +1,5 @@
-import type React from 'react';
-// eslint-disable-next-line no-restricted-imports
+import type { ReactNode } from 'react';
+// oxlint-disable-next-line no-restricted-imports
 import { toast } from 'react-toastify';
 import type { ToastOptions } from 'react-toastify';
 import { mdiAlertCircleOutline, mdiCheckboxMarkedCircleOutline, mdiInformationOutline } from '@mdi/js';
@@ -22,7 +22,7 @@ const showToast = (isSystemToast?: boolean) => {
   }
 };
 
-const success = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+const success = (header: string, message?: ReactNode, options?: ToastOptions) => {
   if (!showToast()) return undefined;
 
   return toast.success(ToastComponent, {
@@ -35,7 +35,7 @@ const success = (header: string, message?: React.ReactNode, options?: ToastOptio
   });
 };
 
-const error = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+const error = (header: string, message?: ReactNode, options?: ToastOptions) => {
   if (!showToast()) return undefined;
 
   return toast.error(ToastComponent, {
@@ -48,7 +48,7 @@ const error = (header: string, message?: React.ReactNode, options?: ToastOptions
   });
 };
 
-const warning = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+const warning = (header: string, message?: ReactNode, options?: ToastOptions) => {
   if (!showToast()) return undefined;
 
   return toast.warning(ToastComponent, {
@@ -61,7 +61,7 @@ const warning = (header: string, message?: React.ReactNode, options?: ToastOptio
   });
 };
 
-const info = (header: string, message?: React.ReactNode, options?: ToastOptions, isSystemToast?: boolean) => {
+const info = (header: string, message?: ReactNode, options?: ToastOptions, isSystemToast?: boolean) => {
   if (!showToast(isSystemToast)) return undefined;
 
   return toast.info(ToastComponent, {

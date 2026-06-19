@@ -24,6 +24,7 @@ const useAutoFocusRef = (autoFocus: boolean) => {
       if (elementRef.timeout) clearTimeout(elementRef.timeout);
       elementRef.timeout = timeout;
     }
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- elementRef is a stable ref object; adding it as a dep would cause incorrect re-runs
   }, [autoFocus]);
 
   // Focus the element when the ref is set.
@@ -44,6 +45,7 @@ const useAutoFocusRef = (autoFocus: boolean) => {
           elementRef.timeout = timeout;
         }
       },
+      // oxlint-disable-next-line react-hooks/exhaustive-deps -- elementRef and autoFocusRef are stable refs; the proxy must be created only once
     }), []) as unknown as React.RefObject<HTMLInputElement | null>;
 };
 

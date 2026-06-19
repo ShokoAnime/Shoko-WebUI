@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
-import toast from '@/components/Toast';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
+import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {

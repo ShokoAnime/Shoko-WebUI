@@ -1,6 +1,6 @@
 import React from 'react';
 
-import toast from '@/components/Toast';
+import toast from '@/core/toast';
 
 type Props = {
   id: string;

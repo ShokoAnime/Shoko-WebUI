@@ -8,7 +8,6 @@ import { map, pull, toNumber } from 'lodash';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
-import toast from '@/components/Toast';
 import {
   useChangePlexLibrariesMutation,
   useChangePlexServerMutation,
@@ -23,6 +22,7 @@ import {
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import toast from '@/core/toast';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const PlexLinkButton = () => {

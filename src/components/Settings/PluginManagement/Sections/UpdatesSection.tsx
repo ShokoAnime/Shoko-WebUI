@@ -7,9 +7,9 @@ import { useToggle } from 'usehooks-ts';
 import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import PluginInstallModal from '@/components/Settings/PluginManagement/Dialogs/PluginInstallModal';
-import toast from '@/components/Toast';
 import { useCheckPluginPackageUpdatesMutation } from '@/core/react-query/plugin-package/mutations';
 import { usePluginPackageUpdatesQuery } from '@/core/react-query/plugin-package/queries';
+import toast from '@/core/toast';
 
 import type { PluginPackageUpdateInfoType } from '@/core/types/api/plugin-package';
 

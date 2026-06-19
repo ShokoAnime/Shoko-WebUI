@@ -39,10 +39,12 @@ const AniDBAccount = () => {
     testAniDbLogin({ Username, Password }, {
       onSuccess: () => {
         setAnidbStatus({ type: 'success', text: 'AniDB Test Successful!' });
-        saveSettings().then(() => {
-          dispatch(setFirstRunSaved('anidb-account'));
-          navigate('../metadata-sources');
-        }, () => {});
+        saveSettings()
+          .then(() => {
+            dispatch(setFirstRunSaved('anidb-account'));
+            navigate('../metadata-sources');
+          })
+          .catch(console.error);
       },
       onError: (error) => {
         console.error(error);

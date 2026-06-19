@@ -79,7 +79,7 @@ const SeriesFileSummary = () => {
             )}
             {mode === 'Series'
               ? <FilesSummaryGroups groups={fileSummary?.Groups} />
-              : <FileMissingEpisodes missingEps={fileSummary?.MissingEpisodes} />}
+              : <FileMissingEpisodes missingEps={fileSummary?.MissingEpisodes ?? []} />}
           </div>
         </div>
       </div>

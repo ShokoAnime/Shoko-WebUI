@@ -70,7 +70,7 @@ const SelectedStateButton = React.memo((
         )}
       >
         <Button
-          onClick={onClick ?? (() => {})}
+          onClick={onClick}
           className="text-panel-text"
           tooltip={selected ? 'Unselect' : 'Select'}
         >

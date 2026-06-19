@@ -83,12 +83,19 @@ const FilterSidebar = () => {
   const [savePresetModal, showSavePresetModal] = useState(false);
   const dispatch = useDispatch();
   const selectedCriteria = useSelector(state => state.collection.filterCriteria);
+  const selectedConditions = useSelector(state => state.collection.filterConditions);
   const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
 
   const isFilterValid = keys(selectedCriteria).length > 0
     && keys(selectedCriteria).length === keys(activeCriteriaWithValues).length;
 
-  const finalFilterExpression = isFilterValid ? buildSidebarFilter(values(selectedCriteria)) : undefined;
+  // buildSidebarFilter reads filterConditions internally via store.getState(),
+  // which the React Compiler can't trace. Explicitly reading selectedConditions
+  // here teaches the compiler this expression depends on it. Also guards against
+  // building a filter when no conditions are set.
+  const finalFilterExpression = isFilterValid && values(selectedConditions).length > 0
+    ? buildSidebarFilter(values(selectedCriteria))
+    : undefined;
 
   useEffect(() => {
     if (isFilterValid && finalFilterExpression) dispatch(setActiveFilter(finalFilterExpression));

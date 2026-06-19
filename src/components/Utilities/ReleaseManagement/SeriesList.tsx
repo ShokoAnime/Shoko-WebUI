@@ -219,8 +219,8 @@ const SeriesList = (
     while (loadedCount <= targetIndex) {
       // Each fetchNextPage depends on the previous page completing (getNextPageParam),
       // so these must run sequentially — parallelizing with Promise.all is not possible.
-      // Valid exception for below rule under eslint
-      // eslint-disable-next-line no-await-in-loop
+      // Valid exception for below rule
+      // oxlint-disable-next-line no-await-in-loop
       const result = await episodesQuery.fetchNextPage();
       const newLoadedCount = result.data ? flatMap(result.data.pages, 'List').length : loadedCount;
       if (newLoadedCount === loadedCount) break; // No more data to load

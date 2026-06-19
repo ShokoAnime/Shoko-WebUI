@@ -11,7 +11,6 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ReleaseManagementSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseManagementSettings';
 import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseSettings';
-import toast from '@/components/Toast';
 import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
 import { useUpdateReleaseInfoProvidersMutation } from '@/core/react-query/release-info/mutations';
@@ -21,6 +20,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { clearReleaseSettings, setProviders } from '@/core/slices/settings/release';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';

@@ -72,7 +72,7 @@ const SeriesCredits = () => {
 
   const filteredCast = useMemo(() => (castByType[mode].filter(item => (
     (search === ''
-      || !!([item?.Character?.Name, item?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
+      || ([item?.Character?.Name, item?.Staff?.Name].some(name => cleanString(name).includes(cleanString(search)))))
     && !roleFilter.has(item?.RoleDetails)
   )).sort((castA, castB) => {
     const nameA = castA[mode]?.Name ?? '';

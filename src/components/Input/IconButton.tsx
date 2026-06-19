@@ -18,7 +18,7 @@ type IconButtonProps = {
 };
 
 const IconButton = (
-  { buttonSize = 'normal', buttonType = 'secondary', className, disabled, icon, onClick, tooltip }: IconButtonProps,
+  { buttonSize, buttonType, className, disabled, icon, onClick, tooltip }: IconButtonProps,
 ) => (
   <Button
     className={cx(

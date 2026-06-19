@@ -21,7 +21,8 @@ export type ExpressionType =
   | 'StringRegexMatches'
   | 'StringStartsWith'
   | 'HasTag'
-  | 'HasCustomTag';
+  | 'HasCustomTag'
+  | 'HasFuzzyName';
 
 type SortingType =
   | 'AddedDate'

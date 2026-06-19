@@ -18,7 +18,6 @@ import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import FileInfo from '@/components/FileInfo';
 import Button from '@/components/Input/Button';
 import DropdownMenuItem from '@/components/Input/DropdownMenuItem';
-import toast from '@/components/Toast';
 import {
   useAddFileToMyListMutation,
   useDeleteFileMutation,
@@ -27,6 +26,7 @@ import {
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteReleaseInfoForFileByIdMutation } from '@/core/react-query/release-info/mutations';
+import toast from '@/core/toast';
 import { copyToClipboard } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';

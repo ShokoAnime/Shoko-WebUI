@@ -1,10 +1,10 @@
-import axiosDefault from 'axios';
+import { create } from 'axios';
 
 import store from '@/core/store';
 
 import type { InternalAxiosRequestConfig } from 'axios';
 
-export const axios = axiosDefault.create({
+export const axios = create({
   baseURL: '/api/v3',
   // Removes square brackets from parameter names in get queries
   // eg. For GET /File, without setting this to null, `sortOrder` parameter is sent as `sortOrder[]`
@@ -13,15 +13,15 @@ export const axios = axiosDefault.create({
   },
 });
 
-export const axiosV2 = axiosDefault.create({
+export const axiosV2 = create({
   baseURL: '/api',
 });
 
-export const axiosPlex = axiosDefault.create({
+export const axiosPlex = create({
   baseURL: '/plex',
 });
 
-export const axiosExternal = axiosDefault.create();
+export const axiosExternal = create();
 
 const addApikeyInterceptor = (config: InternalAxiosRequestConfig) => {
   const tempConfig = config;
@@ -35,11 +35,11 @@ axiosPlex.interceptors.request.use(addApikeyInterceptor);
 
 // The type of response.data depends on the endpoint called. It has to be any.
 // We are only adding this interceptor so that we don't have to get response.data every time we call axios from react-query
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+// oxlint-disable-next-line typescript/no-unsafe-return
 axios.interceptors.response.use(response => response.data);
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+// oxlint-disable-next-line typescript/no-unsafe-return
 axiosV2.interceptors.response.use(response => response.data);
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+// oxlint-disable-next-line typescript/no-unsafe-return
 axiosPlex.interceptors.response.use(response => response.data);
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+// oxlint-disable-next-line typescript/no-unsafe-return
 axiosExternal.interceptors.response.use(response => response.data);
