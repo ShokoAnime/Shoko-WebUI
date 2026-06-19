@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { mdiMagnify, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
+import { mdiCog, mdiMagnify, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useIsFetching } from '@tanstack/react-query';
 import cx from 'classnames';
 import { useImmer } from 'use-immer';
 
+import ReleaseManagementSettingsModal from '@/components/Dialogs/ReleaseManagementSettingsModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
@@ -22,6 +23,7 @@ import MultipleReleasesSeriesList from './MultipleReleasesSeriesList';
 const MultipleReleasesPage = () => {
   const navigate = useNavigateVoid();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
 
@@ -121,7 +123,7 @@ const MultipleReleasesPage = () => {
               />
             </div>
 
-            <div className="flex items-center">
+            <div className="flex items-center gap-x-2">
               <Button
                 buttonType={autoDeleteMode ? 'secondary' : 'primary'}
                 className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
@@ -130,6 +132,14 @@ const MultipleReleasesPage = () => {
               >
                 <Icon path={mdiTrashCanOutline} size={0.8333} />
                 Auto Delete
+              </Button>
+              <Button
+                buttonType="secondary"
+                className="px-3 py-3"
+                onClick={() => setSettingsOpen(true)}
+                tooltip="Configure release management settings"
+              >
+                <Icon path={mdiCog} size={0.8333} />
               </Button>
               <div
                 className={cx(
@@ -182,6 +192,11 @@ const MultipleReleasesPage = () => {
         excludedSeriesIDs={excludedForPreview}
         overrides={new Map()}
         onClose={() => setPreviewOpen(false)}
+      />
+
+      <ReleaseManagementSettingsModal
+        show={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
       />
     </>
   );

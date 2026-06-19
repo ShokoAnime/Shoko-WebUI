@@ -9,6 +9,10 @@ export type ReleaseCandidateFileType = {
   AbsolutePath: string | null;
   FileSize: number;
   IsRedundant: boolean;
+  IsChaptered: boolean | null;
+  IsCensored: boolean | null;
+  IsCreditless: boolean | null;
+  IsCorrupted: boolean;
   Episodes: EpisodeCoverageType[];
 };
 

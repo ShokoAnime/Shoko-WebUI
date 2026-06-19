@@ -24,6 +24,7 @@ type Props = {
   overrides: Map<number, string>;
   precomputedData?: ReleaseDeletionPreviewType[];
   onClose: () => void;
+  onSuccess?: () => void;
 };
 
 type SeriesRowProps = {
@@ -107,6 +108,7 @@ const MultipleReleasesPreviewModal = ({
   excludedSeriesIDs,
   includedSeriesIDs,
   onClose,
+  onSuccess,
   open,
   overrides,
   precomputedData,
@@ -190,6 +192,7 @@ const MultipleReleasesPreviewModal = ({
         onSuccess: () => {
           toast.success('Deletion queued', `${placeIDs.length} ${placeIDs.length === 1 ? 'file' : 'files'} queued for deletion.`);
           onClose();
+          onSuccess?.();
         },
       },
     );

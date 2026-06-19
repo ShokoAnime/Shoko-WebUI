@@ -323,6 +323,20 @@ export type SettingsImportType = {
   VideoExtensions: string[];
 };
 
+export type ReleaseComparisonPreferencesType = {
+  SignalPriority: number[];
+  SourceOrder: string[];
+  ResolutionOrder: string[];
+  VideoCodecOrder: string[];
+  AudioCodecOrder: string[];
+  SubGroupOrder: string[];
+  PreferHigherBitDepth: boolean;
+  AllowDeletion: boolean;
+  AutoDeleteOnImport: boolean;
+  PerFileDeletionForAiringSeries: boolean;
+  EpisodeTypeScope: number;
+};
+
 export type PluginRenamerSettingsType = {
   EnabledRenamers: Record<string, boolean>;
   MoveOnImport: boolean;
@@ -366,6 +380,7 @@ export type SettingsServerType = {
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string[];
   Import: SettingsImportType;
+  ReleaseComparisonPreferences: ReleaseComparisonPreferencesType;
   LoadImageMetadata: boolean;
   Plugins: PluginSettingsType;
 };

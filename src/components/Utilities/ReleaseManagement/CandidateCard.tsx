@@ -364,11 +364,24 @@ const CandidateCard = ({
                 : file.AbsolutePath.lastIndexOf('\\'))
               : null;
 
+            const fileAnomalies: string[] = [];
+            if (file.IsCorrupted) fileAnomalies.push('Corrupted');
+            if (candidate.IsChapteredMixed && file.IsChaptered !== candidate.IsChaptered) {
+              fileAnomalies.push(file.IsChaptered ? 'Chaptered' : 'Unchaptered');
+            }
+            if (candidate.IsCensoredMixed && file.IsCensored !== candidate.IsCensored) {
+              fileAnomalies.push(file.IsCensored ? 'Censored' : 'Uncensored');
+            }
+            if (candidate.IsCreditlessMixed && file.IsCreditless !== candidate.IsCreditless) {
+              fileAnomalies.push(file.IsCreditless ? 'Creditless' : 'Credited');
+            }
+
             return (
               <div
                 key={file.PlaceID}
                 className={cx(
-                  'flex items-start gap-3 rounded-lg border border-panel-border bg-panel-background p-3 text-sm',
+                  'flex items-start gap-3 rounded-lg border bg-panel-background p-3 text-sm',
+                  fileAnomalies.length > 0 ? 'border-panel-text-warning/50' : 'border-panel-border',
                   file.AbsolutePath == null && 'opacity-65',
                 )}
               >
@@ -384,6 +397,19 @@ const CandidateCard = ({
                       <span className="text-panel-text-warning">Path unavailable</span>
                     )}
                   </div>
+                  {fileAnomalies.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-0.5">
+                      {fileAnomalies.map(anomaly => (
+                        <span
+                          key={anomaly}
+                          className="flex items-center gap-1 rounded-sm bg-panel-text-warning/15 px-1.5 py-0.5 text-xs font-semibold text-panel-text-warning"
+                        >
+                          <Icon path={mdiAlertOutline} size={0.5833} />
+                          {anomaly}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div
                   className="flex shrink-0 items-center gap-2"
