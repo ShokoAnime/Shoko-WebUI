@@ -135,7 +135,7 @@ const MultipleReleasesPage = () => {
               </Button>
               <Button
                 buttonType="secondary"
-                className="px-3 py-3"
+                className="p-3"
                 onClick={() => setSettingsOpen(true)}
                 tooltip="Configure release management settings"
               >
