@@ -9,6 +9,7 @@ import HashTypesModal from '@/components/Dialogs/HashTypesModal';
 import ProviderInfoModal from '@/components/Dialogs/ProviderInfoModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import ReleaseManagementSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseManagementSettings';
 import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseSettings';
 import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
@@ -23,6 +24,7 @@ import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
+import type { ReleaseComparisonPreferencesType } from '@/core/types/api/settings';
 
 const HashingAndReleaseSettings = () => {
   const dispatch = useDispatch();
@@ -41,6 +43,9 @@ const HashingAndReleaseSettings = () => {
   const [showHashTypesModal, setShowHashTypesModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<HashProviderInfoType | undefined>();
   const [hashingSettings, setHashingSettings] = useState<HashingSummaryType>({ ParallelMode: false });
+  const [releaseComparisonPreferences, setReleaseComparisonPreferences] = useState<ReleaseComparisonPreferencesType>(
+    settings.ReleaseComparisonPreferences,
+  );
 
   const newWebuiProviderOrder = webuiProviders
     .map(provider => ({ id: provider.ID, enabled: provider.IsEnabled }));
@@ -51,6 +56,7 @@ const HashingAndReleaseSettings = () => {
     ) return;
 
     setHashingSettings(hashingSummaryQuery.data);
+    setReleaseComparisonPreferences(settings.ReleaseComparisonPreferences);
 
     const cleanWebuiProviders = settings.WebUI_Settings.releaseInfoProviders
       .map((webuiProvider) => {
@@ -89,8 +95,17 @@ const HashingAndReleaseSettings = () => {
   const hashingSettingsChanged = hashingSummaryQuery.data?.ParallelMode !== hashingSettings.ParallelMode;
   const releaseProvidersChanged = !isEqual(releaseProvidersQuery.data, providers);
   const webuiProvidersChanged = !isEqual(settings.WebUI_Settings.releaseInfoProviders, newWebuiProviderOrder);
+  const releaseComparisonPreferencesChanged = !isEqual(
+    settings.ReleaseComparisonPreferences,
+    releaseComparisonPreferences,
+  );
   const unsavedChanges = initialized
-    && (hashingSettingsChanged || releaseProvidersChanged || webuiProvidersChanged);
+    && (
+      hashingSettingsChanged
+      || releaseProvidersChanged
+      || webuiProvidersChanged
+      || releaseComparisonPreferencesChanged
+    );
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
@@ -121,9 +136,14 @@ const HashingAndReleaseSettings = () => {
       updateReleaseInfoProviders(providers);
     }
 
-    if (webuiProvidersChanged) {
+    if (webuiProvidersChanged || releaseComparisonPreferencesChanged) {
       const newSettings = produce(settings, (draft) => {
-        draft.WebUI_Settings.releaseInfoProviders = newWebuiProviderOrder;
+        if (webuiProvidersChanged) {
+          draft.WebUI_Settings.releaseInfoProviders = newWebuiProviderOrder;
+        }
+        if (releaseComparisonPreferencesChanged) {
+          draft.ReleaseComparisonPreferences = releaseComparisonPreferences;
+        }
       });
       patchSettings(newSettings);
     }
@@ -212,6 +232,16 @@ const HashingAndReleaseSettings = () => {
       <div className="border-b border-panel-border" />
 
       <ReleaseSettings />
+
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-2">
+        <div className="flex items-center font-semibold">Release Management</div>
+        <ReleaseManagementSettings
+          preferences={releaseComparisonPreferences}
+          onChange={setReleaseComparisonPreferences}
+        />
+      </div>
 
       <div className="border-b border-panel-border" />
 

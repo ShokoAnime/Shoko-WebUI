@@ -214,6 +214,8 @@ const MultipleReleasesSeriesDetailPage = () => {
           overrides={overrides}
           precomputedData={mixMatchPreviewData}
           onClose={handleClose}
+          onSuccess={() =>
+            navigate(`/webui/utilities/release-management/MultipleReleases${listSearch ? `?${listSearch}` : ''}`)}
         />
       )}
 
