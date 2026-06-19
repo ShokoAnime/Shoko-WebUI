@@ -48,9 +48,9 @@ The WebUI is a client for the Shoko Server API. It manages global UI state via R
 | `pnpm start` | Runs the app in development mode. |
 | `pnpm build` | Builds the app for production to the `dist/` folder. |
 | `pnpm build:debug` | Creates a development build. |
-| `pnpm lint` | Runs the full verification chain: `tscheck` → `dprint` → `eslint` → `stylelint`. |
+| `pnpm lint` | Runs the full verification chain: `dprint` → `oxlint` → `stylelint`. |
 | `pnpm tscheck` | Runs TypeScript checks (`tsc --noEmit`). |
-| `pnpm eslint:fix` | Automatically fixes ESLint errors. |
+| `pnpm oxlint:fix` | Automatically fixes Oxlint errors. |
 | `pnpm dprint:fix` | Formats code using dprint. |
 
 ### Configuration
