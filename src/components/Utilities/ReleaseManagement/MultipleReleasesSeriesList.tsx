@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -121,8 +121,7 @@ const SeriesRow = ({
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-0.5 opacity-65">
           <span>
-            <span className="font-semibold text-panel-text-important">{series.Candidates.length}</span>
-            {' '}
+            <span className="font-semibold text-panel-text-important">{series.Candidates.length}</span>{' '}
             {series.Candidates.length === 1 ? 'candidate' : 'candidates'}
           </span>
           {primary && (
@@ -134,11 +133,8 @@ const SeriesRow = ({
           {series.HasRedundantCandidates
             ? (
               <span>
-                <span className="font-semibold text-panel-text-danger">{redundantFileCount}</span>
-                {' '}
-                {redundantFileCount === 1 ? 'file' : 'files'}
-                {' '}
-                to auto-delete
+                <span className="font-semibold text-panel-text-danger">{redundantFileCount}</span>{' '}
+                {redundantFileCount === 1 ? 'file' : 'files'} to auto-delete
               </span>
             )
             : <span>No auto-delete available</span>}
@@ -174,6 +170,10 @@ const MultipleReleasesSeriesList = ({
   const lastRowIndex = useRef<number | undefined>(undefined);
 
   useEffect(() => {
+    lastRowIndex.current = undefined;
+  }, [onlyFinishedSeries, onlyWithRedundant, search]);
+
+  useEffect(() => {
     onSeriesCountChange(seriesCount);
   }, [seriesCount, onSeriesCountChange]);
 
@@ -181,7 +181,7 @@ const MultipleReleasesSeriesList = ({
     onSeriesIdsChange?.(series.map(ser => ser.SeriesID));
   }, [series, onSeriesIdsChange]);
 
-  const handleRowClick = useCallback((event: React.MouseEvent, index: number, seriesId: number) => {
+  const handleRowClick = (event: React.MouseEvent, index: number, seriesId: number) => {
     if (event.shiftKey && lastRowIndex.current !== undefined && setRowSelection) {
       const fromIdx = Math.min(lastRowIndex.current, index);
       const toIdx = Math.max(lastRowIndex.current, index);
@@ -197,7 +197,7 @@ const MultipleReleasesSeriesList = ({
       onRowSelect?.(seriesId);
     }
     lastRowIndex.current = index;
-  }, [series, rowSelection, setRowSelection, onRowSelect]);
+  };
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const element = event.currentTarget;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { mdiChevronDown, mdiChevronUp, mdiLoading, mdiMinusCircleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
@@ -8,7 +8,7 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/components/Toast';
+import toast from '@/core/toast';
 import {
   useReleaseDeletionPreviewMutation,
   useReleaseExecuteMutation,
@@ -35,7 +35,9 @@ type SeriesRowProps = {
   onRemoveSeries: () => void;
 };
 
-const SeriesPreviewRow = ({ initialExpanded = false, onPlaceToggle, onRemoveSeries, preview, uncheckedPlaceIDs }: SeriesRowProps) => {
+const SeriesPreviewRow = (
+  { initialExpanded = false, onPlaceToggle, onRemoveSeries, preview, uncheckedPlaceIDs }: SeriesRowProps,
+) => {
   const [expanded, toggleExpanded] = useToggle(initialExpanded);
 
   const includedFiles = preview.Files.filter(file => !uncheckedPlaceIDs.has(file.PlaceID));
@@ -61,11 +63,8 @@ const SeriesPreviewRow = ({ initialExpanded = false, onPlaceToggle, onRemoveSeri
         <div className="grow">
           <div className="font-semibold">{preview.SeriesTitle}</div>
           <div className="text-sm opacity-65">
-            <span className="font-semibold text-panel-text-danger">{includedFiles.length}</span>
-            {' '}
-            {includedFiles.length === 1 ? 'file' : 'files'}
-            {' '}
-            to delete
+            <span className="font-semibold text-panel-text-danger">{includedFiles.length}</span>{' '}
+            {includedFiles.length === 1 ? 'file' : 'files'} to delete
             {' · '}
             {prettyBytes(includedSize, { binary: true })}
           </div>
@@ -88,9 +87,7 @@ const SeriesPreviewRow = ({ initialExpanded = false, onPlaceToggle, onRemoveSeri
                 />
                 <div className="min-w-0 grow">
                   <div className="truncate">{fileName}</div>
-                  {file.AbsolutePath == null && (
-                    <div className="text-xs text-panel-text-warning">Path unavailable</div>
-                  )}
+                  {file.AbsolutePath == null && <div className="text-xs text-panel-text-warning">Path unavailable</div>}
                 </div>
                 <span className="shrink-0 opacity-65">
                   {prettyBytes(file.FileSize, { binary: true })}
@@ -124,13 +121,10 @@ const MultipleReleasesPreviewModal = ({
   // Place IDs unchecked by the user (excluded from execute)
   const [uncheckedPlaceIDs, setUncheckedPlaceIDs] = useImmer<Set<number>>(new Set());
 
-  const overridesList = useMemo(
-    () => [...overrides.entries()].map(([seriesID, preferredCandidateKey]) => ({
-      seriesID,
-      preferredCandidateKey,
-    })),
-    [overrides],
-  );
+  const overridesList = [...overrides.entries()].map(([seriesID, preferredCandidateKey]) => ({
+    preferredCandidateKey,
+    seriesID,
+  }));
 
   // Trigger preview whenever the modal opens (skip when precomputed data is provided)
   useEffect(() => {
@@ -146,7 +140,7 @@ const MultipleReleasesPreviewModal = ({
       : { excludedSeriesIDs, overrides: overridesList };
 
     previewMutation.mutate(body);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const previews = precomputedData ?? previewMutation.data ?? [];
@@ -157,9 +151,10 @@ const MultipleReleasesPreviewModal = ({
     0,
   );
   const totalSize = visiblePreviews.reduce(
-    (sum, preview) => sum + preview.Files.filter(
-      file => !uncheckedPlaceIDs.has(file.PlaceID),
-    ).reduce((ser, file) => ser + file.FileSize, 0),
+    (sum, preview) =>
+      sum + preview.Files.filter(
+        file => !uncheckedPlaceIDs.has(file.PlaceID),
+      ).reduce((ser, file) => ser + file.FileSize, 0),
     0,
   );
 
@@ -190,7 +185,10 @@ const MultipleReleasesPreviewModal = ({
       { placeIDs },
       {
         onSuccess: () => {
-          toast.success('Deletion queued', `${placeIDs.length} ${placeIDs.length === 1 ? 'file' : 'files'} queued for deletion.`);
+          toast.success(
+            'Deletion queued',
+            `${placeIDs.length} ${placeIDs.length === 1 ? 'file' : 'files'} queued for deletion.`,
+          );
           onClose();
           onSuccess?.();
         },
@@ -204,7 +202,7 @@ const MultipleReleasesPreviewModal = ({
       size="xl"
       onRequestClose={onClose}
       header="Preview Deletion"
-      footer={(
+      footer={
         <div className="flex items-center justify-between">
           <div className="text-sm opacity-65">
             {totalFiles > 0
@@ -234,7 +232,7 @@ const MultipleReleasesPreviewModal = ({
             </Button>
           </div>
         </div>
-      )}
+      }
       fullHeight
     >
       <div className="flex h-full flex-col gap-4 overflow-y-auto pr-2">

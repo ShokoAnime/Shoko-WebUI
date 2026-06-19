@@ -41,22 +41,13 @@ const invalidateReleaseManagement = debounce(
 export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
   switch (event) {
     case 'FileDeleted':
-      invalidateDashboard();
-      invalidateFiles();
-      invalidateManagedFolders();
-      invalidateReleaseManagement();
-      break;
     case 'FileDetected':
     case 'FileHashed':
-      invalidateDashboard();
-      invalidateFiles();
-      invalidateManagedFolders();
-      break;
     case 'FileMatched':
       invalidateDashboard();
       invalidateFiles();
       invalidateManagedFolders();
-      invalidateReleaseManagement();
+      if (event === 'FileDeleted' || event === 'FileMatched') invalidateReleaseManagement();
       break;
     case 'FileMoved':
       invalidateFiles();
