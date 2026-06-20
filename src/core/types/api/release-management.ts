@@ -51,9 +51,9 @@ export type ReleaseCandidateType = {
   HasReleaseInfo: boolean;
   IsRedundant: boolean;
   IsPartial?: boolean;
-  DecidingSignal: string | null;
-  WinnerValue: string | null;
-  LoserValue: string | null;
+  DecidingSignal?: string;
+  WinnerValue?: string;
+  LoserValue?: string;
   GroupID: string | null;
   GroupName: string | null;
   GroupShortName: string | null;

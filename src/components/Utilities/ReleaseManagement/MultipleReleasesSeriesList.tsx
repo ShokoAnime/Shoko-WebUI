@@ -90,7 +90,7 @@ const SeriesRow = ({
         <div className="flex items-center gap-2">
           <span className="truncate font-semibold">{series.SeriesTitle}</span>
           {series.IsAiring && (
-            <span className="shrink-0 rounded-sm bg-panel-text-primary px-1.5 py-0.5 text-xs font-semibold text-white">
+            <span className="shrink-0 rounded-sm bg-panel-text-primary px-1.5 py-0.5 text-xs font-semibold text-button-primary-text">
               Airing
             </span>
           )}

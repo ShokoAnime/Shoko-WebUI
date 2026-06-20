@@ -323,8 +323,25 @@ export type SettingsImportType = {
   VideoExtensions: string[];
 };
 
+export type SignalType =
+  | 'Source'
+  | 'Resolution'
+  | 'VideoCodec'
+  | 'BitDepth'
+  | 'AudioCodec'
+  | 'AudioStreams'
+  | 'SubtitleStreams'
+  | 'Version'
+  | 'Chaptered'
+  | 'Censored'
+  | 'Creditless'
+  | 'Corrupted'
+  | 'SubGroup';
+
+export type EpisodeTypeScopeType = 'AllTogether' | 'PerEpisodeType';
+
 export type ReleaseComparisonPreferencesType = {
-  SignalPriority: number[];
+  SignalPriority: SignalType[];
   SourceOrder: string[];
   ResolutionOrder: string[];
   VideoCodecOrder: string[];
@@ -334,7 +351,7 @@ export type ReleaseComparisonPreferencesType = {
   AllowDeletion: boolean;
   AutoDeleteOnImport: boolean;
   PerFileDeletionForAiringSeries: boolean;
-  EpisodeTypeScope: 0 | 1;
+  EpisodeTypeScope: EpisodeTypeScopeType;
 };
 
 export type PluginRenamerSettingsType = {

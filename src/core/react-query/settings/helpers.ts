@@ -414,7 +414,7 @@ export const initialSettings: SettingsType = {
     AllowDeletion: false,
     AutoDeleteOnImport: false,
     PerFileDeletionForAiringSeries: false,
-    EpisodeTypeScope: 0,
+    EpisodeTypeScope: 'AllTogether',
   },
   LoadImageMetadata: false,
   Plugins: {

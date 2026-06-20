@@ -10,14 +10,13 @@ export const typeOrder: Record<string, number> = {
   Other: 6,
 };
 
-export const typeDisplayName = (type: string): string => {
-  if (type === 'Episode') return 'Episodes';
-  if (type === 'Special') return 'Specials';
-  if (type === 'Trailer') return 'Trailers';
-  if (type === 'ThemeSong') return 'Theme Songs';
-  if (type === 'Credits') return 'Credits';
-  if (type === 'Parody') return 'Parodies';
-  return type;
+export const typeDisplayNameMap: Record<string, string> = {
+  Episode: 'Episodes',
+  Special: 'Specials',
+  Trailer: 'Trailers',
+  ThemeSong: 'Theme Songs',
+  Credits: 'Credits',
+  Parody: 'Parodies',
 };
 
 const collapseToRanges = (numbers: number[]): string => {
@@ -57,6 +56,6 @@ export const buildEpisodeCoverageString = (episodes: EpisodeCoverageType[]): str
   );
 
   return sortedTypes
-    .map(type => `${typeDisplayName(type)}: ${collapseToRanges(byType.get(type)!)}`)
+    .map(type => `${typeDisplayNameMap[type] ?? type}: ${collapseToRanges(byType.get(type)!)}`)
     .join('  ');
 };

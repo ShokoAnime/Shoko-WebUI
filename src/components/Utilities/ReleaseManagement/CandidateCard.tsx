@@ -4,6 +4,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 
+import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import { buildEpisodeCoverageString, buildEpisodeSet } from '@/core/utilities/buildEpisodeCoverageString';
 
@@ -64,21 +65,6 @@ const CandidateCard = ({
     return null;
   })();
 
-  const redundancyBadge = () => {
-    if (isPrimary) return null;
-    if (candidate.IsRedundant) {
-      return (
-        <span className="rounded-sm bg-panel-text-danger px-1.5 py-0.5 text-xs font-semibold text-white">
-          Would be deleted
-        </span>
-      );
-    }
-    return (
-      <span className="rounded-sm bg-panel-background-alt px-1.5 py-0.5 text-xs font-semibold text-panel-text">
-        No auto-delete available
-      </span>
-    );
-  };
 
   return (
     <div
@@ -128,11 +114,23 @@ const CandidateCard = ({
         )}
         {isPartial
           ? (
-            <span className="rounded-sm bg-panel-text-warning/20 px-1.5 py-0.5 text-xs font-semibold text-panel-text-warning">
+            <Badge className="bg-panel-text-warning/20 text-panel-text-warning">
               ⚠ PARTIAL
-            </span>
+            </Badge>
           )
-          : redundancyBadge()}
+          : !isPrimary && (
+            candidate.IsRedundant
+              ? (
+                <Badge className="bg-panel-text-danger text-button-primary-text">
+                  Would be deleted
+                </Badge>
+              )
+              : (
+                <Badge className="bg-panel-background-alt text-panel-text">
+                  No auto-delete available
+                </Badge>
+              )
+          )}
 
         <div className="ml-auto flex items-center gap-2">
           {!isPrimary && !isPartial && (
