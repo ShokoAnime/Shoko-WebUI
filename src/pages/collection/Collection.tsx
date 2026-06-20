@@ -36,6 +36,7 @@ const getFilter = (
   sortingCriteria?: SortingCriteria,
 ): CreateOrUpdateFilterType => {
   let finalCondition: FilterCondition | undefined;
+  let finalSortingCriteria: SortingCriteria | undefined = sortingCriteria;
   const cleanFilterConditions = filterConditions.filter(condition => !!condition);
   if (query) {
     let searchCondition: FilterCondition = {
@@ -62,6 +63,10 @@ const getFilter = (
     } else {
       finalCondition = buildFilter([searchCondition]);
     }
+
+    finalSortingCriteria = sortingCriteria === undefined
+      ? { Type: 'FuzzyNameRelevance', Parameter: query, IsInverted: false }
+      : { Type: 'FuzzyNameRelevance', Parameter: query, IsInverted: false, Next: sortingCriteria };
   } else if (cleanFilterConditions.length > 0) {
     finalCondition = buildFilter(cleanFilterConditions);
   }
@@ -71,7 +76,7 @@ const getFilter = (
       ? {
         ApplyAtSeriesLevel: true,
         Expression: finalCondition,
-        Sorting: sortingCriteria ?? { Type: 'FuzzyNameRelevance', Parameter: query, IsInverted: false },
+        Sorting: finalSortingCriteria ?? { Type: 'Name', IsInverted: false },
       }
       : {}
   );
