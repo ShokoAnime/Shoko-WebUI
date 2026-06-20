@@ -78,7 +78,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
             label="Per-file Deletion for Airing Series"
           />
           <div className="text-xs opacity-65">
-            For airing series, delete individual redundant files rather than whole candidates. Files covering episodes not yet in the primary candidate are kept.
+            For airing series, delete individual redundant files rather than whole candidates. Files covering episodes
+            not yet in the primary candidate are kept.
           </div>
         </div>
       </div>
@@ -94,7 +95,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
             <SelectSmall
               id="rm-episode-type-scope"
               value={preferences.EpisodeTypeScope}
-              onChange={event => updateSetting('EpisodeTypeScope', event.target.value as 'AllTogether' | 'PerEpisodeType')}
+              onChange={event =>
+                updateSetting('EpisodeTypeScope', event.target.value as 'AllTogether' | 'PerEpisodeType')}
               className="w-52"
             >
               <option value="AllTogether">All Together</option>
@@ -102,7 +104,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
             </SelectSmall>
           </div>
           <div className="text-xs opacity-65">
-            Controls how releases covering different episode types (regular vs. specials) are ranked. &apos;All Together&apos; treats them as one unit; &apos;Per Episode Type&apos; ranks them independently.
+            Controls how releases covering different episode types (regular vs. specials) are ranked. &apos;All
+            Together&apos; treats them as one unit; &apos;Per Episode Type&apos; ranks them independently.
           </div>
         </div>
       </div>
@@ -116,7 +119,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
             <span className="ml-2 text-xs font-normal opacity-65">(Drag to Reorder)</span>
           </div>
           <div className="text-xs opacity-65">
-            Drag to reorder the quality signals used to rank candidates. Comparison stops at the first signal where candidates differ.
+            Drag to reorder the quality signals used to rank candidates. Comparison stops at the first signal where
+            candidates differ.
           </div>
         </div>
 
@@ -179,7 +183,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               id="rm-resolution-order"
               type="text"
               value={preferences.ResolutionOrder.join(',')}
-              onChange={event => updateSetting('ResolutionOrder', event.target.value ? event.target.value.split(',') : [])}
+              onChange={event =>
+                updateSetting('ResolutionOrder', event.target.value ? event.target.value.split(',') : [])}
               className="w-52 px-3 py-1"
               placeholder="1080p,720p,480p"
             />
@@ -196,7 +201,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               id="rm-video-codec-order"
               type="text"
               value={preferences.VideoCodecOrder.join(',')}
-              onChange={event => updateSetting('VideoCodecOrder', event.target.value ? event.target.value.split(',') : [])}
+              onChange={event =>
+                updateSetting('VideoCodecOrder', event.target.value ? event.target.value.split(',') : [])}
               className="w-52 px-3 py-1"
               placeholder="HEVC,AVC"
             />
@@ -213,7 +219,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               id="rm-audio-codec-order"
               type="text"
               value={preferences.AudioCodecOrder.join(',')}
-              onChange={event => updateSetting('AudioCodecOrder', event.target.value ? event.target.value.split(',') : [])}
+              onChange={event =>
+                updateSetting('AudioCodecOrder', event.target.value ? event.target.value.split(',') : [])}
               className="w-52 px-3 py-1"
               placeholder="FLAC,AAC,MP3"
             />
@@ -230,7 +237,8 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               id="rm-sub-group-order"
               type="text"
               value={preferences.SubGroupOrder.join(',')}
-              onChange={event => updateSetting('SubGroupOrder', event.target.value ? event.target.value.split(',') : [])}
+              onChange={event =>
+                updateSetting('SubGroupOrder', event.target.value ? event.target.value.split(',') : [])}
               className="w-52 px-3 py-1"
               placeholder="SubsPlease,Erai-raws"
             />

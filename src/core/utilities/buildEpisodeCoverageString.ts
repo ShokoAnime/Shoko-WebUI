@@ -48,7 +48,7 @@ export const buildEpisodeCoverageString = (episodes: EpisodeCoverageType[]): str
   const byType = new Map<string, number[]>();
   for (const episode of episodes) {
     if (!byType.has(episode.Type)) byType.set(episode.Type, []);
-    byType.get(episode.Type)!.push(episode.Number);
+    byType.get(episode.Type)?.push(episode.Number);
   }
 
   const sortedTypes = [...byType.keys()].sort(
@@ -56,6 +56,6 @@ export const buildEpisodeCoverageString = (episodes: EpisodeCoverageType[]): str
   );
 
   return sortedTypes
-    .map(type => `${typeDisplayNameMap[type] ?? type}: ${collapseToRanges(byType.get(type)!)}`)
+    .map(type => `${typeDisplayNameMap[type] ?? type}: ${collapseToRanges(byType.get(type) ?? [])}`)
     .join('  ');
 };

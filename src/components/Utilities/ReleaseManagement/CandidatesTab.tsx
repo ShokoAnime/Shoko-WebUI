@@ -46,7 +46,7 @@ const CandidatesTab = ({
 }: Props) => {
   const overrideKey = overrides.get(series.SeriesID);
   const effectivePrimary = computeEffectivePrimary(series.Candidates, overrideKey);
-  const primaryEpisodeSet = buildEpisodeSet(effectivePrimary.Episodes);
+  const primaryEpisodeSet = buildEpisodeSet(effectivePrimary?.Episodes ?? []);
 
   // All episode keys that appear in any non-partial candidate (union for partial detection)
   const fullEpisodeSet = (() => {
@@ -75,7 +75,7 @@ const CandidatesTab = ({
   // Recompute redundancy locally when an override is active
   const candidatesWithRedundancy = overrideKey
     ? series.Candidates.map((candidate) => {
-      if (candidate.Key === effectivePrimary.Key) return { ...candidate, IsRedundant: false };
+      if (candidate.Key === effectivePrimary?.Key) return { ...candidate, IsRedundant: false };
       const redundant = isSubsetOf(candidate.Episodes, primaryEpisodeSet);
       return { ...candidate, IsRedundant: redundant };
     })

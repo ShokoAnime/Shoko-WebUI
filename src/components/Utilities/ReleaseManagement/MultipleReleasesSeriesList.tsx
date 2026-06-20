@@ -151,7 +151,7 @@ const MultipleReleasesSeriesList = ({
   const params: MultipleReleasesSeriesRequestType = {
     onlyFinishedSeries,
     onlyWithRedundant,
-    search: search ?? undefined,
+    search,
     pageSize: 50,
   };
 

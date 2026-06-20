@@ -65,7 +65,6 @@ const CandidateCard = ({
     return null;
   })();
 
-
   return (
     <div
       className={cx(
@@ -286,7 +285,7 @@ const CandidateCard = ({
               className="underline hover:opacity-80"
               onClick={(event) => {
                 event.stopPropagation();
-                onViewMixMatch?.();
+                onViewMixMatch();
               }}
             >
               View in Mix &amp; Match →
@@ -332,15 +331,9 @@ const CandidateCard = ({
               fileState = allCovered ? 'also-delete' : 'required';
             }
 
-            const fileName = file.AbsolutePath?.split(/[/\\]/).pop() ?? `Place ${file.PlaceID}`;
-            const dirPath = file.AbsolutePath
-              ? file.AbsolutePath.substring(
-                0,
-                file.AbsolutePath.lastIndexOf('/') !== -1
-                  ? file.AbsolutePath.lastIndexOf('/')
-                  : file.AbsolutePath.lastIndexOf('\\'),
-              )
-              : null;
+            const pathParts = file.AbsolutePath?.split(/[/\\]/) ?? [];
+            const fileName = pathParts.at(-1) ?? `Place ${file.PlaceID}`;
+            const dirPath = pathParts.length > 1 ? pathParts.slice(0, -1).join('/') : null;
 
             const fileAnomalies: string[] = [];
             if (file.IsCorrupted) fileAnomalies.push('Corrupted');
