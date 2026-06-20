@@ -55,16 +55,16 @@ const getFilter = (
           },
           Parameter: query,
         },
-      };
-    }
+  let finalSortingCriteria = sortingCriteria;
+const cleanFilterConditions = filterConditions.filter(condition => !!condition);
+if (query) {
+let searchCondition: FilterCondition = {
+@@ -62,6 +63,10 @@ const getFilter = (
+} else {
+finalCondition = buildFilter([searchCondition]);
+}
 
-    if (cleanFilterConditions.length > 0) {
-      finalCondition = buildFilter([searchCondition, ...cleanFilterConditions]);
-    } else {
-      finalCondition = buildFilter([searchCondition]);
-    }
-
-    finalSortingCriteria = sortingCriteria === undefined
+    finalSortingCriteria = !sortingCriteria
       ? { Type: 'FuzzyNameRelevance', Parameter: query, IsInverted: false }
       : { Type: 'FuzzyNameRelevance', Parameter: query, IsInverted: false, Next: sortingCriteria };
   } else if (cleanFilterConditions.length > 0) {
