@@ -71,7 +71,7 @@ const getFilter = (
       ? {
         ApplyAtSeriesLevel: true,
         Expression: finalCondition,
-        Sorting: sortingCriteria ?? { Type: 'Name', IsInverted: false },
+        Sorting: sortingCriteria ?? { Type: 'FuzzyNameRelevance', Parameter: query, IsInverted: false },
       }
       : {}
   );
