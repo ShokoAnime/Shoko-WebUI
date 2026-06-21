@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { mdiAlertOutline, mdiChevronDown, mdiChevronUp, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
+import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
 import { useReleaseOverrideMutation } from '@/core/react-query/release-management/mutations';
-import { typeOrder } from '@/core/utilities/buildEpisodeCoverageString';
+import { getFileName, typeOrder } from '@/core/utilities/buildEpisodeCoverageString';
 
 import type {
   ReleaseCandidateType,
@@ -167,45 +168,43 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
   const allEpisodes = buildEpisodeRows(series.Candidates, overrides);
   const autofillGroups = deriveAutofillGroups(series.Candidates, overrides);
 
-  const [selections, setSelections] = useState<Map<string, number>>(
+  const [selections, setSelections] = useImmer<Map<string, number>>(
     () => autoSelectSingleOptions(buildEpisodeRows(series.Candidates, series.Overrides ?? [])),
   );
 
-  const [expandedEpisodes, setExpandedEpisodes] = useState<Set<string>>(new Set());
+  const [expandedEpisodes, setExpandedEpisodes] = useImmer<Set<string>>(new Set());
 
   const overrideMutation = useReleaseOverrideMutation(series.SeriesID);
 
   const toggleEpisode = (key: string) => {
-    setExpandedEpisodes((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
+    setExpandedEpisodes((draft) => {
+      if (draft.has(key)) draft.delete(key);
+      else draft.add(key);
     });
   };
 
   const handleSelectOption = (episodeKey: string, placeID: number) => {
-    setSelections(prev => new Map(prev).set(episodeKey, placeID));
+    setSelections((draft) => {
+      draft.set(episodeKey, placeID);
+    });
   };
 
   const handleAutofill = (groupKey: string) => {
-    setSelections((prev) => {
-      const next = new Map(prev);
+    setSelections((draft) => {
       for (const episode of allEpisodes) {
-        if (!next.has(episode.key)) {
-          const groupOptions = episode.options.filter(opt => opt.autofillKey === groupKey);
-          if (groupOptions.length > 0) {
-            const best = [...groupOptions].sort((optA, optB) => optB.version - optA.version)[0];
-            next.set(episode.key, best.placeID);
-          }
+        const groupOptions = episode.options.filter(opt => opt.autofillKey === groupKey);
+        if (groupOptions.length > 0) {
+          const best = [...groupOptions].sort((optA, optB) => optB.version - optA.version)[0];
+          draft.set(episode.key, best.placeID);
         }
       }
-      return next;
     });
   };
 
   const handleClearAll = () => {
-    setSelections(autoSelectSingleOptions(allEpisodes));
+    setSelections((draft) => {
+      draft.clear();
+    });
   };
 
   const unassignedCount = allEpisodes.filter(
@@ -272,7 +271,7 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
 
       {/* Episode accordion rows */}
       <div className="flex flex-col gap-1.5">
-        {allEpisodes.map((episode) => {
+        {allEpisodes.map((episode, idx) => {
           const selectedPlaceID = selections.get(episode.key);
           const selectedOption = episode.options.find(opt => opt.placeID === selectedPlaceID);
           const isExpanded = expandedEpisodes.has(episode.key);
@@ -287,7 +286,8 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
             <div
               key={episode.key}
               className={cx(
-                'overflow-hidden rounded-lg border bg-panel-background',
+                'overflow-hidden rounded-lg border',
+                idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
                 isUnassigned ? 'border-panel-text-danger' : 'border-panel-border',
               )}
             >
@@ -342,8 +342,7 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
                 <div className="border-t border-panel-border">
                   {episode.options.map((option) => {
                     const isSelected = selectedPlaceID === option.placeID;
-                    const fileName = option.absolutePath?.split(/[/\\]/).pop()
-                      ?? `Place ${option.placeID}`;
+                    const fileName = getFileName(option.absolutePath, option.placeID);
                     const summary = buildOptionSummary(option);
 
                     return (

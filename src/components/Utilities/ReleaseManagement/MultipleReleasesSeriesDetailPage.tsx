@@ -147,6 +147,7 @@ const MultipleReleasesSeriesDetailPage = () => {
         <div className="flex gap-1 border-b border-panel-border">
           <button
             type="button"
+            disabled={activeTab === 'candidates'}
             className={cx(
               'px-4 py-2 text-sm font-semibold transition-colors',
               activeTab === 'candidates'
@@ -159,6 +160,7 @@ const MultipleReleasesSeriesDetailPage = () => {
           </button>
           <button
             type="button"
+            disabled={activeTab === 'mixmatch'}
             className={cx(
               'px-4 py-2 text-sm font-semibold transition-colors',
               activeTab === 'mixmatch'

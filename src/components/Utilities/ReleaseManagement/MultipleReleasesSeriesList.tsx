@@ -15,28 +15,28 @@ type Props = {
   onlyFinishedSeries: boolean;
   onlyWithRedundant: boolean;
   autoDeleteMode?: boolean;
-  rowSelection?: Record<number, boolean>;
-  setRowSelection?: Updater<Record<number, boolean>>;
+  defaultSelected?: boolean;
+  exceptions?: Set<number>;
+  setExceptions?: Updater<Set<number>>;
   search?: string;
   onSeriesDetailOpen: (seriesId: number) => void;
   onRowSelect?: (seriesId: number) => void;
   onSeriesCountChange: (count: number) => void;
-  onSeriesIdsChange?: (ids: number[]) => void;
 };
 
 const SeriesRow = ({
   autoDeleteMode,
   index,
+  isSelected,
   onDetailOpen,
   onRowClick,
   onToggle,
-  rowSelection,
   series,
 }: {
   series: SeriesWithCandidatesType;
   index: number;
   autoDeleteMode: boolean;
-  rowSelection?: Record<number, boolean>;
+  isSelected: boolean;
   onDetailOpen: () => void;
   onRowClick: (event: React.MouseEvent, index: number) => void;
   onToggle: () => void;
@@ -46,11 +46,11 @@ const SeriesRow = ({
     0,
   );
   const primary = series.Candidates[0];
-  const isSelected = rowSelection?.[series.SeriesID] ?? true;
 
+  const defaultBg = index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt';
   const rowBgClass = autoDeleteMode && isSelected
     ? 'bg-panel-background-selected-row'
-    : 'bg-panel-background';
+    : defaultBg;
 
   return (
     <div
@@ -90,14 +90,14 @@ const SeriesRow = ({
         <div className="flex items-center gap-2">
           <span className="truncate font-semibold">{series.SeriesTitle}</span>
           {series.IsAiring && (
-            <span className="shrink-0 rounded-sm bg-panel-text-primary px-1.5 py-0.5 text-xs font-semibold text-button-primary-text">
+            <span className="shrink-0 rounded-sm bg-panel-text-primary/20 px-1.5 py-0.5 text-xs font-semibold text-panel-text-primary">
               Airing
             </span>
           )}
           <a
             href={`https://anidb.net/anime/${series.AnidbAnimeID}`}
             target="_blank"
-            rel="noreferrer noopener"
+            rel="noreferrer"
             className="shrink-0 text-panel-text-primary"
             aria-label="Open AniDB series page"
             onClick={(event) => {
@@ -138,15 +138,15 @@ const SeriesRow = ({
 
 const MultipleReleasesSeriesList = ({
   autoDeleteMode = false,
+  defaultSelected = true,
+  exceptions,
   onRowSelect,
   onSeriesCountChange,
   onSeriesDetailOpen,
-  onSeriesIdsChange,
   onlyFinishedSeries,
   onlyWithRedundant,
-  rowSelection,
   search,
-  setRowSelection,
+  setExceptions,
 }: Props) => {
   const params: MultipleReleasesSeriesRequestType = {
     onlyFinishedSeries,
@@ -168,21 +168,25 @@ const MultipleReleasesSeriesList = ({
     onSeriesCountChange(seriesCount);
   }, [seriesCount, onSeriesCountChange]);
 
-  useEffect(() => {
-    onSeriesIdsChange?.(series.map(ser => ser.SeriesID));
-  }, [series, onSeriesIdsChange]);
+  const computeIsSelected = (seriesId: number): boolean => {
+    if (defaultSelected) return !(exceptions?.has(seriesId) ?? false);
+    return exceptions?.has(seriesId) ?? false;
+  };
 
   const handleRowClick = (event: React.MouseEvent, index: number, seriesId: number) => {
-    if (event.shiftKey && lastRowIndex.current !== undefined && setRowSelection) {
+    if (event.shiftKey && lastRowIndex.current !== undefined && setExceptions) {
+      const anchorIsSelected = computeIsSelected(series[lastRowIndex.current].SeriesID);
       const fromIdx = Math.min(lastRowIndex.current, index);
       const toIdx = Math.max(lastRowIndex.current, index);
-      const targetState = rowSelection?.[series[lastRowIndex.current].SeriesID] ?? true;
-      const update: Record<number, boolean> = {};
-      for (let idx = fromIdx; idx <= toIdx; idx += 1) {
-        update[series[idx].SeriesID] = targetState;
-      }
-      setRowSelection((draft) => {
-        Object.assign(draft, update);
+      setExceptions((draft) => {
+        for (let idx = fromIdx; idx <= toIdx; idx += 1) {
+          const id = series[idx].SeriesID;
+          const currentIsSelected = defaultSelected ? !draft.has(id) : draft.has(id);
+          if (currentIsSelected !== anchorIsSelected) {
+            if (draft.has(id)) draft.delete(id);
+            else draft.add(id);
+          }
+        }
       });
     } else {
       onRowSelect?.(seriesId);
@@ -230,7 +234,7 @@ const MultipleReleasesSeriesList = ({
           series={ser}
           index={idx}
           autoDeleteMode={autoDeleteMode}
-          rowSelection={rowSelection}
+          isSelected={computeIsSelected(ser.SeriesID)}
           onDetailOpen={() => onSeriesDetailOpen(ser.SeriesID)}
           onRowClick={(event, index) => handleRowClick(event, index, ser.SeriesID)}
           onToggle={() => onRowSelect?.(ser.SeriesID)}

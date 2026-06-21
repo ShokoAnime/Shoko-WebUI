@@ -13,6 +13,7 @@ import {
   useReleaseDeletionPreviewMutation,
   useReleaseExecuteMutation,
 } from '@/core/react-query/release-management/mutations';
+import { getFileName } from '@/core/utilities/buildEpisodeCoverageString';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
@@ -21,6 +22,7 @@ type Props = {
   open: boolean;
   includedSeriesIDs?: number[];
   excludedSeriesIDs?: number[];
+  onlyFinishedSeries?: boolean;
   overrides: Map<number, string>;
   precomputedData?: ReleaseDeletionPreviewType[];
   onClose: () => void;
@@ -75,7 +77,7 @@ const SeriesPreviewRow = (
       {expanded && (
         <div className="flex flex-col gap-1 border-t border-panel-border p-4">
           {preview.Files.map((file) => {
-            const fileName = file.AbsolutePath?.split(/[/\\]/).pop() ?? `Place ${file.PlaceID}`;
+            const fileName = getFileName(file.AbsolutePath, file.PlaceID);
             const isUnchecked = uncheckedPlaceIDs.has(file.PlaceID);
             return (
               <div key={file.PlaceID} className="flex items-center gap-3 text-sm">
@@ -106,6 +108,7 @@ const MultipleReleasesPreviewModal = ({
   includedSeriesIDs,
   onClose,
   onSuccess,
+  onlyFinishedSeries,
   open,
   overrides,
   precomputedData,
@@ -139,7 +142,7 @@ const MultipleReleasesPreviewModal = ({
       ? { includedSeriesIDs, overrides: overridesList }
       : { excludedSeriesIDs, overrides: overridesList };
 
-    previewMutation.mutate(body);
+    previewMutation.mutate({ body, onlyFinishedSeries });
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 

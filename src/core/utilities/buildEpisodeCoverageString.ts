@@ -57,5 +57,8 @@ export const buildEpisodeCoverageString = (episodes: EpisodeCoverageType[]): str
 
   return sortedTypes
     .map(type => `${typeDisplayNameMap[type] ?? type}: ${collapseToRanges(byType.get(type) ?? [])}`)
-    .join('  ');
+    .join(' · ');
 };
+
+export const getFileName = (absolutePath: string | null, placeID: number): string =>
+  absolutePath?.split(/[/\\]/).pop() ?? `Place ${placeID}`;

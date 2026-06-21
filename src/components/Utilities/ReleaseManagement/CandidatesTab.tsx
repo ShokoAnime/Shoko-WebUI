@@ -92,7 +92,7 @@ const CandidatesTab = ({
           onClick={onPreviewSingle}
         >
           <Icon path={mdiTrashCanOutline} size={0.8333} />
-          Preview Deletion for this Series
+          Delete
         </Button>
       </div>
 
@@ -141,7 +141,7 @@ const CandidatesTab = ({
           onClick={onPreviewSingle}
         >
           <Icon path={mdiTrashCanOutline} size={0.8333} />
-          Preview Deletion for this Series
+          Delete
         </Button>
       </div>
     </div>

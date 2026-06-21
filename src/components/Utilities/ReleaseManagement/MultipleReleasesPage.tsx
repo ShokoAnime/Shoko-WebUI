@@ -37,12 +37,12 @@ const MultipleReleasesPage = () => {
 
   const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'multiple-releases'] }) > 0;
 
-  const [rowSelection, setRowSelection] = useImmer<Record<number, boolean>>({});
+  const [defaultSelected, setDefaultSelected] = useState(true);
+  const [exceptions, setExceptions] = useImmer<Set<number>>(new Set());
   const [previewOpen, setPreviewOpen] = useState(false);
   const searchQuery = searchParams.get('search') ?? '';
   const [autoDeleteMode, setAutoDeleteMode] = useState(false);
   const onlyWithRedundant = autoDeleteMode;
-  const [allSeriesIds, setAllSeriesIds] = useState<number[]>([]);
   const [seriesCount, setSeriesCount] = useState(0);
 
   const handleRefresh = () => {
@@ -58,31 +58,33 @@ const MultipleReleasesPage = () => {
   };
 
   const handleRowSelect = (seriesId: number) => {
-    setRowSelection((draft) => {
-      draft[seriesId] = !(draft[seriesId] ?? true);
+    setExceptions((draft) => {
+      if (draft.has(seriesId)) draft.delete(seriesId);
+      else draft.add(seriesId);
     });
   };
 
   const handleToggleAutoDelete = () => {
     if (!autoDeleteMode) {
-      setRowSelection(Object.fromEntries(allSeriesIds.map(id => [id, true])));
+      setDefaultSelected(true);
+      setExceptions(new Set());
     }
     setAutoDeleteMode(prev => !prev);
   };
 
-  const allDeselected = allSeriesIds.length > 0 && allSeriesIds.every(id => !rowSelection[id]);
+  const allDeselected = !defaultSelected && exceptions.size === 0;
 
   const handleSelectDeselectAll = () => {
     if (allDeselected) {
-      setRowSelection(Object.fromEntries(allSeriesIds.map(id => [id, true])));
+      setDefaultSelected(true);
     } else {
-      setRowSelection(Object.fromEntries(allSeriesIds.map(id => [id, false])));
+      setDefaultSelected(false);
     }
+    setExceptions(new Set());
   };
 
-  const isFiltered = !!searchQuery || onlyFinishedSeries || onlyWithRedundant;
-  const includedForPreview = isFiltered ? allSeriesIds.filter(id => rowSelection[id]) : undefined;
-  const excludedForPreview = !isFiltered ? allSeriesIds.filter(id => !rowSelection[id]) : undefined;
+  const includedForPreview = !defaultSelected ? [...exceptions] : undefined;
+  const excludedForPreview = defaultSelected ? [...exceptions] : undefined;
 
   return (
     <>
@@ -124,15 +126,23 @@ const MultipleReleasesPage = () => {
             </div>
 
             <div className="flex items-center gap-x-2">
-              <Button
-                buttonType={autoDeleteMode ? 'secondary' : 'primary'}
-                className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
-                disabled={seriesCount === 0}
-                onClick={handleToggleAutoDelete}
-              >
-                <Icon path={mdiTrashCanOutline} size={0.8333} />
-                Auto Delete
-              </Button>
+              {autoDeleteMode
+                ? (
+                  <Button buttonType="secondary" className="px-5 py-3" onClick={handleToggleAutoDelete}>
+                    Cancel
+                  </Button>
+                )
+                : (
+                  <Button
+                    buttonType="primary"
+                    className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
+                    disabled={seriesCount === 0}
+                    onClick={handleToggleAutoDelete}
+                  >
+                    <Icon path={mdiTrashCanOutline} size={0.8333} />
+                    Auto Delete
+                  </Button>
+                )}
               <Button
                 buttonType="secondary"
                 className="p-3"
@@ -158,6 +168,7 @@ const MultipleReleasesPage = () => {
                   <Button
                     buttonType="danger"
                     className="flex items-center gap-x-2.5 px-4 py-3 font-semibold whitespace-nowrap"
+                    disabled={allDeselected}
                     onClick={() => setPreviewOpen(true)}
                   >
                     <Icon path={mdiTrashCanOutline} size={0.8333} />
@@ -174,13 +185,13 @@ const MultipleReleasesPage = () => {
             onlyFinishedSeries={onlyFinishedSeries}
             onlyWithRedundant={onlyWithRedundant}
             autoDeleteMode={autoDeleteMode}
-            rowSelection={rowSelection}
-            setRowSelection={setRowSelection}
+            defaultSelected={defaultSelected}
+            exceptions={exceptions}
+            setExceptions={setExceptions}
             search={searchQuery}
             onSeriesDetailOpen={handleDetailOpen}
             onRowSelect={handleRowSelect}
             onSeriesCountChange={setSeriesCount}
-            onSeriesIdsChange={setAllSeriesIds}
           />
         </div>
       </div>
@@ -189,6 +200,7 @@ const MultipleReleasesPage = () => {
         open={previewOpen}
         includedSeriesIDs={includedForPreview}
         excludedSeriesIDs={excludedForPreview}
+        onlyFinishedSeries={onlyFinishedSeries}
         overrides={new Map()}
         onClose={() => setPreviewOpen(false)}
       />

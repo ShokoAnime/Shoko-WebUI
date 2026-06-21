@@ -84,23 +84,12 @@ const CandidateCard = ({
         <span className="font-semibold text-panel-text-important">
           {groupLabel}
         </span>
-        {candidate.IsMixed && (
-          <span className="rounded-sm bg-panel-background-alt px-1.5 py-0.5 text-xs font-semibold text-panel-text">
-            MIXED
-          </span>
-        )}
-        {strategyLabel && (
-          <span className="rounded-sm bg-panel-background-alt px-1.5 py-0.5 text-xs font-semibold text-panel-text">
-            {strategyLabel}
-          </span>
-        )}
+        {candidate.IsMixed && <Badge className="bg-panel-background-alt text-panel-text">MIXED</Badge>}
+        {strategyLabel && <Badge className="bg-panel-background-alt text-panel-text">{strategyLabel}</Badge>}
         {isVersion && candidate.WinnerValue && candidate.LoserValue && (
-          <span className="rounded-sm bg-panel-background-alt px-1.5 py-0.5 text-xs font-semibold">
-            v
-            {candidate.LoserValue}
-            &nbsp;→&nbsp;v
-            {candidate.WinnerValue}
-          </span>
+          <Badge className="bg-panel-background-alt">
+            v{candidate.LoserValue}&nbsp;→&nbsp;v{candidate.WinnerValue}
+          </Badge>
         )}
         {!candidate.HasReleaseInfo && (
           <Icon
@@ -223,7 +212,7 @@ const CandidateCard = ({
           Version:&nbsp;
           <span className="font-semibold">
             v
-            {candidate.Version || 1}
+            {candidate.Version > 0 ? candidate.Version : 1}
           </span>
         </div>
         <div>
@@ -274,7 +263,7 @@ const CandidateCard = ({
       <div className="border-t border-panel-border pt-3 text-sm">
         <div>
           Coverage:&nbsp;
-          <span className="font-semibold">{coverageString || 'None'}</span>
+          <span className="font-semibold">{coverageString !== '' ? coverageString : 'None'}</span>
         </div>
         {isPartial && onViewMixMatch && (
           <div className="mt-1 flex items-center gap-1 text-xs text-panel-text-warning">

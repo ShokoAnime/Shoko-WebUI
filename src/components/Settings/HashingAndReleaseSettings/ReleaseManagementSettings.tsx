@@ -58,6 +58,20 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
 
         <div className="flex flex-col">
           <Checkbox
+            id="rm-allow-deletion"
+            isChecked={preferences.AllowDeletion}
+            onChange={event => updateSetting('AllowDeletion', event.target.checked)}
+            justify
+            label="Allow File Deletion"
+          />
+          <div className="text-xs opacity-65">
+            Permit the server to physically delete files during release management operations. Must be enabled for
+            deletions to take effect.
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <Checkbox
             id="rm-auto-delete-on-import"
             isChecked={preferences.AutoDeleteOnImport}
             onChange={event => updateSetting('AutoDeleteOnImport', event.target.checked)}

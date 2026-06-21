@@ -11,8 +11,9 @@ import type {
 import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
 
 export const useReleaseDeletionPreviewMutation = () =>
-  useMutation<ReleaseDeletionPreviewType[], Error, ReleaseDeletionPreviewBody>({
-    mutationFn: body => axios.post('ReleaseManagement/MultipleReleases/Preview', body),
+  useMutation<ReleaseDeletionPreviewType[], Error, { body: ReleaseDeletionPreviewBody, onlyFinishedSeries?: boolean }>({
+    mutationFn: ({ body, onlyFinishedSeries }) =>
+      axios.post('ReleaseManagement/MultipleReleases/Preview', body, { params: { onlyFinishedSeries } }),
   });
 
 export const useReleaseOverrideMutation = (seriesId: number) =>

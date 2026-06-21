@@ -85,7 +85,11 @@ const ReleaseManagement = () => {
 
   const handleRefresh = () => {
     if (isSeriesQueryFetching) return;
-    resetQueries(['release-management', 'series']);
+    if (type === 'MultipleReleases') {
+      resetQueries(['release-management', 'multiple-releases']);
+    } else {
+      resetQueries(['release-management', 'series']);
+    }
   };
 
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
