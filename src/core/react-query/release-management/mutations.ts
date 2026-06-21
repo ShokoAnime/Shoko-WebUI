@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import { resetQueries } from '@/core/react-query/queryClient';
 
 import type {
   DeleteReleasesBody,
@@ -24,7 +23,4 @@ export const useReleaseOverrideMutation = (seriesId: number) =>
 export const useReleaseExecuteMutation = () =>
   useMutation({
     mutationFn: (body: DeleteReleasesBody) => axios.post('ReleaseManagement/MultipleReleases/Execute', body),
-    onSuccess: () => {
-      resetQueries(['release-management']);
-    },
   });

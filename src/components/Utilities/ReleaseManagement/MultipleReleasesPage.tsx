@@ -203,6 +203,7 @@ const MultipleReleasesPage = () => {
         onlyFinishedSeries={onlyFinishedSeries}
         overrides={new Map()}
         onClose={() => setPreviewOpen(false)}
+        onSuccess={() => resetQueries(['release-management'])}
       />
 
       <ReleaseManagementSettingsModal

@@ -8,11 +8,11 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/core/toast';
 import {
   useReleaseDeletionPreviewMutation,
   useReleaseExecuteMutation,
 } from '@/core/react-query/release-management/mutations';
+import toast from '@/core/toast';
 import { getFileName } from '@/core/utilities/buildEpisodeCoverageString';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
