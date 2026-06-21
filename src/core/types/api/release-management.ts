@@ -13,6 +13,8 @@ export type ReleaseCandidateFileType = {
   IsCensored: boolean | null;
   IsCreditless: boolean | null;
   IsCorrupted: boolean;
+  AudioLanguages: string[];
+  SubtitleLanguages: string[];
   Episodes: EpisodeCoverageType[];
 };
 

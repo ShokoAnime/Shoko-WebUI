@@ -16,7 +16,9 @@ const SIGNAL_NAMES: Record<SignalType, string> = {
   VideoCodec: 'Video Codec',
   BitDepth: 'Bit Depth',
   AudioCodec: 'Audio Codec',
+  AudioLanguage: 'Audio Language',
   AudioStreams: 'Audio Streams',
+  SubtitleLanguage: 'Subtitle Language',
   SubtitleStreams: 'Subtitle Streams',
   Version: 'Version',
   Chaptered: 'Chaptered',
@@ -241,6 +243,44 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
           </div>
           <div className="text-xs opacity-65">
             Preferred audio codec order (e.g. FLAC,AAC,MP3). First entry is most preferred.
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-y-1">
+          <div className="flex items-center justify-between">
+            <span>Audio Language Order</span>
+            <InputSmall
+              id="rm-audio-language-order"
+              type="text"
+              value={preferences.AudioLanguageOrder.join(',')}
+              onChange={event =>
+                updateSetting('AudioLanguageOrder', event.target.value ? event.target.value.split(',') : [])}
+              className="w-52 px-3 py-1"
+              placeholder="en,ja"
+            />
+          </div>
+          <div className="text-xs opacity-65">
+            Preferred audio language order (e.g. en,ja). First entry is most preferred. Leave empty for no language
+            preference.
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-y-1">
+          <div className="flex items-center justify-between">
+            <span>Subtitle Language Order</span>
+            <InputSmall
+              id="rm-subtitle-language-order"
+              type="text"
+              value={preferences.SubtitleLanguageOrder.join(',')}
+              onChange={event =>
+                updateSetting('SubtitleLanguageOrder', event.target.value ? event.target.value.split(',') : [])}
+              className="w-52 px-3 py-1"
+              placeholder="en,ja"
+            />
+          </div>
+          <div className="text-xs opacity-65">
+            Preferred subtitle language order (e.g. en,ja). First entry is most preferred. Leave empty for no language
+            preference.
           </div>
         </div>
 

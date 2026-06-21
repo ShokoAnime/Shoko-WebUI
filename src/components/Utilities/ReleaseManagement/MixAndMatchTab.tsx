@@ -27,6 +27,8 @@ type FileOption = {
   subtitleStreamCount: number;
   source: string | null;
   resolution: string | null;
+  audioLanguages: string[];
+  subtitleLanguages: string[];
 };
 
 type EpisodeRow = {
@@ -69,6 +71,8 @@ const buildFromOverrides = (overrides: ReleaseOverrideType[]): Map<string, FileO
             subtitleStreamCount: override.SubtitleStreamCount,
             source: override.Source,
             resolution: override.Resolution,
+            audioLanguages: override.AudioLanguages ?? [],
+            subtitleLanguages: override.SubtitleLanguages ?? [],
           });
         }
       }
@@ -98,6 +102,8 @@ const buildFromCandidates = (candidates: ReleaseCandidateType[]): Map<string, Fi
             subtitleStreamCount: candidate.SubtitleStreamCount,
             source: candidate.Source,
             resolution: candidate.Resolution,
+            audioLanguages: file.AudioLanguages,
+            subtitleLanguages: file.SubtitleLanguages,
           });
         }
       }
@@ -363,6 +369,13 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
                         <div className="min-w-0 grow">
                           <div className="font-semibold">{option.groupLabel}</div>
                           <div className="text-xs opacity-65">{summary}</div>
+                          {(option.audioLanguages.length > 0 || option.subtitleLanguages.length > 0) && (
+                            <div className="text-xs opacity-65">
+                              {option.audioLanguages.length > 0 && `Audio: ${option.audioLanguages.join(', ')}`}
+                              {option.audioLanguages.length > 0 && option.subtitleLanguages.length > 0 && ' · '}
+                              {option.subtitleLanguages.length > 0 && `Subs: ${option.subtitleLanguages.join(', ')}`}
+                            </div>
+                          )}
                           {option.absolutePath != null
                             ? <div className="truncate text-xs opacity-50">{fileName}</div>
                             : <div className="text-xs text-panel-text-warning">Path unavailable</div>}

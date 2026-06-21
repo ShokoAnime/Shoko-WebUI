@@ -329,7 +329,9 @@ export type SignalType =
   | 'VideoCodec'
   | 'BitDepth'
   | 'AudioCodec'
+  | 'AudioLanguage'
   | 'AudioStreams'
+  | 'SubtitleLanguage'
   | 'SubtitleStreams'
   | 'Version'
   | 'Chaptered'
@@ -346,6 +348,8 @@ export type ReleaseComparisonPreferencesType = {
   ResolutionOrder: string[];
   VideoCodecOrder: string[];
   AudioCodecOrder: string[];
+  AudioLanguageOrder: string[];
+  SubtitleLanguageOrder: string[];
   SubGroupOrder: string[];
   PreferHigherBitDepth: boolean;
   AllowDeletion: boolean;

@@ -353,6 +353,13 @@ const CandidateCard = ({
                     <span>{prettyBytes(file.FileSize, { binary: true })}</span>
                     {file.AbsolutePath == null && <span className="text-panel-text-warning">Path unavailable</span>}
                   </div>
+                  {(file.AudioLanguages.length > 0 || file.SubtitleLanguages.length > 0) && (
+                    <div className="text-xs opacity-65">
+                      {file.AudioLanguages.length > 0 && `Audio: ${file.AudioLanguages.join(', ')}`}
+                      {file.AudioLanguages.length > 0 && file.SubtitleLanguages.length > 0 && ' · '}
+                      {file.SubtitleLanguages.length > 0 && `Subs: ${file.SubtitleLanguages.join(', ')}`}
+                    </div>
+                  )}
                   {fileAnomalies.length > 0 && (
                     <div className="flex flex-wrap gap-1 pt-0.5">
                       {fileAnomalies.map(anomaly => (
