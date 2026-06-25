@@ -10,7 +10,7 @@ type LinkMenuItemProps = {
   text: string;
 };
 
-const LinkMenuItem = React.memo((props: LinkMenuItemProps) => {
+const LinkMenuItem = (props: LinkMenuItemProps) => {
   const {
     icon,
     onClick,
@@ -33,6 +33,6 @@ const LinkMenuItem = React.memo((props: LinkMenuItemProps) => {
       {text}
     </NavLink>
   );
-});
+};
 
 export default LinkMenuItem;

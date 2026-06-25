@@ -16,7 +16,7 @@ type Props = {
   onIconClick?: () => void;
 };
 
-const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) => (
+const AniDBEpisode = ({ episode, extra, isOdd, onIconClick }: Props) => (
   <div
     className={cx(
       'flex grow basis-0 items-center gap-x-6 rounded-lg border border-panel-border p-4',
@@ -47,6 +47,6 @@ const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) 
       </Button>
     )}
   </div>
-));
+);
 
 export default AniDBEpisode;

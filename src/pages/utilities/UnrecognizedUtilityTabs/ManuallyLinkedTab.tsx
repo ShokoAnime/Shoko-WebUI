@@ -133,7 +133,7 @@ const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
   },
 ];
 
-const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Updater<Record<number, boolean>> }) => {
+const Menu = (props: { selectedFileIds: number[], setSelectedRows: Updater<Record<number, boolean>> }) => {
   const { selectedFileIds, setSelectedRows } = props;
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
@@ -169,7 +169,7 @@ const Menu = React.memo((props: { selectedFileIds: number[], setSelectedRows: Up
       </TransitionDiv>
     </div>
   );
-});
+};
 
 const ManuallyLinkedTab = () => {
   const [search, setSearch] = useState('');

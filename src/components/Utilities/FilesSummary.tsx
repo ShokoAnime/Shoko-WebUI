@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { groupBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
@@ -10,28 +10,15 @@ type Props = {
 };
 
 const FilesSummary = ({ items, title }: Props) => {
-  const { episodeCount, seriesCount, totalSize } = useMemo(() => {
-    if (items.length === 0) {
-      return {
-        seriesCount: 0,
-        totalSize: 0,
-        episodeCount: 0,
-      };
-    }
-
-    const selectedSeriesCount = Object.keys(
+  const seriesCount = items.length === 0
+    ? 0
+    : Object.keys(
       groupBy(items.flatMap(file => file.SeriesIDs).map(xref => xref?.SeriesID), seriesIds => seriesIds?.ID),
     ).length;
-    const selectedSize = items.reduce((prev, current) => prev + current.Size, 0);
-    const selectedEpisodeCount = items
-      .flatMap(file => file.SeriesIDs)
-      .map(xref => xref?.EpisodeIDs.flatMap(episodeIDs => episodeIDs.ID)).length;
-    return {
-      seriesCount: selectedSeriesCount,
-      totalSize: selectedSize,
-      episodeCount: selectedEpisodeCount,
-    };
-  }, [items]);
+  const totalSize = items.reduce((prev, current) => prev + current.Size, 0);
+  const episodeCount = items
+    .flatMap(file => file.SeriesIDs)
+    .map(xref => xref?.EpisodeIDs.flatMap(episodeIDs => episodeIDs.ID)).length;
 
   return (
     <>

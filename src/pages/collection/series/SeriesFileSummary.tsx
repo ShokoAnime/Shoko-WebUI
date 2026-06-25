@@ -23,7 +23,7 @@ type FileSelectionHeaderProps = {
   setMode: (mode: ModeType) => void;
   fileSummary?: WebuiSeriesFileSummaryType;
 };
-const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
+const FilesSelectionHeader = ({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
   <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
     <div className="flex gap-x-2 text-xl font-semibold">
       {mode}
@@ -44,7 +44,7 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
     </div>
     <MultiStateButton activeState={mode} states={tabStates} onStateChange={setMode} />
   </div>
-));
+);
 
 const SeriesFileSummary = () => {
   const { series } = useOutletContext<SeriesContextType>();

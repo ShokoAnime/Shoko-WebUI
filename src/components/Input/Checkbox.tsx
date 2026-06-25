@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -20,7 +20,7 @@ type Props = {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-const Checkbox = memo((props: Props) => {
+const Checkbox = (props: Props) => {
   const {
     autoFocus = false,
     className,
@@ -87,6 +87,6 @@ const Checkbox = memo((props: Props) => {
       )}
     </label>
   );
-});
+};
 
 export default Checkbox;

@@ -28,7 +28,7 @@ type Props = {
   altText?: string;
 };
 
-const CleanDescription = React.memo(({ altText, className, text }: Props) => {
+const CleanDescription = ({ altText, className, text }: Props) => {
   const settings = useSettingsQuery().data;
   const filterDescription = settings?.WebUI_Settings.collection.anidb.filterDescription;
 
@@ -76,6 +76,6 @@ const CleanDescription = React.memo(({ altText, className, text }: Props) => {
   }
 
   return <div className={cx(className, 'pr-4 text-base whitespace-pre-line')}>{modifiedText}</div>;
-});
+};
 
 export default CleanDescription;

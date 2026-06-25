@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
@@ -20,10 +20,7 @@ const MainPage = () => {
   // settingsQuery.isSuccess is always true due to the existence of initialData
   // settingsRevision will be 0 before the first actual fetch and it will never be 0 for fetched data
   // This is kind of a hack but it works
-  const isSettingsLoaded = useMemo(
-    () => settingsQuery.data.WebUI_Settings.settingsRevision > 0,
-    [settingsQuery.data],
-  );
+  const isSettingsLoaded = settingsQuery.data.WebUI_Settings.settingsRevision > 0;
 
   useEffect(() => {
     if (isSettingsLoaded) dispatch({ type: Events.MAINPAGE_LOADED });

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { mdiClipboardOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
@@ -12,7 +12,7 @@ import type { FileType } from '@/core/types/api/file';
 const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
 
-  const hash = useMemo(() => getEd2kLink(file), [file]);
+  const hash = getEd2kLink(file);
   const handleCopy = (event: React.MouseEvent) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);

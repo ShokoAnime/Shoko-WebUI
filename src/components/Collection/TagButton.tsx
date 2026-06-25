@@ -15,7 +15,7 @@ type Props = {
   type: 'Collection' | 'Series';
 };
 
-const TagButton = React.memo(({ tagType, text, type }: Props) => {
+const TagButton = ({ tagType, text, type }: Props) => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
   const handleClick = () => {
@@ -39,6 +39,6 @@ const TagButton = React.memo(({ tagType, text, type }: Props) => {
       <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
     </Button>
   );
-});
+};
 
 export default TagButton;

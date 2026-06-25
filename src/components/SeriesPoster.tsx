@@ -19,7 +19,7 @@ type Props = {
 
 const baseClassName = 'w-56 flex flex-col shrink-0';
 
-const SeriesPoster = React.memo((props: Props) => {
+const SeriesPoster = (props: Props) => {
   const {
     anidbEpisodeId,
     anidbSeriesId,
@@ -106,6 +106,6 @@ const SeriesPoster = React.memo((props: Props) => {
   }
 
   return <div className={baseClassName}>{content}</div>;
-});
+};
 
 export default SeriesPoster;

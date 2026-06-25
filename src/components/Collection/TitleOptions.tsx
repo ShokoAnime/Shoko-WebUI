@@ -30,22 +30,20 @@ type Props = {
   toggleMode: () => void;
 };
 
-const OptionButton = React.memo(
-  (
-    { icon, onClick, tooltip }: {
-      icon: string;
-      onClick: React.MouseEventHandler<HTMLDivElement>;
-      tooltip?: string;
-    },
-  ) => (
-    <IconButton
-      icon={icon}
-      buttonType="secondary"
-      buttonSize="normal"
-      onClick={onClick}
-      tooltip={tooltip}
-    />
-  ),
+const OptionButton = (
+  { icon, onClick, tooltip }: {
+    icon: string;
+    onClick: React.MouseEventHandler<HTMLDivElement>;
+    tooltip?: string;
+  },
+) => (
+  <IconButton
+    icon={icon}
+    buttonType="secondary"
+    buttonSize="normal"
+    onClick={onClick}
+    tooltip={tooltip}
+  />
 );
 
 const TitleOptions = (props: Props) => {

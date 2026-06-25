@@ -19,7 +19,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
+const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
   const { seriesId } = useParams();
 
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true, filter: 1 }, !!seriesId);
@@ -109,6 +109,6 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       </div>
     </div>
   );
-});
+};
 
 export default SeriesTopPanel;

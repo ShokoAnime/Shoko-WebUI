@@ -17,7 +17,7 @@ type Props = {
   show: boolean;
 };
 
-const Title = React.memo(({ onClose }: { onClose: () => void }) => {
+const Title = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
 
   const handleEdit = () => {
@@ -37,7 +37,7 @@ const Title = React.memo(({ onClose }: { onClose: () => void }) => {
       </Button>
     </div>
   );
-});
+};
 
 const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();

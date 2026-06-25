@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { Link, NavLink, useLocation } from 'react-router';
 import {
@@ -100,12 +100,8 @@ const TopNav = () => {
   const [showServerUpdateModal, setShowServerUpdateModal] = useState(false);
   const [showWebuiUpdateModal, setShowWebuiUpdateModal] = useState(false);
 
-  const isOffline = useMemo(
-    () =>
-      !(networkStatus === NetworkAvailabilityEnum.Internet
-        || networkStatus === NetworkAvailabilityEnum.PartialInternet),
-    [networkStatus],
-  );
+  const isOffline = !(networkStatus === NetworkAvailabilityEnum.Internet
+    || networkStatus === NetworkAvailabilityEnum.PartialInternet);
 
   const closeModalsAndSubmenus = (event?: React.MouseEvent, id?: string) => {
     if (layoutEditMode && event) {

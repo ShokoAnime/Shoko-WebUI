@@ -26,6 +26,8 @@ const sizeClass = {
   xl: 'w-300',
 };
 
+Modal.setAppElement('#app-root');
+
 const ModalPanel = (props: Props) => {
   const {
     children,
@@ -43,10 +45,6 @@ const ModalPanel = (props: Props) => {
     size,
     subHeader,
   } = props;
-
-  Modal.setAppElement('#app-root');
-
-  // const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   return (
     <Modal

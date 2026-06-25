@@ -15,7 +15,7 @@ import TMDBTab from './MetadataSourcesTabs/TMDBTab';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 
-const TabButton = React.memo((
+const TabButton = (
   { active, setActiveTab, tabKey, title }: {
     active: boolean;
     setActiveTab: (tab: string) => void;
@@ -38,9 +38,9 @@ const TabButton = React.memo((
       {title}
     </Button>
   );
-});
+};
 
-const TabContent = React.memo(({ setStatus, tab }: { setStatus: (status: TestStatusType) => void, tab: string }) => {
+const TabContent = ({ setStatus, tab }: { setStatus: (status: TestStatusType) => void, tab: string }) => {
   switch (tab) {
     case 'anidb':
       return <AniDBTab setStatus={setStatus} />;
@@ -49,7 +49,7 @@ const TabContent = React.memo(({ setStatus, tab }: { setStatus: (status: TestSta
     default:
       return <AniDBTab setStatus={setStatus} />;
   }
-});
+};
 
 const MetadataSources = () => {
   const { saveSettings } = useFirstRunSettingsContext();

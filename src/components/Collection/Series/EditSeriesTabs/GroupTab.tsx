@@ -42,75 +42,75 @@ type EditableNameComponentProps = {
   loading: boolean;
   renameGroup: ({ groupId, newName }: { groupId: number, newName: string }) => void;
 };
-const EditableNameComponent = React.memo(
-  ({ groupId, loading, name, renameGroup }: EditableNameComponentProps) => {
-    const [editingName, setEditingName] = useState(false);
-    const [modifiableName, setModifiableName] = useState(name);
+const EditableNameComponent = (
+  { groupId, loading, name, renameGroup }: EditableNameComponentProps,
+) => {
+  const [editingName, setEditingName] = useState(false);
+  const [modifiableName, setModifiableName] = useState(name);
 
-    useEffect(() => {
-      setModifiableName(name);
-    }, [name]);
+  useEffect(() => {
+    setModifiableName(name);
+  }, [name]);
 
-    const cancelEditing = () => {
-      setModifiableName(() => {
-        setEditingName(false);
-        return name;
-      });
-    };
-
-    const saveName = () => {
-      if (modifiableName !== name) {
-        renameGroup({ groupId, newName: modifiableName });
-      }
+  const cancelEditing = () => {
+    setModifiableName(() => {
       setEditingName(false);
-    };
+      return name;
+    });
+  };
 
-    const endIcons: EndIcon[] = (!editingName)
-      ? [
-        {
-          icon: mdiPencilCircleOutline,
-          className: 'text-panel-text-primary',
-          onClick: () => setEditingName(true),
-          tooltip: 'Edit group name',
-        },
-      ]
-      : [
-        {
-          icon: mdiCloseCircleOutline,
-          className: 'text-red-500',
-          onClick: cancelEditing,
-          tooltip: 'Cancel',
-        },
-        {
-          icon: mdiCheckUnderlineCircleOutline,
-          className: 'text-panel-text-primary',
-          onClick: saveName,
-          tooltip: 'Rename group',
-        },
-      ];
+  const saveName = () => {
+    if (modifiableName !== name) {
+      renameGroup({ groupId, newName: modifiableName });
+    }
+    setEditingName(false);
+  };
 
-    const updateInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setModifiableName(event.target.value);
-    };
+  const endIcons: EndIcon[] = (!editingName)
+    ? [
+      {
+        icon: mdiPencilCircleOutline,
+        className: 'text-panel-text-primary',
+        onClick: () => setEditingName(true),
+        tooltip: 'Edit group name',
+      },
+    ]
+    : [
+      {
+        icon: mdiCloseCircleOutline,
+        className: 'text-red-500',
+        onClick: cancelEditing,
+        tooltip: 'Cancel',
+      },
+      {
+        icon: mdiCheckUnderlineCircleOutline,
+        className: 'text-panel-text-primary',
+        onClick: saveName,
+        tooltip: 'Rename group',
+      },
+    ];
 
-    return (
-      <Input
-        id="group-name"
-        type="text"
-        value={modifiableName}
-        onChange={updateInput}
-        endIcons={endIcons}
-        disabled={!editingName}
-        placeholder={loading ? 'Loading...' : undefined}
-        label="Name"
-        inputClassName="pr-[4.5rem] truncate"
-        className="mb-4"
-      />
-    );
-  },
-);
+  const updateInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setModifiableName(event.target.value);
+  };
 
-const ExistingGroup = React.memo((
+  return (
+    <Input
+      id="group-name"
+      type="text"
+      value={modifiableName}
+      onChange={updateInput}
+      endIcons={endIcons}
+      disabled={!editingName}
+      placeholder={loading ? 'Loading...' : undefined}
+      label="Name"
+      inputClassName="pr-[4.5rem] truncate"
+      className="mb-4"
+    />
+  );
+};
+
+const ExistingGroup = (
   { group, moveToGroup }: { group: CollectionGroupType, moveToGroup: ({ groupId }: { groupId: number }) => void },
 ) => (
   <div className="flex w-full justify-between">
@@ -132,7 +132,7 @@ const ExistingGroup = React.memo((
       <Icon path={mdiArrowRightThinCircleOutline} size={1} />
     </div>
   </div>
-));
+);
 
 const getFilter = (query: string): CreateOrUpdateFilterType => ((query === '') ? {} : {
   ApplyAtSeriesLevel: false,
