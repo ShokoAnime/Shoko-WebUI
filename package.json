@@ -20,7 +20,7 @@
     "@sentry/react": "^10.39.0",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-query-devtools": "^5.91.3",
-    "@tanstack/react-virtual": "^3.13.18",
+    "@tanstack/react-virtual": "^3.14.2",
     "axios": "^1.13.5",
     "classnames": "^2.5.1",
     "copy-to-clipboard": "^3.3.3",
