@@ -34,10 +34,13 @@ const Folder = (props: ManagedFolderType) => {
     });
   };
 
-  let flags = '';
-  if (DropFolderType === 'Both') flags = 'Source, Destination';
-  else if (DropFolderType !== 'None') flags = DropFolderType ?? '';
-  if (WatchForNewFiles) flags += flags ? ', Watch' : 'Watch';
+  const flags: string[] = [];
+  if (DropFolderType === 'Both') {
+    flags.push('Source', 'Destination');
+  } else if (DropFolderType !== 'None' && DropFolderType != null) {
+    flags.push(DropFolderType);
+  }
+  if (WatchForNewFiles) flags.push('Watch');
 
   return (
     <div className="flex flex-col">
@@ -58,7 +61,7 @@ const Folder = (props: ManagedFolderType) => {
       </div>
       <div className="mt-1 flex justify-between">
         Type
-        <span>{flags}</span>
+        <span>{flags.join(', ')}</span>
       </div>
     </div>
   );
