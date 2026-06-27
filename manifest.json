@@ -87,6 +87,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.79",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.79/Shoko-WebUI-v2.6.0-dev.79.zip",
+      "checksum": "sha256:6bd2d51b3be1d5161f7102cc938db11c1ddc2c5fa7cb49729b4969de81994f5d",
+      "commit": "6c488f7818a9b1c1037227eef25f9d7fd6e8292a",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix HeadlessUI Fragment issue, this time for real, maybe by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1390\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.78...v2.6.0-dev.79\n"
+    },
+    {
       "version": "2.6.0-dev.78",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.78/Shoko-WebUI-v2.6.0-dev.78.zip",
