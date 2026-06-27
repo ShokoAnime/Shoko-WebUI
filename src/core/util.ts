@@ -13,6 +13,7 @@ import { reduce, toNumber } from 'lodash';
 import toast from '@/core/toast';
 
 import type { EpisodeType } from './types/api/episode';
+import type { CollectionGroupType } from './types/api/collection';
 import type { FileType } from './types/api/file';
 import type { SeriesType } from './types/api/series';
 import type { ManualLinkType } from './types/utilities/unrecognized-utility';
@@ -39,6 +40,9 @@ export const getMinimumServerVersion = () => VITE_MIN_SERVER_VERSION;
 export const getUiVersion = () => (DEV ? VITE_GITHASH : VITE_APPVERSION);
 
 export const formatThousand = (num: number) => formatThousands(num, ',');
+
+export const getMainPoster = (target: SeriesType | CollectionGroupType) =>
+  target?.Images?.Posters?.find(poster => poster.Preferred) ?? target?.Images?.Posters?.[0];
 
 export const copyToClipboard = async (text: string, entityName?: string) => {
   try {

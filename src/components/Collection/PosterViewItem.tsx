@@ -7,10 +7,10 @@ import { reduce } from 'lodash';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { getMainPoster } from '@/core/util';
 import useEditGroupCallback from '@/hooks/collection/useEditGroupCallback';
 import useEditSeriesCallback from '@/hooks/collection/useEditSeriesCallback';
 import useRouteLink from '@/hooks/collection/useRouteLink';
-import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
@@ -24,7 +24,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
   const settings = useSettingsQuery().data;
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 
-  const mainPoster = useMainPoster(item);
+  const mainPoster = getMainPoster(item);
   const episodeCount = item.Sizes.Local.Episodes + item.Sizes.Local.Specials + item.Sizes.Local.Others;
   const unwatchedCount = Math.max(
     episodeCount - item.Sizes.Watched.Episodes - item.Sizes.Watched.Specials - item.Sizes.Watched.Others,
