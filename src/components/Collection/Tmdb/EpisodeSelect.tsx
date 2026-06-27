@@ -79,158 +79,158 @@ const EpisodeSelect = (props: Props) => {
       by="ID"
       onChange={handleSelect}
       disabled={isDisabled}
+      as="div"
+      className="flex grow basis-0"
     >
-      <div>
-        <ListboxButton
-          className={cx(
-            'flex grow basis-0 items-center gap-x-6 rounded-lg border border-panel-border p-4',
-            'data-open:border-panel-text-primary',
-            isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
-            isDisabled && 'opacity-65',
-          )}
-          data-tooltip-id="tooltip"
-          data-tooltip-content={isDisabled ? 'Episode is linked to another show.' : ''}
-        >
-          {({ open }) => (
-            <div>
-              <div className="w-8 shrink-0">
-                {/* oxlint-disable-next-line no-nested-ternary */}
-                {tmdbEpisode?.SeasonNumber != null
-                  ? (tmdbEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(tmdbEpisode.SeasonNumber)}`)
-                  : 'XX'}
-              </div>
-              <div className="w-8 shrink-0">
-                {tmdbEpisode?.EpisodeNumber ? padNumber(tmdbEpisode.EpisodeNumber) : 'XX'}
-              </div>
-
-              <div
-                className="flex grow flex-col text-left"
-                data-tooltip-id={!isDisabled ? 'tooltip' : ''}
-                data-tooltip-content={tmdbEpisode?.Title ?? ''}
-              >
-                <div className="line-clamp-1 text-xs font-semibold opacity-65">
-                  {tmdbEpisode?.Title ? tmdbEpisode?.AiredAt ?? 'Airdate Unknown' : ''}
-                </div>
-                <div className="line-clamp-1">
-                  {tmdbEpisode?.Title ?? 'Entry Not Linked'}
-                </div>
-              </div>
-
-              <Icon path={mdiChevronDown} size={1} className="shrink-0 transition-transform" rotate={open ? 180 : 0} />
+      <ListboxButton
+        className={cx(
+          'flex grow items-center gap-x-6 rounded-lg border border-panel-border p-4',
+          'data-open:border-panel-text-primary',
+          isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
+          isDisabled && 'opacity-65',
+        )}
+        data-tooltip-id="tooltip"
+        data-tooltip-content={isDisabled ? 'Episode is linked to another show.' : ''}
+      >
+        {({ open }) => (
+          <>
+            <div className="w-8 shrink-0">
+              {/* oxlint-disable-next-line no-nested-ternary */}
+              {tmdbEpisode?.SeasonNumber != null
+                ? (tmdbEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(tmdbEpisode.SeasonNumber)}`)
+                : 'XX'}
             </div>
-          )}
-        </ListboxButton>
-        <Transition
-          enter="transition-opacity"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+            <div className="w-8 shrink-0">
+              {tmdbEpisode?.EpisodeNumber ? padNumber(tmdbEpisode.EpisodeNumber) : 'XX'}
+            </div>
+
+            <div
+              className="flex grow flex-col text-left"
+              data-tooltip-id={!isDisabled ? 'tooltip' : ''}
+              data-tooltip-content={tmdbEpisode?.Title ?? ''}
+            >
+              <div className="line-clamp-1 text-xs font-semibold opacity-65">
+                {tmdbEpisode?.Title ? tmdbEpisode?.AiredAt ?? 'Airdate Unknown' : ''}
+              </div>
+              <div className="line-clamp-1">
+                {tmdbEpisode?.Title ?? 'Entry Not Linked'}
+              </div>
+            </div>
+
+            <Icon path={mdiChevronDown} size={1} className="shrink-0 transition-transform" rotate={open ? 180 : 0} />
+          </>
+        )}
+      </ListboxButton>
+      <Transition
+        enter="transition-opacity"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <ListboxOptions
+          anchor={{
+            to: 'bottom',
+            padding: '1rem',
+            gap: '0.5rem',
+          }}
+          className="z-110 w-(--button-width) rounded-lg bg-panel-background focus:outline-hidden"
         >
-          <ListboxOptions
-            anchor={{
-              to: 'bottom',
-              padding: '1rem',
-              gap: '0.5rem',
-            }}
-            className="z-110 w-(--button-width) rounded-lg bg-panel-background focus:outline-hidden"
-          >
-            <Input
-              autoFocus
-              id="episode-search"
-              type="text"
-              value={searchText}
-              onChange={event => setSearchText(event.target.value)}
-              onKeyDown={event => event.stopPropagation()}
-              placeholder="Enter Episode Title or Season/Episode Number..."
-              inputClassName="!p-4"
-              startIcon={mdiMagnify}
-            />
+          <Input
+            autoFocus
+            id="episode-search"
+            type="text"
+            value={searchText}
+            onChange={event => setSearchText(event.target.value)}
+            onKeyDown={event => event.stopPropagation()}
+            placeholder="Enter Episode Title or Season/Episode Number..."
+            inputClassName="!p-4"
+            startIcon={mdiMagnify}
+          />
 
-            <div className="mt-2 rounded-lg bg-panel-input p-4">
-              <div
-                className="h-80 w-full flex-col overflow-y-auto"
-                ref={setScrollElement}
-              >
-                {episodesQuery.isPending && (
-                  <div className="flex size-full items-center justify-center text-panel-text-primary">
-                    <Icon path={mdiLoading} spin size={3} />
-                  </div>
-                )}
+          <div className="mt-2 rounded-lg bg-panel-input p-4">
+            <div
+              className="h-80 w-full flex-col overflow-y-auto"
+              ref={setScrollElement}
+            >
+              {episodesQuery.isPending && (
+                <div className="flex size-full items-center justify-center text-panel-text-primary">
+                  <Icon path={mdiLoading} spin size={3} />
+                </div>
+              )}
 
-                {!episodesQuery.isPending && (
-                  <div
-                    className="relative w-full"
-                    style={{ height: rowVirtualizer.getTotalSize() }}
-                  >
-                    {virtualItems.map((virtualItem) => {
-                      const { index, key, start } = virtualItem;
+              {!episodesQuery.isPending && (
+                <div
+                  className="relative w-full"
+                  style={{ height: rowVirtualizer.getTotalSize() }}
+                >
+                  {virtualItems.map((virtualItem) => {
+                    const { index, key, start } = virtualItem;
 
-                      const episode = index === 0 ? undefined : episodes[index - 1];
+                    const episode = index === 0 ? undefined : episodes[index - 1];
 
-                      if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
+                    if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
-                      if (index !== 0 && !episode) {
-                        return (
-                          <div
-                            key={`loading-${key}`}
-                            className="absolute top-0 left-0 w-full"
-                            style={{
-                              transform: `translateY(${start ?? 0}px)`,
-                            }}
-                            ref={rowVirtualizer.measureElement}
-                            data-index={index}
-                          >
-                            <Icon path={mdiLoading} spin size={1} className="m-auto text-panel-text-primary" />
-                          </div>
-                        );
-                      }
-
+                    if (index !== 0 && !episode) {
                       return (
-                        <ListboxOption
-                          key={episode?.ID ?? 'entry-not-linked'}
-                          value={episode}
-                          className={cx(
-                            'absolute top-0 left-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
-                            'group hover:text-panel-text-primary data-selected:text-panel-text-primary',
-                          )}
+                        <div
+                          key={`loading-${key}`}
+                          className="absolute top-0 left-0 w-full"
                           style={{
                             transform: `translateY(${start ?? 0}px)`,
                           }}
                           ref={rowVirtualizer.measureElement}
                           data-index={index}
                         >
-                          <div className="w-24 text-panel-text-important group-data-selected:text-panel-text-primary">
-                            {!episode && 'XX'}
-
-                            {episode && (episode.SeasonNumber === 0
-                              ? `Special ${padNumber(episode.EpisodeNumber)}`
-                              : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
-                          </div>
-                          |
-
-                          <div
-                            className="ml-4 line-clamp-1 grow basis-0"
-                            data-tooltip-id="tooltip"
-                            data-tooltip-content={episode?.Title ?? ''}
-                          >
-                            {episode?.Title ?? 'Do Not Link Entry'}
-                          </div>
-
-                          <div className="pr-4">
-                            {episode?.AiredAt ?? ''}
-                          </div>
-                        </ListboxOption>
+                          <Icon path={mdiLoading} spin size={1} className="m-auto text-panel-text-primary" />
+                        </div>
                       );
-                    })}
-                  </div>
-                )}
-              </div>
+                    }
+
+                    return (
+                      <ListboxOption
+                        key={episode?.ID ?? 'entry-not-linked'}
+                        value={episode}
+                        className={cx(
+                          'absolute top-0 left-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
+                          'group hover:text-panel-text-primary data-selected:text-panel-text-primary',
+                        )}
+                        style={{
+                          transform: `translateY(${start ?? 0}px)`,
+                        }}
+                        ref={rowVirtualizer.measureElement}
+                        data-index={index}
+                      >
+                        <div className="w-24 text-panel-text-important group-data-selected:text-panel-text-primary">
+                          {!episode && 'XX'}
+
+                          {episode && (episode.SeasonNumber === 0
+                            ? `Special ${padNumber(episode.EpisodeNumber)}`
+                            : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
+                        </div>
+                        |
+
+                        <div
+                          className="ml-4 line-clamp-1 grow basis-0"
+                          data-tooltip-id="tooltip"
+                          data-tooltip-content={episode?.Title ?? ''}
+                        >
+                          {episode?.Title ?? 'Do Not Link Entry'}
+                        </div>
+
+                        <div className="pr-4">
+                          {episode?.AiredAt ?? ''}
+                        </div>
+                      </ListboxOption>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          </ListboxOptions>
-        </Transition>
-      </div>
+          </div>
+        </ListboxOptions>
+      </Transition>
     </Listbox>
   );
 };
