@@ -26,8 +26,6 @@ const sizeClass = {
   xl: 'w-300',
 };
 
-Modal.setAppElement('#app-root');
-
 const ModalPanel = (props: Props) => {
   const {
     children,
