@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { mdiMinusCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -34,16 +34,13 @@ const Folder = (props: ManagedFolderType) => {
     });
   };
 
-  const flags = useMemo(() => {
-    let tempFlags = '';
-
-    if (DropFolderType === 'Both') tempFlags = 'Source, Destination';
-    else if (DropFolderType !== 'None') tempFlags = DropFolderType ?? '';
-
-    if (WatchForNewFiles) tempFlags += tempFlags ? ', Watch' : 'Watch';
-
-    return tempFlags;
-  }, [DropFolderType, WatchForNewFiles]);
+  const flags: string[] = [];
+  if (DropFolderType === 'Both') {
+    flags.push('Source', 'Destination');
+  } else if (DropFolderType !== 'None' && DropFolderType != null) {
+    flags.push(DropFolderType);
+  }
+  if (WatchForNewFiles) flags.push('Watch');
 
   return (
     <div className="flex flex-col">
@@ -64,7 +61,7 @@ const Folder = (props: ManagedFolderType) => {
       </div>
       <div className="mt-1 flex justify-between">
         Type
-        <span>{flags}</span>
+        <span>{flags.join(', ')}</span>
       </div>
     </div>
   );

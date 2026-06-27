@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ShokoIcon = React.memo(({ className }: { className?: string }) => (
+const ShokoIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -123,6 +123,6 @@ const ShokoIcon = React.memo(({ className }: { className?: string }) => (
       />
     </g>
   </svg>
-));
+);
 
 export default ShokoIcon;

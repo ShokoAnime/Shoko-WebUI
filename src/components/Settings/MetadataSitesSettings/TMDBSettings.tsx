@@ -7,7 +7,7 @@ import type { SettingsContextType } from '@/core/types/context';
 
 type Props = SettingsContextType;
 
-const TMDBSettings = React.memo((props: Props) => {
+const TMDBSettings = (props: Props) => {
   const { newSettings, setNewSettings, updateSetting } = props;
 
   const {
@@ -55,6 +55,6 @@ const TMDBSettings = React.memo((props: Props) => {
       />
     </>
   );
-});
+};
 
 export default TMDBSettings;

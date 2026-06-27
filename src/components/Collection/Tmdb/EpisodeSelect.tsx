@@ -23,7 +23,7 @@ type Props = {
   tmdbEpisode?: TmdbEpisodeType;
 };
 
-const EpisodeSelect = React.memo((props: Props) => {
+const EpisodeSelect = (props: Props) => {
   const { isDisabled, isOdd, override, overrideLink, tmdbEpisode: initialTmdbEpisode } = props;
   const [searchParams] = useSearchParams();
   const tmdbId = toNumber(searchParams.get('id'));
@@ -231,6 +231,6 @@ const EpisodeSelect = React.memo((props: Props) => {
       </Transition>
     </Listbox>
   );
-});
+};
 
 export default EpisodeSelect;

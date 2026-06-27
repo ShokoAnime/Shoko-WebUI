@@ -21,7 +21,7 @@ type Props = {
   xrefs?: TmdbMovieXrefType[];
 };
 
-const MovieRow = React.memo((props: Props) => {
+const MovieRow = (props: Props) => {
   const {
     episode,
     isOdd,
@@ -138,6 +138,6 @@ const MovieRow = React.memo((props: Props) => {
       </div>
     </>
   );
-});
+};
 
 export default MovieRow;

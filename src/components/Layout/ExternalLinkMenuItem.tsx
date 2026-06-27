@@ -7,7 +7,7 @@ type ExternalLinkMenuItemProps = {
   icon: string;
 };
 
-const ExternalLinkMenuItem = React.memo(({
+const ExternalLinkMenuItem = ({
   icon,
   name,
   url,
@@ -22,6 +22,6 @@ const ExternalLinkMenuItem = React.memo(({
   >
     <Icon className="text-topnav-icon transition-colors hover:text-topnav-icon-primary" path={icon} size={1} />
   </a>
-));
+);
 
 export default ExternalLinkMenuItem;

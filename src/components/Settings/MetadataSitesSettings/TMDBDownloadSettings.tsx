@@ -8,7 +8,7 @@ import type { SettingsContextType } from '@/core/types/context';
 
 type Props = Omit<SettingsContextType, 'setNewSettings'>;
 
-const TMDBDownloadSettings = React.memo((props: Props) => {
+const TMDBDownloadSettings = (props: Props) => {
   const { newSettings, updateSetting } = props;
 
   const {
@@ -181,6 +181,6 @@ const TMDBDownloadSettings = React.memo((props: Props) => {
       />
     </>
   );
-});
+};
 
 export default TMDBDownloadSettings;

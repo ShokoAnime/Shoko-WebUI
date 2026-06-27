@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import DashboardEpisode from '@/components/Dashboard/DashboardEpisode';
 import SeriesPoster from '@/components/SeriesPoster';
@@ -47,19 +47,15 @@ const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: P
 
   const { useThumbnailsForEpisodes } = settings.WebUI_Settings.dashboard;
 
-  const percentage = useMemo(() => {
-    if (episode.ResumePosition == null) return null;
+  let percentage: string | null = null;
+  if (episode.ResumePosition != null) {
     const duration = dayjs.duration(convertTimeSpanToMs(episode.Duration));
     const resumePosition = dayjs.duration(convertTimeSpanToMs(episode.ResumePosition));
-    return `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
-  }, [episode.Duration, episode.ResumePosition]);
-
-  const airDate = useMemo(() => dayjs(episode.AirDate), [episode.AirDate]);
-  const relativeTime = useMemo(() => airDate.calendar(null, CalendarConfig), [airDate]);
-  const title = useMemo(
-    () => `${anidbEpisodePrefixes(episode.Type, episode.Number)} - ${episode.Title}`,
-    [episode.Type, episode.Title, episode.Number],
-  );
+    percentage = `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
+  }
+  const airDate = dayjs(episode.AirDate);
+  const relativeTime = airDate.calendar(null, CalendarConfig);
+  const title = `${anidbEpisodePrefixes(episode.Type, episode.Number)} - ${episode.Title}`;
 
   // showDate is only true for Upcoming Anime panel
   // I didn't want to add another prop

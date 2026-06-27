@@ -21,7 +21,7 @@ const tabs = {
   // selected_episodes: 'Selected Episodes',
 };
 
-const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWatched }: FilteredEpisodesTabProps) => (
+const FilteredEpisodesTab = ({ markFilteredUnwatched, markFilteredWatched }: FilteredEpisodesTabProps) => (
   <>
     <Action
       name="Mark as watched"
@@ -34,7 +34,7 @@ const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWat
       onClick={markFilteredUnwatched}
     />
   </>
-));
+);
 
 const renderTab = (
   activeTab: string,

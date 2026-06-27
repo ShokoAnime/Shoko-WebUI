@@ -32,7 +32,7 @@ const renderResizeHandle = () => (
   </div>
 );
 
-const Toast = React.memo((
+const Toast = (
   { cancelLayoutChange, saveLayout }: { cancelLayoutChange: () => void, saveLayout: (reset?: boolean) => void },
 ) => {
   const resetLayout = () => saveLayout(true);
@@ -48,7 +48,7 @@ const Toast = React.memo((
       </div>
     </div>
   );
-});
+};
 
 const DashboardPage = () => {
   const dispatch = useDispatch();

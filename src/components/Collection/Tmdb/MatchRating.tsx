@@ -30,7 +30,7 @@ type Props = {
   rating?: MatchRatingType;
 };
 
-const MatchRating = React.memo(({ isDisabled, isOdd, rating }: Props) => (
+const MatchRating = ({ isDisabled, isOdd, rating }: Props) => (
   <div
     className={cx(
       'flex w-16 items-center justify-center rounded-md border border-panel-border text-button-primary-text',
@@ -51,6 +51,6 @@ const MatchRating = React.memo(({ isDisabled, isOdd, rating }: Props) => (
   >
     {getAbbreviation(rating)[0]}
   </div>
-));
+);
 
 export default MatchRating;

@@ -53,4 +53,4 @@ const DashboardEpisode = ({ episodeId, shokoId, subtitle, thumbnail, title }: Pr
   </Link>
 );
 
-export default React.memo(DashboardEpisode);
+export default DashboardEpisode;

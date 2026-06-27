@@ -12,7 +12,7 @@ type Props = {
   groupId: number;
 };
 
-const SeriesTab = React.memo(({ groupId }: Props) => {
+const SeriesTab = ({ groupId }: Props) => {
   const {
     data: groupData,
     isError: groupError,
@@ -121,6 +121,6 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
       </div>
     </div>
   );
-});
+};
 
 export default SeriesTab;

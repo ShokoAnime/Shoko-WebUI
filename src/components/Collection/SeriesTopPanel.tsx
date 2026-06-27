@@ -15,11 +15,12 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { getMainPoster } from '@/core/util';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
+const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
   const { seriesId } = useParams();
 
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true, filter: 1 }, !!seriesId);
@@ -27,12 +28,13 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
 
   const { showRandomPoster } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomPoster);
+  const mainPoster = getMainPoster(series);
   const [poster, setPoster] = useState<ImageType>();
   const [showTagModal, toggleTagModal] = useToggle(false);
 
   useEffect(() => {
     if (!showRandomPoster) {
-      setPoster(series.Images?.Posters?.[0]);
+      setPoster(mainPoster);
       return;
     }
 
@@ -40,7 +42,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
     if (allPosters.length === 0) return;
 
     setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
-  }, [imagesQuery.data, series, showRandomPoster]);
+  }, [imagesQuery.data, mainPoster, showRandomPoster]);
 
   // TODO: try to make this a grid for better responsiveness... but we'll have v3 soon so maybe not right now.
   return (
@@ -109,6 +111,6 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       </div>
     </div>
   );
-});
+};
 
 export default SeriesTopPanel;

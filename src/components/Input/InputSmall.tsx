@@ -18,7 +18,7 @@ type Props = {
   max?: number;
 };
 
-const InputSmall = React.memo((props: Props) => {
+const InputSmall = (props: Props) => {
   const {
     autoComplete,
     autoFocus,
@@ -70,6 +70,6 @@ const InputSmall = React.memo((props: Props) => {
       {suffixes}
     </>
   );
-});
+};
 
 export default InputSmall;

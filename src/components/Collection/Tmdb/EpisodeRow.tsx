@@ -24,7 +24,7 @@ type Props = {
   xrefs?: Record<string, TmdbEpisodeXrefType[]>;
 };
 
-const EpisodeRow = React.memo((props: Props) => {
+const EpisodeRow = (props: Props) => {
   const {
     episode,
     existingXrefs,
@@ -163,6 +163,6 @@ const EpisodeRow = React.memo((props: Props) => {
         )}
     </>
   );
-});
+};
 
 export default EpisodeRow;

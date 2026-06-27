@@ -173,7 +173,7 @@ const Menu = (
   );
 };
 
-const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
+const MediaInfoDetails = ({ file }: { file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
   const ed2kHash = useMemo(() => getEd2kLink(file), [file]);
 
@@ -237,9 +237,9 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
       </div>
     </>
   );
-});
+};
 
-const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
+const FileDetails = ({ fileId }: { fileId: number }) => {
   const { data: file, isPending: fileQueryIsPending } = useFileQuery(
     fileId,
     {
@@ -332,7 +332,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
       <MediaInfoDetails file={file} />
     </div>
   );
-});
+};
 
 const FileSearch = () => {
   const {

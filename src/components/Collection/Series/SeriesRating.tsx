@@ -17,7 +17,7 @@ type StarIconProps = {
   handleVote: (event: React.MouseEvent<HTMLDivElement>) => void;
 };
 
-const StarIcon = React.memo(({ handleHover, handleVote, hovered, index }: StarIconProps) => (
+const StarIcon = ({ handleHover, handleVote, hovered, index }: StarIconProps) => (
   <div
     id={index}
     className="cursor-pointer text-panel-text-primary"
@@ -26,7 +26,7 @@ const StarIcon = React.memo(({ handleHover, handleVote, hovered, index }: StarIc
   >
     <Icon path={hovered ? mdiStar : mdiStarOutline} size={1} />
   </div>
-));
+);
 
 const SeriesRating = ({ ratingValue, seriesId }: Props) => {
   const { mutate: voteSeries } = useVoteSeriesMutation(seriesId);

@@ -232,7 +232,7 @@ type MenuProps = {
   selectedRows: FileType[];
 };
 
-const Menu = React.memo((props: MenuProps) => {
+const Menu = (props: MenuProps) => {
   const { disable, moveFiles, renameFiles, selectedRows, toggleMoveFiles, toggleRenameFiles } = props;
 
   const dispatch = useDispatch();
@@ -276,7 +276,7 @@ const Menu = React.memo((props: MenuProps) => {
       />
     </div>
   );
-});
+};
 
 const PresetOption = ({ preset }: { preset: RelocationPresetType }) => {
   const renamersQuery = useRelocationProvidersQuery();

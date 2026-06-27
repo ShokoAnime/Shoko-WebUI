@@ -15,7 +15,7 @@ type Props = {
   searchQuery: string;
 };
 
-const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName, searchQuery }: Props) => {
+const CollectionTitle = ({ count, filterActive, filterName, groupName, searchQuery }: Props) => {
   const { groupId } = useParams();
   const dispatch = useDispatch();
 
@@ -81,6 +81,6 @@ const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName
       )}
     </div>
   );
-});
+};
 
 export default CollectionTitle;

@@ -23,7 +23,6 @@ import { dayjs, formatThousand } from '@/core/util';
 import useEditGroupCallback from '@/hooks/collection/useEditGroupCallback';
 import useEditSeriesCallback from '@/hooks/collection/useEditSeriesCallback';
 import useRouteLink from '@/hooks/collection/useRouteLink';
-import useMainPoster from '@/hooks/useMainPoster';
 
 import CleanDescription from './CleanDescription';
 
@@ -58,7 +57,7 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
 
   const tagsQuery = useSeriesTagsQuery(item.IDs.ID, { filter: 1, excludeDescriptions: true }, isSeries);
 
-  const poster = useMainPoster(item);
+  const poster = item.Images.Posters?.[0];
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes
     - item.Sizes.Local.Specials;
 

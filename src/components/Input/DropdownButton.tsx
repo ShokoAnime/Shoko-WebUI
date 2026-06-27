@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useMeasure from 'react-use-measure';
 import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -43,13 +43,8 @@ const DropdownButton = (props: Props) => {
   const [containerRef, containerBounds] = useMeasure();
   const [menuRef, menuBounds] = useMeasure();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const menuShift = useMemo(() => containerBounds.x - (menuBounds.width - (containerBounds.width)), [
-    containerBounds.x,
-    containerBounds.width,
-    menuBounds.width,
-  ]);
-
-  const isOutOfBounds = useMemo(() => containerBounds.right > windowWidth, [windowWidth, containerBounds.right]);
+  const menuShift = containerBounds.x - (menuBounds.width - containerBounds.width);
+  const isOutOfBounds = containerBounds.right > windowWidth;
 
   useEffect(() => {
     const resizeEvent = () => {

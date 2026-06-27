@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import {
@@ -95,17 +95,14 @@ const LoginPage = () => {
     );
   };
 
-  const parsedVersion = useMemo(() => {
+  const parsedVersion = (() => {
     if (versionQuery.isFetching || !versionQuery.data) {
       return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-text-primary" />;
     }
 
-    if (versionQuery.data.Server.ReleaseChannel !== 'Stable') {
-      return `${versionQuery.data.Server.Version} (${versionQuery.data.Server.Commit?.slice(0, 7)})`;
-    }
-
-    return versionQuery.data.Server.Version;
-  }, [versionQuery.data, versionQuery.isFetching]);
+    const { Commit, ReleaseChannel, Version } = versionQuery.data.Server;
+    return ReleaseChannel !== 'Stable' ? `${Version} (${Commit?.slice(0, 7)})` : Version;
+  })();
 
   return (
     <>

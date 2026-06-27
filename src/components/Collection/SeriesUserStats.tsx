@@ -10,7 +10,7 @@ type SeriesInfoProps = {
   series: SeriesType;
 };
 
-const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
+const SeriesUserStats = ({ series }: SeriesInfoProps) => (
   <div className="flex flex-col gap-y-2">
     <div className="flex justify-between">
       <div className="font-semibold">File Count</div>
@@ -89,6 +89,6 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
       <SeriesRating seriesId={series.IDs.ID} ratingValue={series.UserRating?.Value ?? 0} />
     </div>
   </div>
-));
+);
 
 export default SeriesUserStats;

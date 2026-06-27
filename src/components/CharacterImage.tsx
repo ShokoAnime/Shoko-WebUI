@@ -9,7 +9,7 @@ type Props = {
   hidePlaceholderOnHover?: boolean;
 };
 
-const LoadingElement = React.memo(({ hidePlaceholderOnHover }: { hidePlaceholderOnHover?: boolean }) => (
+const LoadingElement = ({ hidePlaceholderOnHover }: { hidePlaceholderOnHover?: boolean }) => (
   <div
     className={cx(
       'flex size-full flex-col items-center justify-center bg-panel-input p-6',
@@ -18,9 +18,9 @@ const LoadingElement = React.memo(({ hidePlaceholderOnHover }: { hidePlaceholder
   >
     <Icon path={mdiAccountTieOutline} size={10} className="opacity-65" />
   </div>
-));
+);
 
-const CharacterImage = React.memo((props: Props) => {
+const CharacterImage = (props: Props) => {
   const {
     className,
     hidePlaceholderOnHover,
@@ -49,6 +49,6 @@ const CharacterImage = React.memo((props: Props) => {
         )}
     </div>
   );
-});
+};
 
 export default CharacterImage;

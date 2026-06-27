@@ -46,8 +46,6 @@ const ModalPanel = (props: Props) => {
 
   Modal.setAppElement('#app-root');
 
-  // const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
-
   return (
     <Modal
       isOpen={show}

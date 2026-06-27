@@ -11,7 +11,7 @@ const getThumbnailUrl = (item: SeriesCast, mode: CreditsModeType) => {
   return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
 };
 
-const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: CreditsModeType }) => (
+const CreditsStaffPanel = ({ cast, mode }: { cast: SeriesCast, mode: CreditsModeType }) => (
   <div className="flex size-full flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
     <div className="z-10 flex gap-x-2">
       {mode === 'Character' && (
@@ -33,6 +33,6 @@ const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: 
       <div className="mt-2 text-sm">{cast.RoleDetails}</div>
     </div>
   </div>
-));
+);
 
 export default CreditsStaffPanel;

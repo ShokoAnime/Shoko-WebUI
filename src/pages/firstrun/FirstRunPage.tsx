@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -16,11 +16,9 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
   const { pathname } = useLocation();
   const saved = useSelector(state => state.firstrun.saved);
 
-  const path = useMemo(() => {
-    if (pathname === `/webui/firstrun/${id}`) return mdiCircleHalfFull;
-    if (saved[id]) return mdiCheckboxMarkedCircleOutline;
-    return mdiCheckboxBlankCircleOutline;
-  }, [pathname, saved, id]);
+  let path = mdiCheckboxBlankCircleOutline;
+  if (pathname === `/webui/firstrun/${id}`) path = mdiCircleHalfFull;
+  else if (saved[id]) path = mdiCheckboxMarkedCircleOutline;
 
   return (
     <div key={id} className="flex items-center gap-x-7 text-xl font-semibold">
@@ -78,19 +76,14 @@ const FirstRunPage = () => {
     await patchSettings(newSettings);
   };
 
-  const parsedVersion = useMemo(() => {
-    if (versionQuery.isFetching || !versionQuery.data) {
-      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
-    }
-
-    if (versionQuery.data.Server.ReleaseChannel !== 'Stable') {
-      return `${versionQuery.data.Server.Version}-${versionQuery.data.Server.ReleaseChannel} (${
+  let parsedVersion: React.ReactNode = <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
+  if (!versionQuery.isFetching && versionQuery.data) {
+    parsedVersion = versionQuery.data.Server.ReleaseChannel !== 'Stable'
+      ? `${versionQuery.data.Server.Version}-${versionQuery.data.Server.ReleaseChannel} (${
         versionQuery.data.Server.Commit?.slice(0, 7)
-      })`;
-    }
-
-    return versionQuery.data.Server.Version;
-  }, [versionQuery.data, versionQuery.isFetching]);
+      })`
+      : versionQuery.data.Server.Version;
+  }
 
   return (
     <div className="flex w-full justify-center">

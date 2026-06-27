@@ -19,7 +19,7 @@ type Props = {
   inCollection?: boolean;
 };
 
-const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
+const BackgroundImagePlaceholderDiv = (props: Props) => {
   const {
     children,
     className,
@@ -128,6 +128,6 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
       )}
     </div>
   );
-});
+};
 
 export default BackgroundImagePlaceholderDiv;

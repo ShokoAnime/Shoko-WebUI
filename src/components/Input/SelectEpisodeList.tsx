@@ -71,9 +71,7 @@ const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: numbe
   </ListboxButton>
 );
 
-const SelectEpisodeList = React.memo((
-  { disabled = false, onChange, options, rowIdx, value }: Props,
-) => {
+const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value }: Props) => {
   const [epFilter, setEpFilter] = useState('');
   const [selected, setSelected] = useState<Option>(options[0]);
 
@@ -148,6 +146,6 @@ const SelectEpisodeList = React.memo((
       )}
     </Listbox>
   );
-});
+};
 
 export default SelectEpisodeList;

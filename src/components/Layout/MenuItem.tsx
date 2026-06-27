@@ -10,7 +10,7 @@ export type MenuItemProps = {
   isHighlighted: boolean;
 };
 
-const MenuItem = React.memo(({ icon, id, isHighlighted, onClick, text }: MenuItemProps) => (
+const MenuItem = ({ icon, id, isHighlighted, onClick, text }: MenuItemProps) => (
   <div
     key={id}
     className={cx(
@@ -22,6 +22,6 @@ const MenuItem = React.memo(({ icon, id, isHighlighted, onClick, text }: MenuIte
     <Icon path={icon} size={1} />
     {text}
   </div>
-));
+);
 
 export default MenuItem;

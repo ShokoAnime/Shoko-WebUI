@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import semver from 'semver';
 
 import queryClient from '@/core/react-query/queryClient';
@@ -12,10 +11,8 @@ export enum FeatureType {
 const useIsFeatureSupported = (supportedVersion: FeatureType) => {
   const version = queryClient.getQueryData<VersionType>(['init', 'version'])?.Server.Version ?? '1.0.0-dev.1';
 
-  return useMemo(() => {
-    if (!version || !supportedVersion) return false;
-    return semver.gte(version, supportedVersion);
-  }, [supportedVersion, version]);
+  if (!version || !supportedVersion) return false;
+  return semver.gte(version, supportedVersion);
 };
 
 export default useIsFeatureSupported;

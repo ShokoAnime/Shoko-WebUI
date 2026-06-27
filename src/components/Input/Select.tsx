@@ -13,7 +13,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const Select = React.memo((props: Props) => {
+const Select = (props: Props) => {
   const {
     children,
     className,
@@ -57,6 +57,6 @@ const Select = React.memo((props: Props) => {
       </label>
     </div>
   );
-});
+};
 
 export default Select;

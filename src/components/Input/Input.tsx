@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -41,7 +41,7 @@ type TooltipAttributes = {
   'data-tooltip-place': PlacesType;
 };
 
-const Input = React.memo((props: Props) => {
+const Input = (props: Props) => {
   const {
     autoFocus = false,
     center,
@@ -74,22 +74,14 @@ const Input = React.memo((props: Props) => {
     onToggleOverlay?.(false);
   }, [isOverlay, onToggleOverlay]);
 
-  const inputContainerClassName = useMemo(() => {
-    const combiner = (input: string) => cx([overlayClassName, input]);
-    if (isOverlay && inline) {
-      if (!isShow) return combiner('hidden 2xl:flex flex-row justify-center');
-      return combiner('flex flex-row justify-center');
-    }
-    if (isOverlay && !inline) {
-      if (!isShow) return combiner('hidden 2xl:inline');
-      return combiner('');
-    }
-    if (!isOverlay && inline) {
-      return 'flex flex-row justify-center';
-    }
-
-    return '';
-  }, [isShow, isOverlay, inline, overlayClassName]);
+  let inputContainerClassName = '';
+  if (isOverlay && inline) {
+    inputContainerClassName = isShow ? 'flex flex-row justify-center' : 'hidden 2xl:flex flex-row justify-center';
+  } else if (isOverlay && !inline) {
+    inputContainerClassName = isShow ? '' : 'hidden 2xl:inline';
+  } else if (!isOverlay && inline) {
+    inputContainerClassName = 'flex flex-row justify-center';
+  }
 
   return (
     <div
@@ -100,7 +92,7 @@ const Input = React.memo((props: Props) => {
     >
       <label
         htmlFor={id}
-        className={cx(inputContainerClassName)}
+        className={cx(isOverlay && overlayClassName, inputContainerClassName)}
       >
         {label && (
           <div
@@ -163,6 +155,6 @@ const Input = React.memo((props: Props) => {
       </label>
     </div>
   );
-});
+};
 
 export default Input;
