@@ -34,7 +34,7 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
 
   useEffect(() => {
     if (!showRandomPoster) {
-      setPoster(mainPoster ?? undefined);
+      setPoster(mainPoster);
       return;
     }
 

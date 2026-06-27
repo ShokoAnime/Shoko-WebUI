@@ -24,7 +24,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
   const settings = useSettingsQuery().data;
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 
-  const mainPoster = useMainPoster(item) ?? undefined;
+  const mainPoster = useMainPoster(item);
   const episodeCount = item.Sizes.Local.Episodes + item.Sizes.Local.Specials + item.Sizes.Local.Others;
   const unwatchedCount = Math.max(
     episodeCount - item.Sizes.Watched.Episodes - item.Sizes.Watched.Specials - item.Sizes.Watched.Others,
