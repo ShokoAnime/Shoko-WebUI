@@ -92,7 +92,7 @@ const EpisodeSelect = (props: Props) => {
           data-tooltip-content={isDisabled ? 'Episode is linked to another show.' : ''}
         >
           {({ open }) => (
-            <>
+            <div>
               <div className="w-8 shrink-0">
                 {/* oxlint-disable-next-line no-nested-ternary */}
                 {tmdbEpisode?.SeasonNumber != null
@@ -117,7 +117,7 @@ const EpisodeSelect = (props: Props) => {
               </div>
 
               <Icon path={mdiChevronDown} size={1} className="shrink-0 transition-transform" rotate={open ? 180 : 0} />
-            </>
+            </div>
           )}
         </ListboxButton>
         <Transition
