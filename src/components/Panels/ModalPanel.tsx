@@ -44,6 +44,8 @@ const ModalPanel = (props: Props) => {
     subHeader,
   } = props;
 
+  Modal.setAppElement('#app-root');
+
   return (
     <Modal
       isOpen={show}
