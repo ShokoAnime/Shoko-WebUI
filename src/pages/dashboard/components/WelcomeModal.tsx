@@ -8,13 +8,13 @@ type Props = {
   show: boolean;
 };
 
-Modal.setAppElement('#app-root');
-
 const WelcomeModal = (props: Props) => {
   const {
     onClose,
     show,
   } = props;
+
+  Modal.setAppElement('#app-root');
 
   return (
     <Modal
