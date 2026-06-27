@@ -95,19 +95,14 @@ const LoginPage = () => {
     );
   };
 
-  let parsedVersion: React.ReactNode = (
-    <Icon
-      path={mdiLoading}
-      spin
-      size={1}
-      className="ml-2 text-panel-text-primary"
-    />
-  );
-  if (!versionQuery.isFetching && versionQuery.data) {
-    parsedVersion = versionQuery.data.Server.ReleaseChannel !== 'Stable'
-      ? `${versionQuery.data.Server.Version} (${versionQuery.data.Server.Commit?.slice(0, 7)})`
-      : versionQuery.data.Server.Version;
-  }
+  const parsedVersion = (() => {
+    if (versionQuery.isFetching || !versionQuery.data) {
+      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-text-primary" />;
+    }
+
+    const { Commit, ReleaseChannel, Version } = versionQuery.data.Server;
+    return ReleaseChannel !== 'Stable' ? `${Version} (${Commit?.slice(0, 7)})` : Version;
+  })();
 
   return (
     <>
