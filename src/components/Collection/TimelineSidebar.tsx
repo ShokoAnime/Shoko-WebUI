@@ -5,11 +5,12 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { dayjs } from '@/core/util';
+import useMainPoster from '@/hooks/useMainPoster';
 
 import type { SeriesType } from '@/core/types/api/series';
 
 const TimelineItem = ({ series }: { series: SeriesType }) => {
-  const mainPoster = series.Images.Posters?.[0];
+  const mainPoster = useMainPoster(series) ?? undefined;
   let seriesType = series.AniDB?.Type as string | undefined;
   if (seriesType === SeriesTypeEnum.TVSpecial) seriesType = 'TV Special';
   else if (seriesType === SeriesTypeEnum.MusicVideo) seriesType = 'Music Video';
