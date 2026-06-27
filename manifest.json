@@ -87,6 +87,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.75",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.75/Shoko-WebUI-v2.6.0-dev.75.zip",
+      "checksum": "sha256:2a204eeae6041c3b13671e6a83ea01d9711c065882a61050b0e66dbfa4b71d10",
+      "commit": "9479dab3d038a75fa44ea83ad57855a8127748af",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Refactor WebUI for React Compiler by @krbrs in https://github.com/ShokoAnime/Shoko-WebUI/pull/1385\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.74...v2.6.0-dev.75\n"
+    },
+    {
       "version": "2.6.0-dev.74",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.74/Shoko-WebUI-v2.6.0-dev.74.zip",
