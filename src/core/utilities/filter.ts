@@ -8,6 +8,13 @@ import store from '@/core/store';
 
 import type { ExpressionType, FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
 
+type SidebarFilterState = {
+  filterConditions: Record<string, boolean>;
+  filterMatch: Record<string, 'Or' | 'And'>;
+  filterTags: Record<string, FilterTag[]>;
+  filterValues: Record<string, string[]>;
+};
+
 export const buildFilter = (filters: FilterCondition[]): FilterCondition => {
   if (filters.length > 1) {
     return {
@@ -65,39 +72,45 @@ const buildSidebarFilterConditionMultivaluePair = (
   return { Type: type, Parameter: conditionValues[0][0], SecondParameter: conditionValues[0][1] };
 };
 
-const buildSidebarFilterCondition = (currentFilter: FilterExpression): FilterCondition => {
+const buildSidebarFilterCondition = (
+  currentFilter: FilterExpression,
+  sidebarFilterState: SidebarFilterState,
+): FilterCondition => {
   if (currentFilter.Expression === 'HasCustomTag' || currentFilter.Expression === 'HasTag') {
-    const tagValues = store.getState().collection.filterTags[currentFilter.Expression];
+    const tagValues = sidebarFilterState.filterTags[currentFilter.Expression];
     return buildSidebarFilterConditionTag(tagValues, currentFilter.Expression);
   }
   if (currentFilter?.PossibleParameterPairs) {
     // TODO: Using ': ' as a delimiter, but this might need to be changed in the future.
     // Currently only In Season expression has possible parameter pairs.
-    const filterValues = store.getState().collection.filterValues[currentFilter.Expression].map(
+    const filterValues = sidebarFilterState.filterValues[currentFilter.Expression].map(
       value => value.split(': '),
     );
-    const filterMatch = store.getState().collection.filterMatch[currentFilter.Expression] ?? 'Or';
+    const filterMatch = sidebarFilterState.filterMatch[currentFilter.Expression] ?? 'Or';
     return buildSidebarFilterConditionMultivaluePair(filterValues, currentFilter.Expression, filterMatch);
   }
   if (currentFilter?.PossibleParameters ?? currentFilter?.Parameter === 'Number') {
-    const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
-    const filterMatch = store.getState().collection.filterMatch[currentFilter.Expression] ?? 'Or';
+    const filterValues = sidebarFilterState.filterValues[currentFilter.Expression];
+    const filterMatch = sidebarFilterState.filterMatch[currentFilter.Expression] ?? 'Or';
     return buildSidebarFilterConditionMultivalue(filterValues, currentFilter.Expression, filterMatch);
   }
 
-  const value = store.getState().collection.filterConditions[currentFilter.Expression] ?? true;
+  const value = sidebarFilterState.filterConditions[currentFilter.Expression] ?? true;
   return value ? { Type: currentFilter.Expression } : { Type: 'Not', Left: { Type: currentFilter.Expression } };
 };
 
-export const buildSidebarFilter = (filters: FilterExpression[]): FilterCondition => {
+export const buildSidebarFilter = (
+  filters: FilterExpression[],
+  sidebarFilterState: SidebarFilterState,
+): FilterCondition => {
   if (filters.length > 1) {
     return {
       Type: 'And',
-      Left: buildSidebarFilterCondition(filters[0]),
-      Right: buildSidebarFilter(filters.slice(1)),
+      Left: buildSidebarFilterCondition(filters[0], sidebarFilterState),
+      Right: buildSidebarFilter(filters.slice(1), sidebarFilterState),
     };
   }
-  return buildSidebarFilterCondition(filters[0]);
+  return buildSidebarFilterCondition(filters[0], sidebarFilterState);
 };
 
 export const addFilterCriteriaToStore = async (newCriteria: string) => {
