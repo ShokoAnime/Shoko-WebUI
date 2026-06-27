@@ -92,9 +92,15 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value 
   };
 
   return (
-    <Listbox disabled={disabled} value={selected} onChange={selectOption}>
+    <Listbox
+      disabled={disabled}
+      value={selected}
+      onChange={selectOption}
+      as="div"
+      className="h-full"
+    >
       {({ open }) => (
-        <div>
+        <>
           <SelectButton open={open} rowIdx={rowIdx} selected={selected} />
 
           <Transition
@@ -142,7 +148,7 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value 
               </div>
             </ListboxOptions>
           </Transition>
-        </div>
+        </>
       )}
     </Listbox>
   );
