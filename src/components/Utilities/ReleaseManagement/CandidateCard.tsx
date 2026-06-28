@@ -27,21 +27,22 @@ type Props = {
 };
 
 const signalLabels: Record<string, string> = {
-  Source: 'Source',
-  Resolution: 'Resolution',
-  VideoCodec: 'Video Codec',
-  BitDepth: 'Bit Depth',
-  AudioStreamCount: 'Audio Streams',
-  SubtitleStreamCount: 'Subtitle Streams',
   AudioCodec: 'Audio Codec',
   AudioLanguage: 'Audio Language',
-  SubtitleLanguage: 'Subtitle Language',
-  Chapters: 'Chapters',
+  AudioStreams: 'Audio Streams',
+  BitDepth: 'Bit Depth',
+  Censored: 'Censorship',
+  Chaptered: 'Chaptered',
+  Corrupted: 'Corruption',
+  Creditless: 'Creditless',
   GroupHomogeneity: 'Group Consistency',
+  Resolution: 'Resolution',
+  Source: 'Source',
   SubGroup: 'Sub Group',
+  SubtitleLanguage: 'Subtitle Language',
+  SubtitleStreams: 'Subtitle Streams',
   Version: 'Version',
-  IsCorrupted: 'Corruption',
-  IsCensored: 'Censorship',
+  VideoCodec: 'Video Codec',
 };
 
 const buildFileStreamSummary = (file: ReleaseCandidateFileType): string => {
@@ -395,8 +396,8 @@ const CandidateCard = ({
                       {file.SubtitleLanguages.length > 0 && `Subs: ${file.SubtitleLanguages.join(', ')}`}
                     </div>
                   )}
-                  {(file.IsChaptered != null || file.IsCensored || file.IsCreditless
-                    || file.IsCorrupted) && (
+                  {((file.IsChaptered != null && (file.IsChaptered || isChapteredAnomaly))
+                    || file.IsCensored || file.IsCreditless || file.IsCorrupted) && (
                     <div className="flex flex-wrap gap-1 pt-0.5">
                       {file.IsChaptered != null && (file.IsChaptered || isChapteredAnomaly) && (
                         <span

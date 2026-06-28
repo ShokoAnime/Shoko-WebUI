@@ -11,21 +11,22 @@ import type { ReleaseComparisonPreferencesType, SignalType } from '@/core/types/
 import type { DropResult } from '@hello-pangea/dnd';
 
 const SIGNAL_NAMES: Record<SignalType, string> = {
-  Source: 'Source',
-  Resolution: 'Resolution',
-  VideoCodec: 'Video Codec',
-  BitDepth: 'Bit Depth',
   AudioCodec: 'Audio Codec',
   AudioLanguage: 'Audio Language',
   AudioStreams: 'Audio Streams',
+  BitDepth: 'Bit Depth',
+  Censored: 'Censored',
+  Chaptered: 'Chaptered',
+  Corrupted: 'Corrupted',
+  Creditless: 'Creditless',
+  GroupHomogeneity: 'Group Consistency',
+  Resolution: 'Resolution',
+  Source: 'Source',
+  SubGroup: 'Sub Group',
   SubtitleLanguage: 'Subtitle Language',
   SubtitleStreams: 'Subtitle Streams',
   Version: 'Version',
-  Chaptered: 'Chaptered',
-  Censored: 'Censored',
-  Creditless: 'Creditless',
-  Corrupted: 'Corrupted',
-  SubGroup: 'Sub Group',
+  VideoCodec: 'Video Codec',
 };
 
 const ALL_SIGNALS = Object.keys(SIGNAL_NAMES) as SignalType[];

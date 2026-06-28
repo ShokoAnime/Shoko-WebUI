@@ -35,7 +35,11 @@ const ReleaseManagement = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'series'] }) > 0;
+  const isSeriesQueryFetching = useIsFetching({
+    queryKey: type === 'MultipleReleases'
+      ? ['release-management', 'multiple-releases']
+      : ['release-management', 'series'],
+  }) > 0;
 
   const filterOptions = useMemo(() => ({
     ignoreVariations: (searchParams.get('ignoreVariations') ?? 'true') === 'true',

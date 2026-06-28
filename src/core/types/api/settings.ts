@@ -338,6 +338,7 @@ export type SignalType =
   | 'Censored'
   | 'Creditless'
   | 'Corrupted'
+  | 'GroupHomogeneity'
   | 'SubGroup';
 
 export type EpisodeTypeScopeType = 'AllTogether' | 'PerEpisodeType';

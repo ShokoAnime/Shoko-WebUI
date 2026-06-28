@@ -415,13 +415,14 @@ const MixAndMatchTab = ({ onPreviewReady, series }: Props) => {
       <div className="flex justify-end">
         <Button
           buttonType="danger"
-          className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
+          buttonSize="small"
+          className="flex items-center gap-x-1"
           onClick={handlePreview}
           disabled={hasGaps || selections.size === 0}
           loading={overrideMutation.isPending}
         >
           <Icon path={mdiTrashCanOutline} size={0.8333} />
-          Delete Custom
+          Delete
         </Button>
       </div>
 
