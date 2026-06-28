@@ -92,10 +92,6 @@ const FilterSidebar = () => {
   const isFilterValid = keys(selectedCriteria).length > 0
     && keys(selectedCriteria).length === keys(activeCriteriaWithValues).length;
 
-  // buildSidebarFilter reads filterConditions internally via store.getState(),
-  // which the React Compiler can't trace. Explicitly reading selectedConditions
-  // here teaches the compiler this expression depends on it. Also guards against
-  // building a filter when no conditions are set.
   const finalFilterExpression = isFilterValid
     ? buildSidebarFilter(
       Object.values(selectedCriteria),
