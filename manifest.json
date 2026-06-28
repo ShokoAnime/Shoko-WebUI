@@ -87,6 +87,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.80",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.80/Shoko-WebUI-v2.6.0-dev.80.zip",
+      "checksum": "sha256:d40b09c5c9dbe3c90c38507ccd5276bca082081ba0f68d27f03cadc60ecee0e7",
+      "commit": "c270eddfcfebd97a38992a34763fad6e6899149c",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix live filter rebuild for tag and boolean criteria by @krbrs in https://github.com/ShokoAnime/Shoko-WebUI/pull/1386\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.79...v2.6.0-dev.80\n"
+    },
+    {
       "version": "2.6.0-dev.79",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.79/Shoko-WebUI-v2.6.0-dev.79.zip",
