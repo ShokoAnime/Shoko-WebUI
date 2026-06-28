@@ -474,7 +474,7 @@ const TmdbLinking = () => {
                         (_, index) => (
                           <div
                             key={`episode-${episode.IDs.AniDB}-${index}`}
-                            className="relative top-0 left-0 flex w-full gap-x-2"
+                            className="relative top-0 left-0 grid w-full grid-cols-[1fr_auto_1fr] gap-x-2"
                           >
                             <EpisodeRow
                               episode={episode}

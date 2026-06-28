@@ -79,10 +79,12 @@ const EpisodeSelect = (props: Props) => {
       by="ID"
       onChange={handleSelect}
       disabled={isDisabled}
+      as="div"
+      className="flex grow basis-0"
     >
       <ListboxButton
         className={cx(
-          'flex grow basis-0 items-center gap-x-6 rounded-lg border border-panel-border p-4',
+          'flex grow items-center gap-x-6 rounded-lg border border-panel-border p-4',
           'data-open:border-panel-text-primary',
           isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
           isDisabled && 'opacity-65',
