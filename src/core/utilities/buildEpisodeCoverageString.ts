@@ -1,7 +1,7 @@
 import type { EpisodeCoverageType } from '@/core/types/api/release-management';
 import type { SignalType } from '@/core/types/api/settings';
 
-export const typeOrder = {
+export const typeOrder: Record<string, number> = {
   Episode: 0,
   Special: 1,
   Trailer: 2,
