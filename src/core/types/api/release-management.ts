@@ -1,6 +1,7 @@
 export type EpisodeCoverageType = {
   Type: string;
   Number: number;
+  GroupShortName?: string | null;
 };
 
 export type ReleaseCandidateFileType = {
@@ -8,11 +9,19 @@ export type ReleaseCandidateFileType = {
   VideoLocalID: number;
   AbsolutePath: string | null;
   FileSize: number;
+  Version: number;
   IsRedundant: boolean;
   IsChaptered: boolean | null;
   IsCensored: boolean | null;
   IsCreditless: boolean | null;
   IsCorrupted: boolean;
+  Source: string | null;
+  Resolution: string | null;
+  VideoCodec: string | null;
+  BitDepth: number;
+  AudioCodec: string | null;
+  AudioStreamCount: number;
+  SubtitleStreamCount: number;
   AudioLanguages: string[];
   SubtitleLanguages: string[];
   Episodes: EpisodeCoverageType[];
@@ -54,6 +63,7 @@ export type ReleaseCandidateType = {
   IsRedundant: boolean;
   IsPartial?: boolean;
   DecidingSignal?: string;
+  DecidingType?: string;
   WinnerValue?: string;
   LoserValue?: string;
   GroupID: string | null;

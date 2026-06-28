@@ -13,7 +13,6 @@ import {
   useReleaseExecuteMutation,
 } from '@/core/react-query/release-management/mutations';
 import toast from '@/core/toast';
-import { getFileName } from '@/core/utilities/buildEpisodeCoverageString';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
@@ -77,21 +76,25 @@ const SeriesPreviewRow = (
       {expanded && (
         <div className="flex flex-col gap-1 border-t border-panel-border p-4">
           {preview.Files.map((file) => {
-            const fileName = getFileName(file.AbsolutePath, file.PlaceID);
+            const pathParts = file.AbsolutePath?.split(/[/\\]/) ?? [];
+            const fileName = pathParts.at(-1) ?? `Place ${file.PlaceID}`;
+            const dirPath = pathParts.length > 1 ? pathParts.slice(0, -1).join('/') : null;
             const isUnchecked = uncheckedPlaceIDs.has(file.PlaceID);
             return (
-              <div key={file.PlaceID} className="flex items-center gap-3 text-sm">
+              <div key={file.PlaceID} className="flex items-start gap-3 text-sm">
                 <Checkbox
                   id={`preview-file-${file.PlaceID}`}
                   isChecked={!isUnchecked}
                   onChange={() => onPlaceToggle(file.PlaceID)}
                   label=""
+                  className="mt-0.5"
                 />
                 <div className="min-w-0 grow">
-                  <div className="truncate">{fileName}</div>
+                  {dirPath && <div className="truncate text-xs opacity-65">{dirPath}</div>}
+                  <div className="truncate font-semibold">{fileName}</div>
                   {file.AbsolutePath == null && <div className="text-xs text-panel-text-warning">Path unavailable</div>}
                 </div>
-                <span className="shrink-0 opacity-65">
+                <span className="shrink-0 text-xs opacity-65">
                   {prettyBytes(file.FileSize, { binary: true })}
                 </span>
               </div>

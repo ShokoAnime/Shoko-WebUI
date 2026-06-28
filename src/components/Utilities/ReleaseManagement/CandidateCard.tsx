@@ -8,7 +8,11 @@ import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import { buildEpisodeCoverageString, buildEpisodeSet } from '@/core/utilities/buildEpisodeCoverageString';
 
-import type { EpisodeCoverageType, ReleaseCandidateType } from '@/core/types/api/release-management';
+import type {
+  EpisodeCoverageType,
+  ReleaseCandidateFileType,
+  ReleaseCandidateType,
+} from '@/core/types/api/release-management';
 
 type Props = {
   candidate: ReleaseCandidateType;
@@ -20,6 +24,35 @@ type Props = {
   onSelectAsPrimary: () => void;
   onViewMixMatch?: () => void;
   onMarkAllAsVariations?: () => void;
+};
+
+const signalLabels: Record<string, string> = {
+  Source: 'Source',
+  Resolution: 'Resolution',
+  VideoCodec: 'Video Codec',
+  BitDepth: 'Bit Depth',
+  AudioStreamCount: 'Audio Streams',
+  SubtitleStreamCount: 'Subtitle Streams',
+  AudioCodec: 'Audio Codec',
+  AudioLanguage: 'Audio Language',
+  SubtitleLanguage: 'Subtitle Language',
+  Chapters: 'Chapters',
+  GroupHomogeneity: 'Group Consistency',
+  SubGroup: 'Sub Group',
+  Version: 'Version',
+  IsCorrupted: 'Corruption',
+  IsCensored: 'Censorship',
+};
+
+const buildFileStreamSummary = (file: ReleaseCandidateFileType): string => {
+  const parts: string[] = [];
+  if (file.Version > 0) parts.push(`v${file.Version}`);
+  if (file.Source) parts.push(file.Source);
+  if (file.Resolution) parts.push(file.Resolution);
+  if (file.VideoCodec) parts.push(file.VideoCodec);
+  if (file.BitDepth > 0 && file.BitDepth !== 8) parts.push(`${file.BitDepth}-bit`);
+  if (file.AudioCodec) parts.push(file.AudioCodec);
+  return parts.join(' · ');
 };
 
 const parseMixedFlag = (
@@ -164,12 +197,16 @@ const CandidateCard = ({
       {/* Deciding signal */}
       {!isPrimary && candidate.DecidingSignal && candidate.WinnerValue && candidate.LoserValue && (
         <div className="text-sm opacity-65">
-          Ranked lower by:&nbsp;
-          <span className="font-semibold">{candidate.DecidingSignal}</span>
-          &nbsp;(
+          {'Ranked lower by: '}
+          <span className="font-semibold">
+            {signalLabels[candidate.DecidingSignal] ?? candidate.DecidingSignal}
+          </span>
+          {candidate.DecidingType && ' for '}
+          {candidate.DecidingType && <span className="font-semibold">{candidate.DecidingType}s</span>}
+          {' ('}
           {isVersion ? 'v' : ''}
           {candidate.WinnerValue}
-          &nbsp;&gt;&nbsp;
+          {' > '}
           {isVersion ? 'v' : ''}
           {candidate.LoserValue}
           )
@@ -303,6 +340,7 @@ const CandidateCard = ({
         <div className="flex flex-col gap-2 border-t border-panel-border pt-3">
           {candidate.Files.map((file) => {
             const fileCoverage = buildEpisodeCoverageString(file.Episodes);
+            const fileStreamSummary = buildFileStreamSummary(file);
 
             let fileState: 'redundant' | 'kept' | 'also-delete' | 'required' | 'unknown';
             if (isPrimary) {
@@ -324,24 +362,20 @@ const CandidateCard = ({
             const fileName = pathParts.at(-1) ?? `Place ${file.PlaceID}`;
             const dirPath = pathParts.length > 1 ? pathParts.slice(0, -1).join('/') : null;
 
-            const fileAnomalies: string[] = [];
-            if (file.IsCorrupted) fileAnomalies.push('Corrupted');
-            if (candidate.IsChapteredMixed && file.IsChaptered !== candidate.IsChaptered) {
-              fileAnomalies.push(file.IsChaptered ? 'Chaptered' : 'Unchaptered');
-            }
-            if (candidate.IsCensoredMixed && file.IsCensored !== candidate.IsCensored) {
-              fileAnomalies.push(file.IsCensored ? 'Censored' : 'Uncensored');
-            }
-            if (candidate.IsCreditlessMixed && file.IsCreditless !== candidate.IsCreditless) {
-              fileAnomalies.push(file.IsCreditless ? 'Creditless' : 'Credited');
-            }
+            const isChapteredAnomaly = candidate.IsChapteredMixed
+              && file.IsChaptered !== candidate.IsChaptered;
+            const isCensoredAnomaly = candidate.IsCensoredMixed && file.IsCensored !== candidate.IsCensored;
+            const isCreditlessAnomaly = candidate.IsCreditlessMixed
+              && file.IsCreditless !== candidate.IsCreditless;
+            const hasAnomaly = file.IsCorrupted || isChapteredAnomaly || isCensoredAnomaly
+              || isCreditlessAnomaly;
 
             return (
               <div
                 key={file.PlaceID}
                 className={cx(
                   'flex items-start gap-3 rounded-lg border bg-panel-background p-3 text-sm',
-                  fileAnomalies.length > 0 ? 'border-panel-text-warning/50' : 'border-panel-border',
+                  hasAnomaly ? 'border-panel-text-warning/50' : 'border-panel-border',
                   file.AbsolutePath == null && 'opacity-65',
                 )}
               >
@@ -353,6 +387,7 @@ const CandidateCard = ({
                     <span>{prettyBytes(file.FileSize, { binary: true })}</span>
                     {file.AbsolutePath == null && <span className="text-panel-text-warning">Path unavailable</span>}
                   </div>
+                  {fileStreamSummary && <div className="text-xs opacity-65">{fileStreamSummary}</div>}
                   {(file.AudioLanguages.length > 0 || file.SubtitleLanguages.length > 0) && (
                     <div className="text-xs opacity-65">
                       {file.AudioLanguages.length > 0 && `Audio: ${file.AudioLanguages.join(', ')}`}
@@ -360,17 +395,46 @@ const CandidateCard = ({
                       {file.SubtitleLanguages.length > 0 && `Subs: ${file.SubtitleLanguages.join(', ')}`}
                     </div>
                   )}
-                  {fileAnomalies.length > 0 && (
+                  {(file.IsChaptered != null || file.IsCensored || file.IsCreditless
+                    || file.IsCorrupted) && (
                     <div className="flex flex-wrap gap-1 pt-0.5">
-                      {fileAnomalies.map(anomaly => (
+                      {file.IsChaptered != null && (file.IsChaptered || isChapteredAnomaly) && (
                         <span
-                          key={anomaly}
-                          className="flex items-center gap-1 rounded-sm bg-panel-text-warning/15 px-1.5 py-0.5 text-xs font-semibold text-panel-text-warning"
+                          className={cx(
+                            'flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-xs font-semibold',
+                            isChapteredAnomaly
+                              ? 'bg-panel-text-warning/15 text-panel-text-warning'
+                              : 'bg-panel-background-alt opacity-65',
+                          )}
                         >
-                          <Icon path={mdiAlertOutline} size={0.5833} />
-                          {anomaly}
+                          {isChapteredAnomaly && <Icon path={mdiAlertOutline} size={0.5833} />}
+                          {file.IsChaptered ? 'Chaptered' : 'Unchaptered'}
                         </span>
-                      ))}
+                      )}
+                      {file.IsCensored && (
+                        <span className="flex items-center gap-1 rounded-sm bg-panel-text-warning/15 px-1.5 py-0.5 text-xs font-semibold text-panel-text-warning">
+                          {isCensoredAnomaly && <Icon path={mdiAlertOutline} size={0.5833} />}
+                          Censored
+                        </span>
+                      )}
+                      {file.IsCreditless && (
+                        <span
+                          className={cx(
+                            'rounded-sm px-1.5 py-0.5 text-xs font-semibold',
+                            isCreditlessAnomaly
+                              ? 'bg-panel-text-warning/15 text-panel-text-warning'
+                              : 'bg-panel-background-alt opacity-65',
+                          )}
+                        >
+                          Creditless
+                        </span>
+                      )}
+                      {file.IsCorrupted && (
+                        <span className="flex items-center gap-1 rounded-sm bg-panel-text-danger/15 px-1.5 py-0.5 text-xs font-semibold text-panel-text-danger">
+                          <Icon path={mdiAlertOutline} size={0.5833} />
+                          Corrupted
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>

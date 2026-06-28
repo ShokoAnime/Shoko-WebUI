@@ -27,6 +27,9 @@ type FileOption = {
   subtitleStreamCount: number;
   source: string | null;
   resolution: string | null;
+  videoCodec: string | null;
+  bitDepth: number;
+  audioCodec: string | null;
   audioLanguages: string[];
   subtitleLanguages: string[];
 };
@@ -71,6 +74,9 @@ const buildFromOverrides = (overrides: ReleaseOverrideType[]): Map<string, FileO
             subtitleStreamCount: override.SubtitleStreamCount,
             source: override.Source,
             resolution: override.Resolution,
+            videoCodec: override.VideoCodec,
+            bitDepth: override.BitDepth,
+            audioCodec: override.AudioCodec,
             audioLanguages: override.AudioLanguages ?? [],
             subtitleLanguages: override.SubtitleLanguages ?? [],
           });
@@ -102,6 +108,9 @@ const buildFromCandidates = (candidates: ReleaseCandidateType[]): Map<string, Fi
             subtitleStreamCount: candidate.SubtitleStreamCount,
             source: candidate.Source,
             resolution: candidate.Resolution,
+            videoCodec: candidate.VideoCodec,
+            bitDepth: candidate.BitDepth,
+            audioCodec: candidate.AudioCodec,
             audioLanguages: file.AudioLanguages,
             subtitleLanguages: file.SubtitleLanguages,
           });
@@ -166,6 +175,9 @@ const buildOptionSummary = (option: FileOption): string => {
   if (option.version > 0) parts.push(`v${option.version}`);
   if (option.source) parts.push(option.source);
   if (option.resolution) parts.push(option.resolution);
+  if (option.videoCodec) parts.push(option.videoCodec);
+  if (option.bitDepth > 0 && option.bitDepth !== 8) parts.push(`${option.bitDepth}-bit`);
+  if (option.audioCodec) parts.push(option.audioCodec);
   return parts.join(' · ');
 };
 
