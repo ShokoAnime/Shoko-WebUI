@@ -1,6 +1,7 @@
 import type { EpisodeCoverageType } from '@/core/types/api/release-management';
+import type { SignalType } from '@/core/types/api/settings';
 
-export const typeOrder: Record<string, number> = {
+export const typeOrder = {
   Episode: 0,
   Special: 1,
   Trailer: 2,
@@ -10,7 +11,26 @@ export const typeOrder: Record<string, number> = {
   Other: 6,
 };
 
-export const typeDisplayNameMap: Record<string, string> = {
+export const signalLabels: Record<SignalType, string> = {
+  AudioCodec: 'Audio Codec',
+  AudioLanguage: 'Audio Language',
+  AudioStreams: 'Audio Streams',
+  BitDepth: 'Bit Depth',
+  Censored: 'Censored',
+  Chaptered: 'Chaptered',
+  Corrupted: 'Corrupted',
+  Creditless: 'Creditless',
+  GroupHomogeneity: 'Group Consistency',
+  Resolution: 'Resolution',
+  Source: 'Source',
+  SubGroup: 'Sub Group',
+  SubtitleLanguage: 'Subtitle Language',
+  SubtitleStreams: 'Subtitle Streams',
+  Version: 'Version',
+  VideoCodec: 'Video Codec',
+};
+
+export const typeDisplayNameMap = {
   Episode: 'Episodes',
   Special: 'Specials',
   Trailer: 'Trailers',

@@ -6,30 +6,12 @@ import DnDList from '@/components/DnDList/DnDList';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import { signalLabels } from '@/core/utilities/buildEpisodeCoverageString';
 
 import type { ReleaseComparisonPreferencesType, SignalType } from '@/core/types/api/settings';
 import type { DropResult } from '@hello-pangea/dnd';
 
-const SIGNAL_NAMES: Record<SignalType, string> = {
-  AudioCodec: 'Audio Codec',
-  AudioLanguage: 'Audio Language',
-  AudioStreams: 'Audio Streams',
-  BitDepth: 'Bit Depth',
-  Censored: 'Censored',
-  Chaptered: 'Chaptered',
-  Corrupted: 'Corrupted',
-  Creditless: 'Creditless',
-  GroupHomogeneity: 'Group Consistency',
-  Resolution: 'Resolution',
-  Source: 'Source',
-  SubGroup: 'Sub Group',
-  SubtitleLanguage: 'Subtitle Language',
-  SubtitleStreams: 'Subtitle Streams',
-  Version: 'Version',
-  VideoCodec: 'Video Codec',
-};
-
-const ALL_SIGNALS = Object.keys(SIGNAL_NAMES) as SignalType[];
+const ALL_SIGNALS = Object.keys(signalLabels) as SignalType[];
 
 type Props = {
   preferences: ReleaseComparisonPreferencesType;
@@ -134,7 +116,7 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               item: (
                 <div className="flex cursor-grab items-center gap-x-2 py-1 active:cursor-grabbing">
                   <Icon path={mdiDragHorizontalVariant} size={0.8333} className="shrink-0 opacity-50" />
-                  <span className="text-sm">{SIGNAL_NAMES[signal] ?? `Signal ${signal}`}</span>
+                  <span className="text-sm">{signalLabels[signal] ?? `Signal ${signal}`}</span>
                 </div>
               ),
             }))}

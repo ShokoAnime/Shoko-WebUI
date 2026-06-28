@@ -6,7 +6,7 @@ import prettyBytes from 'pretty-bytes';
 
 import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
-import { buildEpisodeCoverageString, buildEpisodeSet } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeCoverageString, buildEpisodeSet, signalLabels } from '@/core/utilities/buildEpisodeCoverageString';
 
 import type {
   EpisodeCoverageType,
@@ -24,25 +24,6 @@ type Props = {
   onSelectAsPrimary: () => void;
   onViewMixMatch?: () => void;
   onMarkAllAsVariations?: () => void;
-};
-
-const signalLabels: Record<string, string> = {
-  AudioCodec: 'Audio Codec',
-  AudioLanguage: 'Audio Language',
-  AudioStreams: 'Audio Streams',
-  BitDepth: 'Bit Depth',
-  Censored: 'Censorship',
-  Chaptered: 'Chaptered',
-  Corrupted: 'Corruption',
-  Creditless: 'Creditless',
-  GroupHomogeneity: 'Group Consistency',
-  Resolution: 'Resolution',
-  Source: 'Source',
-  SubGroup: 'Sub Group',
-  SubtitleLanguage: 'Subtitle Language',
-  SubtitleStreams: 'Subtitle Streams',
-  Version: 'Version',
-  VideoCodec: 'Video Codec',
 };
 
 const buildFileStreamSummary = (file: ReleaseCandidateFileType): string => {
