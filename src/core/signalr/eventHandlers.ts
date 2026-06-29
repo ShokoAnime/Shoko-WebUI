@@ -33,6 +33,11 @@ const invalidateSeries = debounce(
   1000,
 );
 
+const invalidateReleaseManagement = debounce(
+  () => invalidateQueries(['release-management', 'multiple-releases']),
+  2000,
+);
+
 export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
   switch (event) {
     case 'FileDeleted':
@@ -42,6 +47,7 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
       invalidateDashboard();
       invalidateFiles();
       invalidateManagedFolders();
+      if (event === 'FileDeleted' || event === 'FileMatched') invalidateReleaseManagement();
       break;
     case 'FileMoved':
       invalidateFiles();

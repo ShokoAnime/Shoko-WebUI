@@ -237,7 +237,7 @@ const SeriesList = (
 
   useEffect(() => {
     setSelectedSeries(0);
-  }, [seriesQuery.data]);
+  }, [type]);
 
   const episodeColumns = useMemo(() => {
     if (type !== 'MissingEpisodes') {

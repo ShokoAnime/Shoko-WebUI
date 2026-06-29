@@ -3,6 +3,12 @@ import type { DataSourceType } from '@/core/types/api/common';
 
 export type ReleaseManagementItemType = 'MultipleReleases' | 'DuplicateFiles' | 'MissingEpisodes';
 
+export type MultipleReleasesSeriesRequestType = {
+  onlyFinishedSeries?: boolean;
+  onlyWithRedundant?: boolean;
+  search?: string;
+} & PaginationType;
+
 export type ReleaseManagementSeriesRequestType = {
   ignoreVariations?: boolean;
   includeDataFrom?: DataSourceType[];
@@ -18,3 +24,22 @@ export type ReleaseManagementSeriesEpisodesType = {
   collecting?: boolean;
   ignoreVariations?: boolean;
 } & PaginationType;
+
+export type SeriesCandidateOverride = {
+  seriesID: number;
+  preferredCandidateKey: string;
+};
+
+export type ReleaseOverrideBody = {
+  selectedPlaceIDs: number[];
+};
+
+export type ReleaseDeletionPreviewBody = {
+  includedSeriesIDs?: number[];
+  excludedSeriesIDs?: number[];
+  overrides?: SeriesCandidateOverride[];
+};
+
+export type DeleteReleasesBody = {
+  placeIDs: number[];
+};
