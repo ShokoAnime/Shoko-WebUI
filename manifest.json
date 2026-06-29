@@ -87,6 +87,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.81",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.81/Shoko-WebUI-v2.6.0-dev.81.zip",
+      "checksum": "sha256:bbc48fcf23443eee7e7723c724bbe0857e8efabca58fa7cdb1d227eba44473ab",
+      "commit": "57863e1cd58f0d7e936db1d027b74301ee8f8397",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Release management by @da3dsoul in https://github.com/ShokoAnime/Shoko-WebUI/pull/1382\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.80...v2.6.0-dev.81\n"
+    },
+    {
       "version": "2.6.0-dev.80",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.80/Shoko-WebUI-v2.6.0-dev.80.zip",
