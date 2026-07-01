@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 
 type Props = {
   seriesId: number;
@@ -14,13 +14,13 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const navigate = useNavigateVoid();
 
-  const { isPending: deletePending, mutate: deleteSeries } = useDeleteSeriesMutation();
+  const { isPending: deletePending, mutate: deleteSeries, mutateAsync: deleteSeriesAsync } = useDeleteSeriesMutation();
 
   const navigateToCollection = () => navigate('/webui/collection');
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!showConfirmModal || deletePending) return;
-    deleteSeries({ seriesId, deleteFiles: true, completelyRemove: true }, {
+    await deleteSeriesAsync({ seriesId, deleteFiles: true, completelyRemove: true }, {
       onSuccess: () => {
         toast.success('Series deleted completely!');
         navigateToCollection();
@@ -65,9 +65,7 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
         confirmText="Delete"
         confirmButtonType="danger"
       >
-        <div>
-          Are you sure you want to delete ALL SERIES DATA AND FILES ?
-        </div>
+        Are you sure you want to delete ALL SERIES DATA AND FILES?
       </ConfirmationPromptModal>
     </div>
   );
