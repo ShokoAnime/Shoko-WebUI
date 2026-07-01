@@ -87,6 +87,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.83",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.83/Shoko-WebUI-v2.6.0-dev.83.zip",
+      "checksum": "sha256:d804a3987fe18b561437f14b6298eff6a84e0e662a27544f7e567e9d195d9317",
+      "commit": "1b963d011762f1732fc54d0674e5e7a89bd09d74",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add Shoko Series and AniDB Link. Improve some messaging in series detail by @da3dsoul in https://github.com/ShokoAnime/Shoko-WebUI/pull/1391\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.82...v2.6.0-dev.83\n"
+    },
+    {
       "version": "2.6.0-dev.82",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.82/Shoko-WebUI-v2.6.0-dev.82.zip",
