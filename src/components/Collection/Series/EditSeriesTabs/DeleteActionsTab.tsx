@@ -1,20 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 
 type Props = {
   seriesId: number;
 };
 
 const DeleteActionsTab = ({ seriesId }: Props) => {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const navigate = useNavigateVoid();
 
-  const { mutate: deleteSeries } = useDeleteSeriesMutation();
+  const { isPending: deletePending, mutate: deleteSeries } = useDeleteSeriesMutation();
 
   const navigateToCollection = () => navigate('/webui/collection');
+
+  const handleDelete = () => {
+    if (!showConfirmModal || deletePending) return;
+    deleteSeries({ seriesId, deleteFiles: true, completelyRemove: true }, {
+      onSuccess: () => {
+        toast.success('Series deleted completely!');
+        navigateToCollection();
+      },
+    });
+  };
 
   return (
     <div className="flex grow flex-col gap-y-4 overflow-y-auto">
@@ -43,14 +55,20 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
       <Action
         name="Delete Series - All Series Data and Files"
         description="Removes ALL DATA AND FILES relating to the series. Use with caution, as you may get temp banned from AniDB if it's abused"
-        onClick={() =>
-          deleteSeries({ seriesId, deleteFiles: true, completelyRemove: true }, {
-            onSuccess: () => {
-              toast.success('Series deleted completely!');
-              navigateToCollection();
-            },
-          })}
+        onClick={() => setShowConfirmModal(true)}
       />
+      <ConfirmationPromptModal
+        show={showConfirmModal}
+        title="Confirm delete ALL SERIES DATA AND FILES"
+        onConfirm={handleDelete}
+        onClose={() => setShowConfirmModal(false)}
+        confirmText="Delete"
+        confirmButtonType="danger"
+      >
+        <div>
+          Are you sure you want to delete ALL SERIES DATA AND FILES ?
+        </div>
+      </ConfirmationPromptModal>
     </div>
   );
 };
