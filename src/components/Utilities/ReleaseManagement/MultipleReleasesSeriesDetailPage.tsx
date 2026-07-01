@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useLocation, useParams, useSearchParams } from 'react-router';
-import { mdiArrowLeft, mdiFlagOutline, mdiLoading } from '@mdi/js';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router';
+import { mdiArrowLeft, mdiFlagOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
+import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/core/toast';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
@@ -120,14 +121,26 @@ const MultipleReleasesSeriesDetailPage = () => {
             </span>
           )}
           {series && (
-            <a
-              href={`https://anidb.net/anime/${series.AnidbAnimeID}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-panel-text-primary hover:underline"
-            >
-              {`AniDB #${series.AnidbAnimeID}`}
-            </a>
+            <>
+              <a
+                href={`https://anidb.net/anime/${series.AnidbAnimeID}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-x-2 font-semibold text-panel-text-primary"
+              >
+                <div className="metadata-link-icon AniDB" />
+                {series.AnidbAnimeID}
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </a>
+              <Link
+                to={`/webui/collection/series/${seriesId}`}
+                className="flex items-center gap-x-2 font-semibold text-panel-text-primary"
+              >
+                <ShokoIcon className="size-6" />
+                Shoko
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </Link>
+            </>
           )}
           <div className="ml-auto">
             <Button

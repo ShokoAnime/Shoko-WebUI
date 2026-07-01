@@ -3,7 +3,7 @@ import { mdiAlertOutline, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
-import { buildEpisodeSet } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeSet, typeOrder } from '@/core/utilities/buildEpisodeCoverageString';
 
 import CandidateCard from './CandidateCard';
 
@@ -72,14 +72,37 @@ const CandidatesTab = ({
     return ![...fullEpisodeSet].every(key => candidateKeys.has(key));
   };
 
-  // Recompute redundancy locally when an override is active
-  const candidatesWithRedundancy = overrideKey
-    ? series.Candidates.map((candidate) => {
-      if (candidate.Key === effectivePrimary?.Key) return { ...candidate, IsRedundant: false };
-      const redundant = isSubsetOf(candidate.Episodes, primaryEpisodeSet);
-      return { ...candidate, IsRedundant: redundant };
-    })
-    : series.Candidates;
+  const primaryPlaceIds = new Set((effectivePrimary?.Files ?? []).map(fileEntry => fileEntry.PlaceID));
+
+  const candidatesWithRedundancy = series.Candidates.map((candidate) => {
+    if (candidate.Key === effectivePrimary?.Key) {
+      return { ...candidate, IsRedundant: false, RedundantFileCount: 0, RedundantEpisodes: [] };
+    }
+    const candidateRedundant = isSubsetOf(candidate.Episodes, primaryEpisodeSet);
+    const deletedFiles = candidate.Files.filter((fileEntry) => {
+      if (primaryPlaceIds.has(fileEntry.PlaceID)) return false;
+      if (candidateRedundant) return true;
+      return series.IsAiring
+        && fileEntry.Episodes.length > 0
+        && fileEntry.Episodes.every(epEntry => primaryEpisodeSet.has(`${epEntry.Type}:${epEntry.Number}`));
+    });
+    const episodeMap = new Map<string, EpisodeCoverageType>();
+    for (const file of deletedFiles) {
+      for (const epEntry of file.Episodes) {
+        const key = `${epEntry.Type}:${epEntry.Number}`;
+        if (!episodeMap.has(key)) episodeMap.set(key, epEntry);
+      }
+    }
+    const redundantEpisodes = [...episodeMap.values()].sort(
+      (lhs, rhs) => (typeOrder[lhs.Type] ?? 99) - (typeOrder[rhs.Type] ?? 99) || lhs.Number - rhs.Number,
+    );
+    return {
+      ...candidate,
+      IsRedundant: candidateRedundant,
+      RedundantFileCount: deletedFiles.length,
+      RedundantEpisodes: redundantEpisodes,
+    };
+  });
 
   const allCandidatesLackReleaseInfo = series.Candidates.every(candidate => !candidate.HasReleaseInfo);
 
