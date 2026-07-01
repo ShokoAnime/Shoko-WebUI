@@ -61,6 +61,8 @@ export type ReleaseCandidateType = {
   Key: string;
   HasReleaseInfo: boolean;
   IsRedundant: boolean;
+  RedundantFileCount: number;
+  RedundantEpisodes: EpisodeCoverageType[];
   IsPartial?: boolean;
   DecidingSignal?: string;
   DecidingType?: string;

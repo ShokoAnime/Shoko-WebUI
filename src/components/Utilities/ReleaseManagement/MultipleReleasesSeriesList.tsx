@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+
+import ShokoIcon from '@/components/ShokoIcon';
 
 import Checkbox from '@/components/Input/Checkbox';
 import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
@@ -42,7 +45,7 @@ const SeriesRow = ({
   onToggle: () => void;
 }) => {
   const redundantFileCount = series.Candidates.reduce(
-    (sum, candidate) => sum + candidate.Files.filter(file => file.IsRedundant).length,
+    (sum, candidate) => sum + candidate.RedundantFileCount,
     0,
   );
   const primary = series.Candidates[0];
@@ -110,6 +113,19 @@ const SeriesRow = ({
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={0.6667} />
             </div>
           </a>
+          <Link
+            to={`/webui/collection/series/${series.SeriesID}`}
+            className="shrink-0 text-panel-text-primary"
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <div className="flex items-center gap-1 font-semibold">
+              <ShokoIcon className="size-6" />
+              Shoko
+              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={0.6667} />
+            </div>
+          </Link>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-0.5 opacity-65">
           <span>
@@ -122,7 +138,7 @@ const SeriesRow = ({
               {primary.Name}
             </span>
           )}
-          {series.HasRedundantCandidates
+          {redundantFileCount > 0
             ? (
               <span>
                 <span className="font-semibold text-panel-text-danger">{redundantFileCount}</span>{' '}

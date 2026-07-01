@@ -65,7 +65,8 @@ const CandidateCard = ({
 
   const coverageString = buildEpisodeCoverageString(candidate.Episodes);
   const totalSize = candidate.Files.reduce((sum, file) => sum + file.FileSize, 0);
-  const redundantFileCount = candidate.Files.filter(file => file.IsRedundant).length;
+  const redundantFileCount = candidate.RedundantFileCount;
+  const redundantEpisodeStr = buildEpisodeCoverageString(candidate.RedundantEpisodes ?? []);
 
   const isVersion = candidate.DecidingSignal === 'Version';
   const hasFiles = candidate.Files.length > 0;
@@ -187,10 +188,10 @@ const CandidateCard = ({
           {candidate.DecidingType && <span className="font-semibold">{candidate.DecidingType}s</span>}
           {' ('}
           {isVersion ? 'v' : ''}
-          {candidate.WinnerValue}
-          {' > '}
-          {isVersion ? 'v' : ''}
           {candidate.LoserValue}
+          {' < '}
+          {isVersion ? 'v' : ''}
+          {candidate.WinnerValue}
           )
         </div>
       )}
@@ -303,11 +304,12 @@ const CandidateCard = ({
         <div className="mt-1">
           Files:&nbsp;
           <span className="font-semibold">{candidate.Files.length}</span>
-          {candidate.IsRedundant && (
+          {redundantFileCount > 0 && (
             <>
               &nbsp;(
               <span className="text-panel-text-danger">
                 {redundantFileCount} to delete
+                {redundantEpisodeStr && ` · ${redundantEpisodeStr}`}
               </span>
               )
             </>
