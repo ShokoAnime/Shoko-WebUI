@@ -20,12 +20,12 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
 
   const handleDelete = async () => {
     if (!showConfirmModal || deletePending) return;
-    await deleteSeriesAsync({ seriesId, deleteFiles: true, completelyRemove: true }, {
-      onSuccess: () => {
+    await deleteSeriesAsync({ seriesId, deleteFiles: true, completelyRemove: true })
+      .then(() => {
         toast.success('Series deleted completely!');
         navigateToCollection();
-      },
-    });
+      })
+      .catch(() => toast.error('Series could not be deleted.'));
   };
 
   return (
