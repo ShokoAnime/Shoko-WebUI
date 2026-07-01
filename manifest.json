@@ -87,6 +87,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.82",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.82/Shoko-WebUI-v2.6.0-dev.82.zip",
+      "checksum": "sha256:b6cc7c90df8017bbf6f18fb15a351fa1ca83f115f6238177dd0ea2f40e31f82c",
+      "commit": "450e07e65cb16eb882c4404106f591aa30cbcd6e",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add confirmation dialog for deleting all series data and files by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1392\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.81...v2.6.0-dev.82\n"
+    },
+    {
       "version": "2.6.0-dev.81",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.81/Shoko-WebUI-v2.6.0-dev.81.zip",
