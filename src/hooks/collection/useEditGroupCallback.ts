@@ -12,7 +12,8 @@ const useEditGroupCallback = (item: CollectionGroupType | SeriesType) => {
   return (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    if (item) dispatch(setGroupId(item.IDs.ParentGroup ?? item.IDs.TopLevelGroup));
+    if ('MainSeries' in item.IDs) dispatch(setGroupId(item.IDs.ID));
+    else if (item) dispatch(setGroupId(item.IDs.ParentGroup));
   };
 };
 

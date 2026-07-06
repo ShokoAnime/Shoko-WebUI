@@ -124,7 +124,7 @@ const ExistingGroup = (
     </div>
     <div
       className="cursor-pointer text-panel-icon-action"
-      onClick={() => moveToGroup({ groupId: group.IDs.ParentGroup ?? group.IDs.TopLevelGroup })}
+      onClick={() => moveToGroup({ groupId: group.IDs.ID })}
       data-tooltip-id="tooltip"
       data-tooltip-content="Move to existing group"
       data-tooltip-place="top"
@@ -163,7 +163,7 @@ const GroupTab = ({ seriesId }: Props) => {
 
   const moveToNewGroup = () => moveToNewGroupMutation(seriesId);
   const moveToExistingGroup = ({ groupId }: { groupId: number }) => {
-    const currentGroupId = seriesGroup?.IDs?.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup;
+    const currentGroupId = seriesGroup?.IDs?.ID;
     if (currentGroupId && currentGroupId !== groupId) {
       moveToExistingGroupMutation({ seriesId, groupId });
     }
@@ -184,7 +184,7 @@ const GroupTab = ({ seriesId }: Props) => {
   return (
     <div className="flex h-full flex-col">
       <EditableNameComponent
-        groupId={seriesGroup?.IDs.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup ?? 0}
+        groupId={seriesGroup?.IDs.ID ?? 0}
         loading={isFetching}
         name={seriesGroup?.Name ?? ''}
         renameGroup={renameGroup}
@@ -224,9 +224,7 @@ const GroupTab = ({ seriesId }: Props) => {
           {groupsQuery.isSuccess && groups.length === 0 && <span className="my-auto self-center">No Results!</span>}
 
           {groupsQuery.isSuccess && groups.length > 0 && (
-            groups.map(group => (
-              <ExistingGroup key={group.IDs.TopLevelGroup} group={group} moveToGroup={moveToExistingGroup} />
-            ))
+            groups.map(group => <ExistingGroup key={group.IDs.ID} group={group} moveToGroup={moveToExistingGroup} />)
           )}
         </div>
       </div>
