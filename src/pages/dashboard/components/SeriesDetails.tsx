@@ -23,6 +23,7 @@ const SeriesDetails = ({ series }: Props) => {
       title={series.Name}
       subtitle={subtitle}
       shokoId={series.IDs.ID}
+      anidbSeriesId={series.IDs.AniDB}
     />
   );
 };
