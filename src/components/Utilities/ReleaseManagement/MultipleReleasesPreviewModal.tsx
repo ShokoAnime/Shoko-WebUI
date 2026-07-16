@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
+import AnimateHeight from 'react-animate-height';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiChevronDown, mdiLoading, mdiMinusCircleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
+import { filter } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useImmer } from 'use-immer';
 import { useToggle } from 'usehooks-ts';
@@ -8,20 +12,16 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useReleaseDeleteMutation } from '@/core/react-query/release-management/mutations';
-import toast from '@/core/toast';
-import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
-
-import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
 import {
   useReleaseDeletionPreviewQuery,
   useReleaseMixMatchDeletionPreviewQuery,
 } from '@/core/react-query/release-management/queries';
-import { invalidateQueries } from '@/core/react-query/queryClient';
-import { filter } from 'lodash';
-import AnimateHeight from 'react-animate-height';
-import cx from 'classnames';
-import { useHotkeys } from 'react-hotkeys-hook';
+import toast from '@/core/toast';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
+
+import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
 
 type Props = {
   open: boolean;

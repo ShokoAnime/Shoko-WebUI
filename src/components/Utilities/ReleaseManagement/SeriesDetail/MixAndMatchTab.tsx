@@ -1,19 +1,20 @@
 import React, { useEffect } from 'react';
 import { mdiAlertOutline, mdiCheckboxMarkedCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import type { Updater } from 'use-immer';
+import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import { typeOrder } from '@/core/utilities/buildEpisodeCoverageString';
 
+import { MixAndMatchEpisode } from './MixAndMatchEpisode';
+
+import type { EpisodeRow, FileOption } from './MixAndMatchEpisode';
 import type {
   ReleaseCandidateType,
   ReleaseOverrideType,
   SeriesWithCandidatesType,
 } from '@/core/types/api/release-management';
-import { MixAndMatchEpisode } from './MixAndMatchEpisode';
-import type { EpisodeRow, FileOption } from './MixAndMatchEpisode';
-import cx from 'classnames';
+import type { Updater } from 'use-immer';
 
 type AutofillGroup = {
   key: string;

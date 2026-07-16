@@ -4,9 +4,9 @@ import { useImmer } from 'use-immer';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
+import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 import type { SeriesType } from '@/core/types/api/series';
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
-import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 
 type RowType = EpisodeType | FileType | SeriesType | ManualLinkType | SeriesWithCandidatesType;
 

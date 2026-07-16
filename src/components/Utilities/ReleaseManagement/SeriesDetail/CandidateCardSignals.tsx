@@ -1,6 +1,7 @@
 import React from 'react';
-import type { ReleaseCandidateType } from '@/core/types/api/release-management';
 import cx from 'classnames';
+
+import type { ReleaseCandidateType } from '@/core/types/api/release-management';
 
 type Props = {
   candidate: ReleaseCandidateType;

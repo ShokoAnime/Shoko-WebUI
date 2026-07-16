@@ -9,6 +9,7 @@ import {
   mdiTrashCanOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import ReleaseManagementSettingsModal from '@/components/Dialogs/ReleaseManagementSettingsModal';
 import Button from '@/components/Input/Button';
@@ -16,13 +17,11 @@ import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
+import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
+import MultipleReleasesSeriesList from '@/components/Utilities/ReleaseManagement/MultipleReleasesSeriesList';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { resetQueries } from '@/core/react-query/queryClient';
-
-import { useDebounceValue, useToggle } from 'usehooks-ts';
 import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
-import MultipleReleasesSeriesList from '@/components/Utilities/ReleaseManagement/MultipleReleasesSeriesList';
-import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
 
 const ReleaseManagement = () => {
   const [searchParams, setSearchParams] = useSearchParams();

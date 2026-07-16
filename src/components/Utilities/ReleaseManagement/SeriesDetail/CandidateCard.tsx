@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
+import AnimateHeight from 'react-animate-height';
 import { mdiAlertOutline, mdiArrowRightThin, mdiChevronDown, mdiFlagOutline, mdiStar, mdiSwapVertical } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
+import { useToggle } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
+import CandidateCardFileList from '@/components/Utilities/ReleaseManagement/SeriesDetail/CandidateCardFileList';
+import CandidateCardSignals from '@/components/Utilities/ReleaseManagement/SeriesDetail/CandidateCardSignals';
+import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
+import { resetQueries } from '@/core/react-query/queryClient';
+import toast from '@/core/toast';
 import { buildEpisodeCoverageString, signalLabels } from '@/core/utilities/buildEpisodeCoverageString';
 
 import type { EpisodeCoverageType, ReleaseCandidateType } from '@/core/types/api/release-management';
-import { useToggle } from 'usehooks-ts';
-import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
-import toast from '@/core/toast';
-import { resetQueries } from '@/core/react-query/queryClient';
-import CandidateCardFileList from '@/components/Utilities/ReleaseManagement/SeriesDetail/CandidateCardFileList';
-import CandidateCardSignals from '@/components/Utilities/ReleaseManagement/SeriesDetail/CandidateCardSignals';
-import AnimateHeight from 'react-animate-height';
 
 type Props = {
   candidate: ReleaseCandidateType;

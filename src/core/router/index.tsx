@@ -43,8 +43,8 @@ import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSett
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
-import FileSearch from '@/pages/utilities/FileSearch';
 import DuplicateFiles from '@/pages/utilities/DuplicateFiles';
+import FileSearch from '@/pages/utilities/FileSearch';
 import MissingEpisodes from '@/pages/utilities/MissingEpisodes';
 import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';

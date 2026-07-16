@@ -1,10 +1,10 @@
 import React from 'react';
+import AnimateHeight from 'react-animate-height';
 import { mdiAlertOutline, mdiChevronDown, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 import { useToggle } from 'usehooks-ts';
-import AnimateHeight from 'react-animate-height';
 
 export type FileOption = {
   placeID: number;

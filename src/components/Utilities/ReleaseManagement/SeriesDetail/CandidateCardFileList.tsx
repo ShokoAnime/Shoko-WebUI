@@ -1,4 +1,10 @@
 import React from 'react';
+import { mdiAlertOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
+import prettyBytes from 'pretty-bytes';
+
+import { Badge } from '@/components/Badge';
 import { buildEpisodeCoverageString } from '@/core/utilities/buildEpisodeCoverageString';
 
 import type {
@@ -6,11 +12,6 @@ import type {
   ReleaseCandidateFileType,
   ReleaseCandidateType,
 } from '@/core/types/api/release-management';
-import cx from 'classnames';
-import { mdiAlertOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import prettyBytes from 'pretty-bytes';
-import { Badge } from '@/components/Badge';
 
 type Props = {
   candidate: ReleaseCandidateType;

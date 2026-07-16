@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import cx from 'classnames';
-
-import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
-import useFlattenListResult from '@/hooks/useFlattenListResult';
-
-import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
-import useNavigateVoid from '@/hooks/useNavigateVoid';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import cx from 'classnames';
 import { debounce } from 'lodash';
-import useRowSelection from '@/hooks/useRowSelection';
-import { handleShiftSelect } from '@/core/util';
-import { Link, useSearchParams } from 'react-router';
+
 import { Badge } from '@/components/Badge';
 import ShokoIcon from '@/components/ShokoIcon';
+import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
+import { handleShiftSelect } from '@/core/util';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
+import useRowSelection from '@/hooks/useRowSelection';
+
+import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 
 type Props = {
   allSelected: boolean;

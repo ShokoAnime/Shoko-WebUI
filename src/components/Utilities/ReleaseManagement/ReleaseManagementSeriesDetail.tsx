@@ -3,25 +3,25 @@ import { Link, useParams, useSearchParams } from 'react-router';
 import { mdiChevronRight, mdiFlagOutline, mdiLoading, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { toNumber } from 'lodash';
+import { useImmer } from 'use-immer';
+import { useToggle } from 'usehooks-ts';
 
+import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
+import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
-import type { ReleaseCandidateType } from '@/core/types/api/release-management';
+import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import CandidatesTab from './SeriesDetail/CandidatesTab';
 import ManageVariationsModal from './SeriesDetail/ManageVariationsModal';
 import MixAndMatchTab from './SeriesDetail/MixAndMatchTab';
 
-import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { Badge } from '@/components/Badge';
-import { toNumber } from 'lodash';
-import Checkbox from '@/components/Input/Checkbox';
-import { useToggle } from 'usehooks-ts';
-import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
-import { useImmer } from 'use-immer';
-import toast from '@/core/toast';
+import type { ReleaseCandidateType } from '@/core/types/api/release-management';
 
 const Title = (
   { anidbId, isAiring, seriesId, seriesTitle }: {

@@ -18,8 +18,8 @@ import type { FileType } from './types/api/file';
 import type { SeriesType } from './types/api/series';
 import type { ManualLinkType } from './types/utilities/unrecognized-utility';
 import type { ShokoError } from '@/core/types/api';
-import type { AxiosError } from 'axios';
 import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
+import type { AxiosError } from 'axios';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
