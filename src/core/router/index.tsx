@@ -44,7 +44,8 @@ import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import FileSearch from '@/pages/utilities/FileSearch';
-import LegacyReleaseManagement from '@/pages/utilities/LegacyReleaseManagement';
+import DuplicateFiles from '@/pages/utilities/DuplicateFiles';
+import MissingEpisodes from '@/pages/utilities/MissingEpisodes';
 import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
@@ -96,8 +97,8 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
             <Route path="release-management/:seriesId" element={<ReleaseManagementSeriesDetail />} />
             <Route path="release-management" element={<ReleaseManagement />} />
-            <Route path="legacy-release-management" element={<Navigate to="DuplicateFiles" replace />} />
-            <Route path="legacy-release-management/:type" element={<LegacyReleaseManagement />} />
+            <Route path="duplicate-files" element={<DuplicateFiles />} />
+            <Route path="missing-episodes" element={<MissingEpisodes />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />

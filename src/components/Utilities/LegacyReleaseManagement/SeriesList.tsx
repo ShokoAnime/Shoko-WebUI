@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { flatMap } from 'lodash';
@@ -7,6 +7,7 @@ import { useToggle } from 'usehooks-ts';
 
 import ShokoIcon from '@/components/ShokoIcon';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { resetQueries } from '@/core/react-query/queryClient';
 import {
   useReleaseManagementSeries,
   useReleaseManagementSeriesEpisodes,
@@ -127,30 +128,28 @@ const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
 
 type Props = {
   type: ReleaseManagementItemType;
-  ignoreVariations: boolean;
-  onlyCollecting: boolean;
-  onlyFinishedSeries: boolean;
-  setSelectedEpisodes: (episodes: EpisodeType[]) => void;
-  setSelectedSeriesId: (id: number) => void;
+  setSelectedEpisodes?: (episodes: EpisodeType[]) => void;
+  setSelectedSeriesId?: (id: number) => void;
   setSeriesCount: (count: number) => void;
 };
 
 const SeriesList = (
   {
-    ignoreVariations,
-    onlyCollecting,
-    onlyFinishedSeries,
     setSelectedEpisodes,
     setSelectedSeriesId,
     setSeriesCount,
     type,
   }: Props,
 ) => {
+  const [searchParams] = useSearchParams();
+  const onlyCollecting = searchParams.get('onlyCollecting') === 'true';
+  const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
+
   const [selectedSeries, setSelectedSeries] = useState(0);
 
   const seriesQuery = useReleaseManagementSeries(
     type,
-    { ignoreVariations, collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
+    { collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
   );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
@@ -158,7 +157,6 @@ const SeriesList = (
     type,
     selectedSeries,
     {
-      ignoreVariations,
       collecting: onlyCollecting,
       includeDataFrom: ['AniDB'],
       includeAbsolutePaths: true,
@@ -167,6 +165,10 @@ const SeriesList = (
     selectedSeries > 0,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
+
+  useEffect(() => () => {
+    resetQueries(['release-management', 'series', 'episodes']);
+  }, []);
 
   const [showEpisodeModal, toggleEpisodeModal, setEpisodeModal] = useToggle(false);
   const [selectedEpisode, setSelectedEpisode] = useState(-1);
@@ -179,7 +181,7 @@ const SeriesList = (
   } = useRowSelection(episodes);
 
   useEffect(() => {
-    setSelectedEpisodes(selectedRows);
+    setSelectedEpisodes?.(selectedRows);
   }, [selectedRows, setSelectedEpisodes]);
 
   useEffect(() => {
@@ -208,32 +210,21 @@ const SeriesList = (
   };
 
   useEffect(() => {
-    setSelectedSeriesId(selectedSeries);
+    setSelectedSeriesId?.(selectedSeries);
     setSeriesCount(seriesCount);
   }, [selectedSeries, seriesCount, setSelectedSeriesId, setSeriesCount]);
 
-  useEffect(() => {
-    setSelectedSeries(0);
-  }, [type]);
-
-  const episodeColumns = useMemo(() => {
-    if (type !== 'MissingEpisodes') {
-      return [
-        episodeNameColumn,
-        duplicatesEpisodeFileCountColumn,
-      ];
-    }
-
-    return [
-      episodeNameColumn,
-      {
+  const episodeColumns = [
+    episodeNameColumn,
+    type === 'MissingEpisodes'
+      ? {
         id: 'selected-count',
         name: selectedRows.length > 0 ? `${selectedRows.length} Selected` : '',
         className: 'w-28 text-panel-text-important',
         item: () => <div />,
-      },
-    ];
-  }, [selectedRows.length, type]);
+      }
+      : duplicatesEpisodeFileCountColumn,
+  ];
 
   return (
     <>

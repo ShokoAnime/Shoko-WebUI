@@ -76,13 +76,13 @@ const CollectionStats = () => {
       key="multiple-files"
       title="Duplicate Episodes"
       value={statsQuery.data?.EpisodesWithMultipleFiles}
-      link="/webui/utilities/release-management/MultipleReleases"
+      link="/webui/utilities/release-management"
     />,
     <Item
       key="duplicate-files"
       title="Duplicate Hashes"
       value={statsQuery.data?.FilesWithDuplicateLocations}
-      link="/webui/utilities/release-management/DuplicateFiles"
+      link="/webui/utilities/duplicate-files"
     />,
   ];
 

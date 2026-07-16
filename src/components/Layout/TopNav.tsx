@@ -7,6 +7,7 @@ import {
   mdiFileDocumentAlertOutline,
   mdiFileDocumentEditOutline,
   mdiFileDocumentMultipleOutline,
+  mdiFileDocumentRemoveOutline,
   mdiFileQuestionOutline,
   mdiFileSearchOutline,
   mdiFormatListBulletedSquare,
@@ -292,7 +293,7 @@ const TopNav = () => {
           height={showUtilitiesMenu ? 'auto' : 0}
           className="border-t border-topnav-border bg-topnav-background"
         >
-          <div className="mx-auto flex w-full max-w-480 gap-x-6 px-6 py-4 text-sm">
+          <div className="mx-auto flex w-full max-w-480 flex-wrap gap-x-6 gap-y-4 px-6 py-4 text-sm">
             <LinkMenuItem
               icon={mdiFileQuestionOutline}
               onClick={closeModalsAndSubmenus}
@@ -326,8 +327,14 @@ const TopNav = () => {
             <LinkMenuItem
               icon={mdiFileDocumentMultipleOutline}
               onClick={closeModalsAndSubmenus}
-              path="utilities/legacy-release-management"
-              text="Legacy Release Management"
+              path="utilities/duplicate-files"
+              text="Duplicate Files"
+            />
+            <LinkMenuItem
+              icon={mdiFileDocumentRemoveOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/missing-episodes"
+              text="Missing Episodes"
             />
           </div>
         </AnimateHeight>
