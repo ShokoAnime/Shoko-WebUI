@@ -4,9 +4,8 @@ import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import ShokoIcon from '@/components/ShokoIcon';
-
 import Checkbox from '@/components/Input/Checkbox';
+import ShokoIcon from '@/components/ShokoIcon';
 import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 

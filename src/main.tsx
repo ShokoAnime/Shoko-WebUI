@@ -1,10 +1,11 @@
 import React from 'react';
+import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import * as Sentry from '@sentry/react';
-import { createRoot } from 'react-dom/client';
 
 import App from './core/app';
 import { getUiVersion, isDebug } from './core/util';
+
 import './css/main.css';
 import './css/tailwind.css';
 

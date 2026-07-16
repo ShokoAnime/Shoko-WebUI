@@ -12,8 +12,8 @@ import { reduce, toNumber } from 'lodash';
 
 import toast from '@/core/toast';
 
-import type { EpisodeType } from './types/api/episode';
 import type { CollectionGroupType } from './types/api/collection';
+import type { EpisodeType } from './types/api/episode';
 import type { FileType } from './types/api/file';
 import type { SeriesType } from './types/api/series';
 import type { ManualLinkType } from './types/utilities/unrecognized-utility';

@@ -7,9 +7,9 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
 
+import { listItemSize, posterItemSize } from '@/components/Collection/constants';
 import ListViewItem from '@/components/Collection/ListViewItem';
 import PosterViewItem from '@/components/Collection/PosterViewItem';
-import { listItemSize, posterItemSize } from '@/components/Collection/constants';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';

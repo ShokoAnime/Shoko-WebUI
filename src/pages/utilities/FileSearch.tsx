@@ -24,11 +24,11 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
+import { staticColumns } from '@/components/Utilities/constants';
 import FilesSummary from '@/components/Utilities/FilesSummary';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import { staticColumns } from '@/components/Utilities/constants';
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
 import {
   useDeleteFilesMutation,

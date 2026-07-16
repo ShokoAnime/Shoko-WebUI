@@ -7,10 +7,10 @@ import { useImmer } from 'use-immer';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import toast from '@/core/toast';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
+import toast from '@/core/toast';
 import { buildEpisodeCoverageString } from '@/core/utilities/buildEpisodeCoverageString';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 

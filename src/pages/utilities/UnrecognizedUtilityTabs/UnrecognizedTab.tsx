@@ -25,13 +25,13 @@ import DropdownButton from '@/components/Input/DropdownButton';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
+import { staticColumns } from '@/components/Utilities/constants';
 import ItemCount from '@/components/Utilities/ItemCount';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import { staticColumns } from '@/components/Utilities/constants';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import {
   useDeleteFilesMutation,

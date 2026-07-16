@@ -7,10 +7,10 @@ import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
-import toast from '@/core/toast';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
+import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import CandidatesTab from './CandidatesTab';

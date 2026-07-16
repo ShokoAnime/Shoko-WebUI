@@ -14,8 +14,8 @@ import cx from 'classnames';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import TagButton from '@/components/Collection/TagButton';
 import { listItemSize } from '@/components/Collection/constants';
+import TagButton from '@/components/Collection/TagButton';
 import Button from '@/components/Input/Button';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';

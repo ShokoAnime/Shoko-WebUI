@@ -23,7 +23,8 @@
     {
       "name": "react-hooks-js",
       "specifier": "eslint-plugin-react-hooks"
-    }
+    },
+    "eslint-plugin-perfectionist"
   ],
   "options": {
     "typeAware": true,
@@ -223,6 +224,37 @@
     "import/no-named-as-default-member": "error",
     "import/no-named-default": "error",
     "import/no-self-import": "error",
+    "perfectionist/sort-imports": [
+      "error",
+      {
+        "internalPattern": [
+          "^@/.*"
+        ],
+        "newlinesBetween": 1,
+        "order": "asc",
+        "type": "alphabetical",
+        "customGroups": [
+          {
+            "elementNamePattern": [
+              "^react$",
+              "^react-.+"
+            ],
+            "groupName": "react"
+          }
+        ],
+        "groups": [
+          "react",
+          { "newlinesBetween": 0 },
+          "value-external",
+          "value-internal",
+          "value-parent",
+          "value-sibling",
+          "value-index",
+          "side-effect",
+          "type"
+        ]
+      }
+    ],
     "import/no-webpack-loader-syntax": "error",
     "new-cap": [
       "error",

@@ -8,7 +8,6 @@ import MultipleReleasesSeriesDetailPage from '@/components/Utilities/ReleaseMana
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
-import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
@@ -30,8 +29,9 @@ import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
-import SettingsPage from '@/pages/settings/SettingsPage';
+import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
+import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
