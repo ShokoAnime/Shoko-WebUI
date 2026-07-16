@@ -82,7 +82,6 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               value={preferences.EpisodeTypeScope}
               onChange={event =>
                 updateSetting('EpisodeTypeScope', event.target.value as 'AllTogether' | 'PerEpisodeType')}
-              className="w-52"
             >
               <option value="AllTogether">All Together</option>
               <option value="PerEpisodeType">Per Episode Type</option>

@@ -11,7 +11,7 @@ import type { SeriesType } from '@/core/types/api/series';
 
 /**
  * This file probably needs more work on query invalidation.
- * Currently, it's naïve and only invalidates the current series query.
+ * Currently, it's naive and only invalidates the current series query.
  * It should probably also invalidate the cache for:
  *  * Any series belonging to the "original" groups of a series.
  */

@@ -4,7 +4,7 @@ import { trim } from 'lodash';
 
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-// The question marks are there because people can't spell…
+// The question marks are there because people can't spell...
 const CleanInfoLinesRegex =
   /\(?\b((Modified )?Sour?ces?|Note( [1-9])?|Summ?ary|From|See Also):(?!$| a daikon)([^\r\n]+|$)/img;
 

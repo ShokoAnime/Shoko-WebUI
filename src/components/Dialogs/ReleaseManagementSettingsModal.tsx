@@ -57,7 +57,9 @@ const ReleaseManagementSettingsModal = ({ onClose, show }: Props) => {
         </div>
       }
     >
-      <ReleaseManagementSettings preferences={preferences} onChange={setPreferences} />
+      <div className="overflow-y-auto px-4">
+        <ReleaseManagementSettings preferences={preferences} onChange={setPreferences} />
+      </div>
     </ModalPanel>
   );
 };

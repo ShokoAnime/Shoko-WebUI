@@ -1,11 +1,12 @@
 import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType } from '@/core/types/api/common';
 
-export type ReleaseManagementItemType = 'MultipleReleases' | 'DuplicateFiles' | 'MissingEpisodes';
+export type ReleaseManagementItemType = 'DuplicateFiles' | 'MissingEpisodes';
 
 export type MultipleReleasesSeriesRequestType = {
   onlyFinishedSeries?: boolean;
   onlyWithRedundant?: boolean;
+  includeVariations?: boolean;
   search?: string;
 } & PaginationType;
 
@@ -30,16 +31,16 @@ export type SeriesCandidateOverride = {
   preferredCandidateKey: string;
 };
 
-export type ReleaseOverrideBody = {
+export type ReleaseMixMatchDeletionPreviewRequestType = {
   selectedPlaceIDs: number[];
 };
 
-export type ReleaseDeletionPreviewBody = {
+export type ReleaseDeletionPreviewRequestType = {
   includedSeriesIDs?: number[];
   excludedSeriesIDs?: number[];
   overrides?: SeriesCandidateOverride[];
 };
 
-export type DeleteReleasesBody = {
+export type ReleaseDeletionRequestType = {
   placeIDs: number[];
 };

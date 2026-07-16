@@ -11,11 +11,11 @@ const useRouteLink = (item: CollectionGroupType | SeriesType) => {
     let link = '/webui/collection';
 
     if (groupId) {
-      // groupId present → item is SeriesType
+      // groupId present -> item is SeriesType
       return `${link}/series/${item.IDs.ID}`;
     }
 
-    // No groupId → item is CollectionGroupType
+    // No groupId -> item is CollectionGroupType
     const group = item as CollectionGroupType;
 
     if (group.TotalSize === 1) {

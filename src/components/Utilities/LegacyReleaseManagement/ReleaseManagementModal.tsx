@@ -10,9 +10,7 @@ import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import DuplicatesInfo from './DuplicatesInfo';
-import MultipleReleasesInfo from './MultipleReleasesInfo';
 
-import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
@@ -23,7 +21,6 @@ type Props = {
   isFetching: boolean;
   onClose: () => void;
   show: boolean;
-  type: ReleaseManagementItemType;
 };
 
 type FooterProps = Pick<Props, 'episodeCount' | 'episodeIndex' | 'handleEpisodeChange' | 'onClose'>;
@@ -59,7 +56,7 @@ const EpisodeName = ({ episode }: { episode: EpisodeType }) => (
 );
 
 const ReleaseManagementModal = (props: Props) => {
-  const { episode, episodeCount, episodeIndex, handleEpisodeChange, isFetching, onClose, show, type } = props;
+  const { episode, episodeCount, episodeIndex, handleEpisodeChange, isFetching, onClose, show } = props;
 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
@@ -93,14 +90,7 @@ const ReleaseManagementModal = (props: Props) => {
           </div>
         )}
 
-        {!isFetching && type === 'MultipleReleases' && map(episode.Files, file => (
-          <MultipleReleasesInfo
-            key={file.ID}
-            file={file}
-          />
-        ))}
-
-        {!isFetching && type === 'DuplicateFiles' && flatMap(episode.Files, file =>
+        {!isFetching && flatMap(episode.Files, file =>
           map(file.Locations, location => (
             <DuplicatesInfo
               key={location.ID}

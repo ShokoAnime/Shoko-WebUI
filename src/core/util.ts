@@ -19,6 +19,7 @@ import type { SeriesType } from './types/api/series';
 import type { ManualLinkType } from './types/utilities/unrecognized-utility';
 import type { ShokoError } from '@/core/types/api';
 import type { AxiosError } from 'axios';
+import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
@@ -94,7 +95,10 @@ export const processError = (axiosError: AxiosError) => {
   return errors.join(', ');
 };
 
-const selectRowId = (target: EpisodeType | FileType | ManualLinkType | SeriesType) => {
+const selectRowId = (target: EpisodeType | FileType | ManualLinkType | SeriesType | SeriesWithCandidatesType) => {
+  // SeriesWithCandidatesType
+  if ('SeriesID' in target) return target.SeriesID;
+
   // ManualLinkType
   if ('id' in target) return target.id;
 
@@ -114,7 +118,7 @@ export const handleShiftSelect = (params: {
   index: number;
   lastRowIndex: RefObject<number | undefined>;
   rowSelection: Record<number, boolean>;
-  rows: EpisodeType[] | FileType[] | ManualLinkType[] | SeriesType[];
+  rows: EpisodeType[] | FileType[] | ManualLinkType[] | SeriesType[] | SeriesWithCandidatesType[];
   setRowSelection?: (selectedRows: Record<number, boolean>) => void;
 }) => {
   const { event, handleRowSelect, index, lastRowIndex, rowSelection, rows, setRowSelection } = params;

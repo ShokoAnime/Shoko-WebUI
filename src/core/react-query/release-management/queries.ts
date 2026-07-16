@@ -4,13 +4,15 @@ import { axios } from '@/core/axios';
 
 import type {
   MultipleReleasesSeriesRequestType,
+  ReleaseDeletionPreviewRequestType,
   ReleaseManagementItemType,
   ReleaseManagementSeriesEpisodesType,
   ReleaseManagementSeriesRequestType,
+  ReleaseMixMatchDeletionPreviewRequestType,
 } from '@/core/react-query/release-management/types';
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
+import type { ReleaseDeletionPreviewType, SeriesWithCandidatesType } from '@/core/types/api/release-management';
 import type { ReleaseManagementSeriesType } from '@/core/types/api/series';
 
 export const useReleaseManagementSeries = (
@@ -95,4 +97,26 @@ export const useMultipleReleaseSeriesDetailQuery = (seriesId: number, includeVar
       ),
     enabled: enabled && seriesId > 0,
     staleTime: Infinity,
+  });
+
+export const useReleaseDeletionPreviewQuery = (
+  body: ReleaseDeletionPreviewRequestType,
+  onlyFinishedSeries?: boolean,
+  enabled = true,
+) =>
+  useQuery<ReleaseDeletionPreviewType[]>({
+    queryKey: ['release-management', 'multiple-releases', 'preview', body, onlyFinishedSeries],
+    queryFn: () => axios.post('ReleaseManagement/MultipleReleases/Preview', body, { params: { onlyFinishedSeries } }),
+    enabled,
+  });
+
+export const useReleaseMixMatchDeletionPreviewQuery = (
+  seriesId: number,
+  body: ReleaseMixMatchDeletionPreviewRequestType,
+  enabled = true,
+) =>
+  useQuery<ReleaseDeletionPreviewType>({
+    queryKey: ['release-management', 'multiple-releases', 'preview', 'mix-match', seriesId, body],
+    queryFn: () => axios.post(`ReleaseManagement/MultipleReleases/Series/${seriesId}/Override`, body),
+    enabled,
   });

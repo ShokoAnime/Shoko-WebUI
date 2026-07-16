@@ -52,7 +52,7 @@ const FileItem = ({ file }: { file: FileType }) => {
         />
       </Button>
       <Button
-        tooltip="Link With Providers (β)"
+        tooltip="Link With Providers (beta)"
         className="relative ml-3"
         onClick={() =>
           navigate('/webui/utilities/unrecognized/files/link-with-providers', { state: { selectedRows: [file] } })}

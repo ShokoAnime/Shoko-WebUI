@@ -323,6 +323,12 @@ const TopNav = () => {
               path="utilities/renamer"
               text="Relocate Files"
             />
+            <LinkMenuItem
+              icon={mdiFileDocumentMultipleOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/legacy-release-management"
+              text="Legacy Release Management"
+            />
           </div>
         </AnimateHeight>
       </div>

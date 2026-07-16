@@ -1,51 +1,42 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useParams, useSearchParams } from 'react-router';
-import { mdiEyeOffOutline, mdiRefresh, mdiSelectMultiple } from '@mdi/js';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
+import {
+  mdiCheckboxMarkedCircleOutline,
+  mdiCloseCircleOutline,
+  mdiCog,
+  mdiMagnify,
+  mdiRefresh,
+  mdiTrashCanOutline,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useIsFetching } from '@tanstack/react-query';
-import cx from 'classnames';
-import { map } from 'lodash';
-import { useToggle } from 'usehooks-ts';
 
+import ReleaseManagementSettingsModal from '@/components/Dialogs/ReleaseManagementSettingsModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
-import MultipleReleasesPage from '@/components/Utilities/ReleaseManagement/MultipleReleasesPage';
-import QuickSelectModal from '@/components/Utilities/ReleaseManagement/QuickSelectModal';
-import SeriesList from '@/components/Utilities/ReleaseManagement/SeriesList';
-import Title from '@/components/Utilities/ReleaseManagement/Title';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
-import { useHideEpisodeMutation } from '@/core/react-query/episode/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
-import toast from '@/core/toast';
 
-import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
-import type { EpisodeType } from '@/core/types/api/episode';
-
-const titleMap = {
-  MultipleReleases: 'Multiple Releases',
-  DuplicateFiles: 'Duplicate Files',
-  MissingEpisodes: 'Missing Episodes',
-} as const;
+import { useDebounceValue, useToggle } from 'usehooks-ts';
+import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
+import MultipleReleasesSeriesList from '@/components/Utilities/ReleaseManagement/MultipleReleasesSeriesList';
+import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
 
 const ReleaseManagement = () => {
-  const { type = 'MultipleReleases' } = useParams() as { type?: ReleaseManagementItemType };
-
   const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounceValue(search, 250);
 
-  const isSeriesQueryFetching = useIsFetching({
-    queryKey: type === 'MultipleReleases'
-      ? ['release-management', 'multiple-releases']
-      : ['release-management', 'series'],
-  }) > 0;
-
-  const filterOptions = useMemo(() => ({
-    ignoreVariations: (searchParams.get('ignoreVariations') ?? 'true') === 'true',
-    onlyCollecting: searchParams.get('onlyCollecting') === 'true',
-    onlyFinishedSeries: searchParams.get('onlyFinishedSeries') === 'true',
-  }), [searchParams]);
+  useEffect(() => {
+    setSearchParams((currentParams) => {
+      const newParams = new URLSearchParams(currentParams);
+      if (debouncedSearch) newParams.set('search', debouncedSearch);
+      else newParams.delete('search');
+      return newParams;
+    });
+  }, [debouncedSearch, setSearchParams]);
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParams((currentParams) => {
@@ -55,145 +46,142 @@ const ReleaseManagement = () => {
     });
   };
 
-  const [seriesCount, setSeriesCount] = useState(0);
-  const [selectedSeries, setSelectedSeries] = useState(0);
-  const [selectedEpisode, setSelectedEpisode] = useState<EpisodeType>();
-  const [selectedEpisodes, setSelectedEpisodes] = useState<EpisodeType[]>([]);
-  const [operationsPending, setOperationsPending] = useState(false);
-  const [showQuickSelectModal, toggleShowQuickSelectModal] = useToggle(false);
+  const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
+  // ignoreVariations should be true by default
+  const ignoreVariations = (searchParams.get('ignoreVariations') ?? 'true') === 'true';
 
-  useEffect(() => {
-    setSelectedSeries(0);
-    setSelectedEpisode(undefined);
-    setSelectedEpisodes([]);
+  const [showSettingsModal, toggleSettingsModal] = useToggle(false);
+  const [showPreviewModal, togglePreviewModal] = useToggle(false);
+  const [autoDeleteMode, toggleAutoDeleteMode] = useToggle(false);
+  const [allSelected, toggleAllSelected] = useToggle(true);
+  const [selectedSeries, setSelectedSeries] = useState<number[]>([]);
 
-    return () => resetQueries(['release-management', 'series', 'episodes']);
-  }, [type]);
-
-  const { mutateAsync: hideEpisode } = useHideEpisodeMutation();
-
-  const hideEpisodes = () => {
-    setOperationsPending(true);
-
-    const operations = map(selectedEpisodes, episode => hideEpisode({ episodeId: episode.IDs.ID, hidden: true }));
-
-    Promise.all(operations)
-      .then(() => toast.success('Successful!'))
-      .catch(() => toast.error('One or more operations failed!'))
-      .finally(() => {
-        setOperationsPending(false);
-        resetQueries(['release-management']);
-        setSelectedEpisodes([]);
-      });
-  };
+  const seriesQuery = useMultipleReleaseSeriesQuery({
+    onlyFinishedSeries,
+    onlyWithRedundant: autoDeleteMode,
+    includeVariations: !ignoreVariations,
+    search: searchParams.get('search') ?? undefined,
+    pageSize: 25,
+  });
+  const seriesCount = seriesQuery.data?.pages[0].Total ?? 0;
+  const selectedCount = allSelected ? (seriesCount - selectedSeries.length) : selectedSeries.length;
 
   const handleRefresh = () => {
-    if (isSeriesQueryFetching) return;
-    if (type === 'MultipleReleases') {
-      resetQueries(['release-management', 'multiple-releases']);
-    } else {
-      resetQueries(['release-management', 'series']);
-    }
+    if (seriesQuery.isFetching) return;
+    resetQueries(['release-management', 'multiple-releases']);
   };
-
-  useHotkeys('r', handleRefresh, { scopes: 'primary' });
-
-  if (type === 'MultipleReleases') return <MultipleReleasesPage />;
 
   return (
     <>
-      <title>{`${titleMap[type]} | Shoko`}</title>
+      <title>Multiple Releases | Shoko</title>
       <div className="flex grow flex-col gap-y-6 overflow-y-auto">
-        <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} suffix="Series" />}>
+        <ShokoPanel
+          title="Release Management"
+          options={<ItemCount count={seriesCount} suffix="Series" selected={autoDeleteMode ? selectedCount : 0} />}
+        >
           <div className="flex items-center gap-x-3">
-            <div
-              className={cx(
-                'relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 transition-opacity',
-                selectedEpisode && 'pointer-events-none opacity-65',
-              )}
-            >
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              onChange={event => setSearch(event.target.value)}
+              value={search}
+              inputClassName="px-4 py-3"
+            />
+
+            <div className="flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
               <MenuButton
                 onClick={handleRefresh}
                 icon={mdiRefresh}
                 name="Refresh"
-                loading={isSeriesQueryFetching}
+                loading={seriesQuery.isFetching}
                 keybinding="R"
               />
 
-              {type === 'MissingEpisodes' && (
-                <Checkbox
-                  id="onlyCollecting"
-                  isChecked={filterOptions.onlyCollecting}
-                  onChange={handleFilterChange}
-                  label="Only Collecting"
-                  labelRight
-                />
-              )}
+              <Checkbox
+                id="ignoreVariations"
+                isChecked={ignoreVariations}
+                onChange={handleFilterChange}
+                label="Ignore Variations"
+                labelRight
+              />
 
               <Checkbox
                 id="onlyFinishedSeries"
-                isChecked={filterOptions.onlyFinishedSeries}
+                isChecked={onlyFinishedSeries}
                 onChange={handleFilterChange}
                 label="Only Finished Series"
                 labelRight
               />
+
+              {autoDeleteMode && (
+                <MenuButton
+                  onClick={toggleAllSelected}
+                  icon={allSelected ? mdiCloseCircleOutline : mdiCheckboxMarkedCircleOutline}
+                  name={allSelected ? 'Unselect All' : 'Select All'}
+                  highlightType="primary"
+                />
+              )}
             </div>
 
-            {/* TODO: Add support for auto-delete */}
-            {/* {!selectedEpisode && ( */}
-            {/*   <Button */}
-            {/*     buttonType="primary" */}
-            {/*     className="flex gap-x-2.5 px-4 py-3 font-semibold" */}
-            {/*     disabled={seriesCount === 0} */}
-            {/*   > */}
-            {/*     <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} /> */}
-            {/*     Auto-Delete Multiples */}
-            {/*   </Button> */}
-            {/* )} */}
+            <Button
+              buttonType={autoDeleteMode ? 'secondary' : 'primary'}
+              className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
+              disabled={autoDeleteMode && seriesCount === 0}
+              onClick={toggleAutoDeleteMode}
+            >
+              {autoDeleteMode ? 'Cancel' : (
+                <>
+                  <Icon path={mdiTrashCanOutline} size={0.8333} />
+                  Auto Delete
+                </>
+              )}
+            </Button>
 
-            {type === 'DuplicateFiles' && (
-              <Button
-                buttonType="secondary"
-                className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                disabled={!selectedSeries}
-                onClick={toggleShowQuickSelectModal}
-              >
-                <Icon path={mdiSelectMultiple} size={0.8333} />
-                Quick Select
-              </Button>
-            )}
+            <Button
+              buttonType="secondary"
+              className="p-3"
+              onClick={toggleSettingsModal}
+              tooltip="Settings"
+            >
+              <Icon path={mdiCog} size={0.8333} />
+            </Button>
 
-            {(type === 'MissingEpisodes') && (
+            {autoDeleteMode && (
               <Button
-                buttonType="primary"
-                className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                onClick={hideEpisodes}
-                loading={operationsPending}
+                buttonType="danger"
+                className="flex items-center gap-x-2.5 px-4 py-3 font-semibold whitespace-nowrap"
+                disabled={selectedCount === 0}
+                onClick={togglePreviewModal}
               >
-                <Icon path={mdiEyeOffOutline} size={0.8333} />
-                Hide
+                <Icon path={mdiTrashCanOutline} size={0.8333} />
+                Delete
               </Button>
             )}
           </div>
         </ShokoPanel>
 
-        <SeriesList
-          type={type}
-          ignoreVariations={filterOptions.ignoreVariations}
-          onlyCollecting={filterOptions.onlyCollecting}
-          onlyFinishedSeries={filterOptions.onlyFinishedSeries}
-          setSelectedEpisodes={setSelectedEpisodes}
-          setSelectedSeriesId={setSelectedSeries}
-          setSeriesCount={setSeriesCount}
-        />
-
-        <QuickSelectModal
-          show={showQuickSelectModal}
-          onClose={toggleShowQuickSelectModal}
-          seriesId={selectedSeries}
-          type={type}
+        <MultipleReleasesSeriesList
+          allSelected={allSelected}
+          autoDeleteMode={autoDeleteMode}
+          onlyFinishedSeries={onlyFinishedSeries}
+          setSelectedSeries={setSelectedSeries}
         />
       </div>
+
+      <MultipleReleasesPreviewModal
+        open={showPreviewModal}
+        onClose={togglePreviewModal}
+        allSelected={allSelected}
+        selectedSeries={selectedSeries}
+        onlyFinishedSeries={onlyFinishedSeries}
+      />
+
+      <ReleaseManagementSettingsModal
+        show={showSettingsModal}
+        onClose={toggleSettingsModal}
+      />
     </>
   );
 };

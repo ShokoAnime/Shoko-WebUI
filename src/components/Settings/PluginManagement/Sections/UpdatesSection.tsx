@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { mdiLoading } from '@mdi/js';
+import { mdiArrowRightThin, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { filter } from 'lodash';
 import { useToggle } from 'usehooks-ts';
@@ -90,7 +90,7 @@ const UpdatesSection = ({ query }: Props) => {
                     </div>
                     <div className="text-sm opacity-65">
                       {update.Current.Release.Version}
-                      &nbsp;→&nbsp;
+                      <Icon path={mdiArrowRightThin} size={0.67} className="mx-1 inline" />
                       {update.Latest.Release.Version}
                     </div>
                   </div>

@@ -40,9 +40,9 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
       >
         <div className="flex flex-col gap-y-6">
           <p>
-            It looks like you’ve been&nbsp;
+            It looks like you&apos;ve been&nbsp;
             <span className="font-bold text-panel-text-important">temporarily banned</span>
-            &nbsp;for excessive connection attempts. It happens and just means you’ll need to wait a bit for the
+            &nbsp;for excessive connection attempts. It happens and just means you&apos;ll need to wait a bit for the
             temporary ban to expire.
           </p>
           <p>

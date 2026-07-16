@@ -106,21 +106,6 @@ const episodeNameColumn: UtilityHeaderType<EpisodeType> = {
   ),
 };
 
-const multiplesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
-  id: 'file-count',
-  name: 'File Count',
-  className: 'w-28',
-  item: (episode) => {
-    const count = episode.Files?.filter(file => file.Size > 0).length ?? 0;
-    return (
-      <>
-        <span className="text-panel-text-important">{count}</span>
-        {count === 1 ? ' File' : ' Files'}
-      </>
-    );
-  },
-};
-
 const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
   id: 'duplicate-count',
   name: 'Duplicate Count',
@@ -212,19 +197,11 @@ const SeriesList = (
   const handleEpisodeChange = async (changeType: 'previous' | 'next') => {
     const targetIndex = changeType === 'previous' ? selectedEpisode - 1 : selectedEpisode + 1;
 
-    if (targetIndex < 0 || targetIndex >= episodeCount) return;
+    if (episodesQuery.isFetchingNextPage || targetIndex < 0 || targetIndex >= episodeCount) return;
 
     // Fetch more pages if the target episode hasn't been loaded yet.
-    let loadedCount = episodes.length;
-    while (loadedCount <= targetIndex) {
-      // Each fetchNextPage depends on the previous page completing (getNextPageParam),
-      // so these must run sequentially — parallelizing with Promise.all is not possible.
-      // Valid exception for below rule
-      // oxlint-disable-next-line no-await-in-loop
-      const result = await episodesQuery.fetchNextPage();
-      const newLoadedCount = result.data ? flatMap(result.data.pages, 'List').length : loadedCount;
-      if (newLoadedCount === loadedCount) break; // No more data to load
-      loadedCount = newLoadedCount;
+    if (episodes.length <= targetIndex) {
+      await episodesQuery.fetchNextPage();
     }
 
     setSelectedEpisode(targetIndex);
@@ -243,9 +220,7 @@ const SeriesList = (
     if (type !== 'MissingEpisodes') {
       return [
         episodeNameColumn,
-        type === 'MultipleReleases'
-          ? multiplesEpisodeFileCountColumn
-          : duplicatesEpisodeFileCountColumn,
+        duplicatesEpisodeFileCountColumn,
       ];
     }
 
@@ -273,7 +248,6 @@ const SeriesList = (
           {seriesQuery.isSuccess && seriesCount === 0 && (
             <div className="flex grow items-center justify-center text-lg font-semibold">
               No series with
-              {type === 'MultipleReleases' && ' multiple releases!'}
               {type === 'DuplicateFiles' && ' duplicate files!'}
               {type === 'MissingEpisodes' && ' missing episodes!'}
             </div>
@@ -348,7 +322,6 @@ const SeriesList = (
           episodeCount={episodeCount}
           episodeIndex={selectedEpisode}
           isFetching={episodesQuery.isFetchingNextPage}
-          type={type}
         />
       )}
     </>

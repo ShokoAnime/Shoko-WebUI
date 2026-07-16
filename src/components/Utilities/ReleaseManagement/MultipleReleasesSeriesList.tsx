@@ -1,117 +1,76 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router';
-import { mdiLoading, mdiOpenInNew } from '@mdi/js';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import Checkbox from '@/components/Input/Checkbox';
-import ShokoIcon from '@/components/ShokoIcon';
 import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
-import type { MultipleReleasesSeriesRequestType } from '@/core/react-query/release-management/types';
 import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
-import type { Updater } from 'use-immer';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { debounce } from 'lodash';
+import useRowSelection from '@/hooks/useRowSelection';
+import { handleShiftSelect } from '@/core/util';
+import { Link, useSearchParams } from 'react-router';
+import { Badge } from '@/components/Badge';
+import ShokoIcon from '@/components/ShokoIcon';
 
 type Props = {
+  allSelected: boolean;
+  autoDeleteMode: boolean;
   onlyFinishedSeries: boolean;
-  onlyWithRedundant: boolean;
-  autoDeleteMode?: boolean;
-  defaultSelected?: boolean;
-  exceptions?: Set<number>;
-  setExceptions?: Updater<Set<number>>;
-  search?: string;
-  onSeriesDetailOpen: (seriesId: number) => void;
-  onRowSelect?: (seriesId: number) => void;
-  onSeriesCountChange: (count: number) => void;
+  setSelectedSeries: (series: number[]) => void;
 };
 
 const SeriesRow = ({
   autoDeleteMode,
-  index,
-  isSelected,
-  onDetailOpen,
-  onRowClick,
-  onToggle,
+  selected,
   series,
 }: {
   series: SeriesWithCandidatesType;
-  index: number;
   autoDeleteMode: boolean;
-  isSelected: boolean;
-  onDetailOpen: () => void;
-  onRowClick: (event: React.MouseEvent, index: number) => void;
-  onToggle: () => void;
+  selected: boolean;
 }) => {
-  const redundantFileCount = series.Candidates.reduce(
-    (sum, candidate) => sum + candidate.RedundantFileCount,
-    0,
-  );
   const primary = series.Candidates[0];
 
-  const defaultBg = index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt';
-  const rowBgClass = autoDeleteMode && isSelected
-    ? 'bg-panel-background-selected-row'
-    : defaultBg;
-
   return (
-    <div
-      className={cx(
-        'relative flex cursor-pointer items-center gap-3 rounded-lg border border-panel-border p-4 text-sm transition-colors',
-        rowBgClass,
-      )}
-      onClick={(event) => {
-        if (autoDeleteMode) {
-          onRowClick(event, index);
-        } else {
-          onDetailOpen();
-        }
-      }}
-      onMouseDown={(event) => {
-        if (autoDeleteMode && event.shiftKey) event.preventDefault();
-      }}
-    >
+    <>
       <div
         className={cx(
-          'shrink-0 overflow-hidden transition-all duration-300 ease-in-out',
-          autoDeleteMode ? 'max-w-10 opacity-100' : 'max-w-0 opacity-0',
+          'shrink-0 overflow-hidden text-panel-icon-action transition-all',
+          autoDeleteMode ? 'max-w-10' : 'max-w-0 opacity-0',
         )}
-        onClick={(event) => {
-          event.stopPropagation();
-        }}
       >
-        <Checkbox
-          id={`series-select-${series.SeriesID}`}
-          isChecked={isSelected}
-          onChange={onToggle}
-          label=""
+        <Icon
+          path={selected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
+          size={1}
         />
       </div>
 
-      <div className="flex min-w-0 grow flex-col gap-0.5">
-        <div className="flex items-center gap-2">
-          <span className="truncate font-semibold">{series.SeriesTitle}</span>
-          {series.IsAiring && (
-            <span className="shrink-0 rounded-sm bg-panel-text-primary/20 px-1.5 py-0.5 text-xs font-semibold text-panel-text-primary">
-              Airing
-            </span>
-          )}
+      <div className="flex w-full min-w-0 flex-col gap-y-0.5">
+        <div className="flex items-center gap-x-2">
+          <div
+            className="truncate font-semibold"
+            data-tooltip-content={series.SeriesTitle}
+            data-tooltip-id="tooltip"
+          >
+            {series.SeriesTitle}
+          </div>
+
           <a
             href={`https://anidb.net/anime/${series.AnidbAnimeID}`}
             target="_blank"
             rel="noreferrer"
-            className="shrink-0 text-panel-text-primary"
+            className="flex items-center gap-1 font-semibold text-panel-text-primary"
             aria-label="Open AniDB series page"
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
+            onClick={event => event.stopPropagation()}
           >
-            <div className="flex items-center gap-1 font-semibold">
-              <div className="metadata-link-icon AniDB" />
-              {series.AnidbAnimeID}
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={0.6667} />
-            </div>
+            <div className="metadata-link-icon AniDB" />
+            {series.AnidbAnimeID}
+            <Icon path={mdiOpenInNew} size={0.6667} />
           </a>
+
           <Link
             to={`/webui/collection/series/${series.SeriesID}`}
             className="shrink-0 text-panel-text-primary"
@@ -121,113 +80,113 @@ const SeriesRow = ({
           >
             <div className="flex items-center gap-1 font-semibold">
               <ShokoIcon className="size-6" />
-              Shoko
+              {series.SeriesID}
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={0.6667} />
             </div>
           </Link>
+
+          {series.IsAiring && (
+            <Badge className="ml-auto bg-panel-text-warning text-button-primary-text">
+              Airing
+            </Badge>
+          )}
         </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-0.5 opacity-65">
-          <span>
-            <span className="font-semibold text-panel-text-important">{series.Candidates.length}</span>{' '}
-            {series.Candidates.length === 1 ? 'candidate' : 'candidates'}
-          </span>
+
+        <div className="flex flex-wrap gap-x-4 gap-y-0.5 opacity-80">
+          <div>
+            <span className="font-semibold text-panel-text-important">{series.Candidates.length}</span>
+            {series.Candidates.length === 1 ? ' candidate' : ' candidates'}
+          </div>
+
           {primary && (
-            <span>
+            <div>
               Primary:&nbsp;
               {primary.Name}
-            </span>
+            </div>
           )}
-          {redundantFileCount > 0
+
+          {series.FilesToAutoDeleteCount > 0
             ? (
-              <span>
-                <span className="font-semibold text-panel-text-danger">{redundantFileCount}</span>{' '}
-                {redundantFileCount === 1 ? 'file' : 'files'} to auto-delete
-              </span>
+              <div>
+                <span className="font-semibold text-panel-text-danger">{series.FilesToAutoDeleteCount}</span>{' '}
+                {series.FilesToAutoDeleteCount === 1 ? 'file' : 'files'} to auto-delete
+              </div>
             )
-            : <span>No auto-delete available</span>}
+            : <div>No auto-delete available</div>}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 const MultipleReleasesSeriesList = ({
-  autoDeleteMode = false,
-  defaultSelected = true,
-  exceptions,
-  onRowSelect,
-  onSeriesCountChange,
-  onSeriesDetailOpen,
+  allSelected,
+  autoDeleteMode,
   onlyFinishedSeries,
-  onlyWithRedundant,
-  search,
-  setExceptions,
+  setSelectedSeries,
 }: Props) => {
-  const params: MultipleReleasesSeriesRequestType = {
-    onlyFinishedSeries,
-    onlyWithRedundant,
-    search,
-    pageSize: 50,
-  };
+  const navigate = useNavigateVoid();
+  const [searchParams] = useSearchParams();
 
-  const seriesQuery = useMultipleReleaseSeriesQuery(params);
+  const { fetchNextPage, ...seriesQuery } = useMultipleReleaseSeriesQuery({
+    onlyFinishedSeries,
+    onlyWithRedundant: autoDeleteMode,
+    search: searchParams.get('search') ?? undefined,
+    pageSize: 25,
+  });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
-  const lastRowIndex = useRef<number | undefined>(undefined);
+  const { handleRowSelect, rowSelection, selectedRows, setRowSelection } = useRowSelection(series);
+
+  const lastRowIndex = useRef<number>(undefined);
+  const handleRowClick = (event: React.MouseEvent, index: number) => {
+    if (!autoDeleteMode) {
+      navigate(
+        `${series[index].SeriesID.toString()}?tab=candidates&ignoreVariations=${
+          searchParams.get('ignoreVariations') ?? 'true'
+        }`,
+      );
+      return;
+    }
+
+    if (!rowSelection || !handleRowSelect) return;
+    handleShiftSelect({ event, handleRowSelect, index, lastRowIndex, rowSelection, rows: series, setRowSelection });
+  };
 
   useEffect(() => {
-    lastRowIndex.current = undefined;
-  }, [onlyFinishedSeries, onlyWithRedundant, search]);
+    setSelectedSeries(selectedRows.map(item => item.SeriesID));
+  }, [selectedRows, setSelectedSeries]);
 
   useEffect(() => {
-    onSeriesCountChange(seriesCount);
-  }, [seriesCount, onSeriesCountChange]);
+    setRowSelection({});
+  }, [allSelected, setRowSelection]);
 
-  const computeIsSelected = (seriesId: number): boolean => {
-    if (defaultSelected) return !(exceptions?.has(seriesId) ?? false);
-    return exceptions?.has(seriesId) ?? false;
-  };
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const virtualizer = useVirtualizer({
+    count: seriesCount,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 80,
+    overscan: 10,
+    gap: 4,
+  });
+  const virtualItems = virtualizer.getVirtualItems();
 
-  const handleRowClick = (event: React.MouseEvent, index: number, seriesId: number) => {
-    if (event.shiftKey && lastRowIndex.current !== undefined && setExceptions) {
-      const anchorIsSelected = computeIsSelected(series[lastRowIndex.current].SeriesID);
-      const fromIdx = Math.min(lastRowIndex.current, index);
-      const toIdx = Math.max(lastRowIndex.current, index);
-      setExceptions((draft) => {
-        for (let idx = fromIdx; idx <= toIdx; idx += 1) {
-          const id = series[idx].SeriesID;
-          const currentIsSelected = defaultSelected ? !draft.has(id) : draft.has(id);
-          if (currentIsSelected !== anchorIsSelected) {
-            if (draft.has(id)) draft.delete(id);
-            else draft.add(id);
-          }
-        }
-      });
-    } else {
-      onRowSelect?.(seriesId);
-    }
-    lastRowIndex.current = index;
-  };
-
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const element = event.currentTarget;
-    const nearBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 200;
-    if (nearBottom && seriesQuery.hasNextPage && !seriesQuery.isFetchingNextPage) {
-      seriesQuery.fetchNextPage().catch(console.error);
-    }
-  };
+  const fetchNextPageDebounced = useMemo(
+    () => debounce(() => fetchNextPage().catch(console.error), 100),
+    [fetchNextPage],
+  );
 
   if (!seriesQuery.isSuccess) {
     return (
-      <div className="flex h-64 items-center justify-center text-panel-text-primary">
+      <div className="flex grow items-center justify-center text-panel-text-primary">
         <Icon path={mdiLoading} size={4} spin />
       </div>
     );
   }
 
-  if (seriesCount === 0 && !search) {
+  if (seriesCount === 0 && !searchParams) {
     return (
-      <div className="flex h-64 items-center justify-center text-lg font-semibold">
+      <div className="flex grow items-center justify-center text-lg font-semibold">
         No series with multiple releases!
       </div>
     );
@@ -235,31 +194,70 @@ const MultipleReleasesSeriesList = ({
 
   if (seriesCount === 0) {
     return (
-      <div className="flex h-64 items-center justify-center text-lg font-semibold">
+      <div className="flex grow items-center justify-center text-lg font-semibold">
         No series match your search.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-1 overflow-y-auto" onScroll={handleScroll}>
-      {series.map((ser, idx) => (
-        <SeriesRow
-          key={ser.SeriesID}
-          series={ser}
-          index={idx}
-          autoDeleteMode={autoDeleteMode}
-          isSelected={computeIsSelected(ser.SeriesID)}
-          onDetailOpen={() => onSeriesDetailOpen(ser.SeriesID)}
-          onRowClick={(event, index) => handleRowClick(event, index, ser.SeriesID)}
-          onToggle={() => onRowSelect?.(ser.SeriesID)}
-        />
-      ))}
-      {seriesQuery.isFetchingNextPage && (
-        <div className="flex justify-center py-4 text-panel-text-primary">
-          <Icon path={mdiLoading} size={1.5} spin />
+    <div className="flex grow flex-col rounded-md border border-panel-border bg-panel-background px-4 py-6">
+      <div className="h-0 grow overflow-y-auto pr-4" ref={scrollRef}>
+        <div
+          className="relative w-full"
+          style={{ height: virtualizer.getTotalSize() }}
+        >
+          {virtualItems.map((virtualItem) => {
+            const { index, key, size, start } = virtualItem;
+            const item = series[index];
+
+            if (!item) {
+              if (!seriesQuery.isFetchingNextPage) fetchNextPageDebounced()?.catch(console.error);
+
+              return (
+                <div
+                  key={`loading-${key}`}
+                  className={cx(
+                    'absolute top-0 left-0 flex w-full items-center justify-center rounded-lg border border-panel-border text-panel-text-primary',
+                    index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
+                  )}
+                  style={{ transform: `translateY(${start}px)`, height: size }}
+                  data-index={index}
+                  ref={virtualizer.measureElement}
+                >
+                  <Icon path={mdiLoading} size={1.5} spin />
+                </div>
+              );
+            }
+
+            // rowSelection acts as an exception set in auto-delete mode:
+            //   allSelected=true  -> entries are deselected rows -> allSelected !== true  -> false (not selected)
+            //   allSelected=false -> entries are selected rows   -> false !== true        -> true  (selected)
+            const selected = autoDeleteMode && (allSelected !== (rowSelection[item.SeriesID] ?? false));
+
+            return (
+              <div
+                key={key}
+                className={cx(
+                  'absolute top-0 left-0 flex w-full cursor-pointer items-center gap-3 rounded-lg border border-panel-border p-4 text-sm transition-colors',
+                  index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
+                  selected && 'bg-panel-background-selected-row',
+                )}
+                style={{ transform: `translateY(${start}px)` }}
+                data-index={index}
+                ref={virtualizer.measureElement}
+                onClick={event => handleRowClick(event, index)}
+              >
+                <SeriesRow
+                  series={item}
+                  autoDeleteMode={autoDeleteMode}
+                  selected={selected}
+                />
+              </div>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -33,8 +33,8 @@ const UnsupportedPage = () => {
           <div className="text-2xl text-panel-text md:text-5xl">You Shall Not Pass!</div>
           <div className="flex flex-col gap-y-4">
             <div>
-              It looks like you’re attempting to use a version of the Web UI that is not compatible with the version of
-              Shoko Server you have installed.
+              It looks like you&apos;re attempting to use a version of the Web UI that is not compatible with the
+              version of Shoko Server you have installed.
             </div>
             <div>
               If you are using the daily version of Shoko Server, you should update your server to the latest daily. If
