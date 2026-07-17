@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { mdiCheckboxMarkedCircleOutline, mdiFileDocumentAlertOutline, mdiPencilCircleOutline } from '@mdi/js';
+import { mdiCheckboxMarkedCircleOutline, mdiFileDocumentRemoveOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { reduce } from 'lodash';
 
@@ -40,27 +40,6 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
   const editSeriesModalCallback = useEditSeriesCallback(item);
   const editGroupModalCallback = useEditGroupCallback(item);
 
-  const topRightIcon = [
-    [
-      !episodeCount && !unwatchedCount,
-      <Icon
-        key={`icon-incomplete-${item.IDs.ID}`}
-        path={mdiFileDocumentAlertOutline}
-        size={1}
-        className="text-panel-icon-warning"
-      />,
-    ],
-    [
-      episodeCount && !unwatchedCount,
-      <Icon
-        key={`icon-complete-${item.IDs.ID}`}
-        path={mdiCheckboxMarkedCircleOutline}
-        size={1}
-        className="text-panel-icon-important"
-      />,
-    ],
-  ].find(([evaluate]) => evaluate)?.[1] || unwatchedCount;
-
   return (
     <div
       className="flex shrink-0 flex-col content-center gap-y-3"
@@ -75,11 +54,9 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         >
           {showUnwatchedCount && (
             <div className="absolute top-0 right-0 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
- {unwatchedCount || (episodeCount ? (
-  <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
-) : (
-  <Icon path={mdiFileDocumentAlertOutline} size={1} className="text-panel-icon-warning" />
-))}
+              {unwatchedCount || (episodeCount
+                ? <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
+                : <Icon path={mdiFileDocumentRemoveOutline} size={1} className="text-panel-icon-warning" />)}
             </div>
           )}
           <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
