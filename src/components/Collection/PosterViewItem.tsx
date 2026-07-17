@@ -75,7 +75,11 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         >
           {showUnwatchedCount && (
             <div className="absolute top-0 right-0 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
-              {topRightIcon}
+ {unwatchedCount || (episodeCount ? (
+  <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
+) : (
+  <Icon path={mdiFileDocumentAlertOutline} size={1} className="text-panel-icon-warning" />
+))}
             </div>
           )}
           <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
