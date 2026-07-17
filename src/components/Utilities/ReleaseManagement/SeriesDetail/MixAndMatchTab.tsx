@@ -39,7 +39,6 @@ const getDefaultSelections = (rows: EpisodeRow[]) => {
   return initial;
 };
 
-// TODO: Good candidate to explain why we didn't need two separate functions.
 const buildEpisodeMap = (items: ReleaseCandidateType[] | ReleaseOverrideType[]) => {
   const map = new Map<string, FileOption[]>();
   for (const item of items) {
