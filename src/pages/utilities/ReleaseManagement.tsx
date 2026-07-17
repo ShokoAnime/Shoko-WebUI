@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useSearchParams } from 'react-router';
 import {
   mdiCheckboxMarkedCircleOutline,
@@ -9,6 +10,7 @@ import {
   mdiTrashCanOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { useIsFetching } from '@tanstack/react-query';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import ReleaseManagementSettingsModal from '@/components/Dialogs/ReleaseManagementSettingsModal';
@@ -21,7 +23,6 @@ import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManageme
 import MultipleReleasesSeriesList from '@/components/Utilities/ReleaseManagement/MultipleReleasesSeriesList';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { resetQueries } from '@/core/react-query/queryClient';
-import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
 
 const ReleaseManagement = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,8 +47,7 @@ const ReleaseManagement = () => {
   };
 
   const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
-  // ignoreVariations should be true by default
-  const ignoreVariations = (searchParams.get('ignoreVariations') ?? 'true') === 'true';
+  const includeVariations = searchParams.get('includeVariations') === 'true';
 
   const [showSettingsModal, toggleSettingsModal] = useToggle(false);
   const [showPreviewModal, togglePreviewModal] = useToggle(false);
@@ -55,20 +55,15 @@ const ReleaseManagement = () => {
   const [allSelected, toggleAllSelected] = useToggle(true);
   const [selectedSeries, setSelectedSeries] = useState<number[]>([]);
 
-  const seriesQuery = useMultipleReleaseSeriesQuery({
-    onlyFinishedSeries,
-    onlyWithRedundant: autoDeleteMode,
-    includeVariations: !ignoreVariations,
-    search: searchParams.get('search') ?? undefined,
-    pageSize: 25,
-  });
-  const seriesCount = seriesQuery.data?.pages[0].Total ?? 0;
+  const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'multiple-releases', 'series'] }) > 0;
+  const [seriesCount, setSeriesCount] = useState(0);
   const selectedCount = allSelected ? (seriesCount - selectedSeries.length) : selectedSeries.length;
 
   const handleRefresh = () => {
-    if (seriesQuery.isFetching) return;
+    if (isSeriesQueryFetching) return;
     resetQueries(['release-management', 'multiple-releases']);
   };
+  useHotkeys('r', handleRefresh, { scopes: 'primary' });
 
   return (
     <>
@@ -94,15 +89,15 @@ const ReleaseManagement = () => {
                 onClick={handleRefresh}
                 icon={mdiRefresh}
                 name="Refresh"
-                loading={seriesQuery.isFetching}
+                loading={isSeriesQueryFetching}
                 keybinding="R"
               />
 
               <Checkbox
-                id="ignoreVariations"
-                isChecked={ignoreVariations}
+                id="includeVariations"
+                isChecked={includeVariations}
                 onChange={handleFilterChange}
-                label="Ignore Variations"
+                label="Include Variations"
                 labelRight
               />
 
@@ -164,8 +159,8 @@ const ReleaseManagement = () => {
         <MultipleReleasesSeriesList
           allSelected={allSelected}
           autoDeleteMode={autoDeleteMode}
-          onlyFinishedSeries={onlyFinishedSeries}
           setSelectedSeries={setSelectedSeries}
+          setSeriesCount={setSeriesCount}
         />
       </div>
 
@@ -174,7 +169,6 @@ const ReleaseManagement = () => {
         onClose={togglePreviewModal}
         allSelected={allSelected}
         selectedSeries={selectedSeries}
-        onlyFinishedSeries={onlyFinishedSeries}
       />
 
       <ReleaseManagementSettingsModal

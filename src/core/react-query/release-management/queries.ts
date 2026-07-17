@@ -102,11 +102,15 @@ export const useMultipleReleaseSeriesDetailQuery = (seriesId: number, includeVar
 export const useReleaseDeletionPreviewQuery = (
   body: ReleaseDeletionPreviewRequestType,
   onlyFinishedSeries?: boolean,
+  includeVariations?: boolean,
   enabled = true,
 ) =>
   useQuery<ReleaseDeletionPreviewType[]>({
-    queryKey: ['release-management', 'multiple-releases', 'preview', body, onlyFinishedSeries],
-    queryFn: () => axios.post('ReleaseManagement/MultipleReleases/Preview', body, { params: { onlyFinishedSeries } }),
+    queryKey: ['release-management', 'multiple-releases', 'preview', body, onlyFinishedSeries, includeVariations],
+    queryFn: () =>
+      axios.post('ReleaseManagement/MultipleReleases/Preview', body, {
+        params: { includeVariations, onlyFinishedSeries },
+      }),
     enabled,
   });
 

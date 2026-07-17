@@ -10,8 +10,8 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
-import SeriesList from '@/components/Utilities/LegacyReleaseManagement/SeriesList';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import UtilitySeriesList from '@/components/Utilities/UtilitySeriesList';
 import { useHideEpisodeMutation } from '@/core/react-query/episode/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
@@ -104,7 +104,7 @@ const MissingEpisodes = () => {
           </div>
         </ShokoPanel>
 
-        <SeriesList
+        <UtilitySeriesList
           type="MissingEpisodes"
           setSelectedEpisodes={setSelectedEpisodes}
           setSeriesCount={setSeriesCount}

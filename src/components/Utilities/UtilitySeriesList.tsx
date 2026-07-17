@@ -16,7 +16,7 @@ import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
-import ReleaseManagementModal from './ReleaseManagementModal';
+import DuplicateFilesModal from './DuplicateFiles/DuplicateFilesModal';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
@@ -133,7 +133,7 @@ type Props = {
   setSeriesCount: (count: number) => void;
 };
 
-const SeriesList = (
+const UtilitySeriesList = (
   {
     setSelectedEpisodes,
     setSelectedSeriesId,
@@ -302,8 +302,8 @@ const SeriesList = (
         </div>
       </div>
 
-      {type !== 'MissingEpisodes' && (
-        <ReleaseManagementModal
+      {type === 'DuplicateFiles' && (
+        <DuplicateFilesModal
           onClose={toggleEpisodeModal}
           show={showEpisodeModal}
           episode={episodes[selectedEpisode]}
@@ -319,4 +319,4 @@ const SeriesList = (
   );
 };
 
-export default SeriesList;
+export default UtilitySeriesList;

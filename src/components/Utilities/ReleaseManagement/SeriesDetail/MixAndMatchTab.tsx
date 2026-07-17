@@ -206,7 +206,7 @@ const MixAndMatchTab = ({ selection, series, setSelection, setUnassignedCount }:
       </div>
 
       {/* Episode accordion rows */}
-      <div className="flex grow flex-col gap-y-2 overflow-y-scroll pr-2 contain-strict">
+      <div className="flex grow flex-col gap-y-2 overflow-y-auto pr-2 contain-strict">
         {allEpisodes.map(episode => (
           <MixAndMatchEpisode
             key={episode.key}

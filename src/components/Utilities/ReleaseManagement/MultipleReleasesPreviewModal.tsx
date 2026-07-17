@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useSearchParams } from 'react-router';
 import { mdiChevronDown, mdiLoading, mdiMinusCircleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -29,7 +30,6 @@ type Props = {
   allSelected?: boolean;
   selectedSeries?: number[];
   primaryCandidateKey?: string;
-  onlyFinishedSeries?: boolean;
   mixMatchSelection?: number[];
 };
 
@@ -138,7 +138,6 @@ const MultipleReleasesPreviewModal = ({
   allSelected,
   mixMatchSelection,
   onClose,
-  onlyFinishedSeries,
   open,
   primaryCandidateKey,
   selectedSeries,
@@ -146,6 +145,10 @@ const MultipleReleasesPreviewModal = ({
   useToggleModalKeybinds(open, 'modal');
   useToggleModalKeybinds(!open, 'primary');
   useHotkeys('escape', () => open && onClose(), { scopes: 'modal' });
+
+  const [searchParams] = useSearchParams();
+  const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
+  const includeVariations = searchParams.get('includeVariations') === 'true';
 
   const { isPending: isDeletePending, mutate: deleteReleases } = useReleaseDeleteMutation();
 
@@ -158,12 +161,13 @@ const MultipleReleasesPreviewModal = ({
         : undefined,
     },
     onlyFinishedSeries,
+    includeVariations,
     open && !mixMatchSelection,
   );
 
   const mixMatchPreviewQuery = useReleaseMixMatchDeletionPreviewQuery(
-    selectedSeries![0],
-    { selectedPlaceIDs: mixMatchSelection! },
+    selectedSeries?.[0] ?? 0,
+    { selectedPlaceIDs: mixMatchSelection ?? [] },
     open && !!mixMatchSelection && !!selectedSeries,
   );
   const mixMatchPreviewData = mixMatchPreviewQuery.data ? [mixMatchPreviewQuery.data] : undefined;

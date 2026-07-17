@@ -19,8 +19,8 @@ import type { SeriesWithCandidatesType } from '@/core/types/api/release-manageme
 type Props = {
   allSelected: boolean;
   autoDeleteMode: boolean;
-  onlyFinishedSeries: boolean;
   setSelectedSeries: (series: number[]) => void;
+  setSeriesCount: (count: number) => void;
 };
 
 const SeriesRow = ({
@@ -122,19 +122,27 @@ const SeriesRow = ({
 const MultipleReleasesSeriesList = ({
   allSelected,
   autoDeleteMode,
-  onlyFinishedSeries,
   setSelectedSeries,
+  setSeriesCount,
 }: Props) => {
   const navigate = useNavigateVoid();
   const [searchParams] = useSearchParams();
 
+  const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
+  const includeVariations = searchParams.get('includeVariations') === 'true';
+
   const { fetchNextPage, ...seriesQuery } = useMultipleReleaseSeriesQuery({
     onlyFinishedSeries,
+    includeVariations,
     onlyWithRedundant: autoDeleteMode,
     search: searchParams.get('search') ?? undefined,
     pageSize: 25,
   });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
+
+  useEffect(() => {
+    setSeriesCount(seriesCount);
+  }, [seriesCount, setSeriesCount]);
 
   const { handleRowSelect, rowSelection, selectedRows, setRowSelection } = useRowSelection(series);
 
@@ -142,8 +150,8 @@ const MultipleReleasesSeriesList = ({
   const handleRowClick = (event: React.MouseEvent, index: number) => {
     if (!autoDeleteMode) {
       navigate(
-        `${series[index].SeriesID.toString()}?tab=candidates&ignoreVariations=${
-          searchParams.get('ignoreVariations') ?? 'true'
+        `${series[index].SeriesID.toString()}?tab=candidates&includeVariations=${
+          searchParams.get('includeVariations') ?? 'true'
         }`,
       );
       return;
@@ -184,7 +192,7 @@ const MultipleReleasesSeriesList = ({
     );
   }
 
-  if (seriesCount === 0 && !searchParams) {
+  if (seriesCount === 0 && !searchParams.get('search')) {
     return (
       <div className="flex grow items-center justify-center text-lg font-semibold">
         No series with multiple releases!

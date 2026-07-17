@@ -175,7 +175,7 @@ const CandidateCard = ({
         <div className="mt-1">
           Files:&nbsp;
           <span className="font-semibold">{candidate.Files.length}</span>
-          {candidate.RedundantFileCount && (
+          {candidate.RedundantFileCount > 0 && (
             <>
               &nbsp;(
               <span className="text-panel-text-danger">

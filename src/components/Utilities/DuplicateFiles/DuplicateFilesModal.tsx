@@ -55,7 +55,7 @@ const EpisodeName = ({ episode }: { episode: EpisodeType }) => (
   </div>
 );
 
-const ReleaseManagementModal = (props: Props) => {
+const DuplicateFilesModal = (props: Props) => {
   const { episode, episodeCount, episodeIndex, handleEpisodeChange, isFetching, onClose, show } = props;
 
   useToggleModalKeybinds(show, 'modal');
@@ -103,4 +103,4 @@ const ReleaseManagementModal = (props: Props) => {
   );
 };
 
-export default ReleaseManagementModal;
+export default DuplicateFilesModal;

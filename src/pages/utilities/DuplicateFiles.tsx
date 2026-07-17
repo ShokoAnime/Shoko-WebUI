@@ -9,10 +9,10 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import DuplicateFilesQuickSelectModal from '@/components/Utilities/DuplicateFiles/DuplicateFilesQuickSelectModal';
 import ItemCount from '@/components/Utilities/ItemCount';
-import QuickSelectModal from '@/components/Utilities/LegacyReleaseManagement/QuickSelectModal';
-import SeriesList from '@/components/Utilities/LegacyReleaseManagement/SeriesList';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import UtilitySeriesList from '@/components/Utilities/UtilitySeriesList';
 import { resetQueries } from '@/core/react-query/queryClient';
 
 const DuplicateFiles = () => {
@@ -76,14 +76,14 @@ const DuplicateFiles = () => {
           </div>
         </ShokoPanel>
 
-        <SeriesList
+        <UtilitySeriesList
           type="DuplicateFiles"
           setSelectedSeriesId={setSelectedSeries}
           setSeriesCount={setSeriesCount}
         />
       </div>
 
-      <QuickSelectModal
+      <DuplicateFilesQuickSelectModal
         show={showQuickSelectModal}
         onClose={toggleShowQuickSelectModal}
         seriesId={selectedSeries}

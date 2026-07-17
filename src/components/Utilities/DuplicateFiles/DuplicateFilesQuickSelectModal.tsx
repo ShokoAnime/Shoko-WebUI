@@ -19,7 +19,7 @@ type Props = {
   seriesId: number;
 };
 
-const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
+const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
@@ -141,4 +141,4 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
   );
 };
 
-export default QuickSelectModal;
+export default DuplicateFilesQuickSelectModal;
