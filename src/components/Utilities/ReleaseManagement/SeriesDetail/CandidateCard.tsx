@@ -87,7 +87,7 @@ const CandidateCard = ({
 
         {strategyLabel && <Badge className="bg-panel-text-primary text-button-primary-text">{strategyLabel}</Badge>}
 
-        {isVersion && candidate.WinnerValue && candidate.LoserValue && (
+        {isVersion && candidate.WinnerValue != null && candidate.LoserValue != null && (
           <Badge className="flex gap-x-1 bg-panel-input">
             v{candidate.LoserValue}
             <Icon path={mdiArrowRightThin} size={0.67} />

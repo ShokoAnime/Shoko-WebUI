@@ -85,8 +85,7 @@ const ReleaseManagementSeriesDetail = () => {
 
   const seriesId = toNumber(seriesIdParam ?? 0);
   const activeTab = searchParams.get('tab') ?? 'candidates';
-  // ignoreVariations should be true by default
-  const ignoreVariations = (searchParams.get('ignoreVariations') ?? 'true') === 'true';
+  const includeVariations = (searchParams.get('includeVariations') ?? 'true') === 'true';
 
   const [showManageVariationsModal, toggleManageVariationsModal] = useToggle(false);
   const [showPreviewModal, togglePreviewModal] = useToggle(false);
@@ -95,7 +94,7 @@ const ReleaseManagementSeriesDetail = () => {
   const [mixMatchSelection, setMixMatchSelection] = useImmer<Map<string, number>>(new Map());
   const [mixMatchUnassignedCount, setMixMatchUnassignedCount] = useState(0);
 
-  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, !ignoreVariations, seriesId > 0);
+  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, includeVariations, seriesId > 0);
   const series = seriesQuery.data;
 
   useEffect(() => {
@@ -136,10 +135,10 @@ const ReleaseManagementSeriesDetail = () => {
         <div className="flex items-center gap-x-3">
           <div className="flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
             <Checkbox
-              id="ignoreVariations"
-              isChecked={ignoreVariations}
+              id="includeVariations"
+              isChecked={includeVariations}
               onChange={() => ({})}
-              label="Ignore Variations"
+              label="Include Variations"
               labelRight
               disabled
             />
@@ -230,7 +229,7 @@ const ReleaseManagementSeriesDetail = () => {
       </div>
 
       <ManageVariationsModal
-        open={showManageVariationsModal}
+        show={showManageVariationsModal}
         seriesId={seriesId}
         seriesTitle={series?.SeriesTitle}
         onClose={toggleManageVariationsModal}
@@ -238,7 +237,7 @@ const ReleaseManagementSeriesDetail = () => {
 
       <MultipleReleasesPreviewModal
         selectedSeries={[seriesId]}
-        open={showPreviewModal}
+        show={showPreviewModal}
         onClose={togglePreviewModal}
         primaryCandidateKey={activeTab === 'candidates' ? primaryCandidate?.Key : undefined}
         mixMatchSelection={mixMatchSelection.size > 0 ? [...mixMatchSelection.values()] : undefined}

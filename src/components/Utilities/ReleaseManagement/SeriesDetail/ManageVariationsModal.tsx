@@ -16,21 +16,21 @@ import { buildEpisodeCoverageString } from '@/core/utilities/releaseManagementHe
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 type Props = {
-  open: boolean;
+  show: boolean;
+  onClose: () => void;
   seriesId: number;
   seriesTitle?: string;
-  onClose: () => void;
 };
 
-const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) => {
+const ManageVariationsModal = ({ onClose, seriesId, seriesTitle, show }: Props) => {
   const [selectedIds, setSelectedIds] = useImmer<Set<number>>(new Set());
   const [markVariationPending, setMarkVariationPending] = useState(false);
   const { mutateAsync: markVariation } = useMarkVariationMutation();
 
-  useToggleModalKeybinds(open, 'modal');
-  useToggleModalKeybinds(!open, 'primary');
+  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
 
-  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, true, open && seriesId > 0);
+  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, true, show && seriesId > 0);
 
   const allFiles = seriesQuery.data
     ? uniqBy(seriesQuery.data.Candidates.flatMap(candidate => candidate.Files), 'VideoLocalID')
@@ -74,7 +74,7 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
 
   return (
     <ModalPanel
-      show={open}
+      show={show}
       size="lg"
       onRequestClose={handleClose}
       header={`Manage Variations${seriesTitle ? `  -  ${seriesTitle}` : ''}`}

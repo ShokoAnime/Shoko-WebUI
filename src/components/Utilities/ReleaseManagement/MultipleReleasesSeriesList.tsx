@@ -61,7 +61,7 @@ const SeriesRow = ({
           <a
             href={`https://anidb.net/anime/${series.AnidbAnimeID}`}
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
             className="flex items-center gap-1 font-semibold text-panel-text-primary"
             aria-label="Open AniDB series page"
             onClick={event => event.stopPropagation()}

@@ -25,7 +25,7 @@ import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
 
 type Props = {
-  open: boolean;
+  show: boolean;
   onClose: () => void;
   allSelected?: boolean;
   selectedSeries?: number[];
@@ -138,13 +138,13 @@ const MultipleReleasesPreviewModal = ({
   allSelected,
   mixMatchSelection,
   onClose,
-  open,
   primaryCandidateKey,
   selectedSeries,
+  show,
 }: Props) => {
-  useToggleModalKeybinds(open, 'modal');
-  useToggleModalKeybinds(!open, 'primary');
-  useHotkeys('escape', () => open && onClose(), { scopes: 'modal' });
+  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
+  useHotkeys('escape', () => show && onClose(), { scopes: 'modal' });
 
   const [searchParams] = useSearchParams();
   const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
@@ -162,13 +162,13 @@ const MultipleReleasesPreviewModal = ({
     },
     onlyFinishedSeries,
     includeVariations,
-    open && !mixMatchSelection,
+    show && !mixMatchSelection,
   );
 
   const mixMatchPreviewQuery = useReleaseMixMatchDeletionPreviewQuery(
     selectedSeries?.[0] ?? 0,
     { selectedPlaceIDs: mixMatchSelection ?? [] },
-    open && !!mixMatchSelection && !!selectedSeries,
+    show && !!mixMatchSelection && !!selectedSeries,
   );
   const mixMatchPreviewData = mixMatchPreviewQuery.data ? [mixMatchPreviewQuery.data] : undefined;
 
@@ -183,7 +183,7 @@ const MultipleReleasesPreviewModal = ({
   useEffect(() => {
     setRemovedSeriesIDs(new Set());
     setUncheckedPlaceIDs(new Set());
-  }, [open, setRemovedSeriesIDs, setUncheckedPlaceIDs]);
+  }, [show, setRemovedSeriesIDs, setUncheckedPlaceIDs]);
 
   const visiblePreviews = filter(
     mixMatchSelection ? mixMatchPreviewData : previewQuery.data,
@@ -239,7 +239,7 @@ const MultipleReleasesPreviewModal = ({
 
   return (
     <ModalPanel
-      show={open}
+      show={show}
       size="xl"
       onRequestClose={onClose}
       header="Preview Deletion"

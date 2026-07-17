@@ -165,7 +165,7 @@ const ReleaseManagement = () => {
       </div>
 
       <MultipleReleasesPreviewModal
-        open={showPreviewModal}
+        show={showPreviewModal}
         onClose={togglePreviewModal}
         allSelected={allSelected}
         selectedSeries={selectedSeries}
