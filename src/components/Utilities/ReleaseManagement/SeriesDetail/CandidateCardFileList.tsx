@@ -5,7 +5,7 @@ import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 
 import { Badge } from '@/components/Badge';
-import { buildEpisodeCoverageString } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeCoverageString } from '@/core/utilities/releaseManagementHelpers';
 
 import type {
   EpisodeCoverageType,

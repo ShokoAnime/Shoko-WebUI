@@ -12,7 +12,7 @@ import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
-import { buildEpisodeCoverageString } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeCoverageString } from '@/core/utilities/releaseManagementHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 type Props = {

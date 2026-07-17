@@ -13,7 +13,7 @@ import CandidateCardSignals from '@/components/Utilities/ReleaseManagement/Serie
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
-import { buildEpisodeCoverageString, signalLabels } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeCoverageString, signalLabels } from '@/core/utilities/releaseManagementHelpers';
 
 import type { EpisodeCoverageType, ReleaseCandidateType } from '@/core/types/api/release-management';
 

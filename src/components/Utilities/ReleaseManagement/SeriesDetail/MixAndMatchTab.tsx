@@ -4,7 +4,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
-import { typeOrder } from '@/core/utilities/buildEpisodeCoverageString';
+import { typeOrder } from '@/core/utilities/releaseManagementHelpers';
 
 import { MixAndMatchEpisode } from './MixAndMatchEpisode';
 

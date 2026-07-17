@@ -6,7 +6,7 @@ import DnDList from '@/components/DnDList/DnDList';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
-import { signalLabels } from '@/core/utilities/buildEpisodeCoverageString';
+import { signalLabels } from '@/core/utilities/releaseManagementHelpers';
 
 import type { ReleaseComparisonPreferencesType, SignalType } from '@/core/types/api/settings';
 import type { DropResult } from '@hello-pangea/dnd';

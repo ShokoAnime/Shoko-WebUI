@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { mdiAlertOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import { typeOrder } from '@/core/utilities/buildEpisodeCoverageString';
+import { typeOrder } from '@/core/utilities/releaseManagementHelpers';
 
 import CandidateCard from './CandidateCard';
 
