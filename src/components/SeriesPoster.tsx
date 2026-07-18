@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router';
-import { mdiPlusCircleOutline } from '@mdi/js';
+import { mdiDotsHorizontalCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -43,6 +43,7 @@ const SeriesPoster = (props: Props) => {
   }, [anidbEpisodeId, anidbSeriesId, shokoId]);
 
   const {
+    isPending: isRefreshPending,
     mutate: refreshSeries,
   } = useRefreshAniDBSeriesMutation();
 
@@ -54,6 +55,8 @@ const SeriesPoster = (props: Props) => {
       onSuccess: () => {
         toast.success('Series added successfully!');
         invalidateQueries(['series', 'without-files']);
+        // TODO: Better way to trigger related/similar anime poster reload when called from series-overview
+        // window.location.reload();
       },
       onError: (error) => {
         console.error(error);
@@ -72,21 +75,28 @@ const SeriesPoster = (props: Props) => {
         zoomOnHover
         inCollection={inCollection}
       >
-        {isAnidb && (
+        {isAnidb && !isRefreshPending && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
             <div className="metadata-link-icon AniDB" />
             View on AniDB
           </div>
         )}
 
-        {(isAnidb && anidbSeriesId) && (
+        {isRefreshPending && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="metadata-link-icon AniDB" />
+            Fetching from AniDB
+          </div>
+        )}
+
+        {isAnidb && anidbSeriesId && !isRefreshPending && (
           <div className="pointer-events-none absolute z-15 flex h-full p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <Button
               className="pointer-events-auto h-fit"
               onClick={event => createSeries(anidbSeriesId, event)}
               tooltip="Add to collection"
             >
-              <Icon path={mdiPlusCircleOutline} size={1} />
+              <Icon path={isRefreshPending ? mdiDotsHorizontalCircleOutline : mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
         )}
@@ -122,7 +132,7 @@ const SeriesPoster = (props: Props) => {
     </>
   );
 
-  if (shokoId) {
+  if (!isRefreshPending && shokoId) {
     return (
       <Link className={cx(baseClassName, 'group')} to={`/webui/collection/series/${shokoId}`}>
         {content}
