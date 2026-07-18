@@ -13,7 +13,7 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import { resetQueries } from '@/core/react-query/queryClient';
 import { useReleaseDeleteMutation } from '@/core/react-query/release-management/mutations';
 import {
   useReleaseDeletionPreviewQuery,
@@ -231,7 +231,7 @@ const MultipleReleasesPreviewModal = ({
             `${placeIDs.length} ${placeIDs.length === 1 ? 'file' : 'files'} queued for deletion.`,
           );
           onClose();
-          invalidateQueries(['release-management']);
+          resetQueries(['release-management']);
         },
       },
     );

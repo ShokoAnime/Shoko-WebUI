@@ -9,7 +9,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import { resetQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
 import { buildEpisodeCoverageString } from '@/core/utilities/releaseManagementHelpers';
@@ -56,7 +56,7 @@ const ManageVariationsModal = ({ onClose, seriesId, seriesTitle, show }: Props) 
     setMarkVariationPending(true);
     try {
       await Promise.all(ids.map(fileId => markVariation({ fileId, variation })));
-      invalidateQueries(['release-management']);
+      resetQueries(['release-management']);
       toast.success(
         `${variation ? 'Marked' : 'Unmarked'} ${ids.length} ${ids.length !== 1 ? 'files' : 'file'} as variation`,
       );
