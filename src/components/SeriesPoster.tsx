@@ -73,17 +73,10 @@ const SeriesPoster = (props: Props) => {
         zoomOnHover
         inCollection={inCollection}
       >
-        {isAnidb && !isRefreshPending && (
+        {isAnidb && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
             <div className="metadata-link-icon AniDB" />
-            View on AniDB
-          </div>
-        )}
-
-        {isRefreshPending && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
-            <div className="metadata-link-icon AniDB" />
-            Fetching from AniDB
+            {isRefreshPending ? 'Fetching from AniDB' : 'View on AniDB'}
           </div>
         )}
 
