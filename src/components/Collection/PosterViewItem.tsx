@@ -53,18 +53,26 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
           zoomOnHover
         >
           {showUnwatchedCount && (
-            <div
-              data-tooltip-id="tooltip"
-              data-tooltip-content={(() => {
-                if (unwatchedCount) return 'Unwatched files';
-                if (episodeCount) return 'All files have been watched';
-                return 'Series Without Files';
-              })()}
-              className="absolute top-0 right-0 z-10 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100"
-            >
+            <div className="absolute top-0 right-0 z-10 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100">
               {unwatchedCount || (episodeCount
-                ? <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
-                : <Icon path={mdiFileDocumentRemoveOutline} size={1} className="text-panel-icon-warning" />)}
+                ? (
+                  <Icon
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="All files have been watched"
+                    path={mdiCheckboxMarkedCircleOutline}
+                    size={1}
+                    className="text-panel-icon-important"
+                  />
+                )
+                : (
+                  <Icon
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="Series Without Files"
+                    path={mdiFileDocumentRemoveOutline}
+                    size={1}
+                    className="text-panel-icon-warning"
+                  />
+                ))}
             </div>
           )}
           <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">

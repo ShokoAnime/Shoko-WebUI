@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router';
-import { mdiDotsHorizontalCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiLoading, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -75,19 +75,26 @@ const SeriesPoster = (props: Props) => {
       >
         {isAnidb && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
-            <div className="metadata-link-icon AniDB" />
-            {isRefreshPending ? 'Fetching from AniDB' : 'View on AniDB'}
+            {isRefreshPending
+              ? <Icon path={mdiLoading} size={3} className="text-panel-text-primary" spin />
+              : (
+                <>
+                  <div className="metadata-link-icon AniDB" />
+                  View on AniDB
+                </>
+              )}
           </div>
         )}
 
-        {isAnidb && anidbSeriesId && !isRefreshPending && (
+        {isAnidb && anidbSeriesId && (
           <div className="pointer-events-none absolute z-15 flex h-full p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <Button
+              disabled={isRefreshPending}
               className="pointer-events-auto h-fit"
               onClick={event => createSeries(anidbSeriesId, event)}
               tooltip="Add to collection"
             >
-              <Icon path={isRefreshPending ? mdiDotsHorizontalCircleOutline : mdiPlusCircleOutline} size={1} />
+              <Icon path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
         )}
@@ -123,7 +130,7 @@ const SeriesPoster = (props: Props) => {
     </>
   );
 
-  if (!isRefreshPending && shokoId) {
+  if (shokoId) {
     return (
       <Link className={cx(baseClassName, 'group')} to={`/webui/collection/series/${shokoId}`}>
         {content}
