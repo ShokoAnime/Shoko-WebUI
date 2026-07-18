@@ -54,9 +54,7 @@ const SeriesPoster = (props: Props) => {
     refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true, force: true }, {
       onSuccess: () => {
         toast.success('Series added successfully!');
-        invalidateQueries(['series', 'without-files']);
-        // TODO: Better way to trigger related/similar anime poster reload when called from series-overview
-        // window.location.reload();
+        invalidateQueries(['series']);
       },
       onError: (error) => {
         console.error(error);
