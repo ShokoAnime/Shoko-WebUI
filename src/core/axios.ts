@@ -33,10 +33,21 @@ axios.interceptors.request.use(addApikeyInterceptor);
 axiosV2.interceptors.request.use(addApikeyInterceptor);
 axiosPlex.interceptors.request.use(addApikeyInterceptor);
 
+// Some endpoints serialize an empty/uninitialized collection as `List: null` instead of `List: []`,
+// even though ListResultType<T> types it as always present. Normalize it here so every consumer
+// downstream (e.g. `.flatMap(page => page.List)`) can trust the type.
+const normalizeListResult = (data: unknown): unknown => {
+  if (data !== null && typeof data === 'object' && 'List' in data) {
+    const record = data as Record<string, unknown>;
+    if (record.List == null) return { ...record, List: [] };
+  }
+  return data;
+};
+
 // The type of response.data depends on the endpoint called. It has to be any.
 // We are only adding this interceptor so that we don't have to get response.data every time we call axios from react-query
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-axios.interceptors.response.use(response => response.data);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+axios.interceptors.response.use(response => normalizeListResult(response.data) as any);
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 axiosV2.interceptors.response.use(response => response.data);
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
