@@ -7,7 +7,7 @@ type Props = {
 };
 
 export const Badge = ({ children, className }: Props) => (
-  <span className={cx('rounded-lg px-2.5 py-1 text-xs font-semibold', className)}>
+  <span className={cx('flex gap-x-1 rounded-lg px-2.5 py-1 text-xs font-semibold', className)}>
     {children}
   </span>
 );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { mdiFlagOffOutline, mdiFlagOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { uniqBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useImmer } from 'use-immer';
 
@@ -11,37 +12,29 @@ import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
-import { buildEpisodeCoverageString } from '@/core/utilities/buildEpisodeCoverageString';
+import { buildEpisodeCoverageString } from '@/core/utilities/releaseManagementHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 type Props = {
-  open: boolean;
+  show: boolean;
+  onClose: () => void;
   seriesId: number;
   seriesTitle?: string;
-  onClose: () => void;
 };
 
-const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) => {
+const ManageVariationsModal = ({ onClose, seriesId, seriesTitle, show }: Props) => {
   const [selectedIds, setSelectedIds] = useImmer<Set<number>>(new Set());
-  const [isApplying, setIsApplying] = useState(false);
+  const [markVariationPending, setMarkVariationPending] = useState(false);
   const { mutateAsync: markVariation } = useMarkVariationMutation();
 
-  useToggleModalKeybinds(open, 'modal');
-  useToggleModalKeybinds(!open, 'primary');
+  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
 
-  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, true, open && seriesId > 0);
+  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, true, show && seriesId > 0);
 
-  const allFiles = (() => {
-    if (!seriesQuery.data) return [];
-    const seen = new Set<number>();
-    return seriesQuery.data.Candidates
-      .flatMap(candidate => candidate.Files)
-      .filter((file) => {
-        if (seen.has(file.VideoLocalID)) return false;
-        seen.add(file.VideoLocalID);
-        return true;
-      });
-  })();
+  const allFiles = seriesQuery.data
+    ? uniqBy(seriesQuery.data.Candidates.flatMap(candidate => candidate.Files), 'VideoLocalID')
+    : [];
 
   const allVideoLocalIds = allFiles.map(file => file.VideoLocalID);
   const allSelected = allVideoLocalIds.length > 0 && selectedIds.size === allVideoLocalIds.length;
@@ -60,19 +53,18 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
   const handleMarkVariation = async (variation: boolean) => {
     const ids = [...selectedIds];
     if (ids.length === 0) return;
-    setIsApplying(true);
+    setMarkVariationPending(true);
     try {
       await Promise.all(ids.map(fileId => markVariation({ fileId, variation })));
-      setSelectedIds(new Set());
       resetQueries(['release-management']);
       toast.success(
-        `${variation ? 'Marked' : 'Unmarked'} ${ids.length} file${ids.length !== 1 ? 's' : ''} as variation`,
+        `${variation ? 'Marked' : 'Unmarked'} ${ids.length} ${ids.length !== 1 ? 'files' : 'file'} as variation`,
       );
     } catch {
       toast.error(`Failed to ${variation ? 'mark' : 'unmark'} files as variations`);
-    } finally {
-      setIsApplying(false);
     }
+    setSelectedIds(new Set());
+    setMarkVariationPending(false);
   };
 
   const handleClose = () => {
@@ -82,12 +74,12 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
 
   return (
     <ModalPanel
-      show={open}
+      show={show}
       size="lg"
       onRequestClose={handleClose}
-      header={`Manage Variations${seriesTitle ? ` — ${seriesTitle}` : ''}`}
+      header={`Manage Variations${seriesTitle ? `  -  ${seriesTitle}` : ''}`}
       subHeader={
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-3">
           <Checkbox
             id="variation-select-all"
             isChecked={allSelected}
@@ -95,24 +87,28 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
             label={allSelected ? 'Deselect all' : 'Select all'}
             labelRight
           />
-          <span className="ml-auto text-sm opacity-65">
+
+          <div className="text-sm opacity-65">
             {selectedIds.size}
-            {' of '}
+            &nbsp;of&nbsp;
             {allVideoLocalIds.length}
-            {' files selected'}
-          </span>
+            {allVideoLocalIds.length > 1 ? ' files' : ' file'}
+            &nbsp;selected
+          </div>
         </div>
       }
       footer={
         <div className="flex items-center justify-end gap-3">
-          <Button buttonType="secondary" className="px-4 py-2" onClick={handleClose}>
+          <Button buttonType="secondary" buttonSize="normal" onClick={handleClose}>
             Cancel
           </Button>
+
           <Button
             buttonType="secondary"
-            className="flex items-center gap-x-2 px-4 py-2 whitespace-nowrap"
-            disabled={selectedIds.size === 0 || isApplying}
-            loading={isApplying}
+            buttonSize="normal"
+            className="flex items-center gap-x-2"
+            disabled={selectedIds.size === 0 || markVariationPending}
+            loading={markVariationPending}
             onClick={() => {
               handleMarkVariation(false).catch(console.error);
             }}
@@ -122,9 +118,10 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
           </Button>
           <Button
             buttonType="primary"
-            className="flex items-center gap-x-2 px-4 py-2 whitespace-nowrap"
-            disabled={selectedIds.size === 0 || isApplying}
-            loading={isApplying}
+            buttonSize="normal"
+            className="flex items-center gap-x-2"
+            disabled={selectedIds.size === 0 || markVariationPending}
+            loading={markVariationPending}
             onClick={() => {
               handleMarkVariation(true).catch(console.error);
             }}
@@ -137,12 +134,13 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
       fullHeight
     >
       {seriesQuery.isPending && (
-        <div className="flex h-32 items-center justify-center text-panel-text-primary">
-          <Icon path={mdiLoading} size={2} spin />
+        <div className="flex h-full items-center justify-center text-panel-text-primary">
+          <Icon path={mdiLoading} size={4} spin />
         </div>
       )}
+
       {seriesQuery.isSuccess && (
-        <div className="flex h-full flex-col gap-2 overflow-y-auto pr-2">
+        <div className="flex h-full flex-col gap-y-2 overflow-y-auto pr-2">
           {allFiles.map((file) => {
             const lastSlash = Math.max(
               file.AbsolutePath?.lastIndexOf('/') ?? -1,
@@ -157,27 +155,34 @@ const ManageVariationsModal = ({ onClose, open, seriesId, seriesTitle }: Props) 
             return (
               <div
                 key={file.PlaceID}
-                className="flex cursor-pointer items-start gap-3 rounded-lg border border-panel-border bg-panel-background p-3 text-sm"
+                className="flex cursor-pointer items-center gap-3 rounded-lg border border-panel-border p-3 text-sm odd:bg-panel-background even:bg-panel-background-alt"
                 onClick={() => handleToggle(file.VideoLocalID)}
               >
-                <div
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                >
-                  <Checkbox
-                    id={`variation-file-${file.VideoLocalID}`}
-                    isChecked={selectedIds.has(file.VideoLocalID)}
-                    onChange={() => handleToggle(file.VideoLocalID)}
-                    label=""
-                  />
-                </div>
+                <Checkbox
+                  id={`variation-file-${file.VideoLocalID}`}
+                  isChecked={selectedIds.has(file.VideoLocalID)}
+                  onChange={() => handleToggle(file.VideoLocalID)}
+                  label=""
+                />
+
                 <div className="flex min-w-0 grow flex-col gap-1">
-                  {dirPath && <div className="truncate text-xs opacity-65">{dirPath}</div>}
-                  <div className="truncate font-semibold">{fileName}</div>
+                  {dirPath && (
+                    <div
+                      className="truncate text-xs opacity-65"
+                      data-tooltip-id="tooltip"
+                      data-tooltip-content={dirPath}
+                    >
+                      {dirPath}
+                    </div>
+                  )}
+
+                  <div className="truncate font-semibold" data-tooltip-id="tooltip" data-tooltip-content={fileName}>
+                    {fileName}
+                  </div>
+
                   <div className="flex flex-wrap gap-x-4 text-xs opacity-65">
                     {coverage && <span>{coverage}</span>}
-                    <span>{prettyBytes(file.FileSize, { binary: true })}</span>
+                    {prettyBytes(file.FileSize, { binary: true })}
                   </div>
                 </div>
               </div>

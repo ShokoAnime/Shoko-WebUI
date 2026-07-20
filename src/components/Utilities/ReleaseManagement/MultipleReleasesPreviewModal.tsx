@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
-import { mdiChevronDown, mdiChevronUp, mdiLoading, mdiMinusCircleOutline, mdiTrashCanOutline } from '@mdi/js';
+import AnimateHeight from 'react-animate-height';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useSearchParams } from 'react-router';
+import { mdiChevronDown, mdiLoading, mdiMinusCircleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
+import { filter } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useImmer } from 'use-immer';
 import { useToggle } from 'usehooks-ts';
@@ -8,24 +13,24 @@ import { useToggle } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { resetQueries } from '@/core/react-query/queryClient';
+import { useReleaseDeleteMutation } from '@/core/react-query/release-management/mutations';
 import {
-  useReleaseDeletionPreviewMutation,
-  useReleaseExecuteMutation,
-} from '@/core/react-query/release-management/mutations';
+  useReleaseDeletionPreviewQuery,
+  useReleaseMixMatchDeletionPreviewQuery,
+} from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { ReleaseDeletionPreviewType } from '@/core/types/api/release-management';
 
 type Props = {
-  open: boolean;
-  includedSeriesIDs?: number[];
-  excludedSeriesIDs?: number[];
-  onlyFinishedSeries?: boolean;
-  overrides: Map<number, string>;
-  precomputedData?: ReleaseDeletionPreviewType[];
+  show: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  allSelected?: boolean;
+  selectedSeries?: number[];
+  primaryCandidateKey?: string;
+  mixMatchSelection?: number[];
 };
 
 type SeriesRowProps = {
@@ -45,10 +50,10 @@ const SeriesPreviewRow = (
   const includedSize = includedFiles.reduce((sum, file) => sum + file.FileSize, 0);
 
   return (
-    <div className="flex flex-col rounded-lg border border-panel-border bg-panel-background">
-      {/* Clickable header row — toggles the file list */}
+    <div className="flex flex-col rounded-lg border border-panel-border bg-panel-background-alt">
+      {/* Clickable header row  -  toggles the file list */}
       <div
-        className="flex cursor-pointer items-center gap-3 p-4 transition-colors"
+        className="flex cursor-pointer items-center gap-x-3 p-4"
         onClick={toggleExpanded}
       >
         <div
@@ -61,96 +66,129 @@ const SeriesPreviewRow = (
         >
           <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-panel-icon-danger" />
         </div>
-        <div className="grow">
-          <div className="font-semibold">{preview.SeriesTitle}</div>
-          <div className="text-sm opacity-65">
-            <span className="font-semibold text-panel-text-danger">{includedFiles.length}</span>{' '}
-            {includedFiles.length === 1 ? 'file' : 'files'} to delete
-            {' · '}
+
+        <div className="flex grow flex-col truncate">
+          <div
+            className="truncate font-semibold"
+            data-tooltip-id="tooltip"
+            data-tooltip-content={preview.SeriesTitle}
+          >
+            {preview.SeriesTitle}
+          </div>
+
+          <div className="text-sm font-semibold opacity-65">
+            <span className="font-semibold text-panel-text-danger">{includedFiles.length}</span>
+            {includedFiles.length === 1 ? ' file' : ' files'} to delete,&nbsp;
             {prettyBytes(includedSize, { binary: true })}
           </div>
         </div>
-        <Icon path={expanded ? mdiChevronUp : mdiChevronDown} size={0.8333} className="opacity-65" />
+
+        <Icon
+          path={mdiChevronDown}
+          size={0.8333}
+          rotate={expanded ? -180 : 0}
+          className="shrink-0 transition-transform"
+        />
       </div>
 
-      {expanded && (
-        <div className="flex flex-col gap-1 border-t border-panel-border p-4">
-          {preview.Files.map((file) => {
-            const pathParts = file.AbsolutePath?.split(/[/\\]/) ?? [];
-            const fileName = pathParts.at(-1) ?? `Place ${file.PlaceID}`;
-            const dirPath = pathParts.length > 1 ? pathParts.slice(0, -1).join('/') : null;
-            const isUnchecked = uncheckedPlaceIDs.has(file.PlaceID);
-            return (
-              <div key={file.PlaceID} className="flex items-start gap-3 text-sm">
-                <Checkbox
-                  id={`preview-file-${file.PlaceID}`}
-                  isChecked={!isUnchecked}
-                  onChange={() => onPlaceToggle(file.PlaceID)}
-                  label=""
-                  className="mt-0.5"
-                />
-                <div className="min-w-0 grow">
-                  {dirPath && <div className="truncate text-xs opacity-65">{dirPath}</div>}
-                  <div className="truncate font-semibold">{fileName}</div>
-                  {file.AbsolutePath == null && <div className="text-xs text-panel-text-warning">Path unavailable</div>}
+      <AnimateHeight height={expanded ? 'auto' : 0}>
+        {expanded && (
+          <div className="flex flex-col gap-y-1 border-t border-panel-border p-4">
+            {preview.Files.map((file) => {
+              const pathParts = file.AbsolutePath?.split(/[/\\]/) ?? [];
+              const fileName = pathParts.at(-1) ?? `Place ${file.PlaceID}`;
+              const dirPath = pathParts.length > 1 ? pathParts.slice(0, -1).join('/') : null;
+              const isUnchecked = uncheckedPlaceIDs.has(file.PlaceID);
+
+              return (
+                <div key={file.PlaceID} className="flex items-center gap-x-3 text-sm">
+                  <Checkbox
+                    id={`preview-file-${file.PlaceID}`}
+                    isChecked={!isUnchecked}
+                    onChange={() => onPlaceToggle(file.PlaceID)}
+                  />
+
+                  <div className="flex grow flex-col gap-y-1 truncate">
+                    <div
+                      className={cx('truncate text-xs opacity-65', !dirPath && 'text-panel-text-warning')}
+                      data-tooltip-id="tooltip"
+                      data-tooltip-content={dirPath ?? ''}
+                    >
+                      {dirPath ?? 'Path unavailable'}
+                    </div>
+                    <div className="truncate font-semibold" data-tooltip-id="tooltip" data-tooltip-content={fileName}>
+                      {fileName}
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 text-xs opacity-65">
+                    {prettyBytes(file.FileSize, { binary: true })}
+                  </div>
                 </div>
-                <span className="shrink-0 text-xs opacity-65">
-                  {prettyBytes(file.FileSize, { binary: true })}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </AnimateHeight>
     </div>
   );
 };
 
 const MultipleReleasesPreviewModal = ({
-  excludedSeriesIDs,
-  includedSeriesIDs,
+  allSelected,
+  mixMatchSelection,
   onClose,
-  onSuccess,
-  onlyFinishedSeries,
-  open,
-  overrides,
-  precomputedData,
+  primaryCandidateKey,
+  selectedSeries,
+  show,
 }: Props) => {
-  useToggleModalKeybinds(open, 'modal');
-  useToggleModalKeybinds(!open, 'primary');
+  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
+  useHotkeys('escape', () => show && onClose(), { scopes: 'modal' });
 
-  const previewMutation = useReleaseDeletionPreviewMutation();
-  const executeMutation = useReleaseExecuteMutation();
+  const [searchParams] = useSearchParams();
+  const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
+  const includeVariations = searchParams.get('includeVariations') === 'true';
+
+  const { isPending: isDeletePending, mutate: deleteReleases } = useReleaseDeleteMutation();
+
+  const previewQuery = useReleaseDeletionPreviewQuery(
+    {
+      includedSeriesIDs: allSelected ? undefined : selectedSeries,
+      excludedSeriesIDs: allSelected ? selectedSeries : undefined,
+      overrides: (primaryCandidateKey && selectedSeries?.[0])
+        ? [{ preferredCandidateKey: primaryCandidateKey, seriesID: selectedSeries[0] }]
+        : undefined,
+    },
+    onlyFinishedSeries,
+    includeVariations,
+    show && !mixMatchSelection,
+  );
+
+  const mixMatchPreviewQuery = useReleaseMixMatchDeletionPreviewQuery(
+    selectedSeries?.[0] ?? 0,
+    { selectedPlaceIDs: mixMatchSelection ?? [] },
+    show && !!mixMatchSelection && !!selectedSeries,
+  );
+  const mixMatchPreviewData = mixMatchPreviewQuery.data ? [mixMatchPreviewQuery.data] : undefined;
+
+  const queryPending = mixMatchSelection ? mixMatchPreviewQuery.isPending : previewQuery.isPending;
+  const querySuccess = mixMatchSelection ? mixMatchPreviewQuery.isSuccess : previewQuery.isSuccess;
 
   // Series that have been manually removed from the preview by the user
   const [removedSeriesIDs, setRemovedSeriesIDs] = useImmer<Set<number>>(new Set());
   // Place IDs unchecked by the user (excluded from execute)
   const [uncheckedPlaceIDs, setUncheckedPlaceIDs] = useImmer<Set<number>>(new Set());
 
-  const overridesList = [...overrides.entries()].map(([seriesID, preferredCandidateKey]) => ({
-    preferredCandidateKey,
-    seriesID,
-  }));
-
-  // Trigger preview whenever the modal opens (skip when precomputed data is provided)
   useEffect(() => {
-    if (!open) return;
-
     setRemovedSeriesIDs(new Set());
     setUncheckedPlaceIDs(new Set());
+  }, [show, setRemovedSeriesIDs, setUncheckedPlaceIDs]);
 
-    if (precomputedData) return;
-
-    const body = includedSeriesIDs != null
-      ? { includedSeriesIDs, overrides: overridesList }
-      : { excludedSeriesIDs, overrides: overridesList };
-
-    previewMutation.mutate({ body, onlyFinishedSeries });
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-
-  const previews = precomputedData ?? previewMutation.data ?? [];
-  const visiblePreviews = previews.filter(preview => !removedSeriesIDs.has(preview.SeriesID));
+  const visiblePreviews = filter(
+    mixMatchSelection ? mixMatchPreviewData : previewQuery.data,
+    preview => !removedSeriesIDs.has(preview.SeriesID),
+  );
 
   const totalFiles = visiblePreviews.reduce(
     (sum, preview) => sum + preview.Files.filter(file => !uncheckedPlaceIDs.has(file.PlaceID)).length,
@@ -165,9 +203,7 @@ const MultipleReleasesPreviewModal = ({
   );
 
   const handleRemoveSeries = (seriesId: number) => {
-    setRemovedSeriesIDs((draft) => {
-      draft.add(seriesId);
-    });
+    setRemovedSeriesIDs(draft => draft.add(seriesId));
   };
 
   const handlePlaceToggle = (placeId: number) => {
@@ -183,11 +219,10 @@ const MultipleReleasesPreviewModal = ({
     );
 
     if (placeIDs.length === 0) {
-      toast.warning('Nothing to delete', 'No files are selected for deletion.');
       return;
     }
 
-    executeMutation.mutate(
+    deleteReleases(
       { placeIDs },
       {
         onSuccess: () => {
@@ -196,7 +231,7 @@ const MultipleReleasesPreviewModal = ({
             `${placeIDs.length} ${placeIDs.length === 1 ? 'file' : 'files'} queued for deletion.`,
           );
           onClose();
-          onSuccess?.();
+          resetQueries(['release-management']);
         },
       },
     );
@@ -204,7 +239,7 @@ const MultipleReleasesPreviewModal = ({
 
   return (
     <ModalPanel
-      show={open}
+      show={show}
       size="xl"
       onRequestClose={onClose}
       header="Preview Deletion"
@@ -215,7 +250,7 @@ const MultipleReleasesPreviewModal = ({
               ? (
                 <>
                   <span className="font-semibold text-panel-text-danger">{totalFiles}</span>
-                  {` ${totalFiles === 1 ? 'file' : 'files'} · `}
+                  {` ${totalFiles === 1 ? 'file' : 'files'}, `}
                   <span className="font-semibold">{prettyBytes(totalSize, { binary: true })}</span>
                   {' to free'}
                 </>
@@ -230,7 +265,7 @@ const MultipleReleasesPreviewModal = ({
               buttonType="danger"
               className="flex items-center gap-x-2 px-6 py-2"
               onClick={handleConfirm}
-              loading={executeMutation.isPending}
+              loading={isDeletePending}
               disabled={totalFiles === 0}
             >
               <Icon path={mdiTrashCanOutline} size={0.8333} />
@@ -241,28 +276,20 @@ const MultipleReleasesPreviewModal = ({
       }
       fullHeight
     >
-      <div className="flex h-full flex-col gap-4 overflow-y-auto pr-2">
-        {!precomputedData && previewMutation.isPending && (
+      <div className="flex h-full flex-col gap-y-2 overflow-y-auto pr-2">
+        {queryPending && (
           <div className="flex h-full items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
         )}
 
-        {!precomputedData && previewMutation.isError && (
-          <div className="flex h-full items-center justify-center">
-            <span className="text-panel-text-danger">
-              Failed to compute preview. Please try again.
-            </span>
-          </div>
-        )}
-
-        {(precomputedData ?? previewMutation.isSuccess) && visiblePreviews.length === 0 && (
+        {querySuccess && visiblePreviews.length === 0 && (
           <div className="flex h-full items-center justify-center text-lg font-semibold">
             No files to delete.
           </div>
         )}
 
-        {(precomputedData ?? previewMutation.isSuccess) && visiblePreviews.map(preview => (
+        {querySuccess && visiblePreviews.map(preview => (
           <SeriesPreviewRow
             key={preview.SeriesID}
             preview={preview}

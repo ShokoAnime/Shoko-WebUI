@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { flatMap } from 'lodash';
@@ -7,6 +7,7 @@ import { useToggle } from 'usehooks-ts';
 
 import ShokoIcon from '@/components/ShokoIcon';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { resetQueries } from '@/core/react-query/queryClient';
 import {
   useReleaseManagementSeries,
   useReleaseManagementSeriesEpisodes,
@@ -15,7 +16,7 @@ import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
-import ReleaseManagementModal from './ReleaseManagementModal';
+import DuplicateFilesModal from './DuplicateFiles/DuplicateFilesModal';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
@@ -106,21 +107,6 @@ const episodeNameColumn: UtilityHeaderType<EpisodeType> = {
   ),
 };
 
-const multiplesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
-  id: 'file-count',
-  name: 'File Count',
-  className: 'w-28',
-  item: (episode) => {
-    const count = episode.Files?.filter(file => file.Size > 0).length ?? 0;
-    return (
-      <>
-        <span className="text-panel-text-important">{count}</span>
-        {count === 1 ? ' File' : ' Files'}
-      </>
-    );
-  },
-};
-
 const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
   id: 'duplicate-count',
   name: 'Duplicate Count',
@@ -142,30 +128,28 @@ const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
 
 type Props = {
   type: ReleaseManagementItemType;
-  ignoreVariations: boolean;
-  onlyCollecting: boolean;
-  onlyFinishedSeries: boolean;
-  setSelectedEpisodes: (episodes: EpisodeType[]) => void;
-  setSelectedSeriesId: (id: number) => void;
+  setSelectedEpisodes?: (episodes: EpisodeType[]) => void;
+  setSelectedSeriesId?: (id: number) => void;
   setSeriesCount: (count: number) => void;
 };
 
-const SeriesList = (
+const UtilitySeriesList = (
   {
-    ignoreVariations,
-    onlyCollecting,
-    onlyFinishedSeries,
     setSelectedEpisodes,
     setSelectedSeriesId,
     setSeriesCount,
     type,
   }: Props,
 ) => {
+  const [searchParams] = useSearchParams();
+  const onlyCollecting = searchParams.get('onlyCollecting') === 'true';
+  const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
+
   const [selectedSeries, setSelectedSeries] = useState(0);
 
   const seriesQuery = useReleaseManagementSeries(
     type,
-    { ignoreVariations, collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
+    { collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
   );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
@@ -173,7 +157,6 @@ const SeriesList = (
     type,
     selectedSeries,
     {
-      ignoreVariations,
       collecting: onlyCollecting,
       includeDataFrom: ['AniDB'],
       includeAbsolutePaths: true,
@@ -182,6 +165,10 @@ const SeriesList = (
     selectedSeries > 0,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
+
+  useEffect(() => () => {
+    resetQueries(['release-management', 'series', 'episodes']);
+  }, []);
 
   const [showEpisodeModal, toggleEpisodeModal, setEpisodeModal] = useToggle(false);
   const [selectedEpisode, setSelectedEpisode] = useState(-1);
@@ -194,7 +181,7 @@ const SeriesList = (
   } = useRowSelection(episodes);
 
   useEffect(() => {
-    setSelectedEpisodes(selectedRows);
+    setSelectedEpisodes?.(selectedRows);
   }, [selectedRows, setSelectedEpisodes]);
 
   useEffect(() => {
@@ -212,53 +199,32 @@ const SeriesList = (
   const handleEpisodeChange = async (changeType: 'previous' | 'next') => {
     const targetIndex = changeType === 'previous' ? selectedEpisode - 1 : selectedEpisode + 1;
 
-    if (targetIndex < 0 || targetIndex >= episodeCount) return;
+    if (episodesQuery.isFetchingNextPage || targetIndex < 0 || targetIndex >= episodeCount) return;
 
     // Fetch more pages if the target episode hasn't been loaded yet.
-    let loadedCount = episodes.length;
-    while (loadedCount <= targetIndex) {
-      // Each fetchNextPage depends on the previous page completing (getNextPageParam),
-      // so these must run sequentially — parallelizing with Promise.all is not possible.
-      // Valid exception for below rule
-      // oxlint-disable-next-line no-await-in-loop
-      const result = await episodesQuery.fetchNextPage();
-      const newLoadedCount = result.data ? flatMap(result.data.pages, 'List').length : loadedCount;
-      if (newLoadedCount === loadedCount) break; // No more data to load
-      loadedCount = newLoadedCount;
+    if (episodes.length <= targetIndex) {
+      await episodesQuery.fetchNextPage();
     }
 
     setSelectedEpisode(targetIndex);
   };
 
   useEffect(() => {
-    setSelectedSeriesId(selectedSeries);
+    setSelectedSeriesId?.(selectedSeries);
     setSeriesCount(seriesCount);
   }, [selectedSeries, seriesCount, setSelectedSeriesId, setSeriesCount]);
 
-  useEffect(() => {
-    setSelectedSeries(0);
-  }, [type]);
-
-  const episodeColumns = useMemo(() => {
-    if (type !== 'MissingEpisodes') {
-      return [
-        episodeNameColumn,
-        type === 'MultipleReleases'
-          ? multiplesEpisodeFileCountColumn
-          : duplicatesEpisodeFileCountColumn,
-      ];
-    }
-
-    return [
-      episodeNameColumn,
-      {
+  const episodeColumns = [
+    episodeNameColumn,
+    type === 'MissingEpisodes'
+      ? {
         id: 'selected-count',
         name: selectedRows.length > 0 ? `${selectedRows.length} Selected` : '',
         className: 'w-28 text-panel-text-important',
         item: () => <div />,
-      },
-    ];
-  }, [selectedRows.length, type]);
+      }
+      : duplicatesEpisodeFileCountColumn,
+  ];
 
   return (
     <>
@@ -273,7 +239,6 @@ const SeriesList = (
           {seriesQuery.isSuccess && seriesCount === 0 && (
             <div className="flex grow items-center justify-center text-lg font-semibold">
               No series with
-              {type === 'MultipleReleases' && ' multiple releases!'}
               {type === 'DuplicateFiles' && ' duplicate files!'}
               {type === 'MissingEpisodes' && ' missing episodes!'}
             </div>
@@ -337,8 +302,8 @@ const SeriesList = (
         </div>
       </div>
 
-      {type !== 'MissingEpisodes' && (
-        <ReleaseManagementModal
+      {type === 'DuplicateFiles' && (
+        <DuplicateFilesModal
           onClose={toggleEpisodeModal}
           show={showEpisodeModal}
           episode={episodes[selectedEpisode]}
@@ -348,11 +313,10 @@ const SeriesList = (
           episodeCount={episodeCount}
           episodeIndex={selectedEpisode}
           isFetching={episodesQuery.isFetchingNextPage}
-          type={type}
         />
       )}
     </>
   );
 };
 
-export default SeriesList;
+export default UtilitySeriesList;

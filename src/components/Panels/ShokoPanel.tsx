@@ -43,7 +43,7 @@ const ShokoPanel = (
     )}
   >
     <div className="flex flex-wrap items-center justify-between">
-      <span className="flex text-xl font-semibold">{title}</span>
+      <span className="flex min-w-0 grow text-xl font-semibold">{title}</span>
       <div
         className="flex"
         onMouseDown={event => event.stopPropagation()}

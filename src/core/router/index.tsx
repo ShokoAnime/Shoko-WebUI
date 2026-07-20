@@ -4,7 +4,7 @@ import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromE
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
-import MultipleReleasesSeriesDetailPage from '@/components/Utilities/ReleaseManagement/MultipleReleasesSeriesDetailPage';
+import ReleaseManagementSeriesDetail from '@/components/Utilities/ReleaseManagement/ReleaseManagementSeriesDetail';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
@@ -43,7 +43,9 @@ import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSett
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
+import DuplicateFiles from '@/pages/utilities/DuplicateFiles';
 import FileSearch from '@/pages/utilities/FileSearch';
+import MissingEpisodes from '@/pages/utilities/MissingEpisodes';
 import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
@@ -93,12 +95,10 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized/files/link-with-providers" element={<LinkFilesWithProvidersTab />} />
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
-            <Route path="release-management" element={<Navigate to="MultipleReleases" replace />} />
-            <Route
-              path="release-management/MultipleReleases/:seriesId"
-              element={<MultipleReleasesSeriesDetailPage />}
-            />
-            <Route path="release-management/:type" element={<ReleaseManagement />} />
+            <Route path="release-management/:seriesId" element={<ReleaseManagementSeriesDetail />} />
+            <Route path="release-management" element={<ReleaseManagement />} />
+            <Route path="duplicate-files" element={<DuplicateFiles />} />
+            <Route path="missing-episodes" element={<MissingEpisodes />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />

@@ -4,12 +4,17 @@ import { useImmer } from 'use-immer';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
+import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 import type { SeriesType } from '@/core/types/api/series';
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
-type RowType = EpisodeType | FileType | SeriesType | ManualLinkType;
+type RowType = EpisodeType | FileType | SeriesType | ManualLinkType | SeriesWithCandidatesType;
 
 const getIdFromRow = (item: RowType) => {
+  if ('SeriesID' in item) {
+    return item.SeriesID;
+  }
+
   if ('ID' in item) {
     return item.ID;
   }

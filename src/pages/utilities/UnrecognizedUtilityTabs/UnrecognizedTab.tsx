@@ -415,7 +415,7 @@ const UnrecognizedTab = () => {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  tooltip="Link With Providers (β)"
+                  tooltip="Link With Providers (beta)"
                   className="group -ml-3 flex flex-row flex-wrap items-center gap-x-2 rounded-l-none border-l-0"
                   onClick={() => navigate('link-with-providers', { state: { selectedRows } })}
                 >

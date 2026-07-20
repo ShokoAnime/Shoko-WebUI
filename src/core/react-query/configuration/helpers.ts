@@ -2,7 +2,7 @@ import { get } from 'lodash';
 
 import type { FormSchemaType, PropertySchemaType } from '@/core/types/api/configuration';
 
-// ── $ref resolution ─────────────────────────────────────────────────────
+// -- $ref resolution -----------------------------------------------------
 // Shoko Server emits JSON Schema draft-04 where properties often use
 // `$ref: "#/definitions/Foo"` instead of inline types.  The type info
 // (type, maximum, minimum, etc.) lives on the definition, but *UI metadata*
@@ -11,7 +11,7 @@ import type { FormSchemaType, PropertySchemaType } from '@/core/types/api/config
 // discarding the UI metadata.  We selectively merge only the structural
 // fields we need so x-uiDefinition stays where the server placed it.
 //
-// This runs as a `select` transform on the schema query — resolved once,
+// This runs as a `select` transform on the schema query  -  resolved once,
 // cached by React Query, and never touched again at the component level.
 
 // Convert a JSON Pointer path (#/definitions/X) into a lodash dot-path
@@ -50,10 +50,10 @@ const mapProps = (
 // Resolves $ref at two levels:
 //  1. Top-level schema.properties (e.g. { "$ref": "#/definitions/WebAOM" })
 //  2. Inside each definition's own .properties (for defs that reference
-//     other defs, e.g. ImageTemplateUrl → $ref to DataSource).
+//     other defs, e.g. ImageTemplateUrl -> $ref to DataSource).
 //
 // Note: defObj alias on line 42 works around the base JSONSchema4 type
-// where `definitions` is `Record<string, JSONSchema4>` — the alias lets us
+// where `definitions` is `Record<string, JSONSchema4>`  -  the alias lets us
 // access `.properties` without a separate assertion per occurrence.
 export const resolveSchemaRefs = (schema: FormSchemaType): FormSchemaType => {
   const resolveFor = (property: PropertySchemaType) => resolveProp(schema, property);

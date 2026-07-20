@@ -102,33 +102,33 @@ const DynamicField = ({ onChange, propertyName, propertySchema, value }: Props) 
 export default DynamicField;
 
 // TODO: Unsupported element types (with real schema examples):
-// - enum      → Select dropdown from enumDefinitions
+// - enum      -> Select dropdown from enumDefinitions
 //                e.g. OfflineImporter.Mode, OfflineImporter.MatchType,
 //                CoreSettings.AniDb.MyList_StorageState, CoreSettings.AniDb.Calendar_UpdateFrequency
-// - list      → DynamicList (add/remove/sort items)
+// - list      -> DynamicList (add/remove/sort items)
 //                e.g. OfflineImporter.AutoMatchRules, OfflineImporter.ParseRules,
 //                CoreSettings.Import.VideoExtensions, CoreSettings.Image.ImageTemplateUrls
-// - password  → Password input (masked text)
+// - password  -> Password input (masked text)
 //                e.g. CoreSettings.AniDb.Password
-// - record    → DynamicRecord (add/remove/sort key-value entries, IDictionary on backend)
+// - record    -> DynamicRecord (add/remove/sort key-value entries, IDictionary on backend)
 //                (no live examples found yet)
-// - select    → Select dropdown with server-provided options (SelectComponent)
+// - select    -> Select dropdown with server-provided options (SelectComponent)
 //                e.g. OfflineImporter.AutoMatchRule.LocationRules[].ManagedFolderSelector
-// - text-area → TextArea (multiline text)
+// - text-area -> TextArea (multiline text)
 //                e.g. OfflineImporter.CustomParseRule.Regex
 //
 // TODO: Missing features for already-supported element types:
-// - elementSize  → 'small' should use InputSmall for number/string; 'large'/'full' should widen the input.
+// - elementSize  -> 'small' should use InputSmall for number/string; 'large'/'full' should widen the input.
 //                  Currently all strings use <Input> and all numbers use <InputSmall> regardless of size.
-// - visibility   → 'hidden' / 'read-only' defaults, toggle (conditional show/hide), disableToggle (conditional disable).
+// - visibility   -> 'hidden' / 'read-only' defaults, toggle (conditional show/hide), disableToggle (conditional disable).
 //                  Currently all fields always render unconditionally.
 //                  e.g. OfflineImporter.SkipAvailabilityCheck (advanced:true, badge:"Debug")
 //                  e.g. CoreSettings.AniDb.AnidbID (toggle: show when RuleType=anidb)
-// - badge        → Render badge pill (name + theme) next to the label.
+// - badge        -> Render badge pill (name + theme) next to the label.
 //                  e.g. CoreSettings.Import.MaxAutoScanAttemptsPerFile (name:"Advanced", theme:"primary")
 //                  e.g. CoreSettings.Import.FileLockChecking (name:"Debug", theme:"warning")
-// - description  → propertySchema.description is available but not rendered (tooltip or subtitle).
-// - requiresRestart → No restart indicator rendered when uiDef.requiresRestart is true.
-// - envVar       → No indicator when the value is overridable via environment variable.
-// - codeAutoFormatOnLoad → code-block's autoFormatOnLoad flag is ignored.
-// - deniedValues → enum:deniedValues not checked (values excluded from UI selection).
+// - description  -> propertySchema.description is available but not rendered (tooltip or subtitle).
+// - requiresRestart -> No restart indicator rendered when uiDef.requiresRestart is true.
+// - envVar       -> No indicator when the value is overridable via environment variable.
+// - codeAutoFormatOnLoad -> code-block's autoFormatOnLoad flag is ignored.
+// - deniedValues -> enum:deniedValues not checked (values excluded from UI selection).

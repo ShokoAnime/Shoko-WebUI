@@ -73,7 +73,7 @@ const DeleteFilesModal = (props: Props) => {
           undone.
         </p>
         <p>
-          If you’ve added a file by mistake, click the icon to the right of the filename to remove it.
+          If you&apos;ve added a file by mistake, click the icon to the right of the filename to remove it.
         </p>
       </div>
       <div className="flex flex-row">

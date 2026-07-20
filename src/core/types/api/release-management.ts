@@ -1,25 +1,27 @@
+import type { EpisodeTypeEnum } from '@/core/types/api/episode';
+
 export type EpisodeCoverageType = {
-  Type: string;
+  Type: EpisodeTypeEnum;
   Number: number;
-  GroupShortName?: string | null;
+  GroupShortName?: string;
 };
 
 export type ReleaseCandidateFileType = {
   PlaceID: number;
   VideoLocalID: number;
-  AbsolutePath: string | null;
+  AbsolutePath?: string;
   FileSize: number;
   Version: number;
   IsRedundant: boolean;
-  IsChaptered: boolean | null;
-  IsCensored: boolean | null;
-  IsCreditless: boolean | null;
+  IsChaptered?: boolean;
+  IsCensored?: boolean;
+  IsCreditless?: boolean;
   IsCorrupted: boolean;
-  Source: string | null;
-  Resolution: string | null;
-  VideoCodec: string | null;
+  Source?: string;
+  Resolution?: string;
+  VideoCodec?: string;
   BitDepth: number;
-  AudioCodec: string | null;
+  AudioCodec?: string;
   AudioStreamCount: number;
   SubtitleStreamCount: number;
   AudioLanguages: string[];
@@ -30,27 +32,27 @@ export type ReleaseCandidateFileType = {
 export type OverrideFileType = {
   PlaceID: number;
   VideoLocalID: number;
-  AbsolutePath: string | null;
+  AbsolutePath?: string;
   FileSize: number;
   Version: number;
-  IsChaptered: boolean | null;
+  IsChaptered?: boolean;
   Episodes: EpisodeCoverageType[];
 };
 
 export type ReleaseOverrideType = {
   Name: string;
-  GroupID: string | null;
-  GroupName: string | null;
-  GroupShortName: string | null;
-  Source: string | null;
-  Resolution: string | null;
-  VideoCodec: string | null;
+  GroupID?: string;
+  GroupName?: string;
+  GroupShortName?: string;
+  Source?: string;
+  Resolution?: string;
+  VideoCodec?: string;
   BitDepth: number;
-  AudioCodec: string | null;
+  AudioCodec?: string;
   AudioStreamCount: number;
   SubtitleStreamCount: number;
-  AudioLanguages: string[] | null;
-  SubtitleLanguages: string[] | null;
+  AudioLanguages?: string[];
+  SubtitleLanguages?: string[];
   HasPartialCoverage: boolean;
   Files: OverrideFileType[];
 };
@@ -68,30 +70,30 @@ export type ReleaseCandidateType = {
   DecidingType?: string;
   WinnerValue?: string;
   LoserValue?: string;
-  GroupID: string | null;
-  GroupName: string | null;
-  GroupShortName: string | null;
-  Source: string | null;
-  Resolution: string | null;
-  VideoCodec: string | null;
+  GroupID?: string;
+  GroupName?: string;
+  GroupShortName?: string;
+  Source?: string;
+  Resolution?: string;
+  VideoCodec?: string;
   BitDepth: number;
-  AudioCodec: string | null;
+  AudioCodec?: string;
   AudioStreamCount: number;
   SubtitleStreamCount: number;
-  IsChaptered: boolean | null;
+  IsChaptered?: boolean;
   IsChapteredMixed: boolean;
-  IsCensored: boolean | null;
+  IsCensored?: boolean;
   IsCensoredMixed: boolean;
-  IsCreditless: boolean | null;
+  IsCreditless?: boolean;
   IsCreditlessMixed: boolean;
   IsCorrupted: boolean;
   Version: number;
   VersionStrategy: 'BestAvailable' | 'Consistent';
   IsMixed: boolean;
   IsHomogeneous: boolean;
-  SecondaryGroupNames: string[] | null;
-  AudioLanguages: string[] | null;
-  SubtitleLanguages: string[] | null;
+  SecondaryGroupNames?: string[];
+  AudioLanguages?: string[];
+  SubtitleLanguages?: string[];
   Files: ReleaseCandidateFileType[];
   Episodes: EpisodeCoverageType[];
 };
@@ -102,6 +104,7 @@ export type SeriesWithCandidatesType = {
   AnidbAnimeID: number;
   IsAiring: boolean;
   HasRedundantCandidates: boolean;
+  FilesToAutoDeleteCount: number;
   Candidates: ReleaseCandidateType[];
   Overrides: ReleaseOverrideType[];
 };
@@ -109,7 +112,7 @@ export type SeriesWithCandidatesType = {
 export type ReleaseDeletionPreviewFileType = {
   PlaceID: number;
   VideoLocalID: number;
-  AbsolutePath: string | null;
+  AbsolutePath?: string;
   FileSize: number;
 };
 
