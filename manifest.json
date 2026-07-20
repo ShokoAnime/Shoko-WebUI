@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.85",
+      "minServerVersion": "6.0.0-dev.301",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.85/Shoko-WebUI-v2.6.0-dev.85.zip",
+      "checksum": "sha256:d0ba00873b7cc9bf44ada0db18aec2e812c2eb2569b077b1406777a4774c78ef",
+      "commit": "bd8d84255f543e58a612ef72fa48a581aa68bda3",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.301** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.301** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add missing import order linter rule, fix linter issues (#1394) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1394\n* Improve series poster by @pokyunn in https://github.com/ShokoAnime/Shoko-WebUI/pull/1395\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.84...v2.6.0-dev.85\n"
+    },
+    {
       "version": "2.6.0-dev.84",
       "minServerVersion": "6.0.0-dev.301",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.84/Shoko-WebUI-v2.6.0-dev.84.zip",
