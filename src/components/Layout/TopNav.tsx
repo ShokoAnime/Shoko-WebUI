@@ -4,9 +4,9 @@ import { Link, NavLink, useLocation } from 'react-router';
 import {
   mdiCogOutline,
   mdiDownloadCircleOutline,
+  mdiFileDocumentAlertOutline,
   mdiFileDocumentEditOutline,
   mdiFileDocumentMultipleOutline,
-  mdiFileDocumentRemoveOutline,
   mdiFileQuestionOutline,
   mdiFileSearchOutline,
   mdiFormatListBulletedSquare,
@@ -306,7 +306,7 @@ const TopNav = () => {
               text="Release Management"
             />
             <LinkMenuItem
-              icon={mdiFileDocumentRemoveOutline}
+              icon={mdiFileDocumentAlertOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/series-without-files"
               text="Series Without Files"

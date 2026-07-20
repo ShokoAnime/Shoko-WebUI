@@ -67,7 +67,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
                 : (
                   <Icon
                     data-tooltip-id="tooltip"
-                    data-tooltip-content="Series Without Files"
+                    data-tooltip-content="Series does not have files"
                     path={mdiFileDocumentRemoveOutline}
                     size={1}
                     className="text-panel-icon-warning"
