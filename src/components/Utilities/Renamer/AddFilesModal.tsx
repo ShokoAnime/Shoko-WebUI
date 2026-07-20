@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
@@ -97,6 +97,11 @@ const AddFilesModal = ({ onClose, show }: Props) => {
     show,
   );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
+
+  useEffect(() => {
+    setSearch('');
+    setPageSize(10);
+  }, [show]);
 
   return (
     <ModalPanel

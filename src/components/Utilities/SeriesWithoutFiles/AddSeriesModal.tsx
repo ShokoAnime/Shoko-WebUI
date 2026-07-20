@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -23,6 +23,10 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
   const [debouncedSearch] = useDebounceValue(searchText, 200);
 
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
+
+  useEffect(() => {
+    setSearchText('');
+  }, [show]);
 
   const {
     isPending: isRefreshPending,
