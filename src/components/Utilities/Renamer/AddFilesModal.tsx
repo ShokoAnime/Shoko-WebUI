@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
@@ -98,16 +98,15 @@ const AddFilesModal = ({ onClose, show }: Props) => {
   );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
-  const handleCancel = () => {
+  useEffect(() => {
     setSearch('');
     setPageSize(10);
-    onClose();
-  };
+  }, [show]);
 
   return (
     <ModalPanel
       show={show}
-      onRequestClose={handleCancel}
+      onRequestClose={onClose}
       header="Add Files"
       size="sm"
       noGap

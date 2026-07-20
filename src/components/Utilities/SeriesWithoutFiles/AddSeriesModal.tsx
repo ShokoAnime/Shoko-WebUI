@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -24,10 +24,9 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
 
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
-  const handleCancel = () => {
+  useEffect(() => {
     setSearchText('');
-    onClose();
-  };
+  }, [show]);
 
   const {
     isPending: isRefreshPending,
@@ -40,7 +39,6 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
       onSuccess: () => {
         toast.success('Series added successfully!');
         invalidateQueries(['series', 'without-files']);
-        setSearchText('');
         onClose();
       },
       onError: (error) => {
@@ -53,7 +51,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
   return (
     <ModalPanel
       show={show}
-      onRequestClose={handleCancel}
+      onRequestClose={onClose}
       header="Add new series"
       size="sm"
       noPadding
@@ -124,7 +122,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
             buttonType="secondary"
             buttonSize="normal"
             className="flex items-center justify-center"
-            onClick={handleCancel}
+            onClick={onClose}
           >
             Cancel
           </Button>
