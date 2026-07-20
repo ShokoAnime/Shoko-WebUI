@@ -53,7 +53,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
           zoomOnHover
         >
           {showUnwatchedCount && (
-            <div className="absolute top-0 right-0 z-10 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100">
+            <div className="absolute top-0 right-0 flex min-w-12 justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold">
               {unwatchedCount || (episodeCount
                 ? (
                   <Icon

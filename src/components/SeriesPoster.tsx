@@ -42,10 +42,7 @@ const SeriesPoster = (props: Props) => {
     return anidbSeriesId !== undefined || anidbEpisodeId !== undefined;
   }, [anidbEpisodeId, anidbSeriesId, shokoId]);
 
-  const {
-    isPending: isRefreshPending,
-    mutate: refreshSeries,
-  } = useRefreshAniDBSeriesMutation();
+  const { isPending: isCreatePending, mutate: refreshSeries } = useRefreshAniDBSeriesMutation();
 
   const createSeries = (anidbId: number, event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -74,8 +71,13 @@ const SeriesPoster = (props: Props) => {
         inCollection={inCollection}
       >
         {isAnidb && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
-            {isRefreshPending
+          <div
+            className={cx(
+              'absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100',
+              isCreatePending && 'opacity-100',
+            )}
+          >
+            {isCreatePending
               ? <Icon path={mdiLoading} size={3} className="text-panel-text-primary" spin />
               : (
                 <>
@@ -87,10 +89,9 @@ const SeriesPoster = (props: Props) => {
         )}
 
         {isAnidb && anidbSeriesId && (
-          <div className="pointer-events-none absolute z-15 flex h-full p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+          <div className="absolute z-15 p-3 opacity-0 transition-opacity group-hover:opacity-100">
             <Button
-              disabled={isRefreshPending}
-              className="pointer-events-auto h-fit"
+              disabled={isCreatePending}
               onClick={event => createSeries(anidbSeriesId, event)}
               tooltip="Add to collection"
             >
