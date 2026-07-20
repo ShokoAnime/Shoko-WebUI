@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.87",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.87/Shoko-WebUI-v2.6.0-dev.87.zip",
+      "checksum": "sha256:bcaef4e301c21e05c77e79550706deee1f71960401a9d74db8b78c536e77014e",
+      "commit": "bdf79dec8d6bec60924bdbf139c4dbdf9b5e37b8",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: reset modal inputs on close by @DrSilverFox in https://github.com/ShokoAnime/Shoko-WebUI/pull/1397\n\n## New Contributors\n* @DrSilverFox made their first contribution in https://github.com/ShokoAnime/Shoko-WebUI/pull/1397\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.86...v2.6.0-dev.87\n"
+    },
+    {
       "version": "2.6.0-dev.86",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.86/Shoko-WebUI-v2.6.0-dev.86.zip",
