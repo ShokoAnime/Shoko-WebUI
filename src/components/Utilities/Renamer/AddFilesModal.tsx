@@ -98,10 +98,16 @@ const AddFilesModal = ({ onClose, show }: Props) => {
   );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
+  const handleCancel = () => {
+    setSearch('');
+    setPageSize(10);
+    onClose();
+  };
+
   return (
     <ModalPanel
       show={show}
-      onRequestClose={onClose}
+      onRequestClose={handleCancel}
       header="Add Files"
       size="sm"
       noGap
