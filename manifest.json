@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.88",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.88/Shoko-WebUI-v2.6.0-dev.88.zip",
+      "checksum": "sha256:7254f1512094fa0bdea804e9e43d9fd8e321a30fd71aafef08c18aa675af76b1",
+      "commit": "543805476c4ffa865d06b289ee254db1db2a69c5",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix poster status icon blink by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1398\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.87...v2.6.0-dev.88\n"
+    },
+    {
       "version": "2.6.0-dev.87",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.87/Shoko-WebUI-v2.6.0-dev.87.zip",
