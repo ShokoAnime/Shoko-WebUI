@@ -24,6 +24,11 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
 
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
+  const handleCancel = () => {
+    setSearchText('');
+    onClose();
+  };
+
   const {
     isPending: isRefreshPending,
     mutate: refreshSeries,
@@ -35,6 +40,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
       onSuccess: () => {
         toast.success('Series added successfully!');
         invalidateQueries(['series', 'without-files']);
+        setSearchText('');
         onClose();
       },
       onError: (error) => {
@@ -47,7 +53,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
   return (
     <ModalPanel
       show={show}
-      onRequestClose={onClose}
+      onRequestClose={handleCancel}
       header="Add new series"
       size="sm"
       noPadding
@@ -118,7 +124,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
             buttonType="secondary"
             buttonSize="normal"
             className="flex items-center justify-center"
-            onClick={onClose}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
