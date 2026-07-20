@@ -1,8 +1,14 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router';
+import { mdiLoading, mdiPlusCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import Button from '@/components/Input/Button';
+import { invalidateQueries } from '@/core/react-query/queryClient';
+import { useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
+import toast from '@/core/toast';
 
 import type { ImageType } from '@/core/types/api/common';
 
@@ -36,6 +42,24 @@ const SeriesPoster = (props: Props) => {
     return anidbSeriesId !== undefined || anidbEpisodeId !== undefined;
   }, [anidbEpisodeId, anidbSeriesId, shokoId]);
 
+  const { isPending: isCreatePending, mutate: refreshSeries } = useRefreshAniDBSeriesMutation();
+
+  const createSeries = (anidbId: number, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true, force: true }, {
+      onSuccess: () => {
+        toast.success('Series added successfully!');
+        invalidateQueries(['series']);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error('Failed to add series! Unable to create series entry.');
+      },
+    });
+  };
+
   const content = (
     <>
       <BackgroundImagePlaceholderDiv
@@ -47,9 +71,32 @@ const SeriesPoster = (props: Props) => {
         inCollection={inCollection}
       >
         {isAnidb && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
-            <div className="metadata-link-icon AniDB" />
-            View on AniDB
+          <div
+            className={cx(
+              'absolute inset-0 z-10 flex flex-col items-center justify-center gap-y-3 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100',
+              isCreatePending && 'opacity-100',
+            )}
+          >
+            {isCreatePending
+              ? <Icon path={mdiLoading} size={3} className="text-panel-text-primary" spin />
+              : (
+                <>
+                  <div className="metadata-link-icon AniDB" />
+                  View on AniDB
+                </>
+              )}
+          </div>
+        )}
+
+        {isAnidb && anidbSeriesId && (
+          <div className="absolute z-15 p-3 opacity-0 transition-opacity group-hover:opacity-100">
+            <Button
+              disabled={isCreatePending}
+              onClick={event => createSeries(anidbSeriesId, event)}
+              tooltip="Add to collection"
+            >
+              <Icon path={mdiPlusCircleOutline} size={1} />
+            </Button>
           </div>
         )}
 
@@ -92,10 +139,10 @@ const SeriesPoster = (props: Props) => {
     );
   }
 
-  if (anidbSeriesId ?? anidbEpisodeId) {
+  if (anidbEpisodeId ?? anidbSeriesId) {
     return (
       <a
-        href={`https://anidb.net/${anidbSeriesId ? `anime/${anidbSeriesId}` : `episode/${anidbEpisodeId}`}`}
+        href={`https://anidb.net/${anidbEpisodeId ? `episode/${anidbEpisodeId}` : `anime/${anidbSeriesId}`}`}
         className={cx(baseClassName, 'group')}
         target="_blank"
         rel="noopener noreferrer"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { mdiCheckboxMarkedCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
+import { mdiCheckboxMarkedCircleOutline, mdiFileDocumentRemoveOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { reduce } from 'lodash';
 
@@ -53,10 +53,26 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
           zoomOnHover
         >
           {showUnwatchedCount && (
-            <div className="absolute top-0 right-0 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
-              {unwatchedCount || (
-                <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
-              )}
+            <div className="absolute top-0 right-0 flex min-w-12 justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold">
+              {unwatchedCount || (episodeCount
+                ? (
+                  <Icon
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="All files have been watched"
+                    path={mdiCheckboxMarkedCircleOutline}
+                    size={1}
+                    className="text-panel-icon-important"
+                  />
+                )
+                : (
+                  <Icon
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content="Series does not have files"
+                    path={mdiFileDocumentRemoveOutline}
+                    size={1}
+                    className="text-panel-icon-warning"
+                  />
+                ))}
             </div>
           )}
           <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
