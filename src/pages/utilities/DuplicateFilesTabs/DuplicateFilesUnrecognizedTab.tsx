@@ -85,7 +85,7 @@ const DuplicateFilesUnrecognizedTab = () => {
       if (newIdx >= files.length && filesQuery.hasNextPage) {
         filesQuery.fetchNextPage().then(() => {
           setSelectedFile(newIdx);
-        }).catch(() => undefined);
+        }).catch(console.error);
         return prev;
       }
       if (newIdx < fileCount) return newIdx;
