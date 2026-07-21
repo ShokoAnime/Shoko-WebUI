@@ -1,27 +1,12 @@
 import React from 'react';
-import { NavLink } from 'react-router';
-import { mdiChevronRight } from '@mdi/js';
-import { Icon } from '@mdi/react';
 
-const TabButton = ({ id, name }: { id: string, name: string }) => (
-  <NavLink
-    to={`../duplicate-files/${id}`}
-    className={(
-      { isActive },
-    ) => (isActive ? 'text-panel-text-primary' : 'hover:text-panel-text-primary transition-colors')}
-  >
-    {name}
-  </NavLink>
-);
+import TabTitle from '@/components/Utilities/TabTitle';
 
-const Title = () => (
-  <div className="flex items-center gap-x-2 font-semibold">
-    Duplicate Files
-    <Icon path={mdiChevronRight} size={1} />
-    <TabButton id="linked" name="Linked" />
-    <div>|</div>
-    <TabButton id="unrecognized" name="Unrecognized" />
-  </div>
-);
+const tabs = [
+  { id: 'linked', name: 'Linked' },
+  { id: 'unrecognized', name: 'Unrecognized' },
+];
+
+const Title = () => <TabTitle basePath="../duplicate-files" tabs={tabs} title="Duplicate Files" />;
 
 export default Title;
