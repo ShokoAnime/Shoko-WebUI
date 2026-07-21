@@ -71,7 +71,7 @@ const DuplicateFilesModal = (props: Props) => {
       show={show}
       size="xl"
       onRequestClose={onClose}
-      header="Multiple Releases"
+      header="Duplicate Files"
       subHeader={<EpisodeName episode={episode} />}
       footer={
         <Footer
