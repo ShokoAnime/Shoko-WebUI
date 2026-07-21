@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useMeasure from 'react-use-measure';
 import {
   mdiBeta,
@@ -86,10 +86,6 @@ const Menu = (
     invalidateQueries(['episode', 'anidb']);
   }, []);
 
-  const showDeleteConfirmation = useCallback(() => {
-    setShowConfirmModal(true);
-  }, []);
-
   const cancelDelete = () => {
     setShowConfirmModal(false);
   };
@@ -114,7 +110,7 @@ const Menu = (
     setSelectedRows([]);
   };
 
-  const ignoreFiles = useCallback(() => {
+  const ignoreFiles = () => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: true }),
     );
@@ -128,9 +124,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [ignoreFile, selectedRows, setSelectedRows]);
+  };
 
-  const rehashFiles = useCallback(() => {
+  const rehashFiles = () => {
     const promises = selectedRows.map(row => rehashFile(row.ID));
 
     Promise
@@ -142,9 +138,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [rehashFile, selectedRows, setSelectedRows]);
+  };
 
-  const rescanFiles = useCallback(() => {
+  const rescanFiles = () => {
     const promises = selectedRows.map(row => rescanFile(row.ID));
 
     Promise
@@ -156,12 +152,12 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [rescanFile, selectedRows, setSelectedRows]);
+  };
 
-  const handleRename = useCallback(() => {
+  const handleRename = () => {
     dispatch(addFiles(selectedRows));
     navigate('/webui/utilities/renamer');
-  }, [dispatch, navigate, selectedRows]);
+  };
 
   const renderSelectedRowActions = (
     <>
@@ -183,7 +179,7 @@ const Menu = (
       <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
       <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
       <MenuButton
-        onClick={showDeleteConfirmation}
+        onClick={() => setShowConfirmModal(true)}
         icon={mdiMinusCircleOutline}
         name="Delete"
         highlightType="danger"
