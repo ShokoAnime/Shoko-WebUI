@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.89",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.89/Shoko-WebUI-v2.6.0-dev.89.zip",
+      "checksum": "sha256:11ddcb68ea816f3081f813746125c1ef8f52357c9b58d2f261e504d057908382",
+      "commit": "de93e976af020d493384eacaffe4b589aa5f0e0f",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix header in duplicate files modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1399\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.88...v2.6.0-dev.89\n"
+    },
+    {
       "version": "2.6.0-dev.88",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.88/Shoko-WebUI-v2.6.0-dev.88.zip",
