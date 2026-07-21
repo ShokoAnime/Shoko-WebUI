@@ -1,12 +1,12 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { countBy, find } from 'lodash';
+import { countBy } from 'lodash';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
-import { staticColumns } from '@/components/Utilities/constants';
+import { getManagedFolderColumn, staticColumns } from '@/components/Utilities/constants';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
@@ -93,13 +93,14 @@ const IgnoredFilesTab = () => {
   } = useTableSearchSortCriteria(FileSortCriteriaEnum.ManagedFolderName);
 
   const managedFolderQuery = useManagedFoldersQuery();
-  const managedFolders = useMemo(() => managedFolderQuery?.data ?? [], [managedFolderQuery.data]);
+  const managedFolders = managedFolderQuery?.data ?? [];
 
-  const sortOrder = useMemo(() => {
-    if (!sortCriteria) return undefined;
-    if (debouncedSearch) return [sortCriteria];
-    return [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
-  }, [debouncedSearch, sortCriteria]);
+  let sortOrder: FileSortCriteriaEnum[] | undefined;
+  if (debouncedSearch && sortCriteria) {
+    sortOrder = [sortCriteria];
+  } else if (sortCriteria) {
+    sortOrder = [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
+  }
 
   const filesQuery = useFilesInfiniteQuery(
     {
@@ -111,22 +112,10 @@ const IgnoredFilesTab = () => {
   );
   const [files, fileCount] = useFlattenListResult(filesQuery.data);
 
-  const columns = useMemo<UtilityHeaderType<FileType>[]>(
-    () => [
-      {
-        id: 'managedFolder',
-        name: 'Managed Folder',
-        className: 'w-46',
-        item: file =>
-          find(
-            managedFolders,
-            { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
-          )?.Name ?? '<Unknown>',
-      },
-      ...staticColumns,
-    ],
-    [managedFolders],
-  );
+  const columns: UtilityHeaderType<FileType>[] = [
+    getManagedFolderColumn(managedFolders),
+    ...staticColumns,
+  ];
 
   const {
     handleRowSelect,

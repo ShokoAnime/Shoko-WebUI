@@ -226,6 +226,11 @@ const UtilitySeriesList = (
       : duplicatesEpisodeFileCountColumn,
   ];
 
+  const episode = episodes[selectedEpisode];
+  const episodeName = episode?.Name
+    ? `${getEpisodePrefix(episode.AniDB?.Type)}${episode.AniDB?.EpisodeNumber} - ${episode.Name}`
+    : '';
+
   return (
     <>
       <div className="flex grow">
@@ -306,12 +311,13 @@ const UtilitySeriesList = (
         <DuplicateFilesModal
           onClose={toggleEpisodeModal}
           show={showEpisodeModal}
-          episode={episodes[selectedEpisode]}
-          handleEpisodeChange={(changeType) => {
+          files={episode?.Files ?? []}
+          subheader={episodeName}
+          count={episodeCount}
+          index={selectedEpisode}
+          onChange={(changeType) => {
             handleEpisodeChange(changeType).catch(console.error);
           }}
-          episodeCount={episodeCount}
-          episodeIndex={selectedEpisode}
           isFetching={episodesQuery.isFetchingNextPage}
         />
       )}
