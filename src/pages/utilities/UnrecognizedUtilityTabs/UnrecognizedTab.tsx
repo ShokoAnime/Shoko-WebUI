@@ -334,8 +334,7 @@ const UnrecognizedTab = () => {
     } else if (!isAvdumpFinished && !dumpInProgress) {
       searchClassName = '!w-[calc(100vw-640px)]';
     }
-  }
-  if (isOverlay) {
+  } else if (isOverlay) {
     searchClassName = '!w-[calc(100vw-38.4rem)]';
   }
 
