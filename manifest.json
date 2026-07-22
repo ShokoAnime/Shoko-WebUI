@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.90",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.90/Shoko-WebUI-v2.6.0-dev.90.zip",
+      "checksum": "sha256:982494bf543403dbdc9fbd5e4b0f349b99738245759e5e91a0ac4244bb85e51d",
+      "commit": "de9efddbb7fcecf64e21e78538b37ceed208d806",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add Unrecognized tab to Duplicate Files utility, other minor tweaks by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1401\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.89...v2.6.0-dev.90\n"
+    },
+    {
       "version": "2.6.0-dev.89",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.89/Shoko-WebUI-v2.6.0-dev.89.zip",
