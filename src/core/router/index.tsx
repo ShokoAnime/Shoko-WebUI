@@ -43,7 +43,8 @@ import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSett
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
-import DuplicateFiles from '@/pages/utilities/DuplicateFiles';
+import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
+import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
 import MissingEpisodes from '@/pages/utilities/MissingEpisodes';
 import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
@@ -97,7 +98,9 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
             <Route path="release-management/:seriesId" element={<ReleaseManagementSeriesDetail />} />
             <Route path="release-management" element={<ReleaseManagement />} />
-            <Route path="duplicate-files" element={<DuplicateFiles />} />
+            <Route path="duplicate-files" element={<Navigate to="linked" replace />} />
+            <Route path="duplicate-files/linked" element={<DuplicateFilesLinkedTab />} />
+            <Route path="duplicate-files/unrecognized" element={<DuplicateFilesUnrecognizedTab />} />
             <Route path="missing-episodes" element={<MissingEpisodes />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />

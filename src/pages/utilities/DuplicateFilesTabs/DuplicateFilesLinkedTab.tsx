@@ -10,12 +10,13 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import DuplicateFilesQuickSelectModal from '@/components/Utilities/DuplicateFiles/DuplicateFilesQuickSelectModal';
+import Title from '@/components/Utilities/DuplicateFiles/Title';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitySeriesList from '@/components/Utilities/UtilitySeriesList';
 import { resetQueries } from '@/core/react-query/queryClient';
 
-const DuplicateFiles = () => {
+const DuplicateFilesLinkedTab = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'series'] }) > 0;
@@ -46,7 +47,7 @@ const DuplicateFiles = () => {
     <>
       <title>Duplicate Files | Shoko</title>
       <div className="flex grow flex-col gap-y-6 overflow-y-auto">
-        <ShokoPanel title="Duplicate Files" options={<ItemCount count={seriesCount} suffix="Series" />}>
+        <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} suffix="Series" />}>
           <div className="flex items-center gap-x-3">
             <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
               <MenuButton
@@ -92,4 +93,4 @@ const DuplicateFiles = () => {
   );
 };
 
-export default DuplicateFiles;
+export default DuplicateFilesLinkedTab;

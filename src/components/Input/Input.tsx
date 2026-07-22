@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -30,9 +30,6 @@ type Props = {
   endIcons?: EndIcon[];
   startIcon?: string;
   inline?: boolean;
-  isOverlay?: boolean;
-  overlayClassName?: string;
-  onToggleOverlay?: (show: boolean) => void;
 };
 
 type TooltipAttributes = {
@@ -51,13 +48,10 @@ const Input = (props: Props) => {
     id,
     inline,
     inputClassName,
-    isOverlay,
     label,
     onChange,
     onKeyDown,
     onKeyUp,
-    onToggleOverlay,
-    overlayClassName,
     placeholder,
     startIcon,
     type,
@@ -66,33 +60,12 @@ const Input = (props: Props) => {
 
   const bodyVisible = useBodyVisibleContext();
   const inputRef = useAutoFocusRef(autoFocus && !disabled && bodyVisible);
-  const [isShow, setIsShow] = React.useState(false);
-
-  useEffect(() => {
-    if (isOverlay) return;
-    setIsShow(_ => false);
-    onToggleOverlay?.(false);
-  }, [isOverlay, onToggleOverlay]);
-
-  let inputContainerClassName = '';
-  if (isOverlay && inline) {
-    inputContainerClassName = isShow ? 'flex flex-row justify-center' : 'hidden 2xl:flex flex-row justify-center';
-  } else if (isOverlay && !inline) {
-    inputContainerClassName = isShow ? '' : 'hidden 2xl:inline';
-  } else if (!isOverlay && inline) {
-    inputContainerClassName = 'flex flex-row justify-center';
-  }
 
   return (
-    <div
-      className={cx([
-        className ?? '',
-        isOverlay && 'flex flex-row gap-x-2',
-      ])}
-    >
+    <div className={className}>
       <label
         htmlFor={id}
-        className={cx(isOverlay && overlayClassName, inputContainerClassName)}
+        className={cx(inline && 'flex flex-row justify-center')}
       >
         {label && (
           <div

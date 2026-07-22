@@ -6,37 +6,37 @@ import { flatMap, map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import DuplicatesInfo from './DuplicatesInfo';
 
-import type { EpisodeType } from '@/core/types/api/episode';
+import type { FileType } from '@/core/types/api/file';
 
 type Props = {
-  episode?: EpisodeType;
-  episodeCount: number;
-  episodeIndex: number;
-  handleEpisodeChange: (type: 'previous' | 'next') => void;
-  isFetching: boolean;
   onClose: () => void;
   show: boolean;
+  count: number;
+  files: FileType[];
+  index: number;
+  isFetching: boolean;
+  onChange: (type: 'previous' | 'next') => void;
+  subheader?: string;
 };
 
-type FooterProps = Pick<Props, 'episodeCount' | 'episodeIndex' | 'handleEpisodeChange' | 'onClose'>;
+type FooterProps = Pick<Props, 'count' | 'index' | 'onChange' | 'onClose'>;
 
-const Footer = ({ episodeCount, episodeIndex, handleEpisodeChange, onClose }: FooterProps) => (
+const Footer = ({ count, index, onChange, onClose }: FooterProps) => (
   <div className="flex items-center justify-between">
     <div className="flex gap-x-2">
-      <Button onClick={() => handleEpisodeChange('previous')} disabled={episodeIndex === 0}>
+      <Button onClick={() => onChange('previous')} disabled={index === 0}>
         <Icon path={mdiChevronLeft} size={1.5} className="text-panel-icon-action" />
       </Button>
       <div className="flex items-center">
-        {episodeIndex + 1}
+        {index + 1}
         &nbsp;/&nbsp;
-        {episodeCount}
+        {count}
       </div>
-      <Button onClick={() => handleEpisodeChange('next')} disabled={episodeIndex === episodeCount - 1}>
+      <Button onClick={() => onChange('next')} disabled={index === count - 1}>
         <Icon path={mdiChevronRight} size={1.5} className="text-panel-icon-action" />
       </Button>
     </div>
@@ -46,25 +46,16 @@ const Footer = ({ episodeCount, episodeIndex, handleEpisodeChange, onClose }: Fo
   </div>
 );
 
-const EpisodeName = ({ episode }: { episode: EpisodeType }) => (
-  <div className="line-clamp-1 text-sm opacity-65">
-    {getEpisodePrefix(episode.AniDB?.Type)}
-    {episode.AniDB?.EpisodeNumber}
-    &nbsp;-&nbsp;
-    {episode.Name}
-  </div>
-);
-
 const DuplicateFilesModal = (props: Props) => {
-  const { episode, episodeCount, episodeIndex, handleEpisodeChange, isFetching, onClose, show } = props;
+  const { count, files, index, isFetching, onChange, onClose, show, subheader } = props;
 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
   useHotkeys('enter, escape', onClose, { scopes: 'modal' });
-  useHotkeys('left', () => handleEpisodeChange('previous'), { scopes: 'modal' });
-  useHotkeys('right', () => handleEpisodeChange('next'), { scopes: 'modal' });
+  useHotkeys('left', () => onChange('previous'), { scopes: 'modal' });
+  useHotkeys('right', () => onChange('next'), { scopes: 'modal' });
 
-  if (!episode) return null;
+  if (!show) return null;
 
   return (
     <ModalPanel
@@ -72,12 +63,12 @@ const DuplicateFilesModal = (props: Props) => {
       size="xl"
       onRequestClose={onClose}
       header="Duplicate Files"
-      subHeader={<EpisodeName episode={episode} />}
+      subHeader={subheader && <div className="text-sm opacity-65">{subheader}</div>}
       footer={
         <Footer
-          episodeCount={episodeCount}
-          episodeIndex={episodeIndex}
-          handleEpisodeChange={handleEpisodeChange}
+          count={count}
+          index={index}
+          onChange={onChange}
           onClose={onClose}
         />
       }
@@ -90,7 +81,7 @@ const DuplicateFilesModal = (props: Props) => {
           </div>
         )}
 
-        {!isFetching && flatMap(episode.Files, file =>
+        {!isFetching && flatMap(files, file =>
           map(file.Locations, location => (
             <DuplicatesInfo
               key={location.ID}
