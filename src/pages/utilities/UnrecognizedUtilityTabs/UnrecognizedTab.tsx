@@ -353,7 +353,6 @@ const UnrecognizedTab = () => {
                 value={search}
                 onChange={setSearch}
                 inputClassName={cx('px-4 py-3', searchClassName)}
-                overlayClassName="grow 2xl:w-auto 2xl:grow-0"
               />
               <Menu
                 selectedRows={selectedRows}
