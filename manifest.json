@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.91",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.91/Shoko-WebUI-v2.6.0-dev.91.zip",
+      "checksum": "sha256:7cdb810876e5d5326c5cf75c4dc438f19b12e1a1355a5f515ca0ded6e47c2fd9",
+      "commit": "c01dc711e62a1a12f312998b148560d5ca054c57",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix API call in unrecognized duplicates util by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1403\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.90...v2.6.0-dev.91\n"
+    },
+    {
       "version": "2.6.0-dev.90",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.90/Shoko-WebUI-v2.6.0-dev.90.zip",
