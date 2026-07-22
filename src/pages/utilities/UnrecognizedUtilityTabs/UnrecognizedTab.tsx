@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import useMeasure from 'react-use-measure';
 import {
   mdiBeta,
   mdiCloseCircleOutline,
@@ -322,26 +321,10 @@ const UnrecognizedTab = () => {
   const fileIds = selectedRows.map(file => file.ID);
   const links = selectedRows.map(file => getEd2kLink(file)).toSorted();
 
-  const [tabContainerRef, bounds] = useMeasure();
-  const isOverlay = bounds.width <= 1365 && bounds.width >= 1206 && selectedRows.length !== 0;
-
-  let searchClassName = '';
-  if (bounds.width < 1547 && selectedRows.length !== 0) {
-    if (isAvdumpFinished && !dumpInProgress) {
-      searchClassName = '!w-[calc(100vw-652px)]';
-    } else if (!isAvdumpFinished && dumpInProgress) {
-      searchClassName = '!w-[calc(100vw-656px)]';
-    } else if (!isAvdumpFinished && !dumpInProgress) {
-      searchClassName = '!w-[calc(100vw-640px)]';
-    }
-  } else if (isOverlay) {
-    searchClassName = '!w-[calc(100vw-38.4rem)]';
-  }
-
   return (
     <>
       <title>Unrecognized Files | Shoko</title>
-      <div className="flex grow flex-col gap-y-6" ref={tabContainerRef}>
+      <div className="flex grow flex-col gap-y-6">
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
             <div className="flex items-center gap-x-3">
@@ -352,7 +335,8 @@ const UnrecognizedTab = () => {
                 id="search"
                 value={search}
                 onChange={setSearch}
-                inputClassName={cx('px-4 py-3', searchClassName)}
+                className="grow 3xl:grow-0"
+                inputClassName="px-4 py-3"
               />
               <Menu
                 selectedRows={selectedRows}
