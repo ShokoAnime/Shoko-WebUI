@@ -44,7 +44,7 @@ const DuplicateFilesUnrecognizedTab = () => {
     {
       pageSize: 100,
       include: ['AbsolutePaths'],
-      include_only: ['Duplicates'],
+      include_only: ['Duplicates', 'Unrecognized'],
       sortOrder,
     },
     debouncedSearch,
