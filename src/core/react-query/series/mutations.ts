@@ -119,10 +119,10 @@ export const useAutoSearchTmdbMatchMutation = (seriesId: number) =>
 
 export const useRefreshSeriesTMDBInfoMutation = (seriesId: number) =>
   useMutation({
-    mutationFn: () =>
+    mutationFn: ({ force = false }: { force?: boolean } = {}) =>
       Promise.all([
-        axios.post(`Series/${seriesId}/TMDB/Show/Action/Refresh`, {}),
-        axios.post(`Series/${seriesId}/TMDB/Movie/Action/Refresh`, {}),
+        axios.post(`Series/${seriesId}/TMDB/Show/Action/Refresh`, { Force: force }),
+        axios.post(`Series/${seriesId}/TMDB/Movie/Action/Refresh`, { Force: force }),
       ]),
     onSuccess: () => toast.success('TMDB refresh queued!'),
   });

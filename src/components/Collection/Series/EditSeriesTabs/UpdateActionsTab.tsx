@@ -26,6 +26,10 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
     updateTmdbImagesMutation({ force: true });
   };
 
+  const triggerTmdbRefresh = (force: boolean) => {
+    refreshTmdb({ force });
+  };
+
   return (
     <div className="flex h-88 grow flex-col gap-y-4 overflow-y-auto">
       <Action
@@ -51,7 +55,12 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
       <Action
         name="Update TMDB Info"
         description="Gets the latest series information from TMDB."
-        onClick={refreshTmdb}
+        onClick={() => triggerTmdbRefresh(false)}
+      />
+      <Action
+        name="Update TMDB Info - Force"
+        description="Forces a complete update from TMDB, bypassing usual checks."
+        onClick={() => triggerTmdbRefresh(true)}
       />
       <Action
         name="Update TMDB Images - Force"
