@@ -29,8 +29,8 @@ const Version = ({ manifest, version }: { manifest: PackageManifestInfoType, ver
     <>
       <div className="flex items-center gap-x-2 rounded-lg bg-panel-background-alt px-4 py-2 text-sm">
         <div className="flex grow font-semibold">
-          {version.Version}
-          <span className="opacity-65">{version.Channel === 'Dev' && ' (Dev)'}</span>
+          {version.Version}&nbsp;
+          <span className="opacity-65">{version.Channel === 'Dev' && '(Dev)'}</span>
           <span className="opacity-65">{!isCompatible && ' [Incompatible]'}</span>
           {version.IsInstalled && (
             <Badge className="ml-2 bg-panel-text-important text-button-primary-text">

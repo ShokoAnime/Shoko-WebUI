@@ -366,7 +366,7 @@ const Renamer = () => {
       rename: renameFiles,
       FileIDs: pendingPreviews,
       ProviderID: renamer.ID,
-      Configuration: newConfig,
+      Configuration: renamerHasConfig ? newConfig : undefined,
     });
   };
 
