@@ -15,6 +15,7 @@ import ShokoIcon from '@/components/ShokoIcon';
 import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
 import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
+import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import CandidatesTab from './SeriesDetail/CandidatesTab';
@@ -49,7 +50,7 @@ const Title = (
 
       <div className="ml-auto flex items-center gap-x-4 text-sm">
         <a
-          href={`https://anidb.net/anime/${anidbId}`}
+          href={getAnidbAnimeLink(anidbId)}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-x-1 font-semibold text-panel-text-primary"

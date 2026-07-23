@@ -31,6 +31,7 @@ import {
 } from '@/core/react-query/tmdb/queries';
 import toast from '@/core/toast';
 import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
+import { getAnidbAnimeLink } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -341,7 +342,7 @@ const TmdbLinking = () => {
               </div>
               <a
                 className="flex cursor-pointer font-semibold text-panel-text-primary"
-                href={`https://anidb.net/anime/${seriesQuery.data.IDs.AniDB}`}
+                href={getAnidbAnimeLink(seriesQuery.data.IDs.AniDB)}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-tooltip-id="tooltip"

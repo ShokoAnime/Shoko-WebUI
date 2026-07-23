@@ -25,7 +25,7 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { dayjs } from '@/core/util';
+import { dayjs, getAnidbAnimeLink } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
@@ -56,7 +56,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
       <div className="line-clamp-2 flex gap-x-1" data-tooltip-id="tooltip" data-tooltip-content={series.Name}>
         {series.Name}
         <a
-          href={`https://anidb.net/anime/${series.IDs.AniDB}`}
+          href={getAnidbAnimeLink(series.IDs.AniDB)}
           target="_blank"
           rel="noreferrer noopener"
           className="flex gap-x-1 font-semibold"

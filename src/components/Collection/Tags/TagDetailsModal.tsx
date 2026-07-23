@@ -9,6 +9,7 @@ import { debounce } from 'lodash';
 import CleanDescription from '@/components/Collection/CleanDescription';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilteredSeriesInfiniteQuery } from '@/core/react-query/filter/queries';
+import { getAnidbTagLink } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesType } from '@/core/types/api/series';
@@ -100,7 +101,7 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
       </div>
       {tag?.Source === 'AniDB' && (
         <a
-          href={`https://anidb.net/tag/${tag.ID}`}
+          href={getAnidbTagLink(tag.ID)}
           className="flex items-center gap-x-2 text-base text-panel-icon-action"
           rel="noopener noreferrer"
           target="_blank"

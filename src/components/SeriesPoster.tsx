@@ -9,6 +9,7 @@ import Button from '@/components/Input/Button';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import toast from '@/core/toast';
+import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 
 import type { ImageType } from '@/core/types/api/common';
 
@@ -142,7 +143,7 @@ const SeriesPoster = (props: Props) => {
   if (anidbEpisodeId ?? anidbSeriesId) {
     return (
       <a
-        href={`https://anidb.net/${anidbEpisodeId ? `episode/${anidbEpisodeId}` : `anime/${anidbSeriesId}`}`}
+        href={anidbEpisodeId ? getAnidbEpisodeLink(anidbEpisodeId) : getAnidbAnimeLink(anidbSeriesId!)}
         className={cx(baseClassName, 'group')}
         target="_blank"
         rel="noopener noreferrer"

@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 import Button from '@/components/Input/Button';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteTmdbLinkMutation } from '@/core/react-query/tmdb/mutations';
+import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
@@ -22,7 +23,7 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
     if (!id) return '#';
     switch (site) {
       case 'AniDB':
-        return `https://anidb.net/anime/${id}`;
+        return getAnidbAnimeLink(id);
       case 'TMDB':
         return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
       default:

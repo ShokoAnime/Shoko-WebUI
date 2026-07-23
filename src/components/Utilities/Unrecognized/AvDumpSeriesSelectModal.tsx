@@ -13,7 +13,7 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
-import { copyToClipboard, dayjs } from '@/core/util';
+import { copyToClipboard, dayjs, getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
 type Props = {
@@ -230,7 +230,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
                       <div key={result.ID} className="flex justify-between">
                         <button
                           type="button"
-                          onClick={() => handleMassAddClick(`https://anidb.net/anime/${result.ID}/release/add`)}
+                          onClick={() => handleMassAddClick(`${getAnidbAnimeLink(result.ID)}/release/add`)}
                           data-tooltip-id="tooltip"
                           className="line-clamp-1 text-left transition-colors hover:text-panel-text-primary"
                           data-tooltip-content="Mass Add"
@@ -238,7 +238,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
                           {result.Title}
                         </button>
                         <a
-                          href={`https://anidb.net/anime/${result.ID}`}
+                          href={getAnidbAnimeLink(result.ID)}
                           aria-label="Check Series"
                           target="_blank"
                           rel="noopener noreferrer"

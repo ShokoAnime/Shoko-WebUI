@@ -42,7 +42,7 @@ import { addFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
-import { copyToClipboard } from '@/core/util';
+import { copyToClipboard, isAnidbFileUri } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
@@ -290,7 +290,7 @@ const FileDetails = ({ fileId }: { fileId: number }) => {
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between">
           <span className="font-semibold">File Name</span>
-          {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
+          {isAnidbFileUri(file.Release?.ReleaseURI) && (
             <a href={file.Release.ReleaseURI} target="_blank" rel="noopener noreferrer">
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                 <div className="metadata-link-icon AniDB" />

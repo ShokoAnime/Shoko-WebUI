@@ -9,7 +9,7 @@ import { debounce } from 'lodash';
 import { Badge } from '@/components/Badge';
 import ShokoIcon from '@/components/ShokoIcon';
 import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
-import { handleShiftSelect } from '@/core/util';
+import { getAnidbAnimeLink, handleShiftSelect } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -59,7 +59,7 @@ const SeriesRow = ({
           </div>
 
           <a
-            href={`https://anidb.net/anime/${series.AnidbAnimeID}`}
+            href={getAnidbAnimeLink(series.AnidbAnimeID)}
             target="_blank"
             rel="noreferrer noopener"
             className="flex items-center gap-1 font-semibold text-panel-text-primary"

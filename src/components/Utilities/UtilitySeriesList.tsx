@@ -12,6 +12,7 @@ import {
   useReleaseManagementSeries,
   useReleaseManagementSeriesEpisodes,
 } from '@/core/react-query/release-management/queries';
+import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -32,7 +33,7 @@ const seriesColumns: UtilityHeaderType<ReleaseManagementSeriesType>[] = [
       <div className="flex items-center gap-x-1" data-tooltip-id="tooltip" data-tooltip-content={series.Name}>
         <span className="line-clamp-1">{series.Name}</span>
         <a
-          href={`https://anidb.net/anime/${series.IDs.AniDB}`}
+          href={getAnidbAnimeLink(series.IDs.AniDB)}
           target="_blank"
           rel="noreferrer noopener"
           className="cursor-pointer text-panel-text-primary"
@@ -90,7 +91,7 @@ const episodeNameColumn: UtilityHeaderType<EpisodeType> = {
         {episode.Name}
       </span>
       <a
-        href={`https://anidb.net/episode/${episode.IDs.AniDB}`}
+        href={getAnidbEpisodeLink(episode.IDs.AniDB)}
         target="_blank"
         rel="noreferrer noopener"
         className="cursor-pointer text-panel-text-primary"
