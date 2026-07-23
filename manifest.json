@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.93",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.93/Shoko-WebUI-v2.6.0-dev.93.zip",
+      "checksum": "sha256:8e36767aebfe2422ae0892389e78934ec0f0f7a3db5001e6020a9c8d7a69da45",
+      "commit": "36984b50dac7cfe93cb5a7099fe1b1e10da1dfe4",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Fix Dashboard Missing Episodes Links by @natyusha in https://github.com/ShokoAnime/Shoko-WebUI/pull/1406\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.92...v2.6.0-dev.93\n"
+    },
+    {
       "version": "2.6.0-dev.92",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.92/Shoko-WebUI-v2.6.0-dev.92.zip",
