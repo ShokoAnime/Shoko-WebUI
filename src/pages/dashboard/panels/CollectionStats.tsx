@@ -97,13 +97,13 @@ const CollectionStats = () => {
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"
       value={statsQuery.data?.MissingEpisodesCollecting}
-      link="/webui/utilities/release-management/MissingEpisodes?onlyCollecting=true"
+      link="/webui/utilities/missing-episodes?onlyCollecting=true"
     />,
     <Item
       key="missing-episodes"
       title="Missing Episodes (Total)"
       value={statsQuery.data?.MissingEpisodes}
-      link="/webui/utilities/release-management/MissingEpisodes"
+      link="/webui/utilities/missing-episodes"
     />,
   ];
 
