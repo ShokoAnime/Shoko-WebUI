@@ -39,7 +39,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
           ? <img src={thumbnailUrl} alt={plugin.Name} className="max-h-24 w-44 rounded-lg object-contain" />
           : <div className="size-full rounded-lg bg-panel-background-alt" />}
       </div>
-      <div className="flex flex-col gap-y-2">
+      <div className="flex grow flex-col gap-y-2">
         <div className="flex items-center justify-between gap-x-2">
           <div className="flex items-center gap-x-2 text-lg font-semibold">
             {plugin.Name}
