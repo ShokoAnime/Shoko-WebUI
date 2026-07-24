@@ -27,7 +27,7 @@ import {
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteReleaseInfoForFileByIdMutation } from '@/core/react-query/release-info/mutations';
 import toast from '@/core/toast';
-import { copyToClipboard } from '@/core/util';
+import { copyToClipboard, getAnidbGroupLink, isAnidbFileUri } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
 
@@ -138,7 +138,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                   />
                   Copy ShokoID
                 </div>
-                {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
+                {isAnidbFileUri(file.Release?.ReleaseURI) && (
                   <a href={file.Release.ReleaseURI} target="_blank" rel="noopener noreferrer">
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
@@ -149,7 +149,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                 )}
                 {releaseGroup?.Source === 'AniDB' && (
                   <a
-                    href={`https://anidb.net/group/${releaseGroup.ID}/anime/${anidbSeriesId}`}
+                    href={getAnidbGroupLink(releaseGroup.ID, anidbSeriesId)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

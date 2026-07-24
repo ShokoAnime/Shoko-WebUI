@@ -3,7 +3,7 @@ import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { dayjs, padNumber } from '@/core/util';
+import { dayjs, getAnidbEpisodeLink, padNumber } from '@/core/util';
 
 import type { WebuiSeriesFileSummaryMissingEpisodeType } from '@/core/types/api/webui';
 
@@ -28,7 +28,7 @@ const MissingEpisode = ({ episode, rowId }: FileMissingEpisodeProps) => (
       &nbsp;
       <a
         className="inline-flex items-center gap-0 text-panel-text-primary"
-        href={`https://anidb.net/episode/${episode.ID}`}
+        href={getAnidbEpisodeLink(episode.ID)}
         target="_blank"
         rel="noopener noreferrer"
       >

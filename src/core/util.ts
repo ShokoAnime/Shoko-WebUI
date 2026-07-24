@@ -28,6 +28,8 @@ dayjs.extend(customParseFormatPlugin);
 
 export { default as dayjs } from 'dayjs';
 
+export * from '@/core/anidbUtils';
+
 /** Shared stale time: ~100 days. Used for relatively static data that rarely changes server-side. */
 export const INFINITE_STALE_TIME = 86400 * 100000;
 

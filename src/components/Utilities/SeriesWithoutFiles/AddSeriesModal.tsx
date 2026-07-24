@@ -12,6 +12,7 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
+import { getAnidbAnimeLink } from '@/core/util';
 
 type Props = {
   show: boolean;
@@ -102,7 +103,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
                         )
                         : (
                           <a
-                            href={`https://anidb.net/anime/${result.ID}`}
+                            href={getAnidbAnimeLink(result.ID)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-panel-text-primary"

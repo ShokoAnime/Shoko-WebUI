@@ -44,7 +44,7 @@ import {
 import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
-import { formatThousand } from '@/core/util';
+import { formatThousand, getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -129,7 +129,7 @@ const AnimeResultRow = (
   >
     <a
       className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
-      href={`https://anidb.net/anime/${data.ID}`}
+      href={getAnidbAnimeLink(data.ID)}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -720,7 +720,7 @@ const LinkFilesTab = () => {
                 </div>
                 <a
                   className="flex cursor-pointer font-semibold text-panel-text-primary"
-                  href={`https://anidb.net/anime/${selectedSeries.ID}`}
+                  href={getAnidbAnimeLink(selectedSeries.ID)}
                   target="_blank"
                   rel="noopener noreferrer"
                   data-tooltip-id="tooltip"

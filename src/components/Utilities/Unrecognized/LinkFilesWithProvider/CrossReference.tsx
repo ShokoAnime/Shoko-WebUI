@@ -3,6 +3,7 @@ import React from 'react';
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
@@ -56,7 +57,7 @@ const CrossReference = ({ xref }: { xref: ReleaseCrossReferenceType }) => {
       &nbsp;
       <a
         className="text-panel-text-primary"
-        href={`https://anidb.net/episode/${xref.AnidbEpisodeID}`}
+        href={getAnidbEpisodeLink(xref.AnidbEpisodeID)}
         onClick={stopPropagation}
         target="_blank"
         rel="noreferrer noopener"
@@ -96,7 +97,7 @@ const CrossReference = ({ xref }: { xref: ReleaseCrossReferenceType }) => {
           &nbsp;
           <a
             className="text-panel-text-primary"
-            href={`https://anidb.net/anime/${xref.AnidbAnimeID}`}
+            href={getAnidbAnimeLink(xref.AnidbAnimeID)}
             onClick={stopPropagation}
             target="_blank"
             rel="noreferrer noopener"

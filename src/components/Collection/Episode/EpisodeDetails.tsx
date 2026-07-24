@@ -3,7 +3,7 @@ import { mdiCalendarMonthOutline, mdiClipboardOutline, mdiClockOutline, mdiOpenI
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 
-import { convertTimeSpanToMs, copyToClipboard, dayjs } from '@/core/util';
+import { convertTimeSpanToMs, copyToClipboard, dayjs, getAnidbEpisodeLink } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 
@@ -66,7 +66,7 @@ const EpisodeDetails = ({ episode }: { episode: EpisodeType }) => (
         Copy ShokoID
       </div>
       {episode.AniDB?.ID && (
-        <a href={`https://anidb.net/episode/${episode.AniDB?.ID}`} target="_blank" rel="noopener noreferrer">
+        <a href={getAnidbEpisodeLink(episode.AniDB.ID)} target="_blank" rel="noopener noreferrer">
           <div className="flex items-center gap-x-2 text-panel-text-primary">
             <div className="metadata-link-icon AniDB" />
             AniDB
