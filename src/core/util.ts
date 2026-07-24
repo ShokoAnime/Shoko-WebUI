@@ -28,6 +28,8 @@ dayjs.extend(customParseFormatPlugin);
 
 export { default as dayjs } from 'dayjs';
 
+export * from '@/core/anidbUtils';
+
 /** Shared stale time: ~100 days. Used for relatively static data that rarely changes server-side. */
 export const INFINITE_STALE_TIME = 86400 * 100000;
 
@@ -41,16 +43,6 @@ export const getMinimumServerVersion = () => VITE_MIN_SERVER_VERSION;
 export const getUiVersion = () => (DEV ? VITE_GITHASH : VITE_APPVERSION);
 
 export const formatThousand = (num: number) => formatThousands(num, ',');
-
-const ANIDB_BASE_URL = 'https://anidb.net';
-
-export const getAnidbAnimeLink = (anidbId: number | string) => `${ANIDB_BASE_URL}/anime/${anidbId}`;
-export const getAnidbEpisodeLink = (anidbId: number | string) => `${ANIDB_BASE_URL}/episode/${anidbId}`;
-export const getAnidbGroupLink = (groupId: number | string, anidbAnimeId: number | string) =>
-  `${ANIDB_BASE_URL}/group/${groupId}/anime/${anidbAnimeId}`;
-export const getAnidbTagLink = (tagId: number | string) => `${ANIDB_BASE_URL}/tag/${tagId}`;
-export const isAnidbFileUri = (uri?: string | null): uri is string =>
-  uri?.startsWith(`${ANIDB_BASE_URL}/file/`) ?? false;
 
 export const getMainPoster = (target: SeriesType | CollectionGroupType) =>
   target?.Images?.Posters?.find(poster => poster.Preferred) ?? target?.Images?.Posters?.[0];
