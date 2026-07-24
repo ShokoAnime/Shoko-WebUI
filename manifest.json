@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.96",
+      "minServerVersion": "6.0.0-dev.374",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.96/Shoko-WebUI-v2.6.0-dev.96.zip",
+      "checksum": "sha256:0b8689e71451043f8cf2e744a378d3fe765584cd143cac51f0774a534bbc0f03",
+      "commit": "0a278ad7119097522d6e8283ca4757f9eaf7fe02",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.374** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.374** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* refactor: migrate to automatic JSX transform, remove explicit React imports by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1409\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.95...v2.6.0-dev.96\n"
+    },
+    {
       "version": "2.6.0-dev.95",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.95/Shoko-WebUI-v2.6.0-dev.95.zip",
