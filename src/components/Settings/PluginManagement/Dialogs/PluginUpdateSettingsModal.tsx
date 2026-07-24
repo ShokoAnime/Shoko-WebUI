@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { produce } from 'immer';
 import { isEqual, toNumber } from 'lodash';
 

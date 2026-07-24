@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSearchParams } from 'react-router';
 import { mdiEyeOffOutline, mdiRefresh } from '@mdi/js';
@@ -36,7 +37,7 @@ const MissingEpisodes = () => {
   const onlyCollecting = searchParams.get('onlyCollecting') === 'true';
   const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams((currentParams) => {
       const newParams = new URLSearchParams(currentParams);
       newParams.set(event.target.id, String(event.target.checked));

@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { filter, map, pull } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -37,7 +38,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
   );
   const filterMatch = useSelector(state => selectFilterMatch(state, criteria.Expression));
 
-  const handleMatchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleMatchChange = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setFilterMatch({ [criteria.Expression]: event.target.value as 'Or' | 'And' }));
   };
 

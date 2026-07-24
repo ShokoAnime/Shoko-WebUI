@@ -1,5 +1,3 @@
-import React from 'react';
-
 import UpdateModal from '@/components/Dashboard/UpdateModal';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';

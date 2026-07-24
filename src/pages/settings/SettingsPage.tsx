@@ -1,5 +1,5 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 /* global globalThis */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';

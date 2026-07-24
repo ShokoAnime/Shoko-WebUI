@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useEffectEvent, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useState } from 'react';
 import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
 import { useLocation } from 'react-router';
 import { mdiMenuDown } from '@mdi/js';

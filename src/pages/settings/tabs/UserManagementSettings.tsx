@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiAccountPlus, mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { find, isEqual, map, remove } from 'lodash';
@@ -76,7 +77,7 @@ const UserManagementSettings = () => {
     }
   }, [selectedUser, unsavedChanges]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
@@ -91,7 +92,7 @@ const UserManagementSettings = () => {
     setSelectedUser(find(usersQuery.data, user => user.ID === selectedUser?.ID));
   };
 
-  const openAvatarModal = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const openAvatarModal = (event: ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0];
     // oxlint-disable-next-line no-param-reassign
     event.target.value = ''; // This is a hack (yes, another) to make the onChange trigger even when same file is selected

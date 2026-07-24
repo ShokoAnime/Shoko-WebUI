@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Criteria from '@/components/Collection/Filter/Criteria';
 import { selectFilterValues } from '@/core/slices/collection';
 import { useSelector } from '@/core/store';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiChevronLeft, mdiChevronRight, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';

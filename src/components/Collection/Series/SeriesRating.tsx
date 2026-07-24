@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { MouseEvent } from 'react';
 import { mdiStar, mdiStarOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
@@ -13,8 +14,8 @@ type Props = {
 type StarIconProps = {
   hovered: boolean;
   index: string;
-  handleHover: (event: React.MouseEvent<HTMLDivElement>) => void;
-  handleVote: (event: React.MouseEvent<HTMLDivElement>) => void;
+  handleHover: (event: MouseEvent<HTMLDivElement>) => void;
+  handleVote: (event: MouseEvent<HTMLDivElement>) => void;
 };
 
 const StarIcon = ({ handleHover, handleVote, hovered, index }: StarIconProps) => (
@@ -33,7 +34,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
 
   const [hoveredStar, setHoveredStar] = useState(ratingValue - 1);
 
-  const handleVote = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleVote = (event: MouseEvent<HTMLDivElement>) => {
     voteSeries(toNumber(event.currentTarget.id) + 1);
   };
 
@@ -41,7 +42,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
     setHoveredStar(ratingValue - 1);
   };
 
-  const handleHover = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleHover = (event: MouseEvent<HTMLDivElement>) => {
     setHoveredStar(toNumber(event.currentTarget.id));
   };
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import DynamicField from '@/components/Dynamic/DynamicField';
 
 import type { FormSchemaType } from '@/core/types/api/configuration';

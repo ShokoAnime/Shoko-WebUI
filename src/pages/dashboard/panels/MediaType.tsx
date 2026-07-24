@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 
@@ -59,7 +59,7 @@ const MediaType = () => {
 
   seriesSummaryArray.sort((summaryA, summaryB) => (summaryA[1] < summaryB[1] ? 1 : -1));
 
-  const items: React.ReactNode[] = [];
+  const items: ReactNode[] = [];
 
   forEach(seriesSummaryArray, (item) => {
     let countPercentage = 0;

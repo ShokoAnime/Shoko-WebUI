@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { mdiArrowVerticalLock, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -12,7 +12,7 @@ const LogsPage = () => {
   const logLines = useLogsQuery().data;
   const [scrollToBottom, setScrollToBottom] = useState(true);
 
-  const parentRef = React.useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
     count: logLines.length,
     getScrollElement: () => parentRef.current,

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 

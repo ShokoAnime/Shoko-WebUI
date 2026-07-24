@@ -1,4 +1,5 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { mdiBrushOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -45,7 +46,7 @@ const GeneralSettings = () => {
   const themesQuery = useWebuiThemesQuery();
   const { isPending: isUploading, mutate: uploadTheme } = useWebuiUploadThemeMutation();
 
-  const onOpenFileDialog = (event: React.SyntheticEvent) => {
+  const onOpenFileDialog = (event: MouseEvent<HTMLButtonElement>) => {
     if (isUploading) {
       return;
     }
@@ -57,7 +58,7 @@ const GeneralSettings = () => {
     }
   };
 
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (isUploading) {
       return;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { mdiFlagOffOutline, mdiFlagOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { uniqBy } from 'lodash';

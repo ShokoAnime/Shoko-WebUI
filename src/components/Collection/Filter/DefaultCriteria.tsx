@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -37,7 +38,7 @@ const DefaultCriteria = ({ criteria }: Props) => {
     }
   }, [criteria.Expression, dispatch, selectedCondition]);
 
-  const changeValue = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const changeValue = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(addFilterCondition({ [criteria.Expression]: event.currentTarget.value === '1' }));
   };
 

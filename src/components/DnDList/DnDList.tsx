@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 
 import PortalAwareItem from './PortalAwareItem';
@@ -7,7 +7,7 @@ import type { DraggableProvided, DraggableStateSnapshot, DropResult, DroppablePr
 
 type Props = {
   onDragEnd: (result: DropResult) => void;
-  children: { key: string, item: React.ReactNode }[];
+  children: { key: string, item: ReactNode }[];
 };
 
 const DnDList = (props: Props) => {

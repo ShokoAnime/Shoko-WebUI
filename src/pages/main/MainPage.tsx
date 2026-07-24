@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';

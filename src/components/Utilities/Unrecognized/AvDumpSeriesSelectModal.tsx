@@ -1,4 +1,5 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, some, toNumber } from 'lodash';
@@ -45,7 +46,7 @@ const Title = ({ count, step, stepCount }: { count: number, step: number, stepCo
   </div>
 );
 
-const StepDescription = ({ children }: { children: React.ReactNode }) => (
+const StepDescription = ({ children }: { children: ReactNode }) => (
   <div className="flex justify-start gap-x-2">
     <Icon className="shrink-0" path={mdiInformationOutline} size={1} />
     <div className="flex">

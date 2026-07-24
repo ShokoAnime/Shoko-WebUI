@@ -1,13 +1,13 @@
-import React from 'react';
+import type { ChangeEventHandler, ReactNode } from 'react';
 import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 type Props = {
   id: string;
   value: string | number;
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
+  onChange: ChangeEventHandler<HTMLSelectElement>;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   label?: string;
   isFetching?: boolean;
 };

@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { Link } from 'react-router';
 import { mdiLoading, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -14,7 +15,7 @@ import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 import type { ImageType } from '@/core/types/api/common';
 
 type Props = {
-  children?: React.ReactNode;
+  children?: ReactNode;
   title: string;
   subtitle?: string;
   image?: ImageType;
@@ -45,7 +46,7 @@ const SeriesPoster = (props: Props) => {
 
   const { isPending: isCreatePending, mutate: refreshSeries } = useRefreshAniDBSeriesMutation();
 
-  const createSeries = (anidbId: number, event: React.MouseEvent<HTMLButtonElement>) => {
+  const createSeries = (anidbId: number, event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
 

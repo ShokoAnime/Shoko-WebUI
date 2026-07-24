@@ -1,4 +1,3 @@
-import React from 'react';
 import cx from 'classnames';
 
 import type { ReleaseCandidateType } from '@/core/types/api/release-management';

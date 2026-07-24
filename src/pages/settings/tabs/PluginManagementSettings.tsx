@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { mdiCogOutline, mdiMagnify } from '@mdi/js';
 import Icon from '@mdi/react';

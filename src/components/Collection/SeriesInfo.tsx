@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router';
 import cx from 'classnames';
 import { toNumber } from 'lodash';

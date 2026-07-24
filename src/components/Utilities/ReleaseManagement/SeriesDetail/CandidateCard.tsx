@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiAlertOutline, mdiArrowRightThin, mdiChevronDown, mdiFlagOutline, mdiStar, mdiSwapVertical } from '@mdi/js';
 import { Icon } from '@mdi/react';

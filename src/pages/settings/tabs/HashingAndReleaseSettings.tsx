@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { mdiCog, mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { produce } from 'immer';

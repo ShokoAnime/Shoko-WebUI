@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { mdiLinkPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import DashboardEpisode from '@/components/Dashboard/DashboardEpisode';
 import SeriesPoster from '@/components/SeriesPoster';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -42,7 +40,7 @@ const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string =
   }
 };
 
-const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode => {
+const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: Props) => {
   const settings = useSettingsQuery().data;
 
   const { useThumbnailsForEpisodes } = settings.WebUI_Settings.dashboard;

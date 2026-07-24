@@ -1,4 +1,3 @@
-import React from 'react';
 import { reduce } from 'lodash';
 
 import SeriesPoster from '@/components/SeriesPoster';

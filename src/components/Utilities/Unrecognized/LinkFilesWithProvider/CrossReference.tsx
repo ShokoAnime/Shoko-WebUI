@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEvent } from 'react';
 
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
@@ -8,7 +8,7 @@ import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
 
-const stopPropagation = (event: React.MouseEvent) => {
+const stopPropagation = (event: MouseEvent<HTMLAnchorElement>) => {
   event.stopPropagation();
 };
 

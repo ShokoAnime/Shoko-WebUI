@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import cx from 'classnames';
 import { produce } from 'immer';
 import { toNumber } from 'lodash';
@@ -90,7 +91,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     onClose();
   };
 
-  const handleUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpdate = (event: ChangeEvent<HTMLInputElement>) => {
     updateSetting(
       event.target.id,
       event.target.type === 'checkbox' ? event.target.checked : Math.min(toNumber(event.target.value), 100),

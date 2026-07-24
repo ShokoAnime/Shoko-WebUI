@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import ShokoMarkdown from '@/components/ShokoMarkdown';

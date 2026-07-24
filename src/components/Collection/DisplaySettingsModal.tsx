@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { produce } from 'immer';
 
 import Button from '@/components/Input/Button';
@@ -32,7 +33,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     poster: posterSettings,
   } = newSettings.WebUI_Settings.collection;
 
-  const handleSettingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSettingChange = (event: ChangeEvent<HTMLInputElement>) => {
     const [type, key] = event.target.id.split('-') as [type: 'poster' | 'list' | 'image', key: string];
     const tempSettings = produce(newSettings, (draftState) => {
       draftState.WebUI_Settings.collection[type][key] = event.target.checked;

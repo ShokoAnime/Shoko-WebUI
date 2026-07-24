@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiLoading, mdiMagnify, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiFolderOpen } from '@mdi/js';
 import { find } from 'lodash';
 
@@ -58,7 +59,7 @@ const ManagedFolderModal = () => {
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const name = event.target.id;
     const value = name === 'WatchForNewFiles' ? event.target.value === '1' : event.target.value;
     setManagedFolder({ ...managedFolder, [name]: value });

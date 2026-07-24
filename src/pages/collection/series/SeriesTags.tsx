@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { mdiLoading, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -56,7 +57,7 @@ const SeriesTags = () => {
   const [tagSourceFilter, setTagSourceFilter] = useState<Set<string>>(new Set());
   const [sort, toggleSort] = useToggle(false);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked, id: eventType, value } = event.target;
     switch (eventType) {
       case 'search':

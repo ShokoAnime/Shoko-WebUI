@@ -1,4 +1,3 @@
-import React from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy } from 'lodash';

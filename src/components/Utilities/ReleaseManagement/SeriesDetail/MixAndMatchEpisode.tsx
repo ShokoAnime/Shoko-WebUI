@@ -1,4 +1,3 @@
-import React from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiAlertOutline, mdiChevronDown, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 import { Icon } from '@mdi/react';

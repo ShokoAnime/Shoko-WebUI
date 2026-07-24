@@ -1,4 +1,3 @@
-import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import ModalPanel from '@/components/Panels/ModalPanel';

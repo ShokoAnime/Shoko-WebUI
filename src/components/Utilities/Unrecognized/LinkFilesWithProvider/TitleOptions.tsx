@@ -1,4 +1,3 @@
-import React from 'react';
 import { countBy } from 'lodash';
 
 import { LinkState } from '@/core/types/utilities/unrecognized-utility';

@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -17,7 +18,7 @@ export type AddUserModalProps = {
   onClose: () => void;
 };
 
-const AddUserModal = (props: AddUserModalProps): React.JSX.Element => {
+const AddUserModal = (props: AddUserModalProps) => {
   const { onClose, show, userId } = props;
   const dispatch = useDispatch();
   const currentUserQuery = useCurrentUserQuery();
@@ -37,11 +38,11 @@ const AddUserModal = (props: AddUserModalProps): React.JSX.Element => {
     onClose();
   };
 
-  const handleUsernameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUsernameInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
 
-  const handlePasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.id === 'confirm-password') setPassword2(event.target.value);
     else setPassword1(event.target.value);
   };
@@ -80,7 +81,7 @@ const AddUserModal = (props: AddUserModalProps): React.JSX.Element => {
     }
   };
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') handleSave();
   };
 

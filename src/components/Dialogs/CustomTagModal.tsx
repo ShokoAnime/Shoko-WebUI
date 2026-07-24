@@ -1,4 +1,5 @@
-import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
@@ -51,17 +52,17 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
   if (mode === 'edit') subHeader = 'Edit Tags';
   if (mode === 'create') subHeader = 'Create Tag';
 
-  const handleTagNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTagNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (lockedControls) return;
     setTagName(event.target.value);
   };
 
-  const handleTagDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTagDescChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (lockedControls) return;
     setTagDescription(event.target.value);
   };
 
-  const handleTagClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleTagClick = (event: MouseEvent<HTMLDivElement>) => {
     if (lockedTag) return;
 
     const selectedTagId1 = parseInt(event.currentTarget.dataset.tagId ?? '0', 10);

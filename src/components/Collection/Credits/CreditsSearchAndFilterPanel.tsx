@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -9,9 +9,9 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 type Props = {
   inputPlaceholder: string;
   search: string;
-  handleSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSearchChange: (event: ChangeEvent<HTMLInputElement>) => void;
   roleFilter: Set<string>;
-  handleFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFilterChange: (event: ChangeEvent<HTMLInputElement>) => void;
   uniqueRoles: string[];
   refreshAniDbAction: () => void;
   aniDbRefreshing: boolean;

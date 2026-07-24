@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import Button from '@/components/Input/Button';
@@ -16,7 +17,7 @@ type Props = {
   onClose: () => void;
   onProceed: () => void;
   show: boolean;
-  stepDescription: React.ReactNode;
+  stepDescription: ReactNode;
 };
 
 const ANIDB_RULES_DELAY_SECONDS = 10;

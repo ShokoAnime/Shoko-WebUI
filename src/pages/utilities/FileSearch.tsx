@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { Link } from 'react-router';
 import {
   mdiChevronLeft,
@@ -177,7 +178,7 @@ const MediaInfoDetails = ({ file }: { file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
   const ed2kHash = useMemo(() => getEd2kLink(file), [file]);
 
-  const copyEd2kLink = (event: React.MouseEvent) => {
+  const copyEd2kLink = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     copyToClipboard(ed2kHash, 'ED2K Hash').catch(console.error);
   };

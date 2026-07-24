@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { NavLink } from 'react-router';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -27,10 +27,10 @@ const TabTitle = ({ basePath, tabs, title }: Props) => (
     {title}
     <Icon path={mdiChevronRight} size={1} />
     {tabs.map((tab, index) => (
-      <React.Fragment key={tab.id}>
+      <Fragment key={tab.id}>
         <TabButton basePath={basePath} tab={tab} />
         {index < tabs.length - 1 && <div>|</div>}
-      </React.Fragment>
+      </Fragment>
     ))}
   </div>
 );

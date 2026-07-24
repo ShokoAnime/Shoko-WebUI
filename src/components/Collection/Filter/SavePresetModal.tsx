@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';

@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEvent } from 'react';
 import { mdiClipboardOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
@@ -13,7 +13,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
 
   const hash = getEd2kLink(file);
-  const handleCopy = (event: React.MouseEvent) => {
+  const handleCopy = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
   };

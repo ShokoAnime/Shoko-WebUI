@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEvent, MouseEventHandler } from 'react';
 import {
   mdiCogOutline,
   mdiFilterMenuOutline,
@@ -25,7 +25,7 @@ type Props = {
   item: CollectionGroupType | SeriesType;
   mode: string;
   seriesSearch: string;
-  setSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  setSearch: (event: ChangeEvent<HTMLInputElement>) => void;
   toggleFilterSidebar: () => void;
   toggleMode: () => void;
 };
@@ -33,7 +33,7 @@ type Props = {
 const OptionButton = (
   { icon, onClick, tooltip }: {
     icon: string;
-    onClick: React.MouseEventHandler<HTMLDivElement>;
+    onClick: MouseEventHandler<HTMLButtonElement>;
     tooltip?: string;
   },
 ) => (

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { SubmitEvent } from 'react';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -25,7 +26,7 @@ const LocalAccount = () => {
     setUser(defaultUserQuery.data ?? { Username: 'Default', Password: '' });
   }, [defaultUserQuery.data]);
 
-  const handleSave = (event?: React.FormEvent) => {
+  const handleSave = (event?: SubmitEvent) => {
     if (event) event.preventDefault();
     createUser(user, {
       onSuccess: () => {

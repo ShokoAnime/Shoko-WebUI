@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -14,7 +15,7 @@ type Props = {
   tagSourceFilter: Set<string>;
   showSpoilers: boolean;
   seriesId: number;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   toggleSort: () => void;
   sort: boolean;
 };

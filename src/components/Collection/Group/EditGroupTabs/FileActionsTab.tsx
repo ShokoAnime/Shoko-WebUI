@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Action from '@/components/Collection/Group/EditGroupTabs/Action';
 import { useRelocateGroupFilesMutation } from '@/core/react-query/group/mutations';
 

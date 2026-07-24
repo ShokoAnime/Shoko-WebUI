@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { mdiArrowRightThin, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { filter } from 'lodash';

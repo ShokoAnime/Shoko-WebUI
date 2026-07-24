@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { mdiArrowRightThinCircleOutline, mdiLoading, mdiStarCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';

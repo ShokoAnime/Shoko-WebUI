@@ -1,11 +1,11 @@
-import React, { type JSX } from 'react';
+import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
 
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
 
 type Props = {
-  children: JSX.Element;
+  children: ReactNode;
 };
 
 const AuthenticatedRoute = ({ children }: Props) => {

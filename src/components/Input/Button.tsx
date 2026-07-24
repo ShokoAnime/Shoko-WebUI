@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -13,11 +13,11 @@ type Props = {
   buttonType?: ButtonType;
   buttonSize?: SizeType;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   disabled?: boolean;
   loading?: boolean;
   loadingSize?: number;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   submit?: boolean;
   tooltip?: string;
   tooltipPlace?: PlacesType;

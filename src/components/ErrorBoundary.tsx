@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouteError } from 'react-router';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';

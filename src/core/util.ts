@@ -1,5 +1,4 @@
-import type React from 'react';
-import type { RefObject } from 'react';
+import type { KeyboardEvent, MouseEvent, RefObject } from 'react';
 import copy from 'copy-to-clipboard';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -115,7 +114,7 @@ const selectRowId = (target: EpisodeType | FileType | ManualLinkType | SeriesTyp
  * When shift is held, selects all rows between the last clicked row and current row.
  */
 export const handleShiftSelect = (params: {
-  event: React.KeyboardEvent | React.MouseEvent;
+  event: KeyboardEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>;
   handleRowSelect: (id: number, select: boolean) => void;
   index: number;
   lastRowIndex: RefObject<number | undefined>;

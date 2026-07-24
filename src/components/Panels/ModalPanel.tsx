@@ -1,14 +1,14 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import Modal from 'react-modal';
 import cx from 'classnames';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   fullHeight?: boolean;
   show: boolean;
-  header?: React.ReactNode;
-  footer?: React.ReactNode;
-  subHeader?: React.ReactNode;
+  header?: ReactNode;
+  footer?: ReactNode;
+  subHeader?: ReactNode;
   size: keyof typeof sizeClass;
   noPadding?: boolean;
   noGap?: boolean;

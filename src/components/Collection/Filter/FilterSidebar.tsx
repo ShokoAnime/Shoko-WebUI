@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { MouseEventHandler } from 'react';
 import { useParams } from 'react-router';
 import { mdiContentSaveOutline, mdiFilterPlusOutline } from '@mdi/js';
 import { keys, map } from 'lodash';
@@ -38,7 +39,7 @@ const OptionButton = (
     buttonType?: ButtonType;
     disabled?: boolean;
     icon: string;
-    onClick: React.MouseEventHandler<HTMLDivElement>;
+    onClick: MouseEventHandler<HTMLButtonElement>;
     tooltip?: string;
   },
 ) => (

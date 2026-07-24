@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { LinkState } from '@/core/types/utilities/unrecognized-utility';
 
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';

@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEventHandler } from 'react';
 import cx from 'classnames';
 
 import Checkbox from '@/components/Input/Checkbox';
@@ -28,7 +28,7 @@ const TMDBDownloadSettings = (props: Props) => {
     MaxAutoThumbnails,
   } = newSettings.TMDB;
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const propId = event.target.id.replace('TMDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     updateSetting('TMDB', propId, value);

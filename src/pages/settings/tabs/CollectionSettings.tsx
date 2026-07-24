@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiLoading, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, remove } from 'lodash';
@@ -128,7 +129,7 @@ const CollectionSettings = () => {
 
   const isExclusionKey = (id: string): id is keyof typeof exclusionMapping => id in exclusionMapping;
 
-  const handleExclusionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!(event.target.id in exclusionMapping)) return;
     const { checked, id } = event.target;
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useParams } from 'react-router';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';

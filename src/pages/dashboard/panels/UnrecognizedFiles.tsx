@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { NavLink } from 'react-router';
 import { mdiBeta, mdiChevronRight, mdiCreation, mdiDatabaseSearchOutline } from '@mdi/js';
 import Icon from '@mdi/react';

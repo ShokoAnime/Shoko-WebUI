@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { useOutletContext } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading } from '@mdi/js';
@@ -49,7 +50,7 @@ const CollectionView = (props: Props) => {
     ];
   }, [isSidebarOpen, mode, isSeries]);
 
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const { scrollRef } = useOutletContext<{ scrollRef: RefObject<HTMLDivElement> }>();
 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 
@@ -103,7 +104,7 @@ const CollectionView = (props: Props) => {
       <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
         {/* Each row is considered a virtual item here instead of each group */}
         {virtualItems.map((virtualRow) => {
-          const children: React.ReactNode[] = [];
+          const children: ReactNode[] = [];
 
           // index of the first group in the current row
           // eg., row 2 (index = 1) at 1080p (itemsPerRow = 8)

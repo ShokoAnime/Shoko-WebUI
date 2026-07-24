@@ -1,11 +1,11 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import type { ToastContentProps } from 'react-toastify';
 import { mdiCloseCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 type Props = ToastContentProps<{
   header: string;
-  message?: React.ReactNode;
+  message?: ReactNode;
   icon: string;
 }>;
 

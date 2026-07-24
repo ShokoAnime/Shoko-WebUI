@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
 import { useToggle } from 'usehooks-ts';
@@ -49,7 +50,7 @@ const NameTab = ({ groupId }: Props) => {
     toggleNameEditable();
   }, [groupData?.Name, groupId, groupName, renameGroupMutation, toggleNameEditable]);
 
-  const updateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateName = (event: ChangeEvent<HTMLInputElement>) => {
     setGroupName(event.target.value);
   };
 

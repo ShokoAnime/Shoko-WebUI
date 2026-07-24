@@ -1,4 +1,4 @@
-import React from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import cx from 'classnames';
 
 import { LinkState } from '@/core/types/utilities/unrecognized-utility';
@@ -11,7 +11,7 @@ import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility
 
 type Props = {
   link: ManualLinkType;
-  toggleSelect: (event: React.KeyboardEvent | React.MouseEvent) => void;
+  toggleSelect: (event: KeyboardEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>) => void;
   selected: boolean;
 };
 
@@ -44,19 +44,19 @@ const UnrecognizedVideo = (props: Props) => {
     border = 'border-panel-text-primary';
   }
 
-  const handleSelect = (event: React.KeyboardEvent | React.MouseEvent) => {
+  const handleSelect = (event: KeyboardEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>) => {
     if (selectionDisabledStates.includes(link.state)) return;
     toggleSelect(event);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.code === 'Space') {
       event.preventDefault();
       handleSelect(event);
     }
   };
 
-  const handleMouseDown = (event: React.MouseEvent) => {
+  const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     // Prevent native text selection on shift+click to avoid flash of selection
     // and allow clean shift-range selection behavior
     if (event.shiftKey) event.preventDefault();
