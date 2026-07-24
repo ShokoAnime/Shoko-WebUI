@@ -1,5 +1,3 @@
-import React from 'react';
-
 import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
 
 const IntegrationsSettings = () => (

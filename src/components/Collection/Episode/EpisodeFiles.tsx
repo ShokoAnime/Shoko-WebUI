@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 import {
   mdiClipboardOutline,

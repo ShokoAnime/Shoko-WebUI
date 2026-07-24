@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 

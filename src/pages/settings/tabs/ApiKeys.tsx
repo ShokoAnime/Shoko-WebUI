@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
 import { map } from 'lodash';
@@ -40,7 +41,7 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
 const ApiKeys = () => {
   const [deviceName, setDeviceName] = useState('');
 
-  const onDeviceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onDeviceNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDeviceName(event.target.value);
   };
 

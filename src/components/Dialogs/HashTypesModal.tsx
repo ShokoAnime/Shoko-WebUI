@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useImmer } from 'use-immer';
 
@@ -33,7 +34,7 @@ const HashTypesModal = ({ onClose, provider, show }: HashTypesModalProps) => {
     });
   };
 
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggle = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked, id } = event.target;
     if (checked) {
       setEnabledHashTypes(Array.from(new Set([...enabledHashTypes, id])));

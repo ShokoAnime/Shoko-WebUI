@@ -1,5 +1,6 @@
 // This is the least maintainable file in the entire codebase
-import React, { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import {
   mdiLink,
@@ -156,7 +157,7 @@ const AnimeSelectPanel = (
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
   const searchRows = useMemo(() => {
-    const rows: React.ReactNode[] = [];
+    const rows: ReactNode[] = [];
     if (!seriesUpdating && !searchQuery.isPending) {
       forEach(searchQuery.data, (data) => {
         rows.push(<AnimeResultRow key={data.ID} data={data} changeSelectedSeries={changeSelectedSeries} />);
@@ -606,7 +607,7 @@ const LinkFilesTab = () => {
     });
 
   const renderDynamicFileLinks = () =>
-    reduce<ManualLink, React.ReactNode[]>(orderedLinks, (result, link, idx) => {
+    reduce<ManualLink, ReactNode[]>(orderedLinks, (result, link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
       const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;

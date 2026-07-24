@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';

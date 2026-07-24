@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import * as Sentry from '@sentry/react';
@@ -20,7 +20,7 @@ if (!isDebug()) {
     ],
     integrations: [
       Sentry.reactRouterV7BrowserTracingIntegration({
-        useEffect: React.useEffect,
+        useEffect,
         useLocation,
         useNavigationType,
         createRoutesFromChildren,

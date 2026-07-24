@@ -1,9 +1,9 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import cx from 'classnames';
 
 type TabType = {
   id: string;
-  name: React.ReactNode;
+  name: ReactNode;
   onClick: () => void;
   active: boolean;
 };

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -30,10 +30,10 @@ const FileTypeSummary = ({ sources, type }: FileTypeSummaryProps) => {
       <span className="font-normal">
         {sourceMap.map((source, index) => (
           // oxlint-disable-next-line react/no-array-index-key -- will not change between renders
-          <React.Fragment key={index}>
+          <Fragment key={index}>
             {source}
             <br />
-          </React.Fragment>
+          </Fragment>
         ))}
       </span>
     </div>

@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { filter, map } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -36,7 +37,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
     handleClose();
   };
 
-  const changeCriteria = (event: React.ChangeEvent<HTMLSelectElement>) => setNewCriteria(event.currentTarget.value);
+  const changeCriteria = (event: ChangeEvent<HTMLSelectElement>) => setNewCriteria(event.currentTarget.value);
 
   return (
     <ModalPanel show={show} onRequestClose={onClose} header="Add Condition" size="sm">

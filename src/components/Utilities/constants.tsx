@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { find } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
@@ -14,7 +14,7 @@ export type UtilityHeaderType<T extends EpisodeType | FileType | SeriesType | Re
   id: string;
   name: string;
   className: string;
-  item: (_: T) => React.ReactNode;
+  item: (_: T) => ReactNode;
 };
 
 export const criteriaMap = {

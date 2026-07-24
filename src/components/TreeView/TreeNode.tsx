@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { mdiCheckboxMarkedCircleOutline, mdiChevronUp, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -39,7 +40,7 @@ const TreeNode = (props: Props) => {
     }
   }, [path, foldersQuery.error, foldersQuery.isError]);
 
-  const toggleExpanded = (event: React.MouseEvent) => {
+  const toggleExpanded = (event: MouseEvent<HTMLDivElement | HTMLLIElement>) => {
     if (!isAccessible) return;
     if (!loaded) {
       setExpanded(true);
@@ -50,12 +51,12 @@ const TreeNode = (props: Props) => {
     event.stopPropagation();
   };
 
-  const toggleSelected = (event: React.MouseEvent) => {
+  const toggleSelected = (event: MouseEvent<HTMLDivElement>) => {
     dispatch(setSelectedNode({ id: nodeId, path }));
     event.stopPropagation();
   };
 
-  const children: React.ReactNode[] = [];
+  const children: ReactNode[] = [];
   const data = nodeId === 0 ? drivesQuery.data! : foldersQuery.data!;
   if (expanded) {
     forEach(data, (node: DriveType | FolderType) => {

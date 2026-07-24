@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ReleaseSource } from '@/core/types/api/file';
 
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';

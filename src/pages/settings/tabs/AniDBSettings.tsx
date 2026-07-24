@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';

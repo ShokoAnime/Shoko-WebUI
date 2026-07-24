@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -30,7 +30,7 @@ const ReleaseSettings = () => {
     }));
   };
 
-  const handleProviderToggle = (event: React.ChangeEvent<HTMLInputElement>, type: 'server' | 'webui') => {
+  const handleProviderToggle = (event: ChangeEvent<HTMLInputElement>, type: 'server' | 'webui') => {
     const id = event.target.id.replace(`-${type}`, '');
     const { checked } = event.target;
 

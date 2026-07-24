@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -8,7 +9,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import type { ImageLinkType } from '@/core/types/api/common';
 
 type Props = {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
   contain?: boolean;
   image?: ImageLinkType;

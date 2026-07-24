@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';

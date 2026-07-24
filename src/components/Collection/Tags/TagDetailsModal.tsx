@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Link } from 'react-router';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';

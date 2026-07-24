@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import useMeasure from 'react-use-measure';
 import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -7,8 +8,8 @@ import cx from 'classnames';
 type Props = {
   buttonType?: 'primary' | 'secondary' | 'danger';
   className?: string;
-  children: React.ReactNode;
-  content: React.ReactNode | string;
+  children: ReactNode;
+  content: ReactNode;
   disabled?: boolean;
   loading?: boolean;
   loadingSize?: number;

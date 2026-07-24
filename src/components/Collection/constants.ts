@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { RefObject } from 'react';
 
 import type { ImageLinkType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
@@ -18,6 +18,6 @@ export const listItemSize = {
 
 export type SeriesContextType = {
   backdrop?: ImageLinkType;
-  scrollRef: React.RefObject<HTMLDivElement>;
+  scrollRef: RefObject<HTMLDivElement>;
   series: SeriesType;
 };

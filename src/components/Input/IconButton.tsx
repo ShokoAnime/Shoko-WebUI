@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEventHandler } from 'react';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -11,7 +11,7 @@ type IconButtonProps = {
   icon: string;
   className?: string;
   disabled?: boolean;
-  onClick: React.MouseEventHandler<HTMLDivElement | HTMLButtonElement>;
+  onClick: MouseEventHandler<HTMLButtonElement>;
   buttonType: ButtonType;
   buttonSize: SizeType;
   tooltip?: string;

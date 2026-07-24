@@ -1,5 +1,3 @@
-import React from 'react';
-
 import TransitionDiv from '@/components/TransitionDiv';
 
 import Footer from './Footer';

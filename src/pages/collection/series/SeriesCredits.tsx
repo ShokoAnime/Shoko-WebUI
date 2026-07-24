@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 
 import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
@@ -46,7 +47,7 @@ const SeriesCredits = () => {
     });
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id: description } = event.target;
     setRoleFilter((prevState) => {
       const newState = new Set(prevState);
@@ -55,7 +56,7 @@ const SeriesCredits = () => {
     });
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
 

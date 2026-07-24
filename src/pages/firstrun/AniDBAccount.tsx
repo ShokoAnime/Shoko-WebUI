@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent, SubmitEvent } from 'react';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -27,14 +28,14 @@ const AniDBAccount = () => {
 
   const { Password, Username } = newSettings.AniDb;
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     updateSetting('AniDb', id, value);
     setAnidbStatus({ type: 'success', text: '' });
     dispatch(unsetFirstRunSaved('anidb-account'));
   };
 
-  const handleTest = (event?: React.FormEvent) => {
+  const handleTest = (event?: SubmitEvent<HTMLFormElement>) => {
     if (event) event.preventDefault();
     testAniDbLogin({ Username, Password }, {
       onSuccess: () => {

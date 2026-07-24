@@ -6,7 +6,7 @@
         "strict": false,
         "strictNullChecks": true,
         "module": "es2022",
-        "jsx": "react",
+        "jsx": "react-jsx",
         "target": "esnext",
         "allowJs": true,
         "checkJs": false,

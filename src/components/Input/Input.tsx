@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEventHandler, HTMLInputTypeAttribute, KeyboardEventHandler, MouseEventHandler } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -9,19 +9,19 @@ import useBodyVisibleContext from '@/hooks/useBodyVisibleContext';
 type EndIcon = {
   icon: string;
   className?: string;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLDivElement>;
   tooltip?: string;
 };
 
 type Props = {
   id: string;
   label?: string;
-  type: React.HTMLInputTypeAttribute;
+  type: HTMLInputTypeAttribute;
   placeholder?: string;
   value: string | number;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  onKeyUp?: KeyboardEventHandler<HTMLInputElement>;
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   inputClassName?: string;
   autoFocus?: boolean;

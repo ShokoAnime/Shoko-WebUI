@@ -1,8 +1,8 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Transition } from '@headlessui/react';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   enter?: string;
   enterFrom?: string;

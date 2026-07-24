@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import {
   useAutoSearchTmdbMatchMutation,

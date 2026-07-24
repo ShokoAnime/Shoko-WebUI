@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AvatarEditor, { useAvatarEditor } from 'react-avatar-editor';
 import { mdiImageMinusOutline, mdiImagePlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';

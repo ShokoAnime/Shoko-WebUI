@@ -1,5 +1,4 @@
-import React from 'react';
-import type { JSX } from 'react';
+import type { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 
 import type { DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
@@ -10,7 +9,7 @@ document.body.appendChild(portal);
 type Props = {
   provided: DraggableProvided;
   snapshot: DraggableStateSnapshot;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const PortalAwareItem = (props: Props) => {
@@ -18,7 +17,7 @@ const PortalAwareItem = (props: Props) => {
 
   const usePortal: boolean = snapshot.isDragging;
 
-  const child: JSX.Element = (
+  const child: ReactNode = (
     <div
       ref={provided.innerRef}
       {...(provided.draggableProps)}

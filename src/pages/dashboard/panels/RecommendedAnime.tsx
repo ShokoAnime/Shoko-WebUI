@@ -1,4 +1,3 @@
-import React from 'react';
 import { map } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';

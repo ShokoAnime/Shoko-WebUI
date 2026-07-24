@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { forEach, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 

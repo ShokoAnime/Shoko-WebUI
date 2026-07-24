@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -16,7 +16,7 @@ const useTableSearchSortCriteria = (defaultSortCriteria: FileSortCriteriaEnum) =
     else setSortCriteria(newCriteria);
   };
 
-  const updateSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -163,7 +163,7 @@ const SidePanel = (
             startIcon={mdiMagnify}
             id="search"
             value={search}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+            onChange={event => setSearch(event.target.value)}
             inputClassName="px-4 py-3"
           />
           <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">

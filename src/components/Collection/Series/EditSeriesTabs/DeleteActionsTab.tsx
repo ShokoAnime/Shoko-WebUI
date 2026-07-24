@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';

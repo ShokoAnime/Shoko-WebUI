@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
+import type { MouseEvent } from 'react';
 import {
   mdiDumpTruck,
   mdiFileDocumentAlertOutline,
@@ -91,7 +92,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     } as const;
   }, [file, dumpSession, truck]);
 
-  const handleDump = (event: React.MouseEvent) => {
+  const handleDump = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
       avdumpFiles({ FileIDs: [fileId], Priority: true })
@@ -99,7 +100,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     }
   };
 
-  const handleCopy = (event: React.MouseEvent) => {
+  const handleCopy = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
   };

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import UpdateModal from '@/components/Dashboard/UpdateModal';
 import Button from '@/components/Input/Button';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';

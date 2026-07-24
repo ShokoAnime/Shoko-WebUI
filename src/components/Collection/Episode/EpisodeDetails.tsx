@@ -1,4 +1,3 @@
-import React from 'react';
 import { mdiCalendarMonthOutline, mdiClipboardOutline, mdiClockOutline, mdiOpenInNew, mdiStarHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';

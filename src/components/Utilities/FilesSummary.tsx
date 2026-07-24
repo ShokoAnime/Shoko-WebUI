@@ -1,4 +1,3 @@
-import React from 'react';
 import { groupBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 

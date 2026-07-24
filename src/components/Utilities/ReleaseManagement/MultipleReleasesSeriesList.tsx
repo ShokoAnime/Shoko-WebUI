@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import type { MouseEvent } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -147,7 +148,7 @@ const MultipleReleasesSeriesList = ({
   const { handleRowSelect, rowSelection, selectedRows, setRowSelection } = useRowSelection(series);
 
   const lastRowIndex = useRef<number>(undefined);
-  const handleRowClick = (event: React.MouseEvent, index: number) => {
+  const handleRowClick = (event: MouseEvent<HTMLDivElement>, index: number) => {
     if (!autoDeleteMode) {
       navigate(
         `${series[index].SeriesID.toString()}?tab=candidates&includeVariations=${

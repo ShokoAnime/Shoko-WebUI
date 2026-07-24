@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ChangeEvent, MouseEventHandler } from 'react';
 import {
   mdiArrowRightThinCircleOutline,
   mdiCheckUnderlineCircleOutline,
@@ -32,7 +33,7 @@ type Props = {
 type EndIcon = {
   icon: string;
   className?: string;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLDivElement>;
   tooltip?: string;
 };
 
@@ -90,7 +91,7 @@ const EditableNameComponent = (
       },
     ];
 
-  const updateInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateInput = (event: ChangeEvent<HTMLInputElement>) => {
     setModifiableName(event.target.value);
   };
 
@@ -148,7 +149,7 @@ const GroupTab = ({ seriesId }: Props) => {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
-  const updateSearch = (event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
+  const updateSearch = (event: ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
 
   const { data: seriesGroup, isFetching } = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useFilteredGroupsInfiniteQuery({

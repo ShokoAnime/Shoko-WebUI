@@ -896,6 +896,7 @@
       }
     ],
     "react/only-export-components": "error",
+    "react/react-in-jsx-scope": "off",
     "react/rules-of-hooks": "error",
     "react/self-closing-comp": [
       "error",

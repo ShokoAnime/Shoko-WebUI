@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { forEach } from 'lodash';
 
 import Criteria from '@/components/Collection/Filter/Criteria';

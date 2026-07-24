@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { mdiLoading, mdiPower, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';

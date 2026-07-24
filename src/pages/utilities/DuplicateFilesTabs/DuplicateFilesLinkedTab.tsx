@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSearchParams } from 'react-router';
 import { mdiRefresh, mdiSelectMultiple } from '@mdi/js';
@@ -33,7 +34,7 @@ const DuplicateFilesLinkedTab = () => {
 
   const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams((currentParams) => {
       const newParams = new URLSearchParams(currentParams);
       newParams.set(event.target.id, String(event.target.checked));

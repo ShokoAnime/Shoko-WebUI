@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { mdiAlertOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 

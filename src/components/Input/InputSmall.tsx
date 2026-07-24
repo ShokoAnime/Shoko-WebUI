@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEvent, ChangeEventHandler, KeyboardEventHandler, ReactNode } from 'react';
 
 import toast from '@/core/toast';
 
@@ -7,13 +7,13 @@ type Props = {
   type: string;
   placeholder?: string;
   value: string | number;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  onKeyUp?: KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
   autoComplete?: string;
-  suffixes?: React.ReactNode;
+  suffixes?: ReactNode;
   min?: number;
   max?: number;
 };
@@ -35,7 +35,7 @@ const InputSmall = (props: Props) => {
     value,
   } = props;
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (type === 'number' && max && event.target.valueAsNumber > max) {
       toast.info(`Value cannot be greater than ${max}!`);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import { Provider } from 'react-redux';
 import * as Sentry from '@sentry/react';
@@ -10,7 +10,7 @@ import Router from '@/core/router';
 import store from '@/core/store';
 
 const App = () => (
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <Sentry.ErrorBoundary>
         <QueryClientProvider client={queryClient}>
@@ -21,7 +21,7 @@ const App = () => (
         </QueryClientProvider>
       </Sentry.ErrorBoundary>
     </Provider>
-  </React.StrictMode>
+  </StrictMode>
 );
 
 export default App;

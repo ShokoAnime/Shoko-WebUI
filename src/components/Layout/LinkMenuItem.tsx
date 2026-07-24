@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink } from 'react-router';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ChangeEventHandler, ReactNode } from 'react';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -9,7 +10,7 @@ import useBodyVisibleContext from '@/hooks/useBodyVisibleContext';
 
 type Props = {
   id: string;
-  label?: React.ReactNode;
+  label?: ReactNode;
   labelClassName?: string;
   isChecked: boolean;
   disabled?: boolean;
@@ -17,7 +18,7 @@ type Props = {
   className?: string;
   labelRight?: boolean;
   justify?: boolean;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 const Checkbox = (props: Props) => {

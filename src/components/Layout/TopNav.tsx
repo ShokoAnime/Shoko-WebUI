@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { MouseEvent } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { Link, NavLink, useLocation } from 'react-router';
 import {
@@ -104,7 +105,7 @@ const TopNav = () => {
   const isOffline = !(networkStatus === NetworkAvailabilityEnum.Internet
     || networkStatus === NetworkAvailabilityEnum.PartialInternet);
 
-  const closeModalsAndSubmenus = (event?: React.MouseEvent, id?: string) => {
+  const closeModalsAndSubmenus = (event?: MouseEvent<HTMLAnchorElement>, id?: string) => {
     if (layoutEditMode && event) {
       event.preventDefault();
       return;

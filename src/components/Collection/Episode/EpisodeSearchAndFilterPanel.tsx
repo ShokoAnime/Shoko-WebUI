@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiInformationOutline, mdiMagnify } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -15,7 +15,7 @@ type Props = {
   unaired: string;
   hasUnaired: boolean;
   hasMissing: boolean;
-  onFilterChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onFilterChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 };
 
 const EpisodeSearchAndFilterPanel = (props: Props) => {

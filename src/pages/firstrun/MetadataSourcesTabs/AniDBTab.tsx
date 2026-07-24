@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ChangeEventHandler } from 'react';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
@@ -33,7 +33,7 @@ const AniDBTab = ({ setStatus }: Props) => {
     MyList_StorageState,
   } = newSettings.AniDb;
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
+  const handleInputChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' && 'checked' in event.target
       ? event.target.checked

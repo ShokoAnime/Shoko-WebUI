@@ -1,4 +1,5 @@
-import React, { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiChevronRight, mdiMagnify, mdiMinusCircleOutline, mdiTagOffOutline, mdiTagOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -164,7 +165,7 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
           type="text"
           placeholder="Search..."
           value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
         <TagList unusedValues={unusedValues} selectTag={selectTag} />
       </div>

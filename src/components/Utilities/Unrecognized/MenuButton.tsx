@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEventHandler } from 'react';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -6,7 +6,7 @@ import Button from '@/components/Input/Button';
 
 const MenuButton = (
   { disabled, highlightType, icon, keybinding, loading, name, onClick }: {
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
     icon: string;
     name: string;
     keybinding?: string;

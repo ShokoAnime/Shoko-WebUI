@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -76,7 +77,7 @@ const FirstRunPage = () => {
     await patchSettings(newSettings);
   };
 
-  let parsedVersion: React.ReactNode = <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
+  let parsedVersion: ReactNode = <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
   if (!versionQuery.isFetching && versionQuery.data) {
     parsedVersion = versionQuery.data.Server.ReleaseChannel !== 'Stable'
       ? `${versionQuery.data.Server.Version}-${versionQuery.data.Server.ReleaseChannel} (${

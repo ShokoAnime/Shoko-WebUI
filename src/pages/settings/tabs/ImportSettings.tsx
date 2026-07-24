@@ -1,4 +1,3 @@
-import React from 'react';
 import { mdiFolderPlusOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { produce } from 'immer';

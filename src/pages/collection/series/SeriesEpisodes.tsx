@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useOutletContext, useSearchParams } from 'react-router';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -50,7 +51,7 @@ const SeriesEpisodes = () => {
     search: debouncedSearch,
   } as FilterOptionsType), [debouncedSearch, searchParams]);
 
-  const onFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const onFilterChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id: eventType, value } = event.target;
 
     if (eventType === 'search') {

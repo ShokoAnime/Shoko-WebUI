@@ -1,5 +1,3 @@
-import React from 'react';
-
 import TabTitle from '@/components/Utilities/TabTitle';
 
 const tabs = [

@@ -1,5 +1,5 @@
 /* global globalThis */
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router';
 import * as Sentry from '@sentry/react';
 

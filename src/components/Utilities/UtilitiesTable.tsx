@@ -1,4 +1,5 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import type { Dispatch, MouseEvent, SetStateAction } from 'react';
 import { mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -22,7 +23,7 @@ type Props = {
   fetchNextPage?: () => Promise<unknown>;
   isFetchingNextPage?: boolean;
   rows: EpisodeType[] | FileType[] | SeriesType[];
-  setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
+  setSortCriteria?: Dispatch<SetStateAction<FileSortCriteriaEnum>>;
   skipSort?: boolean;
   sortCriteria?: FileSortCriteriaEnum;
   handleRowSelect?: (id: number, select: boolean) => void;
@@ -37,7 +38,7 @@ const selectRowId = (target: EpisodeType | FileType | SeriesType) => ('ID' in ta
 const Row = (
   props: {
     columns: UtilityHeaderType<EpisodeType | FileType | SeriesType>[];
-    handleRowSelect: (event: React.MouseEvent, index: number) => void;
+    handleRowSelect: (event: MouseEvent<HTMLDivElement>, index: number) => void;
     row: EpisodeType | FileType | SeriesType;
     selected: boolean;
     virtualRow: VirtualItem;
@@ -51,7 +52,7 @@ const Row = (
     virtualRow,
   } = props;
 
-  const handleMouseDown = (event: React.MouseEvent) => {
+  const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     // Prevent native text selection on shift+click to avoid flash of selection
     // and allow clean shift-range selection behavior
     if (event.shiftKey) event.preventDefault();
@@ -89,7 +90,7 @@ const HeaderItem = (
     className: string;
     id: string;
     name: string;
-    setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
+    setSortCriteria?: Dispatch<SetStateAction<FileSortCriteriaEnum>>;
     skipSort?: boolean;
     sortCriteria?: FileSortCriteriaEnum;
   },
@@ -193,7 +194,7 @@ const UtilitiesTable = (props: Props) => {
   );
 
   const lastRowIndex = useRef<number>(undefined);
-  const handleSelect = (event: React.MouseEvent, index: number) => {
+  const handleSelect = (event: MouseEvent<HTMLDivElement>, index: number) => {
     if (!rowSelection || !handleRowSelect) return;
     handleShiftSelect({ event, handleRowSelect, index, lastRowIndex, rowSelection, rows, setRowSelection });
   };

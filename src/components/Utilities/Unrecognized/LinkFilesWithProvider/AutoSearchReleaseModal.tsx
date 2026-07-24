@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiInformationVariantCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -79,7 +80,7 @@ const AutoSearchReleaseModal = (props: Props) => {
     });
   };
 
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggle = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked, id } = event.target;
 
     setProviders((draftState) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
@@ -42,7 +42,7 @@ const ManagedFolder = (props: ManagedFolderProps) => {
   };
 
   return (
-    <React.Fragment key={folder.ID}>
+    <Fragment key={folder.ID}>
       {index !== 0 && <div className="border-b border-panel-border" />}
 
       <div className={cx('flex flex-col', className)}>
@@ -89,7 +89,7 @@ const ManagedFolder = (props: ManagedFolderProps) => {
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

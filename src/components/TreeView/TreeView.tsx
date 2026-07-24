@@ -1,5 +1,3 @@
-import React from 'react';
-
 import TreeNode from '@/components/TreeView/TreeNode';
 
 const TreeView = () => (

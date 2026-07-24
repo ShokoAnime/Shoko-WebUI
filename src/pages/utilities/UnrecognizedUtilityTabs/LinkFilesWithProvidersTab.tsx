@@ -1,4 +1,5 @@
-import React, { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
@@ -149,7 +150,7 @@ const LinkFilesWithProvidersTab = () => {
   } = useRowSelection(links);
 
   const lastRowIndex = useRef<number>(undefined);
-  const handleSelect = (event: React.KeyboardEvent | React.MouseEvent, index: number) => {
+  const handleSelect = (event: KeyboardEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>, index: number) => {
     handleShiftSelect({ event, handleRowSelect, index, lastRowIndex, rowSelection, rows: links, setRowSelection });
   };
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
 import Events from '@/core/events';

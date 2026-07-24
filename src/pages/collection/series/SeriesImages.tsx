@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading, mdiStarCircleOutline } from '@mdi/js';

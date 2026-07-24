@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiTagPlusOutline } from '@mdi/js';
 import Icon from '@mdi/react';

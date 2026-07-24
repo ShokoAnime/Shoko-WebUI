@@ -1,4 +1,3 @@
-import React from 'react';
 import { mdiDownloadCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { SubmitEvent } from 'react';
 import { useSearchParams } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import {
@@ -74,7 +75,7 @@ const LoginPage = () => {
     }
   }, [serverStatusQuery.data, apiSession, navigate, searchParams]);
 
-  const handleSignIn = (event: React.FormEvent) => {
+  const handleSignIn = (event: SubmitEvent) => {
     event.preventDefault();
     if (!username) return;
 

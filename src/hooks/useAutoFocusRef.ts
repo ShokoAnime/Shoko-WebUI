@@ -1,10 +1,10 @@
-import type React from 'react';
+import type { RefObject } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 
 type TimeoutType = ReturnType<typeof globalThis.setTimeout>;
 
 const useAutoFocusRef = (autoFocus: boolean) => {
-  const elementRef = useRef<HTMLInputElement | null>(null) as React.RefObject<HTMLInputElement | null> & {
+  const elementRef = useRef<HTMLInputElement | null>(null) as RefObject<HTMLInputElement | null> & {
     timeout?: TimeoutType;
   };
   const autoFocusRef = useRef(autoFocus);
@@ -46,7 +46,7 @@ const useAutoFocusRef = (autoFocus: boolean) => {
         }
       },
       // oxlint-disable-next-line react-hooks/exhaustive-deps -- elementRef and autoFocusRef are stable refs; the proxy must be created only once
-    }), []) as unknown as React.RefObject<HTMLInputElement | null>;
+    }), []) as unknown as RefObject<HTMLInputElement | null>;
 };
 
 export default useAutoFocusRef;

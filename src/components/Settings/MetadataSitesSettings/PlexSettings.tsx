@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -132,7 +133,7 @@ const PlexSettings = () => {
     else setServerId('');
   }, [plexSettings.Server]);
 
-  const handleServerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleServerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     // Optimistic update
     setServerId(event.target.value);
 
@@ -143,7 +144,7 @@ const PlexSettings = () => {
     });
   };
 
-  const handleLibraryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLibraryChange = (event: ChangeEvent<HTMLInputElement>) => {
     const key = toNumber(event.target.id);
 
     const newLibraries = plexSettings.Libraries.slice();

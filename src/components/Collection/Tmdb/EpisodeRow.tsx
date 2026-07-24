@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';

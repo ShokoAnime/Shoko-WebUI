@@ -1,12 +1,12 @@
-import React, { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 type Props = {
   title: ReactNode;
-  children: React.ReactNode;
-  options?: React.ReactNode;
+  children: ReactNode;
+  options?: ReactNode;
   className?: string;
   isFetching?: boolean;
   editMode?: boolean;

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, map, remove } from 'lodash';
@@ -60,7 +61,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
     if (type !== null) setLanguages(LanguagePreference);
   }, [type, LanguagePreference]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked: value, id } = event.target;
 
     const newLanguages = languages.slice();

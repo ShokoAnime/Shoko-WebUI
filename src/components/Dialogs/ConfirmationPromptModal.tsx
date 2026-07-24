@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import Button from '@/components/Input/Button';
@@ -8,7 +9,7 @@ import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import type { ButtonType } from '@/components/Input/Button.utils';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   onConfirm: () => void | Promise<void>;
   onClose: () => void;
   show: boolean;

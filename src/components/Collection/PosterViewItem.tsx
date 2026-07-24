@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router';
 import { mdiCheckboxMarkedCircleOutline, mdiFileDocumentRemoveOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';

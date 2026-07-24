@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSearchParams } from 'react-router';

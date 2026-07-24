@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { MouseEvent } from 'react';
 
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { useDispatch } from '@/core/store';
@@ -9,7 +9,7 @@ import type { SeriesType } from '@/core/types/api/series';
 const useEditGroupCallback = (item: CollectionGroupType | SeriesType) => {
   const dispatch = useDispatch();
 
-  return (event: React.MouseEvent) => {
+  return (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
     if ('MainSeries' in item.IDs) dispatch(setGroupId(item.IDs.ID));

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -14,7 +15,7 @@ type ModalType = 'tag' | 'multivalue';
 type Props = {
   criteria: FilterExpression;
   parameterExists: boolean;
-  transformedParameter: React.ReactNode;
+  transformedParameter: ReactNode;
   type: ModalType;
 };
 

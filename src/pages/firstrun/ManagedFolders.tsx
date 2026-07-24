@@ -1,4 +1,3 @@
-import React from 'react';
 import { mdiMinusCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 

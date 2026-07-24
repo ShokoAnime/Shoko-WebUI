@@ -1,5 +1,3 @@
-import React from 'react';
-
 import CharacterImage from '@/components/CharacterImage';
 
 import type { SeriesCast } from '@/core/types/api/series';

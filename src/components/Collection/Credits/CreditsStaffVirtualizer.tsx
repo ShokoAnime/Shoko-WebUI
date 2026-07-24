@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import type { RefObject } from 'react';
 import { useOutletContext } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -9,7 +10,7 @@ import type { SeriesCast } from '@/core/types/api/series';
 import type { CreditsModeType } from '@/pages/collection/series/SeriesCredits';
 
 const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], mode: CreditsModeType }) => {
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const { scrollRef } = useOutletContext<{ scrollRef: RefObject<HTMLDivElement> }>();
   const [containerRef, { width: containerWidth }] = useMeasure();
   const cardSize = useMemo(() => ({ x: 450, y: 174, gap: 24 }), []);
 

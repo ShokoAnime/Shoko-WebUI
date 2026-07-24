@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -79,10 +80,10 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value 
     setSelected(find(options, ['value', value]) ?? {} as Option);
   }, [value, options]);
 
-  const handleEpFilter = (event: React.ChangeEvent<HTMLInputElement>) => setEpFilter(event.target.value);
+  const handleEpFilter = (event: ChangeEvent<HTMLInputElement>) => setEpFilter(event.target.value);
 
   // Headless UI throws errors if keypresses bubble sepcifically space is treated as select item and causes errors if list is filtered to empty
-  const suppressKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const suppressKeydown = (event: KeyboardEvent<HTMLInputElement>) => {
     event.stopPropagation();
   };
 
@@ -135,7 +136,7 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value 
               {/* 4rem below is to account for height of the input component */}
               <div className="mt-1 h-[calc(var(--anchor-max-height)-4rem)] overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
                 {options.map((item, idx) => (
-                  <React.Fragment key={`listbox-item-${item.value}`}>
+                  <Fragment key={`listbox-item-${item.value}`}>
                     {idx !== 0 && item.type !== options[idx - 1].type && (
                       <div className="my-3 h-0.5 border border-panel-border bg-panel-background-alt" />
                     )}
@@ -143,7 +144,7 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value 
                       || (toInteger(epFilter) > 0
                         ? item.number === toInteger(epFilter)
                         : item.label.toLowerCase().includes(epFilter.toLowerCase()))) && <SelectOption option={item} />}
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </div>
             </ListboxOptions>

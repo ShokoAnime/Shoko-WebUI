@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
@@ -94,7 +95,7 @@ const Collection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [groupSearch, setGroupSearch] = useState(searchParams.get('q') ?? '');
   const [seriesSearch, setSeriesSearch] = useState(searchParams.get('qs') ?? '');
-  const setSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const setSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
 
     if (isSeries) {
