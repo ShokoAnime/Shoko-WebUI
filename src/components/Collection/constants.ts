@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import type { ImageType } from '@/core/types/api/common';
+import type { ImageLinkType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
 export const posterItemSize = {
@@ -17,7 +17,7 @@ export const listItemSize = {
 };
 
 export type SeriesContextType = {
-  backdrop?: ImageType;
+  backdrop?: ImageLinkType;
   scrollRef: React.RefObject<HTMLDivElement>;
   series: SeriesType;
 };

@@ -148,3 +148,6 @@ export const handleShiftSelect = (params: {
     console.error(error);
   }
 };
+
+/** Root font size in px, read once from the document. */
+export const pxPerRem = parseFloat(getComputedStyle(document.documentElement).fontSize);

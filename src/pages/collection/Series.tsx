@@ -14,20 +14,21 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { toNumber } from 'lodash';
+import { flatMap, toNumber } from 'lodash';
 
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import SeriesTopPanel from '@/components/Collection/SeriesTopPanel';
 import Button from '@/components/Input/Button';
 import { useGroupQuery } from '@/core/react-query/group/queries';
-import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
+import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { useDispatch } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
-import type { ImageType } from '@/core/types/api/common';
+import type { ImageLinkType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
 const SeriesTab = ({ icon, text, to }: { icon: string, text: string, to: string }) => (
@@ -45,7 +46,7 @@ const SeriesTab = ({ icon, text, to }: { icon: string, text: string, to: string 
   </NavLink>
 );
 
-const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
+const getImagePath = (uid: string) => `/api/v3/Image/${uid}`;
 
 const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
 
@@ -79,19 +80,25 @@ const Series = () => {
   };
 
   const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
-  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomBackdrop);
-  const [backdrop, setBackdrop] = useState<ImageType>();
+
+  const backdropsQuery = useSeriesImageCrossReferencesQuery(
+    toNumber(seriesId) ?? 0,
+    { imageType: 'Backdrop', isAvailable: true, pageSize: 30 },
+    !!seriesId && showRandomBackdrop,
+  );
+
+  const [backdrop, setBackdrop] = useState<ImageLinkType>();
   useEffect(() => {
     if (!showRandomBackdrop) {
       setBackdrop(series.Images?.Backdrops?.[0]);
       return;
     }
 
-    const allBackdrops = imagesQuery.data?.Backdrops ?? [];
+    const allBackdrops = flatMap(backdropsQuery.data?.pages, page => page.List)
+      .filter(xref => xref.Image?.Available);
     if (allBackdrops.length === 0) return;
-
-    setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)]);
-  }, [imagesQuery.data, series, showRandomBackdrop]);
+    setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)].Image);
+  }, [backdropsQuery.data, series, showRandomBackdrop]);
 
   const [containerRef, containerBounds] = useMeasure();
 
@@ -164,7 +171,7 @@ const Series = () => {
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
         style={{
-          backgroundImage: backdrop ? `url('${getImagePath(backdrop)}')` : undefined,
+          backgroundImage: backdrop ? `url('${getImagePath(backdrop.UID)}')` : undefined,
           height: `calc(${containerBounds.height}px + 3rem)`,
         }}
       />

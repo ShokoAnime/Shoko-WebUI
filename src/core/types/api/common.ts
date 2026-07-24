@@ -1,20 +1,17 @@
-export type ImageType = {
+/** Minimal image reference used for passing images around without full metadata. */
+export type ImageLinkType = {
+  UID: string;
+  Available: boolean;
+};
+
+export type ImageType = ImageLinkType & {
   Source: ImageSourceEnum;
   Type: ImageTypeEnum;
   ID: number;
-  Available: boolean;
+  PrimaryUID: string;
   Preferred: boolean;
-  Width: null;
-  Height: null;
-  Disabled: boolean;
-} | {
-  Source: ImageSourceEnum;
-  Type: ImageTypeEnum;
-  ID: number;
-  Available: boolean;
-  Preferred: boolean;
-  Width: number;
-  Height: number;
+  Width?: number;
+  Height?: number;
   Disabled: boolean;
 };
 

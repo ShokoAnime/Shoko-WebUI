@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-import type { ImageType } from '@/core/types/api/common';
+import type { ImageLinkType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
 
-const useEpisodeThumbnail = (episode: EpisodeType, backdrop?: ImageType) => {
+const useEpisodeThumbnail = (episode: EpisodeType, backdrop?: ImageLinkType) => {
   const { useThumbnailFallback } = useSettingsQuery().data.WebUI_Settings.collection.image;
   return useMemo(() => {
     if (episode.Images.Thumbnails?.length) {

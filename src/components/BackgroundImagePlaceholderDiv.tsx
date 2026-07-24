@@ -5,13 +5,13 @@ import cx from 'classnames';
 
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
-import type { ImageType } from '@/core/types/api/common';
+import type { ImageLinkType } from '@/core/types/api/common';
 
 type Props = {
   children?: React.ReactNode;
   className?: string;
   contain?: boolean;
-  image?: ImageType;
+  image?: ImageLinkType;
   hidePlaceholderOnHover?: boolean;
   overlayOnHover?: boolean;
   zoomOnHover?: boolean;
@@ -42,7 +42,7 @@ const BackgroundImagePlaceholderDiv = (props: Props) => {
       return null;
     }
 
-    return `/api/v3/Image/${image.Source}/${image.Type}/${image.ID}`;
+    return `/api/v3/Image/${image.UID}`;
   }, [image, settings.LoadImageMetadata]);
 
   const [imageError, setImageError] = useState<string | null>(null);
