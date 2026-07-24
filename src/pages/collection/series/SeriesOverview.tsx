@@ -53,7 +53,7 @@ const SeriesOverview = () => {
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
     const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
     if (thumbnail === null) return null;
-    return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
+    return `/api/v3/Image/${thumbnail.UID}`;
   };
 
   return (

@@ -1,26 +1,37 @@
 import React, { useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
-import { mdiStarCircleOutline } from '@mdi/js';
+import useMeasure from 'react-use-measure';
+import { mdiLoading, mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { capitalize } from 'lodash';
+import { capitalize, debounce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
-import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
+import { useSetPreferredImageMutation } from '@/core/react-query/image-management/mutations';
+import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
+import { invalidateQueries } from '@/core/react-query/queryClient';
+import toast from '@/core/toast';
+import { pxPerRem } from '@/core/util';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
-import type { ImageType } from '@/core/types/api/common';
+import type { ImageCrossReferenceType, ImageTabType } from '@/core/types/api/image';
 
-type ImageTabType = 'Posters' | 'Backdrops' | 'Logos';
+const tabToImageTypeMap: Record<ImageTabType, string> = {
+  Posters: 'Primary',
+  Backdrops: 'Backdrop',
+  Logos: 'Logo',
+};
+
 const tabStates = [
-  { value: 'Posters' },
-  { value: 'Backdrops' },
-  { value: 'Logos' },
+  { value: 'Posters' as const },
+  { value: 'Backdrops' as const },
+  { value: 'Logos' as const },
 ];
 
 const InfoLine = ({ title, value }: { title: string, value: string }) => (
@@ -30,35 +41,45 @@ const InfoLine = ({ title, value }: { title: string, value: string }) => (
   </div>
 );
 
-const sizeMap = {
-  Posters: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-6' },
-  Backdrops: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
-  Logos: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-4' },
+const imageItemSize: Record<ImageTabType, { height: number, width: number }> = {
+  Posters: { width: 13, height: 19.5 },
+  Backdrops: { width: 27, height: 16 },
+  Logos: { width: 15, height: 15 },
 };
+
+const itemGap = 1; // rem
 
 const SeriesImages = () => {
   const { imageType } = useParams();
-
-  const { series } = useOutletContext<SeriesContextType>();
-
+  const { scrollRef, series } = useOutletContext<SeriesContextType>();
   const navigate = useNavigateVoid();
 
-  const tabType = useMemo(() => {
-    if (!imageType) return 'Posters';
-    return capitalize(imageType) as ImageTabType;
-  }, [imageType]);
-  const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
-  const images = useSeriesImagesQuery(series.IDs.ID).data;
-  const { mutate: changeImage } = useChangeSeriesImageMutation(series.IDs.ID);
+  const tabType = (capitalize(imageType) ?? 'Posters') as ImageTabType;
 
-  const handleSelectionChange = (item: ImageType) => {
-    setSelectedImage(old => ((old === item) ? null : item));
+  const { fetchNextPage, isFetchingNextPage, ...crossReferencesQuery } = useSeriesImageCrossReferencesQuery(
+    series.IDs.ID,
+    { imageType: tabToImageTypeMap[tabType], isAvailable: true, pageSize: 30 },
+    !!series.IDs.ID,
+  );
+
+  const [images, imagesTotal] = useFlattenListResult(crossReferencesQuery.data);
+
+  const [selectedImage, setSelectedImage] = useState<ImageCrossReferenceType | null>(null);
+  const { mutate: setPreferred } = useSetPreferredImageMutation();
+
+  const handleSelectionChange = (item: ImageCrossReferenceType) => {
+    setSelectedImage(prev => (prev?.ID === item.ID ? null : item));
   };
 
   const handleSetPreferredImage = () => {
     if (!selectedImage) return;
-    changeImage(selectedImage, {
-      onSuccess: () => setSelectedImage(null),
+    setPreferred(selectedImage.ID, {
+      onSuccess: () => {
+        invalidateQueries(['series']);
+        toast.success(`Preferred ${tabType.slice(0, -1)} has been set.`);
+        setSelectedImage(null);
+      },
+      onError: () => toast.error(`Failed to set preferred ${tabType.slice(0, -1)}.`),
     });
   };
 
@@ -66,6 +87,32 @@ const SeriesImages = () => {
     setSelectedImage(null);
     navigate(`../images/${newType.toLowerCase()}`);
   };
+
+  const [gridContainerRef, gridContainerBounds] = useMeasure();
+
+  const { height: itemHeight, width: itemWidth } = imageItemSize[tabType];
+
+  const itemsPerRow = Math.max(
+    1,
+    Math.floor((gridContainerBounds.width / pxPerRem + itemGap) / (itemWidth + itemGap)),
+  );
+  const rowCount = Math.ceil(imagesTotal / itemsPerRow);
+
+  const virtualizer = useVirtualizer({
+    count: rowCount,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => (itemHeight + itemGap) * pxPerRem,
+    overscan: 4,
+    gap: 24,
+  });
+
+  const fetchNextPageDebounced = useMemo(
+    () =>
+      debounce(() => {
+        fetchNextPage().catch(console.error);
+      }, 50),
+    [fetchNextPage],
+  );
 
   return (
     <>
@@ -79,17 +126,20 @@ const SeriesImages = () => {
             transparent
             sticky
           >
-            <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
+            <InfoLine
+              title="Source"
+              value={selectedImage?.Image?.Source ?? selectedImage?.ImageSource ?? '-'}
+            />
             <InfoLine
               title="Size"
-              value={selectedImage?.Width && selectedImage?.Height
-                ? `${selectedImage.Width} x ${selectedImage.Height}`
+              value={selectedImage?.Image?.Width && selectedImage?.Image?.Height
+                ? `${selectedImage.Image.Width} x ${selectedImage.Image.Height}`
                 : '-'}
             />
             <Button
               buttonType="primary"
               buttonSize="normal"
-              disabled={!selectedImage || selectedImage.Preferred}
+              disabled={!selectedImage || selectedImage.IsPreferred}
               onClick={handleSetPreferredImage}
             >
               {`Set As Preferred ${tabType.slice(0, -1)}`}
@@ -97,50 +147,90 @@ const SeriesImages = () => {
           </ShokoPanel>
         </div>
         <div className="flex grow flex-col gap-y-6">
-          <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+          <div className="flex h-24.5 shrink-0 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent p-6">
             <div className="text-xl font-semibold">
               Images |&nbsp;
-              <span className="text-panel-text-important">{images?.[tabType]?.length ?? '-'}</span>
+              <span className="text-panel-text-important">{imagesTotal || '-'}</span>
               &nbsp;
               {tabType}
               &nbsp;Listed
             </div>
             <MultiStateButton activeState={tabType} onStateChange={handleTabChange} states={tabStates} />
           </div>
-          <div
-            className={cx(
-              sizeMap[tabType].grid,
-              'grid gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6',
-            )}
-          >
-            {images?.[tabType].map(item => (
-              <div
-                onClick={() => handleSelectionChange(item)}
-                key={`${item.Source}-${item.Type}-${item.ID}`}
-                className="group flex cursor-pointer items-center justify-between"
-              >
-                <BackgroundImagePlaceholderDiv
-                  image={item}
-                  contain={tabType === 'Logos'}
-                  className={cx(
-                    'grow rounded-lg outline drop-shadow-md transition-transform',
-                    item === selectedImage
-                      ? 'outline-4 outline-panel-text-important'
-                      : 'outline-2 outline-panel-border',
-                    sizeMap[tabType].image,
-                  )}
-                  linkToImage
-                  zoomOnHover
+          <div className="rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+            <div className="relative" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
+              {virtualizer.getVirtualItems().map(virtualRow => (
+                <div
+                  key={virtualRow.key}
+                  ref={virtualizer.measureElement}
+                  data-index={virtualRow.index}
+                  className="absolute top-0 left-0 flex w-full items-center justify-center gap-x-6"
+                  style={{ transform: `translateY(${virtualRow.start}px)` }}
                 >
-                  {item.Preferred && (
-                    <div className="absolute bottom-2 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                      <Icon path={mdiStarCircleOutline} size={1} />
-                      Preferred
-                    </div>
-                  )}
-                </BackgroundImagePlaceholderDiv>
-              </div>
-            ))}
+                  {Array.from({ length: itemsPerRow }).map((_, colIndex) => {
+                    const index = virtualRow.index * itemsPerRow + colIndex;
+                    const xref = images[index];
+                    const isPlaceholder = index >= imagesTotal;
+
+                    if (isPlaceholder) {
+                      return (
+                        <div
+                          key={`placeholder-${index}`}
+                          style={{ width: `${itemWidth}rem`, height: `${itemHeight}rem` }}
+                        />
+                      );
+                    }
+
+                    if (!xref) {
+                      if (!isFetchingNextPage) {
+                        fetchNextPageDebounced();
+                      }
+                      return (
+                        <div
+                          key={`loading-${index}`}
+                          className="flex shrink-0 items-center justify-center rounded-lg border border-panel-border text-panel-text-primary"
+                          style={{
+                            width: `${itemWidth}rem`,
+                            height: `${itemHeight}rem`,
+                          }}
+                        >
+                          <Icon path={mdiLoading} spin size={2} />
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div
+                        onClick={() => handleSelectionChange(xref)}
+                        key={xref.ID}
+                        className="group flex cursor-pointer items-center justify-between"
+                        style={{ width: `${itemWidth}rem`, height: `${itemHeight}rem` }}
+                      >
+                        <BackgroundImagePlaceholderDiv
+                          image={xref.Image}
+                          contain={tabType === 'Logos'}
+                          className={cx(
+                            'size-full rounded-lg drop-shadow-md',
+                            xref === selectedImage
+                              ? 'border-4 border-panel-text-important'
+                              : 'border-2 border-panel-border',
+                          )}
+                          linkToImage
+                          zoomOnHover
+                        >
+                          {xref.IsPreferred && (
+                            <div className="absolute bottom-2 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                              <Icon path={mdiStarCircleOutline} size={1} />
+                              Preferred
+                            </div>
+                          )}
+                        </BackgroundImagePlaceholderDiv>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

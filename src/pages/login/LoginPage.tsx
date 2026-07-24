@@ -53,13 +53,13 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (imageMetadataQuery.isPending) return;
-    if (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data.Type) {
+    if (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data.UID) {
       setLoginImage({ imageUrl: 'default', seriesName: 'One Piece', seriesId: 0 });
       return;
     }
-    const { ID, Series, Source, Type } = imageMetadataQuery.data;
+    const { Series, UID } = imageMetadataQuery.data;
     setLoginImage({
-      imageUrl: `/api/v3/Image/${Source}/${Type}/${ID}`,
+      imageUrl: `/api/v3/Image/${UID}`,
       seriesName: Series?.Name ?? '',
       seriesId: Series?.ID ?? 0,
     });

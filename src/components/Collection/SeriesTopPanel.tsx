@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiTagPlusOutline } from '@mdi/js';
 import Icon from '@mdi/react';
-import { toNumber } from 'lodash';
+import { flatMap, toNumber } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -13,11 +13,12 @@ import TagButton from '@/components/Collection/TagButton';
 import CustomTagModal from '@/components/Dialogs/CustomTagModal';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
+import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
+import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { getMainPoster } from '@/core/util';
 
-import type { ImageType } from '@/core/types/api/common';
+import type { ImageLinkType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
 const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
@@ -27,10 +28,15 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
   const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
 
   const { showRandomPoster } = useSettingsQuery().data.WebUI_Settings.collection.image;
-  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomPoster);
   const mainPoster = getMainPoster(series);
-  const [poster, setPoster] = useState<ImageType>();
+  const [poster, setPoster] = useState<ImageLinkType>();
   const [showTagModal, toggleTagModal] = useToggle(false);
+
+  const postersQuery = useSeriesImageCrossReferencesQuery(
+    toNumber(seriesId) ?? 0,
+    { imageType: 'Poster', isAvailable: true, pageSize: 30 },
+    !!seriesId && showRandomPoster,
+  );
 
   useEffect(() => {
     if (!showRandomPoster) {
@@ -38,11 +44,11 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
       return;
     }
 
-    const allPosters = imagesQuery.data?.Posters ?? [];
+    const allPosters = flatMap(postersQuery.data?.pages, page => page.List)
+      .filter(xref => xref.Image?.Available);
     if (allPosters.length === 0) return;
-
-    setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
-  }, [imagesQuery.data, mainPoster, showRandomPoster]);
+    setPoster(allPosters[Math.floor(Math.random() * allPosters.length)].Image);
+  }, [mainPoster, postersQuery.data, showRandomPoster]);
 
   // TODO: try to make this a grid for better responsiveness... but we'll have v3 soon so maybe not right now.
   return (

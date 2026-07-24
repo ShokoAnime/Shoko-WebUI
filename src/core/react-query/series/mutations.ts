@@ -10,25 +10,7 @@ import type {
   RefreshSeriesAniDBInfoRequestType,
   WatchSeriesEpisodesRequestType,
 } from '@/core/react-query/series/types';
-import type { ImageType } from '@/core/types/api/common';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
-
-export const useChangeSeriesImageMutation = (seriesId: number) =>
-  useMutation({
-    mutationFn: (image: ImageType) =>
-      axios.put(
-        `Series/${seriesId}/Images/${image.Type}`,
-        {
-          ID: image.ID,
-          Source: image.Source,
-        },
-      ),
-    onSuccess: (_, image) => {
-      toast.success(`Series ${image.Type} image has been changed.`);
-      invalidateQueries(['series', seriesId, 'data']);
-      invalidateQueries(['series', seriesId, 'images']);
-    },
-  });
 
 export const useDeleteSeriesMutation = () =>
   useMutation({
