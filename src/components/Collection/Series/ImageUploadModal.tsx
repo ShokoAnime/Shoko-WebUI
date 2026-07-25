@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { DragEvent } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiImagePlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -10,6 +11,7 @@ import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useUploadSeriesImageMutation } from '@/core/react-query/image-management/mutations';
 import toast from '@/core/toast';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { CrossReferenceImageType, ImageTabType } from '@/core/types/api/image';
 
@@ -40,6 +42,7 @@ const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadMod
       toast.error('Only image files are supported.');
       return;
     }
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setFile(selectedFile);
     setPreviewUrl(URL.createObjectURL(selectedFile));
   };
@@ -62,7 +65,7 @@ const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadMod
   };
 
   const handleUpload = () => {
-    if (!file) return;
+    if (!file || isPending) return;
     uploadImage(
       { seriesId, imageType: serverType, file },
       {
@@ -74,6 +77,11 @@ const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadMod
       },
     );
   };
+
+  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
+  useHotkeys('escape', onClose, { scopes: 'modal' });
+  useHotkeys('enter', handleUpload, { scopes: 'modal' });
 
   return (
     <ModalPanel
