@@ -9,7 +9,7 @@ import prettyBytes from 'pretty-bytes';
 import Button from '@/components/Input/Button';
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useUploadSeriesImageMutation } from '@/core/react-query/image-management/mutations';
+import { useUploadSeriesImageMutation } from '@/core/react-query/series/mutations';
 import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
