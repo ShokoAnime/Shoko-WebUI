@@ -268,7 +268,11 @@ const SeriesImages = () => {
                           overlayOnHover
                         >
                           {xref.IsPreferred && (
-                            <div className="absolute top-0 right-0 rounded-bl-lg bg-panel-background-overlay p-2 text-panel-text-important opacity-100 transition-opacity group-hover:opacity-0">
+                            <div
+                              className="absolute top-0 right-0 z-10 rounded-bl-lg bg-panel-background-overlay p-2 text-panel-text-important transition-opacity"
+                              data-tooltip-id="tooltip"
+                              data-tooltip-content="Preferred"
+                            >
                               <Icon path={mdiStarCircleOutline} size={1} />
                             </div>
                           )}
