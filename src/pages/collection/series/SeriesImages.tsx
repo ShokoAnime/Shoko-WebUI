@@ -234,9 +234,8 @@ const SeriesImages = () => {
                           zoomOnHover
                         >
                           {xref.IsPreferred && (
-                            <div className="absolute bottom-2 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                            <div className="absolute top-0 right-0 rounded-bl-lg bg-panel-background-overlay p-2 text-panel-text-important opacity-100 transition-opacity group-hover:opacity-0">
                               <Icon path={mdiStarCircleOutline} size={1} />
-                              Preferred
                             </div>
                           )}
                         </BackgroundImagePlaceholderDiv>
