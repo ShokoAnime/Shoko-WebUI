@@ -10,10 +10,15 @@ import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import ImageUploadModal from '@/components/Collection/Series/ImageUploadModal';
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useSetPreferredImageMutation } from '@/core/react-query/image-management/mutations';
+import {
+  useDeleteImageMutation,
+  useSetPreferredImageMutation,
+  useUnsetPreferredImageMutation,
+} from '@/core/react-query/image-management/mutations';
 import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
@@ -67,22 +72,38 @@ const SeriesImages = () => {
   const [images, imagesTotal] = useFlattenListResult(crossReferencesQuery.data);
 
   const [selectedImage, setSelectedImage] = useState<ImageCrossReferenceType | null>(null);
+  const imageLabel = tabType.slice(0, -1);
+
   const { mutate: setPreferred } = useSetPreferredImageMutation();
+  const { mutate: unsetPreferred } = useUnsetPreferredImageMutation();
+  const { mutateAsync: deleteImage } = useDeleteImageMutation();
   const [showUploadModal, toggleUploadModal] = useToggle(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleSelectionChange = (item: ImageCrossReferenceType) => {
     setSelectedImage(prev => (prev?.ID === item.ID ? null : item));
   };
 
-  const handleSetPreferredImage = () => {
+  const handleTogglePreferredImage = () => {
     if (!selectedImage) return;
-    setPreferred(selectedImage.ID, {
+    const isPreferred = selectedImage.IsPreferred;
+    const mutate = isPreferred ? unsetPreferred : setPreferred;
+    const action = isPreferred ? 'unset' : 'set';
+    mutate(selectedImage.ID, {
       onSuccess: () => {
         invalidateQueries(['series']);
-        toast.success(`Preferred ${tabType.slice(0, -1)} has been set.`);
+        toast.success(`Preferred ${imageLabel} has been ${action}.`);
         setSelectedImage(null);
       },
-      onError: () => toast.error(`Failed to set preferred ${tabType.slice(0, -1)}.`),
+      onError: () => toast.error(`Failed to ${action} preferred ${imageLabel}.`),
+    });
+  };
+
+  const handleDeleteImage = async () => {
+    if (!selectedImage) return;
+    await deleteImage(selectedImage.ImageID, {
+      onSuccess: () => toast.success(`${imageLabel} deleted.`),
+      onError: () => toast.error(`Failed to delete ${imageLabel.toLowerCase()}.`),
     });
   };
 
@@ -142,10 +163,23 @@ const SeriesImages = () => {
             <Button
               buttonType="primary"
               buttonSize="normal"
-              disabled={!selectedImage || selectedImage.IsPreferred}
-              onClick={handleSetPreferredImage}
+              disabled={!selectedImage}
+              onClick={handleTogglePreferredImage}
             >
-              {`Set As Preferred ${tabType.slice(0, -1)}`}
+              {selectedImage?.IsPreferred
+                ? `Unset Preferred ${imageLabel}`
+                : `Set As Preferred ${imageLabel}`}
+            </Button>
+            <Button
+              buttonType="danger"
+              buttonSize="normal"
+              disabled={!selectedImage || selectedImage.ImageSource !== 'User'}
+              tooltip={selectedImage && selectedImage.ImageSource !== 'User'
+                ? 'Only user-uploaded images can be deleted'
+                : ''}
+              onClick={() => setShowDeleteConfirm(true)}
+            >
+              Delete {imageLabel}
             </Button>
           </ShokoPanel>
         </div>
@@ -255,6 +289,16 @@ const SeriesImages = () => {
         seriesId={series.IDs.ID}
         imageType={tabType}
       />
+      <ConfirmationPromptModal
+        show={showDeleteConfirm}
+        title={`Delete ${imageLabel}`}
+        onConfirm={handleDeleteImage}
+        onClose={() => setShowDeleteConfirm(false)}
+        confirmText="Delete"
+        confirmButtonType="danger"
+      >
+        {`Are you sure you want to delete this ${imageLabel.toLowerCase()}?`}
+      </ConfirmationPromptModal>
     </>
   );
 };

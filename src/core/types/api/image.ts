@@ -1,4 +1,4 @@
-import type { ImageLinkType, ImageTypeEnum, RatingType } from './common';
+import type { ImageLinkType, ImageSourceType, ImageTypeEnum, RatingType } from './common';
 
 export type RandomImageMetadataResultType = {
   Source: string;
@@ -40,7 +40,7 @@ export type ImageCrossReferenceType = {
   /** The primary image's UUID for the associated entity. */
   PrimaryImageID: string;
   ImageType: CrossReferenceImageType;
-  ImageSource: string;
+  ImageSource: ImageSourceType;
   EntityID: string;
   EntityType: string;
   EntitySource: string;

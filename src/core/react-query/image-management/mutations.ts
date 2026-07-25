@@ -14,6 +14,22 @@ export const useSetPreferredImageMutation = () =>
     },
   });
 
+export const useUnsetPreferredImageMutation = () =>
+  useMutation({
+    mutationFn: (xrefId: number) => axios.delete(`Image/Management/CrossReference/${xrefId}/Preferred`),
+    onSuccess: () => {
+      invalidateQueries(['image-management', 'cross-references']);
+    },
+  });
+
+export const useDeleteImageMutation = () =>
+  useMutation({
+    mutationFn: (imageId: string) => axios.delete(`Image/Management/${imageId}`),
+    onSuccess: () => {
+      invalidateQueries(['image-management', 'cross-references']);
+    },
+  });
+
 /** Uploads an image file and links it to a series via a two-step flow:
  *  1. POST /Image/Management/Upload (multipart) — returns the new image's UID.
  *  2. POST /Image/Management/CrossReference/Entity/Shoko/Series/{seriesId} — creates the cross-reference.
