@@ -194,17 +194,15 @@ const SeriesImages = () => {
               &nbsp;Listed
             </div>
             <div className="flex gap-x-6">
+              <MultiStateButton activeState={tabType} onStateChange={handleTabChange} states={tabStates} />
               <Button
                 buttonType="primary"
-                buttonSize="normal"
+                buttonSize="small"
                 onClick={toggleUploadModal}
+                tooltip={`Upload ${tabType.slice(0, -1)}`}
               >
-                <div className="flex items-center gap-x-2">
-                  <Icon path={mdiImagePlusOutline} size={1} />
-                  Upload Image
-                </div>
+                <Icon path={mdiImagePlusOutline} size={1} />
               </Button>
-              <MultiStateButton activeState={tabType} onStateChange={handleTabChange} states={tabStates} />
             </div>
           </div>
           <div className="rounded-lg border border-panel-border bg-panel-background-transparent p-6">
