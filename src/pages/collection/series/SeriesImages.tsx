@@ -232,6 +232,7 @@ const SeriesImages = () => {
                           )}
                           linkToImage
                           zoomOnHover
+                          overlayOnHover
                         >
                           {xref.IsPreferred && (
                             <div className="absolute top-0 right-0 rounded-bl-lg bg-panel-background-overlay p-2 text-panel-text-important opacity-100 transition-opacity group-hover:opacity-0">
