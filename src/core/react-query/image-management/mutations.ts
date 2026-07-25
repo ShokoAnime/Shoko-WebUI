@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type { AddImageCrossReferenceRequestType, UploadSeriesImageRequestType } from './types';
+import type { UploadSeriesImageRequestType } from './types';
 import type { ImageSlimType } from '@/core/types/api/image';
 
 export const useSetPreferredImageMutation = () =>
@@ -41,17 +41,20 @@ export const useUploadSeriesImageMutation = () =>
       formData.append('file', file);
       formData.append('userSubmitted', 'true');
 
-      const imageSlim = (await axios.post('Image/Management/Upload', formData)) as unknown as ImageSlimType;
+      const imageSlim: ImageSlimType = await axios.post('Image/Management/Upload', formData);
 
-      const body: AddImageCrossReferenceRequestType = {
-        ImageID: imageSlim.UID,
-        ImageType: imageType,
-      };
-
-      return await axios.post(
-        `Image/Management/CrossReference/Entity/Shoko/Series/${seriesId}`,
-        body,
-      );
+      try {
+        return await axios.post(
+          `Image/Management/CrossReference/Entity/Shoko/Series/${seriesId}`,
+          {
+            ImageID: imageSlim.UID,
+            ImageType: imageType,
+          },
+        );
+      } catch (error) {
+        await axios.delete(`Image/Management/${imageSlim.UID}`);
+        throw error;
+      }
     },
     onSuccess: (_, { seriesId }) => {
       invalidateQueries(['image-management', 'cross-references', seriesId]);
