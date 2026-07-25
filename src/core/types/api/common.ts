@@ -5,7 +5,7 @@ export type ImageLinkType = {
 };
 
 export type ImageType = ImageLinkType & {
-  Source: ImageSourceEnum;
+  Source: ImageSourceType;
   Type: ImageTypeEnum;
   ID: number;
   PrimaryUID: string;
@@ -26,11 +26,7 @@ export type EpisodeImagesType = ImagesType & {
   Thumbnails?: ImageType[];
 };
 
-export const enum ImageSourceEnum {
-  AniDB = 'AniDB',
-  TMDB = 'TMDB',
-  Shoko = 'Shoko',
-}
+export type ImageSourceType = 'AniDB' | 'TMDB' | 'Shoko' | 'User';
 
 export const enum ImageTypeEnum {
   Poster = 'Poster',

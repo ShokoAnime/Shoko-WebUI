@@ -1,4 +1,4 @@
-import type { ImageLinkType, ImageTypeEnum, RatingType } from './common';
+import type { ImageLinkType, ImageSourceType, ImageTypeEnum, RatingType } from './common';
 
 export type RandomImageMetadataResultType = {
   Source: string;
@@ -31,14 +31,16 @@ export type ImageSlimType = ImageLinkType & {
   Height?: number;
 };
 
+export type CrossReferenceImageType = 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
+
 export type ImageCrossReferenceType = {
   /** The cross-reference ID — used for set-preferred mutations. */
   ID: number;
   ImageID: string;
   /** The primary image's UUID for the associated entity. */
   PrimaryImageID: string;
-  ImageType: 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
-  ImageSource: string;
+  ImageType: CrossReferenceImageType;
+  ImageSource: ImageSourceType;
   EntityID: string;
   EntityType: string;
   EntitySource: string;
