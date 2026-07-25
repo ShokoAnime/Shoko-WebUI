@@ -15,7 +15,7 @@ import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
-  useDeleteImageMutation,
+  useDeleteImageCrossReferenceMutation,
   useSetPreferredImageMutation,
   useUnsetPreferredImageMutation,
 } from '@/core/react-query/image-management/mutations';
@@ -76,7 +76,7 @@ const SeriesImages = () => {
 
   const { mutate: setPreferred } = useSetPreferredImageMutation();
   const { mutate: unsetPreferred } = useUnsetPreferredImageMutation();
-  const { mutateAsync: deleteImage } = useDeleteImageMutation();
+  const { mutateAsync: deleteImage } = useDeleteImageCrossReferenceMutation();
   const [showUploadModal, toggleUploadModal] = useToggle(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -101,7 +101,7 @@ const SeriesImages = () => {
 
   const handleDeleteImage = async () => {
     if (!selectedImage) return;
-    await deleteImage(selectedImage.ImageID, {
+    await deleteImage(selectedImage.ID, {
       onSuccess: () => toast.success(`${imageLabel} deleted.`),
       onError: () => toast.error(`Failed to delete ${imageLabel.toLowerCase()}.`),
     });

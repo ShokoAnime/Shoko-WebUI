@@ -22,9 +22,9 @@ export const useUnsetPreferredImageMutation = () =>
     },
   });
 
-export const useDeleteImageMutation = () =>
+export const useDeleteImageCrossReferenceMutation = () =>
   useMutation({
-    mutationFn: (imageId: string) => axios.delete(`Image/Management/${imageId}`),
+    mutationFn: (xrefId: number) => axios.delete(`Image/Management/CrossReference/${xrefId}`),
     onSuccess: () => {
       invalidateQueries(['image-management', 'cross-references']);
     },
