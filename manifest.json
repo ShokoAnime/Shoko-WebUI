@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.98",
+      "minServerVersion": "6.0.0-dev.384",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.98/Shoko-WebUI-v2.6.0-dev.98.zip",
+      "checksum": "sha256:a932406e2c0d8608ba9b3cab8b4873a251989c9cd1141c547d51e50697d99bc7",
+      "commit": "2b2e9f41f249abf4acd6842c3300aded8c9e5904",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.384** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.384** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Use new endpoint for series image upload by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1411\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.97...v2.6.0-dev.98\n"
+    },
+    {
       "version": "2.6.0-dev.97",
       "minServerVersion": "6.0.0-dev.374",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.97/Shoko-WebUI-v2.6.0-dev.97.zip",
