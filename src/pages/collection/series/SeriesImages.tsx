@@ -1,13 +1,15 @@
 import { useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 import useMeasure from 'react-use-measure';
-import { mdiLoading, mdiStarCircleOutline } from '@mdi/js';
+import { mdiImagePlusOutline, mdiLoading, mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { capitalize, debounce } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import ImageUploadModal from '@/components/Collection/Series/ImageUploadModal';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -66,6 +68,7 @@ const SeriesImages = () => {
 
   const [selectedImage, setSelectedImage] = useState<ImageCrossReferenceType | null>(null);
   const { mutate: setPreferred } = useSetPreferredImageMutation();
+  const [showUploadModal, toggleUploadModal] = useToggle(false);
 
   const handleSelectionChange = (item: ImageCrossReferenceType) => {
     setSelectedImage(prev => (prev?.ID === item.ID ? null : item));
@@ -155,7 +158,19 @@ const SeriesImages = () => {
               {tabType}
               &nbsp;Listed
             </div>
-            <MultiStateButton activeState={tabType} onStateChange={handleTabChange} states={tabStates} />
+            <div className="flex gap-x-6">
+              <Button
+                buttonType="primary"
+                buttonSize="normal"
+                onClick={toggleUploadModal}
+              >
+                <div className="flex items-center gap-x-2">
+                  <Icon path={mdiImagePlusOutline} size={1} />
+                  Upload Image
+                </div>
+              </Button>
+              <MultiStateButton activeState={tabType} onStateChange={handleTabChange} states={tabStates} />
+            </div>
           </div>
           <div className="rounded-lg border border-panel-border bg-panel-background-transparent p-6">
             <div className="relative" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
@@ -234,6 +249,12 @@ const SeriesImages = () => {
           </div>
         </div>
       </div>
+      <ImageUploadModal
+        show={showUploadModal}
+        onClose={toggleUploadModal}
+        seriesId={series.IDs.ID}
+        imageType={tabType}
+      />
     </>
   );
 };

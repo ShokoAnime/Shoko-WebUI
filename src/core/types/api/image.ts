@@ -31,13 +31,15 @@ export type ImageSlimType = ImageLinkType & {
   Height?: number;
 };
 
+export type CrossReferenceImageType = 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
+
 export type ImageCrossReferenceType = {
   /** The cross-reference ID — used for set-preferred mutations. */
   ID: number;
   ImageID: string;
   /** The primary image's UUID for the associated entity. */
   PrimaryImageID: string;
-  ImageType: 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
+  ImageType: CrossReferenceImageType;
   ImageSource: string;
   EntityID: string;
   EntityType: string;
