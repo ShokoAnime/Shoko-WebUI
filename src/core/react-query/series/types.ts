@@ -2,6 +2,7 @@ import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType } from '@/core/types/api/common';
 import type { EpisodeTypeEnum } from '@/core/types/api/episode';
+import type { CrossReferenceImageType } from '@/core/types/api/image';
 
 type SeriesEpisodesBaseRequestType = {
   includeMissing?: IncludeOnlyFilterType;
@@ -65,6 +66,12 @@ export type RefreshAniDBSeriesRequestType = {
 export type RefreshSeriesAniDBInfoRequestType = {
   force?: boolean;
   cacheOnly?: boolean;
+};
+
+export type UploadSeriesImageRequestType = {
+  file: File;
+  imageType: CrossReferenceImageType;
+  seriesId: number;
 };
 
 export type WatchSeriesEpisodesRequestType = {

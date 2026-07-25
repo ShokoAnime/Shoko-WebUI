@@ -8,6 +8,7 @@ import type {
   DeleteSeriesRequestType,
   RefreshAniDBSeriesRequestType,
   RefreshSeriesAniDBInfoRequestType,
+  UploadSeriesImageRequestType,
   WatchSeriesEpisodesRequestType,
 } from '@/core/react-query/series/types';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
@@ -123,4 +124,16 @@ export const useRelocateSeriesFilesMutation = (seriesId: number) =>
   useMutation({
     mutationFn: () => axios.post(`Series/${seriesId}/File/Relocate`),
     onSuccess: () => toast.success('Series files renamed/moved!'),
+  });
+
+export const useUploadSeriesImageMutation = () =>
+  useMutation({
+    mutationFn: async ({ file, imageType, seriesId }: UploadSeriesImageRequestType) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      return axios.post(`Series/${seriesId}/Images/${imageType}/Upload`, formData);
+    },
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['image-management', 'cross-references', seriesId]);
+    },
   });
