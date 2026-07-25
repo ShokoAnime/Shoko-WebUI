@@ -105,6 +105,7 @@ const SeriesImages = () => {
       onSuccess: () => toast.success(`${imageLabel} deleted.`),
       onError: () => toast.error(`Failed to delete ${imageLabel.toLowerCase()}.`),
     });
+    setSelectedImage(null);
   };
 
   const handleTabChange = (newType: ImageTabType) => {
