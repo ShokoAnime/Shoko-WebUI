@@ -96,11 +96,11 @@
   "Dev": [
     {
       "version": "2.6.0-dev.99",
-      "minServerVersion": "6.0.0-dev.388",
+      "minServerVersion": "6.0.0-dev.389",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.99/Shoko-WebUI-v2.6.0-dev.99.zip",
       "checksum": "sha256:e4968f7080e826f2b86b90337d22ab7510ce27a6d3c705baf2e72469e7ad8604",
       "commit": "f02952b63943e8e1c63a1650a481859ee4ed9822",
-      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.388** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.388** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update ReleaseManagement query layer for ShokoServer PR #1396 by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1412\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.98...v2.6.0-dev.99\n"
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.389** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.388** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Update ReleaseManagement query layer for ShokoServer PR #1396 by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1412\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.98...v2.6.0-dev.99\n"
     },
     {
       "version": "2.6.0-dev.98",
