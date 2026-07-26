@@ -28,7 +28,7 @@ const DuplicatesInfo = ({ file, location }: Props) => {
     if (!confirmDelete) return;
 
     await deleteFileLocation({ locationId: location.ID });
-    invalidateQueries(['release-management', 'series', 'episodes']);
+    invalidateQueries(['duplicate-files', 'series', 'episodes']);
   };
 
   // To re-enable the correct keybinds once the delete confirmation modal closes

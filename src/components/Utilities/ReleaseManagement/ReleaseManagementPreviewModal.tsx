@@ -134,7 +134,7 @@ const SeriesPreviewRow = (
   );
 };
 
-const MultipleReleasesPreviewModal = ({
+const ReleaseManagementPreviewModal = ({
   allSelected,
   mixMatchSelection,
   onClose,
@@ -304,4 +304,4 @@ const MultipleReleasesPreviewModal = ({
   );
 };
 
-export default MultipleReleasesPreviewModal;
+export default ReleaseManagementPreviewModal;

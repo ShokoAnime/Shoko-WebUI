@@ -20,8 +20,8 @@ import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
-import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
-import MultipleReleasesSeriesList from '@/components/Utilities/ReleaseManagement/MultipleReleasesSeriesList';
+import ReleaseManagementPreviewModal from '@/components/Utilities/ReleaseManagement/ReleaseManagementPreviewModal';
+import ReleaseManagementSeriesList from '@/components/Utilities/ReleaseManagement/ReleaseManagementSeriesList';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { resetQueries } from '@/core/react-query/queryClient';
 
@@ -56,13 +56,13 @@ const ReleaseManagement = () => {
   const [allSelected, toggleAllSelected] = useToggle(true);
   const [selectedSeries, setSelectedSeries] = useState<number[]>([]);
 
-  const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'multiple-releases', 'series'] }) > 0;
+  const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'series'] }) > 0;
   const [seriesCount, setSeriesCount] = useState(0);
   const selectedCount = allSelected ? (seriesCount - selectedSeries.length) : selectedSeries.length;
 
   const handleRefresh = () => {
     if (isSeriesQueryFetching) return;
-    resetQueries(['release-management', 'multiple-releases']);
+    resetQueries(['release-management']);
   };
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
 
@@ -157,7 +157,7 @@ const ReleaseManagement = () => {
           </div>
         </ShokoPanel>
 
-        <MultipleReleasesSeriesList
+        <ReleaseManagementSeriesList
           allSelected={allSelected}
           autoDeleteMode={autoDeleteMode}
           setSelectedSeries={setSelectedSeries}
@@ -165,7 +165,7 @@ const ReleaseManagement = () => {
         />
       </div>
 
-      <MultipleReleasesPreviewModal
+      <ReleaseManagementPreviewModal
         show={showPreviewModal}
         onClose={togglePreviewModal}
         allSelected={allSelected}

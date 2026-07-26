@@ -12,8 +12,8 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
-import MultipleReleasesPreviewModal from '@/components/Utilities/ReleaseManagement/MultipleReleasesPreviewModal';
-import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
+import ReleaseManagementPreviewModal from '@/components/Utilities/ReleaseManagement/ReleaseManagementPreviewModal';
+import { useReleaseManagementSeriesDetailQuery } from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
 import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -95,7 +95,7 @@ const ReleaseManagementSeriesDetail = () => {
   const [mixMatchSelection, setMixMatchSelection] = useImmer<Map<string, number>>(new Map());
   const [mixMatchUnassignedCount, setMixMatchUnassignedCount] = useState(0);
 
-  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, includeVariations, seriesId > 0);
+  const seriesQuery = useReleaseManagementSeriesDetailQuery(seriesId, includeVariations, seriesId > 0);
   const series = seriesQuery.data;
 
   useEffect(() => {
@@ -236,7 +236,7 @@ const ReleaseManagementSeriesDetail = () => {
         onClose={toggleManageVariationsModal}
       />
 
-      <MultipleReleasesPreviewModal
+      <ReleaseManagementPreviewModal
         selectedSeries={[seriesId]}
         show={showPreviewModal}
         onClose={togglePreviewModal}

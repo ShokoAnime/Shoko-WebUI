@@ -73,7 +73,7 @@ const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
       { locationIds, removeFolder: true },
       {
         onSuccess: () => {
-          resetQueries(['release-management']);
+          resetQueries(['duplicate-files']);
           toast.success(
             `${locationIds.length} ${locationIds.length === 1 ? 'duplicate file' : 'duplicate files'} deleted!`,
           );

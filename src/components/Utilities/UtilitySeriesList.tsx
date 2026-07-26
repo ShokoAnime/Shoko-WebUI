@@ -7,11 +7,9 @@ import { useToggle } from 'usehooks-ts';
 
 import ShokoIcon from '@/components/ShokoIcon';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { useDuplicateFilesQuery, useDuplicateFilesSeriesQuery } from '@/core/react-query/duplicate-files/queries';
+import { useMissingEpisodesQuery, useMissingEpisodesSeriesQuery } from '@/core/react-query/missing-episodes/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
-import {
-  useReleaseManagementSeries,
-  useReleaseManagementSeriesEpisodes,
-} from '@/core/react-query/release-management/queries';
 import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -20,7 +18,6 @@ import useRowSelection from '@/hooks/useRowSelection';
 import DuplicateFilesModal from './DuplicateFiles/DuplicateFilesModal';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { ReleaseManagementSeriesType } from '@/core/types/api/series';
 
@@ -128,7 +125,7 @@ const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
 };
 
 type Props = {
-  type: ReleaseManagementItemType;
+  type: 'DuplicateFiles' | 'MissingEpisodes';
   setSelectedEpisodes?: (episodes: EpisodeType[]) => void;
   setSelectedSeriesId?: (id: number) => void;
   setSeriesCount: (count: number) => void;
@@ -148,14 +145,18 @@ const UtilitySeriesList = (
 
   const [selectedSeries, setSelectedSeries] = useState(0);
 
-  const seriesQuery = useReleaseManagementSeries(
-    type,
+  const duplicateFilesSeriesQuery = useDuplicateFilesSeriesQuery(
     { collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
+    type === 'DuplicateFiles',
   );
+  const missingEpisodesSeriesQuery = useMissingEpisodesSeriesQuery(
+    { collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
+    type === 'MissingEpisodes',
+  );
+  const seriesQuery = type === 'DuplicateFiles' ? duplicateFilesSeriesQuery : missingEpisodesSeriesQuery;
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
-  const episodesQuery = useReleaseManagementSeriesEpisodes(
-    type,
+  const duplicateFilesQuery = useDuplicateFilesQuery(
     selectedSeries,
     {
       collecting: onlyCollecting,
@@ -163,12 +164,24 @@ const UtilitySeriesList = (
       includeAbsolutePaths: true,
       pageSize: 50,
     },
-    selectedSeries > 0,
+    selectedSeries > 0 && type === 'DuplicateFiles',
   );
+  const missingEpisodesQuery = useMissingEpisodesQuery(
+    selectedSeries,
+    {
+      collecting: onlyCollecting,
+      includeDataFrom: ['AniDB'],
+      includeAbsolutePaths: true,
+      pageSize: 50,
+    },
+    selectedSeries > 0 && type === 'MissingEpisodes',
+  );
+  const episodesQuery = type === 'DuplicateFiles' ? duplicateFilesQuery : missingEpisodesQuery;
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
 
   useEffect(() => () => {
-    resetQueries(['release-management', 'series', 'episodes']);
+    resetQueries(['duplicate-files', 'series', 'episodes']);
+    resetQueries(['missing-episodes', 'series', 'episodes']);
   }, []);
 
   const [showEpisodeModal, toggleEpisodeModal, setEpisodeModal] = useToggle(false);
