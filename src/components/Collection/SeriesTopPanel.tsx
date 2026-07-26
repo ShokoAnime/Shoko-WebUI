@@ -103,7 +103,14 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
         >
           <CustomTagModal seriesId={toNumber(seriesId)} show={showTagModal} onClose={toggleTagModal} />
           {tags.slice(0, 10)
-            .map(tag => <TagButton key={tag.ID} text={tag.Name} tagType={tag.Source} type="Series" />)}
+            .map(tag => (
+              <TagButton
+                key={tag.ID}
+                text={tag.Name}
+                tagType={tag.Source === 'AniDB' ? 'AniDB' : 'User'}
+                type="Series"
+              />
+            ))}
         </ShokoPanel>
 
         <ShokoPanel

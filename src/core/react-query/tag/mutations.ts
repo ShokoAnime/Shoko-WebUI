@@ -1,5 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { PostTagUserResponse } from '@/core/api/generated/tag/tag';
+import { validateResponse } from '@/core/api/validateResponse';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
@@ -12,7 +14,8 @@ import type { TagType } from '@/core/types/api/tags';
 
 export const useCreateUserTagMutation = () =>
   useMutation<TagType, unknown, CreateUserTagRequestType>({
-    mutationFn: (body: CreateUserTagRequestType) => axios.post('Tag/User', body),
+    mutationFn: (body: CreateUserTagRequestType) =>
+      axios.post('Tag/User', body).then(data => validateResponse(PostTagUserResponse, data, 'POST Tag/User')),
     onSuccess: () => {
       invalidateQueries(['tags', 'user']);
     },

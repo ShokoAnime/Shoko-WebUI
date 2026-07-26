@@ -1,6 +1,7 @@
 import { MutationCache, QueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
+import { SchemaValidationError } from '@/core/api/validateResponse';
 import Events from '@/core/events';
 import store from '@/core/store';
 import toast from '@/core/toast';
@@ -21,6 +22,9 @@ const processError = (error: AxiosError | Error) => {
     errorHeader = `Error ${status}: ${method?.toUpperCase()} ${url}`;
     errorMessage = data?.detail ?? message;
     errorStatus = status;
+  } else if (error instanceof SchemaValidationError) {
+    errorHeader = 'Invalid API Response';
+    errorMessage = error.message;
   } else {
     errorHeader = '[API]';
     errorMessage = `Error ${error.message}`;
@@ -46,6 +50,11 @@ const queryClient = new QueryClient({
           && status === 401
         ) {
           store.dispatch({ type: Events.AUTH_LOGOUT });
+          return false;
+        }
+
+        if (error instanceof SchemaValidationError) {
+          toast.error(header, message);
           return false;
         }
 

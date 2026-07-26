@@ -1,5 +1,11 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
+import {
+  GetSeriesSeriesIDEpisodeResponse,
+  GetSeriesSeriesIDTagsResponse,
+  GetSeriesSeriesIDTagsUserResponse,
+} from '@/core/api/generated/series/series';
+import { validateResponse } from '@/core/api/validateResponse';
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
 
@@ -86,6 +92,13 @@ export const useSeriesEpisodesInfiniteQuery = (
             page: pageParam as number,
           },
         },
+      ).then(data =>
+        // Validated against the generated schema only — EpisodeType stays the
+        // authoritative hand-written type here (41 other consumers), so this
+        // cast is a known, temporary gap until EpisodeType itself is swapped.
+        validateResponse(GetSeriesSeriesIDEpisodeResponse, data, `GET Series/${seriesId}/Episode`) as ListResultType<
+          EpisodeType
+        >
       ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, _, lastPageParam: number) => {
@@ -124,14 +137,20 @@ export const useSeriesNextUpQuery = (seriesId: number, params: SeriesNextUpReque
 export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestType, enabled = true) =>
   useQuery<TagType[]>({
     queryKey: ['series', seriesId, 'tags', params],
-    queryFn: () => axios.get(`Series/${seriesId}/Tags`, { params }),
+    queryFn: () =>
+      axios.get(`Series/${seriesId}/Tags`, { params }).then(data =>
+        validateResponse(GetSeriesSeriesIDTagsResponse, data, `GET Series/${seriesId}/Tags`)
+      ),
     enabled,
   });
 
 export const useSeriesUserTagsSetQuery = (seriesId: number, enabled = true) =>
   useQuery<TagType[], unknown, Set<number>>({
     queryKey: ['series', seriesId, 'tags', 'user'],
-    queryFn: () => axios.get(`Series/${seriesId}/Tags/User`),
+    queryFn: () =>
+      axios.get(`Series/${seriesId}/Tags/User`).then(data =>
+        validateResponse(GetSeriesSeriesIDTagsUserResponse, data, `GET Series/${seriesId}/Tags/User`)
+      ),
     select: data => new Set(data.map(tag => tag.ID)),
     enabled,
     initialData: [],

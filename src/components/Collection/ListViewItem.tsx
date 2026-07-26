@@ -254,7 +254,12 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
       {tags.length > 0 && (
         <div className="flex h-9 flex-wrap items-start gap-x-2 overflow-hidden">
           {tags.map(tag => (
-            <TagButton key={`${groupExtras?.ID}-${tag.Name}`} text={tag.Name} tagType={tag.Source} type="Collection" />
+            <TagButton
+              key={`${groupExtras?.ID}-${tag.Name}`}
+              text={tag.Name}
+              tagType={tag.Source === 'AniDB' ? 'AniDB' : 'User'}
+              type="Collection"
+            />
           ))
             ?? ''}
         </div>

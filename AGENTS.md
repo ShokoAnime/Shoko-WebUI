@@ -22,11 +22,14 @@ pnpm lint           # dprint -> oxlint -> stylelint
 
 **Dev proxy:** Copy `proxy.config.default.js` to `proxy.config.js` and set the target if Shoko Server is not at `http://localhost:8111`. The dev server auto-opens the browser at `/webui/`.
 
+**API codegen:** `pnpm orval` regenerates `src/core/api/generated/` (TypeScript types + Zod validation schemas) from Shoko Server's live OpenAPI spec, targeting whatever `proxy.config.js` (falling back to `proxy.config.default.js`) points at. Requires a running Shoko Server. Commit the diff — CI has no live server to regenerate from, so the output is checked in, not built on the fly.
+
 ## Repo Structure
 
 - `src/pages` – Route-level components.
 - `src/components` – Reusable UI components.
 - `src/core` – API client (axios), Redux store, React Query, SignalR, router.
+- `src/core/api` – Orval-generated types/Zod schemas (`generated/`, do not hand-edit) and the `validateResponse` runtime-validation helper.
 - `src/hooks` – Custom React hooks.
 - `src/css` – Global styles and Tailwind entry.
 - `public/` – Static assets; `version.json` is generated here at build time.
@@ -44,6 +47,7 @@ pnpm lint           # dprint -> oxlint -> stylelint
 - **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware.
 - **Redux:** Single-file store at `src/core/store.ts`. Root reducer clears all state on `AUTH_LOGOUT`. Full store persisted to `sessionStorage`; only `apiSession` persisted to `localStorage` (when `rememberUser` is true). Store is throttled to persist at most once per second. Re-exports typed `useDispatch`/`useSelector` — import from `@/core/store`, never from `react-redux` directly.
 - **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/` with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts`.
+- **API response validation:** `src/core/api/generated/` holds Orval-generated types and Zod schemas from Shoko Server's OpenAPI spec (regenerate with `pnpm orval`; never hand-edit). `src/core/api/validateResponse.ts` validates a raw response against a generated schema and throws `SchemaValidationError` on mismatch — `queryClient.ts` treats it like the existing error path (toast, no retry) instead of the default 4x-retry behavior. Where adopted, `queryFn` validates the *raw* server response before any `select` transform runs. This is applied incrementally; most endpoints still use hand-written types from `src/core/types/api/`.
 - **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`. `version.json` is auto-generated at build time from git hash + package version.
 - **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 - **Path alias:** `@/` maps to `src/` (configured in `vite.config.mjs` and `tsconfig.json`).
@@ -55,7 +59,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 ## Code Style
 
 - **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes (double quotes in JSX), always semicolons.
-- **Linter:** Oxlint (`.oxlintrc.json`). Migrated from ESLint. Uses built-in plugins (typescript, react, import, jsx-a11y) and JS plugins (@tanstack/query, better-tailwindcss, sort-destructure-keys, @stylistic).
+- **Linter:** Oxlint (`.oxlintrc.json`). Migrated from ESLint. Uses built-in plugins (typescript, react, import, jsx-a11y) and JS plugins (@tanstack/query, better-tailwindcss, sort-destructure-keys, @stylistic). `src/core/api/generated/**` is excluded (`ignorePatterns`) — Orval's generated output uses relative parent imports between its own files, which conflicts with this repo's hand-written-code import rules; `dprint` still formats it.
 - **TypeScript:** Prefer `type` over `interface`. Prefer `T[]` syntax. Use consistent type imports. Multiline type members use semicolons; single-line members use commas.
 - **Functions:** Arrow-function expressions only (`const Foo = () => ...`). Omit parens for single parameters; require them for block bodies.
 - **Identifiers:** Minimum 3 characters. Exceptions: `cx`, `ID`, `id`, `_`, `__`. Object properties are exempt.
@@ -90,6 +94,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - Do NOT use `npm` or `yarn`; always use `pnpm add` / `pnpm remove`.
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
+- `src/core/api/generated/` is Orval-owned — never hand-edit; run `pnpm orval` against a live Shoko Server and commit the diff instead.
 - If you modify files, styles, structures, configurations, or workflows mentioned in this file, update the corresponding `AGENTS.md` sections to keep them accurate.
 - **Use `semver` for version comparisons** — hand-rolling version parsing with `Number.parseInt`/`split('.')` silently mishandles pre-release suffixes.
 - **Use `dayjs` for date formatting/manipulation** — never use `new Date()` / `.toLocaleString()` for display. Always import from `@/core/util`: `import { dayjs } from '@/core/util'`. Plugins and locale are pre-configured there.

@@ -13,7 +13,7 @@ import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { TagType } from '@/core/types/api/tags';
 
-const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
+const cleanString = (input?: string | null) => (input ?? '').replaceAll(' ', '').toLowerCase();
 
 const SingleTag = ({ onTagExpand, tag }: { tag: TagType, onTagExpand: (tag: TagType) => void }) => {
   const emitTag = () => onTagExpand(tag);
