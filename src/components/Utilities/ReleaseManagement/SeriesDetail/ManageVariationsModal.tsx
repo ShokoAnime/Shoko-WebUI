@@ -10,7 +10,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useMarkVariationMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
-import { useMultipleReleaseSeriesDetailQuery } from '@/core/react-query/release-management/queries';
+import { useReleaseManagementSeriesDetailQuery } from '@/core/react-query/release-management/queries';
 import toast from '@/core/toast';
 import { buildEpisodeCoverageString } from '@/core/utilities/releaseManagementHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
@@ -30,7 +30,7 @@ const ManageVariationsModal = ({ onClose, seriesId, seriesTitle, show }: Props) 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
 
-  const seriesQuery = useMultipleReleaseSeriesDetailQuery(seriesId, true, show && seriesId > 0);
+  const seriesQuery = useReleaseManagementSeriesDetailQuery(seriesId, true, show && seriesId > 0);
 
   const allFiles = seriesQuery.data
     ? uniqBy(seriesQuery.data.Candidates.flatMap(candidate => candidate.Files), 'VideoLocalID')

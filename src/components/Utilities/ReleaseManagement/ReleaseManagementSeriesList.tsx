@@ -9,7 +9,7 @@ import { debounce } from 'lodash';
 
 import { Badge } from '@/components/Badge';
 import ShokoIcon from '@/components/ShokoIcon';
-import { useMultipleReleaseSeriesQuery } from '@/core/react-query/release-management/queries';
+import { useReleaseManagementSeriesQuery } from '@/core/react-query/release-management/queries';
 import { getAnidbAnimeLink, handleShiftSelect } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -120,7 +120,7 @@ const SeriesRow = ({
   );
 };
 
-const MultipleReleasesSeriesList = ({
+const ReleaseManagementSeriesList = ({
   allSelected,
   autoDeleteMode,
   setSelectedSeries,
@@ -132,7 +132,7 @@ const MultipleReleasesSeriesList = ({
   const onlyFinishedSeries = searchParams.get('onlyFinishedSeries') === 'true';
   const includeVariations = searchParams.get('includeVariations') === 'true';
 
-  const { fetchNextPage, ...seriesQuery } = useMultipleReleaseSeriesQuery({
+  const { fetchNextPage, ...seriesQuery } = useReleaseManagementSeriesQuery({
     onlyFinishedSeries,
     includeVariations,
     onlyWithRedundant: autoDeleteMode,
@@ -271,4 +271,4 @@ const MultipleReleasesSeriesList = ({
   );
 };
 
-export default MultipleReleasesSeriesList;
+export default ReleaseManagementSeriesList;

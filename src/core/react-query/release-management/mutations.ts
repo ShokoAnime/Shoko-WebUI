@@ -6,5 +6,5 @@ import type { ReleaseDeletionRequestType } from '@/core/react-query/release-mana
 
 export const useReleaseDeleteMutation = () =>
   useMutation({
-    mutationFn: (body: ReleaseDeletionRequestType) => axios.post('ReleaseManagement/MultipleReleases/Execute', body),
+    mutationFn: (body: ReleaseDeletionRequestType) => axios.post('ReleaseManagement/Execute', body),
   });

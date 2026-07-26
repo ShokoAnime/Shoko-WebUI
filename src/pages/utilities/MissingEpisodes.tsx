@@ -22,14 +22,14 @@ import type { EpisodeType } from '@/core/types/api/episode';
 const MissingEpisodes = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'series'] }) > 0;
+  const isSeriesQueryFetching = useIsFetching({ queryKey: ['missing-episodes', 'series'] }) > 0;
 
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedEpisodes, setSelectedEpisodes] = useState<EpisodeType[]>([]);
 
   const handleRefresh = () => {
     if (isSeriesQueryFetching) return;
-    resetQueries(['release-management', 'series']);
+    resetQueries(['missing-episodes', 'series']);
   };
 
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
@@ -59,7 +59,7 @@ const MissingEpisodes = () => {
       .catch(() => toast.error('One or more operations failed!'))
       .finally(() => {
         setHidePending(false);
-        resetQueries(['release-management']);
+        resetQueries(['missing-episodes']);
         setSelectedEpisodes([]);
       });
   };

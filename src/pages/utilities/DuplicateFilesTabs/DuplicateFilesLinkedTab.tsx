@@ -20,14 +20,14 @@ import { resetQueries } from '@/core/react-query/queryClient';
 const DuplicateFilesLinkedTab = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const isSeriesQueryFetching = useIsFetching({ queryKey: ['release-management', 'series'] }) > 0;
+  const isSeriesQueryFetching = useIsFetching({ queryKey: ['duplicate-files', 'series'] }) > 0;
 
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedSeries, setSelectedSeries] = useState(0);
 
   const handleRefresh = () => {
     if (isSeriesQueryFetching) return;
-    resetQueries(['release-management', 'series']);
+    resetQueries(['duplicate-files', 'series']);
   };
 
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
