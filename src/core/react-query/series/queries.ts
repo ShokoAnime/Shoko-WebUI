@@ -5,7 +5,6 @@ import {
   GetSeriesSeriesIDTagsResponse,
   GetSeriesSeriesIDTagsUserResponse,
 } from '@/core/api/generated/series/series';
-import { validateResponse } from '@/core/api/validateResponse';
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
 
@@ -32,7 +31,6 @@ import type {
   SeriesRecommendedType,
   SeriesType,
 } from '@/core/types/api/series';
-import type { TagType } from '@/core/types/api/tags';
 
 export const useSeriesQuery = (
   seriesId: number,
@@ -84,6 +82,10 @@ export const useSeriesEpisodesInfiniteQuery = (
   useInfiniteQuery<ListResultType<EpisodeType>>({
     queryKey: ['series', seriesId, 'episodes', params],
     queryFn: ({ pageParam }) =>
+      // Validated against the generated schema (via the `schema` config
+      // key), but cast to the hand-written type below — EpisodeType stays
+      // authoritative here (41 other consumers), so this is a known,
+      // temporary gap until EpisodeType itself is swapped.
       axios.get(
         `Series/${seriesId}/Episode`,
         {
@@ -91,15 +93,9 @@ export const useSeriesEpisodesInfiniteQuery = (
             ...params,
             page: pageParam as number,
           },
+          schema: GetSeriesSeriesIDEpisodeResponse,
         },
-      ).then(data =>
-        // Validated against the generated schema only — EpisodeType stays the
-        // authoritative hand-written type here (41 other consumers), so this
-        // cast is a known, temporary gap until EpisodeType itself is swapped.
-        validateResponse(GetSeriesSeriesIDEpisodeResponse, data, `GET Series/${seriesId}/Episode`) as ListResultType<
-          EpisodeType
-        >
-      ),
+      ) as Promise<ListResultType<EpisodeType>>,
     initialPageParam: 1,
     getNextPageParam: (lastPage, _, lastPageParam: number) => {
       if (!params.pageSize || lastPage.Total / params.pageSize <= lastPageParam) return undefined;
@@ -135,22 +131,16 @@ export const useSeriesNextUpQuery = (seriesId: number, params: SeriesNextUpReque
   });
 
 export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestType, enabled = true) =>
-  useQuery<TagType[]>({
+  useQuery({
     queryKey: ['series', seriesId, 'tags', params],
-    queryFn: () =>
-      axios.get(`Series/${seriesId}/Tags`, { params }).then(data =>
-        validateResponse(GetSeriesSeriesIDTagsResponse, data, `GET Series/${seriesId}/Tags`)
-      ),
+    queryFn: () => axios.get(`Series/${seriesId}/Tags`, { params, schema: GetSeriesSeriesIDTagsResponse }),
     enabled,
   });
 
 export const useSeriesUserTagsSetQuery = (seriesId: number, enabled = true) =>
-  useQuery<TagType[], unknown, Set<number>>({
+  useQuery({
     queryKey: ['series', seriesId, 'tags', 'user'],
-    queryFn: () =>
-      axios.get(`Series/${seriesId}/Tags/User`).then(data =>
-        validateResponse(GetSeriesSeriesIDTagsUserResponse, data, `GET Series/${seriesId}/Tags/User`)
-      ),
+    queryFn: () => axios.get(`Series/${seriesId}/Tags/User`, { schema: GetSeriesSeriesIDTagsUserResponse }),
     select: data => new Set(data.map(tag => tag.ID)),
     enabled,
     initialData: [],

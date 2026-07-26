@@ -131,7 +131,7 @@ export const useUploadSeriesImageMutation = () =>
     mutationFn: async ({ file, imageType, seriesId }: UploadSeriesImageRequestType) => {
       const formData = new FormData();
       formData.append('file', file);
-      return axios.post(`Series/${seriesId}/Images/${imageType}/Upload`, formData);
+      await axios.post(`Series/${seriesId}/Images/${imageType}/Upload`, formData);
     },
     onSuccess: (_, { seriesId }) => {
       invalidateQueries(['image-management', 'cross-references', seriesId]);

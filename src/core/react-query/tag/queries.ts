@@ -1,28 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { GetTagAniDBResponse, GetTagUserResponse } from '@/core/api/generated/tag/tag';
-import { validateResponse } from '@/core/api/validateResponse';
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
 
 import type { TagsRequestType } from '@/core/react-query/tag/types';
-import type { ListResultType } from '@/core/types/api';
-import type { TagType } from '@/core/types/api/tags';
 
 export const useAniDBTagsQuery = (params: TagsRequestType, enabled = true) =>
-  useQuery<ListResultType<TagType>, unknown, TagType[]>({
+  useQuery({
     queryKey: ['tags', 'anidb', params],
-    queryFn: () =>
-      axios.get('Tag/AniDB', { params }).then(data => validateResponse(GetTagAniDBResponse, data, 'GET Tag/AniDB')),
+    queryFn: () => axios.get('Tag/AniDB', { params, schema: GetTagAniDBResponse }),
     select: transformListResultSimplified,
     enabled,
   });
 
 export const useUserTagsQuery = (params: TagsRequestType, enabled = true) =>
-  useQuery<ListResultType<TagType>, unknown, TagType[]>({
+  useQuery({
     queryKey: ['tags', 'user', params],
-    queryFn: () =>
-      axios.get('Tag/User', { params }).then(data => validateResponse(GetTagUserResponse, data, 'GET Tag/User')),
+    queryFn: () => axios.get('Tag/User', { params, schema: GetTagUserResponse }),
     select: transformListResultSimplified,
     enabled,
   });

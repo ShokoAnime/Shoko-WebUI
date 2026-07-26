@@ -62,7 +62,7 @@ export const useMoveGroupMutation = () =>
 export const useRelocateGroupFilesMutation = (groupId: number) =>
   useMutation({
     mutationFn: async () => {
-      const targetSeries = await axios.get<unknown, SeriesType[]>(`Group/${groupId}/Series`, {
+      const targetSeries = await axios.get<SeriesType[]>(`Group/${groupId}/Series`, {
         params: { recursive: true },
       });
 
