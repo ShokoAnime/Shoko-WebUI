@@ -5,6 +5,8 @@ import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 import { useToggle } from 'usehooks-ts';
 
+import { Badge } from '@/components/Badge';
+
 export type FileOption = {
   placeID: number;
   absolutePath?: string;
@@ -13,6 +15,7 @@ export type FileOption = {
   groupLabel: string;
   version: number;
   isChaptered?: boolean;
+  isVariation: boolean;
   subtitleStreamCount: number;
   source?: string;
   resolution?: string;
@@ -88,6 +91,7 @@ export const MixAndMatchEpisode = ({
           {selectedOption && (
             <>
               <span className="font-semibold">{selectedOption.groupLabel}</span>{' '}
+              {selectedOption.isVariation && <Badge className="bg-panel-input">Variation</Badge>}{' '}
               <span className="opacity-65">
                 - {getOptionSummary(selectedOption)}, {prettyBytes(selectedOption.fileSize, { binary: true })}
               </span>
@@ -106,7 +110,8 @@ export const MixAndMatchEpisode = ({
         {isExpanded && (
           <div className="border-t border-panel-border">
             {episode.options.map((option) => {
-              const { absolutePath, audioLanguages, fileSize, groupLabel, placeID, subtitleLanguages } = option;
+              const { absolutePath, audioLanguages, fileSize, groupLabel, isVariation, placeID, subtitleLanguages } =
+                option;
               const isSelected = selectedPlaceID === placeID;
               const fileName = absolutePath?.split(/[/\\]/).pop() ?? `Place ${placeID}`;
               const summary = getOptionSummary(option);
@@ -130,7 +135,10 @@ export const MixAndMatchEpisode = ({
                   />
 
                   <div className="min-w-0 grow">
-                    <div className="font-semibold">{groupLabel}</div>
+                    <div className="flex items-center gap-x-2">
+                      <div className="font-semibold">{groupLabel}</div>
+                      {isVariation && <Badge className="bg-panel-input">Variation</Badge>}
+                    </div>
                     <div className="text-xs opacity-65">{summary}</div>
                     {(audioLanguages.length > 0 || subtitleLanguages.length > 0) && (
                       <div className="text-xs opacity-65">

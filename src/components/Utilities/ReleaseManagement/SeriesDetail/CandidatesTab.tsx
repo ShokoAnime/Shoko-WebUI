@@ -39,6 +39,7 @@ const CandidatesTab = ({ primaryCandidate, series, setPrimaryCandidate }: Props)
     const candidateRedundant = isSubsetOf(candidate.Episodes, primaryEpisodeSet);
 
     const deletedFiles = candidate.Files.filter((fileEntry) => {
+      if (fileEntry.IsVariation) return false;
       if (primaryPlaceIds.has(fileEntry.PlaceID)) return false;
       if (candidateRedundant) return true;
       return series.IsAiring

@@ -57,6 +57,8 @@ const buildEpisodeMap = (items: ReleaseCandidateType[] | ReleaseOverrideType[]) 
             groupLabel: item.Name,
             version: file.Version,
             isChaptered: file.IsChaptered,
+            // OverrideFileType (used for partial-coverage groups) has no IsVariation field.
+            isVariation: 'IsVariation' in file && file.IsVariation,
             subtitleStreamCount: item.SubtitleStreamCount,
             source: item.Source,
             resolution: item.Resolution,

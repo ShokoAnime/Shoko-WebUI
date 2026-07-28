@@ -165,9 +165,12 @@ const ReleaseManagementPreviewModal = ({
     show && !mixMatchSelection,
   );
 
+  // Mix & Match always fetches with includeVariations=true, so a selection may legitimately
+  // include a variation's PlaceID - this must match or the endpoint 400s on an "unknown" ID.
   const mixMatchPreviewQuery = useReleaseMixMatchDeletionPreviewQuery(
     selectedSeries?.[0] ?? 0,
     { selectedPlaceIDs: mixMatchSelection ?? [] },
+    true,
     show && !!mixMatchSelection && !!selectedSeries,
   );
   const mixMatchPreviewData = mixMatchPreviewQuery.data ? [mixMatchPreviewQuery.data] : undefined;

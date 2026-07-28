@@ -4,6 +4,8 @@ export type EpisodeCoverageType = {
   Type: EpisodeTypeEnum;
   Number: number;
   GroupShortName?: string;
+  /** PlaceIDs of every file covering this episode. Only populated on candidate-level `Episodes`; always empty on a file's own `Episodes`. More than one entry means multiple files legitimately cover this episode. */
+  PlaceIDs: number[];
 };
 
 export type ReleaseCandidateFileType = {
@@ -12,6 +14,7 @@ export type ReleaseCandidateFileType = {
   AbsolutePath?: string;
   FileSize: number;
   Version: number;
+  IsVariation: boolean;
   IsRedundant: boolean;
   IsChaptered?: boolean;
   IsCensored?: boolean;

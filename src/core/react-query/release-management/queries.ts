@@ -60,10 +60,14 @@ export const useReleaseDeletionPreviewQuery = (
 export const useReleaseMixMatchDeletionPreviewQuery = (
   seriesId: number,
   body: ReleaseMixMatchDeletionPreviewRequestType,
+  includeVariations = false,
   enabled = true,
 ) =>
   useQuery<ReleaseDeletionPreviewType>({
-    queryKey: ['release-management', 'preview', 'mix-match', seriesId, body],
-    queryFn: () => axios.post(`ReleaseManagement/Series/${seriesId}/Override`, body),
+    queryKey: ['release-management', 'preview', 'mix-match', seriesId, body, includeVariations],
+    queryFn: () =>
+      axios.post(`ReleaseManagement/Series/${seriesId}/Override`, body, {
+        params: { includeVariations },
+      }),
     enabled,
   });

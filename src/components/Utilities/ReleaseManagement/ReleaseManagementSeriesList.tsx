@@ -150,11 +150,7 @@ const ReleaseManagementSeriesList = ({
   const lastRowIndex = useRef<number>(undefined);
   const handleRowClick = (event: MouseEvent<HTMLDivElement>, index: number) => {
     if (!autoDeleteMode) {
-      navigate(
-        `${series[index].SeriesID.toString()}?tab=candidates&includeVariations=${
-          searchParams.get('includeVariations') ?? 'true'
-        }`,
-      );
+      navigate(`${series[index].SeriesID.toString()}?tab=candidates&includeVariations=${includeVariations}`);
       return;
     }
 

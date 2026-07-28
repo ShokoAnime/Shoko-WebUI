@@ -95,8 +95,17 @@ const ReleaseManagementSeriesDetail = () => {
   const [mixMatchSelection, setMixMatchSelection] = useImmer<Map<string, number>>(new Map());
   const [mixMatchUnassignedCount, setMixMatchUnassignedCount] = useState(0);
 
+  // Candidates tab passes through the list page's includeVariations toggle, same as the batch
+  // preview. Mix & Match always wants every file - variations included - as a pickable option
+  // regardless of that toggle, so it fetches independently with includeVariations forced true.
   const seriesQuery = useReleaseManagementSeriesDetailQuery(seriesId, includeVariations, seriesId > 0);
   const series = seriesQuery.data;
+
+  const mixMatchSeriesQuery = useReleaseManagementSeriesDetailQuery(
+    seriesId,
+    true,
+    seriesId > 0 && activeTab === 'mixmatch',
+  );
 
   useEffect(() => {
     if (seriesQuery.isError) {
@@ -219,10 +228,24 @@ const ReleaseManagementSeriesDetail = () => {
           />
         )}
 
-        {series && activeTab === 'mixmatch' && (
+        {activeTab === 'mixmatch' && mixMatchSeriesQuery.isPending && (
+          <div className="flex h-32 items-center justify-center text-panel-text-primary">
+            <Icon path={mdiLoading} size={2} spin />
+          </div>
+        )}
+
+        {activeTab === 'mixmatch' && mixMatchSeriesQuery.isError && (
+          <div className="flex h-32 items-center justify-center">
+            <span className="text-panel-text-danger">
+              Failed to load Mix &amp; Match options.
+            </span>
+          </div>
+        )}
+
+        {activeTab === 'mixmatch' && mixMatchSeriesQuery.data && (
           <MixAndMatchTab
             selection={mixMatchSelection}
-            series={series}
+            series={mixMatchSeriesQuery.data}
             setSelection={setMixMatchSelection}
             setUnassignedCount={setMixMatchUnassignedCount}
           />

@@ -36,8 +36,11 @@ const CandidateCard = ({
   const [markVariationsPending, setMarkVariationsPending] = useState(false);
 
   const coverageString = buildEpisodeCoverageString(candidate.Episodes);
-  const totalSize = candidate.Files.reduce((sum, file) => sum + file.FileSize, 0);
+  const realFiles = candidate.Files.filter(file => !file.IsVariation);
+  const variationFiles = candidate.Files.filter(file => file.IsVariation);
+  const totalSize = realFiles.reduce((sum, file) => sum + file.FileSize, 0);
   const redundantEpisodeStr = buildEpisodeCoverageString(candidate.RedundantEpisodes);
+  const multiFileEpisodeCount = candidate.Episodes.filter(episode => episode.PlaceIDs.length > 1).length;
 
   const isVersion = candidate.DecidingSignal === 'Version';
 
@@ -53,9 +56,9 @@ const CandidateCard = ({
   const handleMarkAllAsVariations = async () => {
     try {
       setMarkVariationsPending(true);
-      await Promise.all(candidate.Files.map(file => markVariation({ fileId: file.VideoLocalID, variation: true })));
+      await Promise.all(realFiles.map(file => markVariation({ fileId: file.VideoLocalID, variation: true })));
       resetQueries(['release-management']);
-      toast.success(`Marked ${candidate.Files.length} file${candidate.Files.length !== 1 ? 's' : ''} as variations`);
+      toast.success(`Marked ${realFiles.length} file${realFiles.length !== 1 ? 's' : ''} as variations`);
     } catch (_error) {
       toast.error('Failed to mark files as variations');
     }
@@ -171,10 +174,23 @@ const CandidateCard = ({
       <div className="border-t border-panel-border pt-3 text-sm">
         Coverage:&nbsp;
         <span className="font-semibold">{coverageString !== '' ? coverageString : 'None'}</span>
+        {multiFileEpisodeCount > 0 && (
+          <span
+            className="ml-2 text-panel-text-warning"
+            data-tooltip-id="tooltip"
+            data-tooltip-content="Multiple files legitimately cover the same episode - a multi-part release, or files with no detectable difference"
+          >
+            (
+            {multiFileEpisodeCount}
+            &nbsp;
+            {multiFileEpisodeCount === 1 ? 'episode has' : 'episodes have'}
+            &nbsp;multiple files)
+          </span>
+        )}
 
         <div className="mt-1">
           Files:&nbsp;
-          <span className="font-semibold">{candidate.Files.length}</span>
+          <span className="font-semibold">{realFiles.length}</span>
           {candidate.RedundantFileCount > 0 && (
             <>
               &nbsp;(
@@ -183,6 +199,14 @@ const CandidateCard = ({
                 {redundantEpisodeStr && `, ${redundantEpisodeStr}`}
               </span>
               )
+            </>
+          )}
+          {variationFiles.length > 0 && (
+            <>
+              &nbsp;(+
+              {variationFiles.length}
+              &nbsp;
+              {variationFiles.length === 1 ? 'variation' : 'variations'})
             </>
           )}
           &nbsp;,&nbsp;

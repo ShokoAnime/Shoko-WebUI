@@ -39,8 +39,10 @@ const CandidateCardFileList = ({ candidate, isAiring, isPrimary, primaryEpisodes
         const fileCoverage = buildEpisodeCoverageString(file.Episodes);
         const fileStreamSummary = buildFileStreamSummary(file);
 
-        let fileState: 'redundant' | 'kept' | 'also-delete' | 'required' | 'unknown';
-        if (isPrimary) {
+        let fileState: 'redundant' | 'kept' | 'also-delete' | 'required' | 'unknown' | 'variation';
+        if (file.IsVariation) {
+          fileState = 'variation';
+        } else if (isPrimary) {
           fileState = 'kept';
         } else if (isAiring) {
           fileState = file.IsRedundant ? 'redundant' : 'kept';
@@ -86,6 +88,7 @@ const CandidateCardFileList = ({ candidate, isAiring, isPrimary, primaryEpisodes
                 {fileState === 'also-delete' && <span className="opacity-65">Could also delete</span>}
                 {fileState === 'kept' && <span className="opacity-65">Kept</span>}
                 {fileState === 'required' && <span className="text-panel-text-warning">Required - no other copy</span>}
+                {fileState === 'variation' && <span className="opacity-65">Variation - shown for reference</span>}
                 {fileState === 'unknown' && (
                   <span
                     className="flex items-center gap-1 text-panel-text-warning"
@@ -120,6 +123,8 @@ const CandidateCardFileList = ({ candidate, isAiring, isPrimary, primaryEpisodes
             )}
 
             <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
+              {file.IsVariation && <Badge className="bg-panel-input">Variation</Badge>}
+
               {file.IsChaptered != null && (file.IsChaptered || isChapteredAnomaly) && (
                 <Badge
                   className={cx(
