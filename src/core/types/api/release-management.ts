@@ -16,6 +16,12 @@ export type ReleaseCandidateFileType = {
   Version: number;
   IsVariation: boolean;
   IsRedundant: boolean;
+  /** Release date reported by the release provider (`DateOnly`, e.g. "2024-01-05"), if known. */
+  ReleasedAt?: string;
+  /** When this file was imported into Shoko's library, if known. */
+  ImportedAt?: string;
+  /** The release's original filename as reported by the provider, if known. */
+  OriginalFilename?: string;
   IsChaptered?: boolean;
   IsCensored?: boolean;
   IsCreditless?: boolean;
@@ -39,6 +45,12 @@ export type OverrideFileType = {
   FileSize: number;
   Version: number;
   IsChaptered?: boolean;
+  /** Release date reported by the release provider (`DateOnly`, e.g. "2024-01-05"), if known. */
+  ReleasedAt?: string;
+  /** When this file was imported into Shoko's library, if known. */
+  ImportedAt?: string;
+  /** The release's original filename as reported by the provider, if known. */
+  OriginalFilename?: string;
   Episodes: EpisodeCoverageType[];
 };
 

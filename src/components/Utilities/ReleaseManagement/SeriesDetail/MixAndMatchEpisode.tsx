@@ -6,6 +6,7 @@ import prettyBytes from 'pretty-bytes';
 import { useToggle } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
+import { dayjs } from '@/core/util';
 
 export type FileOption = {
   placeID: number;
@@ -16,6 +17,9 @@ export type FileOption = {
   version: number;
   isChaptered?: boolean;
   isVariation: boolean;
+  releasedAt?: string;
+  importedAt?: string;
+  originalFilename?: string;
   subtitleStreamCount: number;
   source?: string;
   resolution?: string;
@@ -110,11 +114,23 @@ export const MixAndMatchEpisode = ({
         {isExpanded && (
           <div className="border-t border-panel-border">
             {episode.options.map((option) => {
-              const { absolutePath, audioLanguages, fileSize, groupLabel, isVariation, placeID, subtitleLanguages } =
-                option;
+              const {
+                absolutePath,
+                audioLanguages,
+                fileSize,
+                groupLabel,
+                importedAt,
+                isVariation,
+                originalFilename,
+                placeID,
+                releasedAt,
+                subtitleLanguages,
+              } = option;
               const isSelected = selectedPlaceID === placeID;
               const fileName = absolutePath?.split(/[/\\]/).pop() ?? `Place ${placeID}`;
               const summary = getOptionSummary(option);
+              const releasedAtTime = releasedAt ? dayjs(releasedAt) : undefined;
+              const importedAtTime = importedAt ? dayjs(importedAt) : undefined;
 
               return (
                 <button
@@ -147,9 +163,25 @@ export const MixAndMatchEpisode = ({
                         {subtitleLanguages.length > 0 && `Subs: ${subtitleLanguages.join(', ')}`}
                       </div>
                     )}
+                    {(releasedAtTime?.isValid() || importedAtTime?.isValid()) && (
+                      <div className="text-xs opacity-65">
+                        {releasedAtTime?.isValid() && `Released: ${releasedAtTime.format('MMMM Do, YYYY')}`}
+                        {releasedAtTime?.isValid() && importedAtTime?.isValid() && ', '}
+                        {importedAtTime?.isValid() && `Imported: ${importedAtTime.format('MMMM Do, YYYY | HH:mm')}`}
+                      </div>
+                    )}
                     {absolutePath != null
                       ? <div className="truncate text-xs opacity-50">{fileName}</div>
                       : <div className="text-xs text-panel-text-warning">Path unavailable</div>}
+                    {originalFilename && originalFilename !== fileName && (
+                      <div
+                        className="truncate text-xs opacity-50"
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={originalFilename}
+                      >
+                        Original: {originalFilename}
+                      </div>
+                    )}
                   </div>
 
                   <div className="shrink-0 text-xs opacity-65">
