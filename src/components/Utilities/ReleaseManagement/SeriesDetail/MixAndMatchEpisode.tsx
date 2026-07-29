@@ -94,8 +94,10 @@ export const MixAndMatchEpisode = ({
           )}
           {selectedOption && (
             <>
-              <span className="font-semibold">{selectedOption.groupLabel}</span>{' '}
-              {selectedOption.isVariation && <Badge className="bg-panel-input">Variation</Badge>}{' '}
+              <span className="font-semibold">{selectedOption.groupLabel}</span>
+              &nbsp;
+              {selectedOption.isVariation && <Badge className="bg-panel-input">Variation</Badge>}
+              &nbsp;
               <span className="opacity-65">
                 - {getOptionSummary(selectedOption)}, {prettyBytes(selectedOption.fileSize, { binary: true })}
               </span>
