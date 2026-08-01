@@ -95,6 +95,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.104",
+      "minServerVersion": "6.0.0-dev.400",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.104/Shoko-WebUI-v2.6.0-dev.104.zip",
+      "checksum": "sha256:66d7677b0863cb9739ce456fd7df43112378a75c49a86b1470f1d5e3008c8f6e",
+      "commit": "92764874e0bf8d3adcabdf820912cf277c96e176",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.400** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.400** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Attach response body breadcrumbs to Sentry API calls by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1419\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.103...v2.6.0-dev.104\n"
+    },
+    {
       "version": "2.6.0-dev.103",
       "minServerVersion": "6.0.0-dev.400",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.103/Shoko-WebUI-v2.6.0-dev.103.zip",
