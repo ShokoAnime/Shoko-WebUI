@@ -108,9 +108,9 @@ const ReleaseManagementSeriesDetail = () => {
   const seriesQuery = useSeriesQuery(seriesId, {}, seriesId > 0);
   const series = seriesQuery.data;
 
-  // Candidates tab passes through the list page's includeVariations toggle, same as the batch
-  // preview. Mix & Match always wants every file - variations included - as a pickable option
-  // regardless of that toggle, so it fetches independently with includeVariations forced true.
+  // The includeVariations toggle is managed via URL search params and is functional when on the
+  // Candidates tab. Mix & Match always wants every file - variations included - as a pickable
+  // option regardless of that toggle, so it fetches independently with includeVariations forced true.
   const seriesDetailQuery = useReleaseManagementSeriesDetailQuery(
     seriesId,
     activeTab === 'mixmatch' ? true : includeVariations,
@@ -124,6 +124,13 @@ const ReleaseManagementSeriesDetail = () => {
       navigate('/webui/utilities/release-management');
     }
   }, [navigate, seriesId, seriesQuery.isError]);
+
+  // Delete is disabled when:
+  // - Candidates tab: no primary candidate selected
+  // - Mix & Match tab: no overrides exist, or there are unassigned episodes
+  const isDeleteDisabled = activeTab === 'candidates'
+    ? !primaryCandidate
+    : ((seriesDetail?.Overrides.length ?? 0) === 0 || mixMatchUnassignedCount > 0);
 
   if (seriesQuery.isPending || !series) {
     return (
@@ -180,9 +187,7 @@ const ReleaseManagementSeriesDetail = () => {
             buttonType="danger"
             className="flex items-center gap-x-2.5 px-4 py-3 font-semibold whitespace-nowrap"
             onClick={togglePreviewModal}
-            disabled={activeTab === 'candidates'
-              ? !primaryCandidate
-              : (seriesDetail?.Overrides.length === 0 || mixMatchUnassignedCount > 0)}
+            disabled={isDeleteDisabled}
           >
             <Icon path={mdiTrashCanOutline} size={0.8333} />
             Delete
