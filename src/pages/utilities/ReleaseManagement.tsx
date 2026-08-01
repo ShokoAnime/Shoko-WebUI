@@ -65,6 +65,7 @@ const ReleaseManagement = () => {
     resetQueries(['release-management']);
   };
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
+  useHotkeys('escape', () => autoDeleteMode && toggleAutoDeleteMode(), { scopes: 'primary' });
 
   return (
     <>
@@ -123,7 +124,7 @@ const ReleaseManagement = () => {
             <Button
               buttonType={autoDeleteMode ? 'secondary' : 'primary'}
               className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
-              disabled={autoDeleteMode && seriesCount === 0}
+              disabled={!autoDeleteMode && seriesCount === 0}
               onClick={toggleAutoDeleteMode}
             >
               {autoDeleteMode ? 'Cancel' : (
