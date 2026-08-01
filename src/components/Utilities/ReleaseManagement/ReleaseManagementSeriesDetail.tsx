@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { mdiChevronRight, mdiFlagOutline, mdiLoading, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -14,6 +15,7 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
 import ReleaseManagementPreviewModal from '@/components/Utilities/ReleaseManagement/ReleaseManagementPreviewModal';
 import { useReleaseManagementSeriesDetailQuery } from '@/core/react-query/release-management/queries';
+import { useSeriesQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
 import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -82,11 +84,19 @@ const Title = (
 const ReleaseManagementSeriesDetail = () => {
   const navigate = useNavigateVoid();
   const { seriesId: seriesIdParam } = useParams<{ seriesId: string }>();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const seriesId = toNumber(seriesIdParam ?? 0);
   const activeTab = searchParams.get('tab') ?? 'candidates';
-  const includeVariations = (searchParams.get('includeVariations') ?? 'true') === 'true';
+  const includeVariations = activeTab === 'mixmatch' || (searchParams.get('includeVariations') ?? 'true') === 'true';
+
+  const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchParams((currentParams) => {
+      const newParams = new URLSearchParams(currentParams);
+      newParams.set(event.target.id, String(event.target.checked));
+      return newParams;
+    });
+  };
 
   const [showManageVariationsModal, toggleManageVariationsModal] = useToggle(false);
   const [showPreviewModal, togglePreviewModal] = useToggle(false);
@@ -95,19 +105,22 @@ const ReleaseManagementSeriesDetail = () => {
   const [mixMatchSelection, setMixMatchSelection] = useImmer<Map<string, number>>(new Map());
   const [mixMatchUnassignedCount, setMixMatchUnassignedCount] = useState(0);
 
+  const seriesQuery = useSeriesQuery(seriesId, {}, seriesId > 0);
+  const series = seriesQuery.data;
+
   // Candidates tab passes through the list page's includeVariations toggle, same as the batch
   // preview. Mix & Match always wants every file - variations included - as a pickable option
   // regardless of that toggle, so it fetches independently with includeVariations forced true.
-  const seriesQuery = useReleaseManagementSeriesDetailQuery(
+  const seriesDetailQuery = useReleaseManagementSeriesDetailQuery(
     seriesId,
     activeTab === 'mixmatch' ? true : includeVariations,
     seriesId > 0,
   );
-  const series = seriesQuery.data;
+  const seriesDetail = seriesDetailQuery.data;
 
   useEffect(() => {
     if (seriesQuery.isError) {
-      toast.error(`Series ${seriesId} is invalid or does not have multiple releases`);
+      toast.error(`Series ${seriesId} is invalid`);
       navigate('/webui/utilities/release-management');
     }
   }, [navigate, seriesId, seriesQuery.isError]);
@@ -128,27 +141,28 @@ const ReleaseManagementSeriesDetail = () => {
   return (
     <>
       <title>
-        {`${series.SeriesTitle} | Release Management | Shoko`}
+        {`${series.Name} | Release Management | Shoko`}
       </title>
       <ShokoPanel
         title={
           <Title
-            seriesTitle={series.SeriesTitle}
-            seriesId={series.SeriesID}
-            anidbId={series.AnidbAnimeID}
-            isAiring={series.IsAiring}
+            seriesTitle={series.Name}
+            seriesId={series.IDs.ID}
+            anidbId={series.IDs.AniDB}
+            isAiring={seriesDetail?.IsAiring ?? false}
           />
         }
       >
         <div className="flex items-center gap-x-3">
-          <div className="flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
+          <div className="flex min-h-13 grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
             <Checkbox
               id="includeVariations"
               isChecked={includeVariations}
-              onChange={() => ({})}
+              onChange={handleFilterChange}
               label="Include Variations"
               labelRight
-              disabled
+              disabled={activeTab === 'mixmatch'}
+              tooltip={activeTab === 'mixmatch' ? 'Variations are always included for Mix & Match' : ''}
             />
           </div>
 
@@ -166,7 +180,9 @@ const ReleaseManagementSeriesDetail = () => {
             buttonType="danger"
             className="flex items-center gap-x-2.5 px-4 py-3 font-semibold whitespace-nowrap"
             onClick={togglePreviewModal}
-            disabled={activeTab === 'candidates' ? !primaryCandidate : mixMatchUnassignedCount > 0}
+            disabled={activeTab === 'candidates'
+              ? !primaryCandidate
+              : (seriesDetail?.Overrides.length === 0 || mixMatchUnassignedCount > 0)}
           >
             <Icon path={mdiTrashCanOutline} size={0.8333} />
             Delete
@@ -183,7 +199,7 @@ const ReleaseManagementSeriesDetail = () => {
                 ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
                 : 'opacity-65 hover:opacity-100',
             )}
-            to="?tab=candidates"
+            to={`?tab=candidates&includeVariations=${includeVariations}`}
             replace
           >
             Candidates
@@ -196,7 +212,7 @@ const ReleaseManagementSeriesDetail = () => {
                 ? 'border-b-2 border-panel-text-primary text-panel-text-primary'
                 : 'opacity-65 hover:opacity-100',
             )}
-            to="?tab=mixmatch"
+            to={`?tab=mixmatch&includeVariations=${includeVariations}`}
             replace
           >
             Mix &amp; Match
@@ -204,32 +220,24 @@ const ReleaseManagementSeriesDetail = () => {
         </div>
 
         {/* Content */}
-        {seriesQuery.isPending && (
-          <div className="flex h-32 items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={2} spin />
+        {seriesDetailQuery.isPending && (
+          <div className="flex grow items-center justify-center text-panel-text-primary">
+            <Icon path={mdiLoading} size={4} spin />
           </div>
         )}
 
-        {seriesQuery.isError && (
-          <div className="flex h-32 items-center justify-center">
-            <span className="text-panel-text-danger">
-              Failed to load series candidates. The series may have no multiple releases.
-            </span>
-          </div>
-        )}
-
-        {series && activeTab === 'candidates' && (
+        {seriesDetail && activeTab === 'candidates' && (
           <CandidatesTab
             primaryCandidate={primaryCandidate}
-            series={series}
+            series={seriesDetail}
             setPrimaryCandidate={setPrimaryCandidate}
           />
         )}
 
-        {series && activeTab === 'mixmatch' && (
+        {seriesDetail && activeTab === 'mixmatch' && (
           <MixAndMatchTab
             selection={mixMatchSelection}
-            series={series}
+            series={seriesDetail}
             setSelection={setMixMatchSelection}
             setUnassignedCount={setMixMatchUnassignedCount}
           />
@@ -239,7 +247,7 @@ const ReleaseManagementSeriesDetail = () => {
       <ManageVariationsModal
         show={showManageVariationsModal}
         seriesId={seriesId}
-        seriesTitle={series?.SeriesTitle}
+        seriesTitle={seriesDetail?.SeriesTitle}
         onClose={toggleManageVariationsModal}
       />
 

@@ -160,8 +160,8 @@ const MixAndMatchTab = ({ selection, series, setSelection, setUnassignedCount }:
 
   if (allEpisodes.length === 0) {
     return (
-      <div className="flex h-48 items-center justify-center">
-        No episodes found across candidates.
+      <div className="flex grow items-center justify-center">
+        The series does not have any mix & match options
       </div>
     );
   }
