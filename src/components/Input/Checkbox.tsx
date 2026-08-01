@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ChangeEventHandler, ReactNode } from 'react';
+import type { PlacesType } from 'react-tooltip';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -19,6 +20,8 @@ type Props = {
   labelRight?: boolean;
   justify?: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
+  tooltip?: string;
+  tooltipPlace?: PlacesType;
 };
 
 const Checkbox = (props: Props) => {
@@ -33,6 +36,8 @@ const Checkbox = (props: Props) => {
     labelClassName,
     labelRight,
     onChange,
+    tooltip,
+    tooltipPlace,
   } = props;
   const bodyVisible = useBodyVisibleContext();
   const inputRef = useAutoFocusRef(autoFocus && !disabled && bodyVisible);
@@ -50,6 +55,9 @@ const Checkbox = (props: Props) => {
         disabled ? 'cursor-auto' : 'cursor-pointer',
         'h-8',
       ])}
+      data-tooltip-id="tooltip"
+      data-tooltip-content={tooltip}
+      data-tooltip-place={tooltipPlace ?? 'top'}
     >
       <input
         id={id}
