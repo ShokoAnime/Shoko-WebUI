@@ -69,6 +69,14 @@ const CandidatesTab = ({ primaryCandidate, series, setPrimaryCandidate }: Props)
 
   const allCandidatesLackReleaseInfo = series.Candidates.every(candidate => !candidate.HasReleaseInfo);
 
+  if (series.Candidates.length === 0) {
+    return (
+      <div className="flex grow items-center justify-center">
+        The series does not have any candidates
+      </div>
+    );
+  }
+
   return (
     <div className="flex grow flex-col gap-4">
       {allCandidatesLackReleaseInfo && (
