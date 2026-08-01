@@ -4,7 +4,7 @@ import { create } from 'axios';
 import store from '@/core/store';
 import { isDebug } from '@/core/util';
 
-import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 export const axios = create({
   baseURL: '/api/v3',
@@ -35,35 +35,44 @@ axios.interceptors.request.use(addApikeyInterceptor);
 axiosV2.interceptors.request.use(addApikeyInterceptor);
 axiosPlex.interceptors.request.use(addApikeyInterceptor);
 
-// Auth endpoints return the actual apikey in the response body - never attach it to a Sentry breadcrumb.
+// Auth endpoints return the actual apikey in the request/response body - never attach them to a Sentry breadcrumb.
 const AUTH_URL_PATTERN = /^\/?auth/i;
 const MAX_BODY_LENGTH = 2000;
 
 const truncateBody = (data: unknown) => {
+  if (data === undefined) return undefined;
   try {
-    const text = JSON.stringify(data) ?? '';
+    const text = typeof data === 'string' ? data : JSON.stringify(data) ?? '';
     return text.length > MAX_BODY_LENGTH ? `${text.slice(0, MAX_BODY_LENGTH)}…[truncated]` : text;
   } catch {
     return undefined;
   }
 };
 
-// Records a snapshot of the response body as a Sentry breadcrumb so that any error captured
-// afterwards (eg. a downstream TypeError from an unexpected shape) has the real payload attached,
-// not just the method/url/status that Sentry's automatic http breadcrumbs already provide.
-const addResponseBreadcrumb = (response: AxiosResponse, level: 'error' | 'info') => {
+// Records a snapshot of the request and response body as a Sentry breadcrumb so that any error
+// captured afterwards (eg. a downstream TypeError from an unexpected shape) has the real payload
+// attached, not just the method/url/status that Sentry's automatic http breadcrumbs already provide.
+// Also fires for network-level failures with no response (status 0), since config is still available.
+const addApiBreadcrumb = (
+  config: AxiosRequestConfig | undefined,
+  data: unknown,
+  status: number | undefined,
+  level: 'error' | 'info',
+) => {
   if (isDebug()) return;
-  const url = response.config?.url ?? '';
+  const url = config?.url ?? '';
   if (AUTH_URL_PATTERN.test(url)) return;
 
   Sentry.addBreadcrumb({
     category: 'api-response',
     level,
     data: {
-      method: response.config?.method?.toUpperCase(),
-      status: response.status,
+      method: config?.method?.toUpperCase(),
+      status,
       url,
-      body: truncateBody(response.data),
+      requestParams: truncateBody(config?.params),
+      requestBody: truncateBody(config?.data),
+      responseBody: truncateBody(data),
     },
   });
 };
@@ -71,13 +80,13 @@ const addResponseBreadcrumb = (response: AxiosResponse, level: 'error' | 'info')
 // The type of response.data depends on the endpoint called. It has to be any.
 // We are only adding this interceptor so that we don't have to get response.data every time we call axios from react-query
 const unwrapResponse = (response: AxiosResponse) => {
-  addResponseBreadcrumb(response, 'info');
+  addApiBreadcrumb(response.config, response.data, response.status, 'info');
   // oxlint-disable-next-line typescript/no-unsafe-return
   return response.data;
 };
 
 const handleResponseError = (error: AxiosError) => {
-  if (error.response) addResponseBreadcrumb(error.response, 'error');
+  addApiBreadcrumb(error.config, (error.response as AxiosResponse | undefined)?.data, error.response?.status, 'error');
   return Promise.reject(error);
 };
 
