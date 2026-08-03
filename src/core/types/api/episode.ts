@@ -58,13 +58,13 @@ export type AniDBEpisodeType = {
   Rating: RatingType;
 };
 
-export enum MatchRatingType {
-  UserVerified = 'UserVerified',
-  DateAndTitleKindaMatches = 'DateAndTitleKindaMatches',
-  DateAndTitleMatches = 'DateAndTitleMatches',
-  DateMatches = 'DateMatches',
-  TitleKindaMatches = 'TitleKindaMatches',
-  TitleMatches = 'TitleMatches',
-  FirstAvailable = 'FirstAvailable',
-  None = 'None',
-}
+export type MatchRatingType =
+  | 'DateAndTitleKindaMatches'
+  | 'DateAndTitleMatches'
+  | 'DateKindaMatches'
+  | 'DateMatches'
+  | 'FirstAvailable'
+  | 'None'
+  | 'TitleKindaMatches'
+  | 'TitleMatches'
+  | 'UserVerified';
