@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.105",
+      "minServerVersion": "6.0.0-dev.400",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.105/Shoko-WebUI-v2.6.0-dev.105.zip",
+      "checksum": "sha256:0a4dcbfa5774050c5beffdfca6db6a4fbe7f39389c420281d051f28b93c9e1a1",
+      "commit": "a176b3af814f468b05a4f9934c8c068b96a99035",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.400** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.400** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Auto-recover from the known React DOM removeChild/insertBefore race instead of showing the crash page by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1421\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.104...v2.6.0-dev.105\n"
+    },
+    {
       "version": "2.6.0-dev.104",
       "minServerVersion": "6.0.0-dev.400",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.104/Shoko-WebUI-v2.6.0-dev.104.zip",
