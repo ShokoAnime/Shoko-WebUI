@@ -7,9 +7,9 @@ import { countBy, filter, flatMap } from 'lodash';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
-import { MatchRatingType } from '@/core/types/api/episode';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
+import type { MatchRatingType } from '@/core/types/api/episode';
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 type Props = {
@@ -30,7 +30,7 @@ const TopPanel = (props: Props) => {
       if (!xrefs) return undefined;
       return filter(
         flatMap(xrefs, xref => xref),
-        xref => xref.Rating !== MatchRatingType.None,
+        xref => xref.Rating !== 'None',
       );
     },
     [xrefs],
@@ -65,7 +65,7 @@ const TopPanel = (props: Props) => {
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
               {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
-                + (matchRatingCounts.TitleKindaMatches ?? 0)}
+                + (matchRatingCounts.TitleKindaMatches ?? 0) + (matchRatingCounts.DateKindaMatches ?? 0)}
             </div>
             Approximate
           </div>
