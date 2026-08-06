@@ -1,5 +1,4 @@
 import { useEffect, useEffectEvent, useRef } from 'react';
-import { produce } from 'immer';
 import { forEach } from 'lodash';
 
 import {
@@ -8,7 +7,7 @@ import {
   useReleaseInfoByFileIdMutation,
   useSubmitReleaseInfoForFileByIdMutation,
 } from '@/core/react-query/release-info/mutations';
-import { ReleaseSource } from '@/core/types/api/file';
+import { mergeReleaseInfo } from '@/core/utilities/releaseInfoHelpers';
 
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 import type { Updater } from 'use-immer';
@@ -85,29 +84,8 @@ const useLinkWorkflow = (
           return;
         }
 
-        const finalData = produce(data, (draft) => {
-          const original = link.release;
-
-          if (draft.Source === ReleaseSource.Unknown && link.release.Source !== ReleaseSource.Unknown) {
-            draft.Source = link.release.Source;
-          }
-
-          if (draft.Version < 1) draft.Version = 1;
-
-          draft.FileSize ??= original.FileSize;
-          draft.OriginalFilename ??= original.OriginalFilename;
-          draft.IsChaptered ??= original.IsChaptered;
-          draft.IsCensored ??= original.IsCensored;
-          draft.IsCreditless ??= original.IsCreditless;
-          draft.Group ??= original.Group;
-
-          if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
-            draft.ProviderName += '+User';
-          }
-        });
-
         setLinks((draft) => {
-          draft[link.id].release = finalData;
+          draft[link.id].release = mergeReleaseInfo(data, link.release);
           draft[link.id].state = 'ready';
         });
       })

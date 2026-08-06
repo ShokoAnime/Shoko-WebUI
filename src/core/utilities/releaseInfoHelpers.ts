@@ -1,3 +1,5 @@
+import { produce } from 'immer';
+
 import { ReleaseSource } from '@/core/types/api/file';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
@@ -11,6 +13,26 @@ const generateLinkId = () => {
   lastLinkId += 1;
   return lastLinkId;
 };
+
+export const mergeReleaseInfo = (incoming: ReleaseInfoType, original: ReleaseInfoType): ReleaseInfoType =>
+  produce(incoming, (draft) => {
+    if (draft.Source === ReleaseSource.Unknown && original.Source !== ReleaseSource.Unknown) {
+      draft.Source = original.Source;
+    }
+
+    if (draft.Version < 1) draft.Version = 1;
+
+    draft.FileSize ??= original.FileSize;
+    draft.OriginalFilename ??= original.OriginalFilename;
+    draft.IsChaptered ??= original.IsChaptered;
+    draft.IsCensored ??= original.IsCensored;
+    draft.IsCreditless ??= original.IsCreditless;
+    draft.Group ??= original.Group;
+
+    if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
+      draft.ProviderName += '+User';
+    }
+  });
 
 const createLinksFromFiles = (files: FileType[], providers: ManualLinkProviderType[]) => {
   const sortedFiles = files.toSorted((fileA, fileB) => {

@@ -19,7 +19,7 @@ import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWith
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { handleShiftSelect } from '@/core/util';
-import createLinksFromFiles from '@/core/utilities/createLinksFromFiles';
+import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
