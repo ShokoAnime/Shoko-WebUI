@@ -26,7 +26,6 @@ import {
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
-import { LinkState } from '@/core/types/utilities/unrecognized-utility';
 import { handleShiftSelect } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -108,7 +107,7 @@ const LinkFilesWithProvidersTab = () => {
         id: linkId,
         file,
         providers: settings.WebUI_Settings.releaseInfoProviders ?? [],
-        state: LinkState.PreInit,
+        state: 'pre-init',
         release,
       };
     });
@@ -155,10 +154,10 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const canSubmit = initialized
-    && links.some(link => link.state === LinkState.Ready);
+    && links.some(link => link.state === 'ready');
 
   const allSubmitted = initialized
-    && links.every(link => link.state === LinkState.Submitted);
+    && links.every(link => link.state === 'submitted');
 
   const navigateBack = () => {
     setRowSelection({});
@@ -166,11 +165,11 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const handleCancel = () => {
-    if (links.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))) {
+    if (links.some(link => ['searching', 'submitting'].includes(link.state))) {
       setLinks((draft) => {
         forEach(draft, (draft2) => {
-          if (draft2.state === LinkState.Submitting) draft2.state = LinkState.Ready;
-          else if (draft2.state === LinkState.Searching) draft2.state = LinkState.Init;
+          if (draft2.state === 'submitting') draft2.state = 'ready';
+          else if (draft2.state === 'searching') draft2.state = 'init';
         });
       });
       return;
@@ -195,7 +194,7 @@ const LinkFilesWithProvidersTab = () => {
 
     if (!offlineImporterProviderId) {
       setLinks((draft) => {
-        draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
+        draft[link.id].state = hasProvidersEnabled ? 'searching' : 'init';
       });
       return;
     }
@@ -208,12 +207,12 @@ const LinkFilesWithProvidersTab = () => {
         if (!data) return;
         setLinks((draft) => {
           draft[link.id].release = data;
-          draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
+          draft[link.id].state = hasProvidersEnabled ? 'searching' : 'init';
         });
       })
       .catch(() => {
         setLinks((draft) => {
-          draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
+          draft[link.id].state = hasProvidersEnabled ? 'searching' : 'init';
         });
       })
       .finally(() => currentlyInitializingLinks.delete(link.id));
@@ -232,7 +231,7 @@ const LinkFilesWithProvidersTab = () => {
       .then((data) => {
         if (!data) {
           setLinks((draft) => {
-            draft[link.id].state = LinkState.Init;
+            draft[link.id].state = 'init';
           });
           return;
         }
@@ -260,12 +259,12 @@ const LinkFilesWithProvidersTab = () => {
 
         setLinks((draft) => {
           draft[link.id].release = finalData;
-          draft[link.id].state = LinkState.Ready;
+          draft[link.id].state = 'ready';
         });
       })
       .catch(() => {
         setLinks((draft) => {
-          draft[link.id].state = LinkState.Init;
+          draft[link.id].state = 'init';
         });
       })
       .finally(() => currentlySearchingLinks.delete(link.id));
@@ -278,12 +277,12 @@ const LinkFilesWithProvidersTab = () => {
     submitReleaseInfo({ fileId: link.file.ID, release: link.release })
       .then(() => {
         setLinks((draft) => {
-          draft[link.id].state = LinkState.Submitted;
+          draft[link.id].state = 'submitted';
         });
       })
       .catch(() => {
         setLinks((draft) => {
-          draft[link.id].state = LinkState.Ready;
+          draft[link.id].state = 'ready';
         });
       })
       .finally(() => currentlySubmittingLinks.delete(link.id));
@@ -293,11 +292,11 @@ const LinkFilesWithProvidersTab = () => {
     if (!initialized || !links.length) return;
 
     links.forEach((link) => {
-      if (link.state === LinkState.PreInit) {
+      if (link.state === 'pre-init') {
         processPreInit(link);
-      } else if (link.state === LinkState.Searching) {
+      } else if (link.state === 'searching') {
         processSearch(link);
-      } else if (link.state === LinkState.Submitting) {
+      } else if (link.state === 'submitting') {
         processSubmit(link);
       }
     });
@@ -313,8 +312,8 @@ const LinkFilesWithProvidersTab = () => {
 
     setLinks((draft) => {
       forEach(draft, (draft2) => {
-        if (draft2.state === LinkState.Ready) {
-          draft2.state = LinkState.Submitting;
+        if (draft2.state === 'ready') {
+          draft2.state = 'submitting';
         }
       });
     });
@@ -326,7 +325,7 @@ const LinkFilesWithProvidersTab = () => {
     } else {
       if (
         links.some(
-          link => [LinkState.PreInit, LinkState.Searching, LinkState.Submitting].includes(link.state),
+          link => ['pre-init', 'searching', 'submitting'].includes(link.state),
         )
       ) {
         return;
@@ -340,7 +339,7 @@ const LinkFilesWithProvidersTab = () => {
   const removeLinks = () => {
     if (
       !selectedRows.length
-      || selectedRows.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))
+      || selectedRows.some(link => ['searching', 'submitting'].includes(link.state))
     ) return;
 
     setLinks((draft) => {
@@ -355,9 +354,9 @@ const LinkFilesWithProvidersTab = () => {
     if (!providers.some(provider => provider.enabled)) return;
     setLinks((draft) => {
       selectedRows.forEach((link) => {
-        if ([LinkState.Ready, LinkState.Init].includes(link.state)) {
+        if (['ready', 'init'].includes(link.state)) {
           draft[link.id].providers = providers;
-          draft[link.id].state = LinkState.Searching;
+          draft[link.id].state = 'searching';
         }
       });
     });
@@ -365,12 +364,12 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const submitSelectedLinks = () => {
-    if (!selectedRows.length || !selectedRows.some(link => link.state === LinkState.Ready)) return;
+    if (!selectedRows.length || !selectedRows.some(link => link.state === 'ready')) return;
 
     setLinks((draft) => {
       selectedRows.forEach((link) => {
-        if (link.state === LinkState.Ready) {
-          draft[link.id].state = LinkState.Submitting;
+        if (link.state === 'ready') {
+          draft[link.id].state = 'submitting';
         }
       });
     });
@@ -378,7 +377,7 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const openAutoSearch = () => {
-    if (!selectedRows.length || !selectedRows.some(link => [LinkState.Ready, LinkState.Init].includes(link.state))) {
+    if (!selectedRows.length || !selectedRows.some(link => ['ready', 'init'].includes(link.state))) {
       return;
     }
     setShowAutoSearchModal(true);

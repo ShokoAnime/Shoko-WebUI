@@ -1,13 +1,6 @@
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 
-export enum LinkState {
-  PreInit = 'pre-init',
-  Init = 'init',
-  Searching = 'searching',
-  Ready = 'ready',
-  Submitting = 'submitting',
-  Submitted = 'submitted',
-}
+export type LinkStateType = 'pre-init' | 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'linked';
 
 export type ManualLinkProviderType = {
   id: string;
@@ -20,5 +13,5 @@ export type ManualLinkType = {
   providers: ManualLinkProviderType[];
   release: ReleaseInfoType;
   metadata?: string;
-  state: LinkState;
+  state: LinkStateType;
 };
