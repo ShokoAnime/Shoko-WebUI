@@ -46,13 +46,13 @@ import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
+import LinkFilesWithProviders from '@/pages/utilities/LinkFilesWithProviders';
 import MissingEpisodes from '@/pages/utilities/MissingEpisodes';
 import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
-import LinkFilesWithProviders from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProviders';
 import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
 import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
 
