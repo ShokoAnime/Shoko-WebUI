@@ -20,14 +20,14 @@ const linkStateClassMap = {
   ready: 'cursor-pointer',
   submitting: 'cursor-progress',
   submitted: '',
-  linked: 'animate-pulse cursor-wait',
+  fetching: 'animate-pulse cursor-wait',
 } as const;
 
 const selectionDisabledStates = [
   'pre-init',
   'searching',
   'submitting',
-  'linked',
+  'fetching',
 ];
 
 const UnrecognizedVideo = (props: Props) => {

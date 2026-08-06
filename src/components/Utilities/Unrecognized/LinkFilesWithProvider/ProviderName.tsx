@@ -29,7 +29,7 @@ const linkStateAttributes = {
     className: 'text-panel-text-important',
     text: 'Completed',
   },
-  linked: {
+  fetching: {
     className: 'text-panel-text-primary',
     text: 'Retrieving existing release info...',
   },

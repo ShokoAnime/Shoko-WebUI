@@ -20,6 +20,7 @@ import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWith
 import {
   useAutoPreviewReleaseInfoForFileByIdMutation,
   usePreviewReleaseInfoByProviderIdMutation,
+  useReleaseInfoByFileIdMutation,
   useSubmitReleaseInfoForFileByIdMutation,
 } from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
@@ -46,6 +47,7 @@ const generateLinkId = () => {
 const currentlyInitializingLinks = new Set<number>();
 const currentlySearchingLinks = new Set<number>();
 const currentlySubmittingLinks = new Set<number>();
+const currentlyFetchingLinks = new Set<number>();
 
 const LinkFilesWithProvidersTab = () => {
   const navigate = useNavigateVoid();
@@ -61,6 +63,7 @@ const LinkFilesWithProvidersTab = () => {
   const { mutateAsync: previewReleaseInfo } = usePreviewReleaseInfoByProviderIdMutation();
   const { mutateAsync: searchReleaseInfo } = useAutoPreviewReleaseInfoForFileByIdMutation();
   const { mutateAsync: submitReleaseInfo } = useSubmitReleaseInfoForFileByIdMutation();
+  const { mutateAsync: fetchReleaseInfo } = useReleaseInfoByFileIdMutation();
 
   const [linksDict, setLinks] = useImmer<LinksType>({});
   const links = Object.values(linksDict);
@@ -102,13 +105,23 @@ const LinkFilesWithProvidersTab = () => {
       };
 
       const linkId = generateLinkId();
-      newLinks[linkId] = {
-        id: linkId,
-        file,
-        providers: settings.WebUI_Settings.releaseInfoProviders ?? [],
-        state: 'pre-init',
-        release,
-      };
+      if (file.Imported) {
+        newLinks[linkId] = {
+          id: linkId,
+          file,
+          providers: [],
+          state: 'fetching',
+          release,
+        };
+      } else {
+        newLinks[linkId] = {
+          id: linkId,
+          file,
+          providers: settings.WebUI_Settings.releaseInfoProviders ?? [],
+          state: 'pre-init',
+          release,
+        };
+      }
     });
 
     setLinks(newLinks);
@@ -128,6 +141,7 @@ const LinkFilesWithProvidersTab = () => {
     currentlyInitializingLinks.clear();
     currentlySearchingLinks.clear();
     currentlySubmittingLinks.clear();
+    currentlyFetchingLinks.clear();
   }, []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -164,11 +178,11 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const handleCancel = () => {
-    if (links.some(link => ['searching', 'submitting'].includes(link.state))) {
+    if (links.some(link => ['searching', 'submitting', 'fetching'].includes(link.state))) {
       setLinks((draft) => {
         forEach(draft, (draft2) => {
           if (draft2.state === 'submitting') draft2.state = 'ready';
-          else if (draft2.state === 'searching') draft2.state = 'init';
+          else if (['searching', 'fetching'].includes(draft2.state)) draft2.state = 'init';
         });
       });
       return;
@@ -287,6 +301,32 @@ const LinkFilesWithProvidersTab = () => {
       .finally(() => currentlySubmittingLinks.delete(link.id));
   });
 
+  const processLinked = useEffectEvent((link: ManualLinkType) => {
+    if (currentlyFetchingLinks.has(link.id)) return;
+    currentlyFetchingLinks.add(link.id);
+
+    fetchReleaseInfo(link.file.ID)
+      .then((data) => {
+        if (!data) {
+          setLinks((draft) => {
+            draft[link.id].state = 'init';
+          });
+          return;
+        }
+
+        setLinks((draft) => {
+          draft[link.id].release = data;
+          draft[link.id].state = 'ready';
+        });
+      })
+      .catch(() => {
+        setLinks((draft) => {
+          draft[link.id].state = 'init';
+        });
+      })
+      .finally(() => currentlyFetchingLinks.delete(link.id));
+  });
+
   useEffect(() => {
     if (!initialized || !links.length) return;
 
@@ -297,6 +337,8 @@ const LinkFilesWithProvidersTab = () => {
         processSearch(link);
       } else if (link.state === 'submitting') {
         processSubmit(link);
+      } else if (link.state === 'fetching') {
+        processLinked(link);
       }
     });
   }, [initialized, links]);
@@ -324,7 +366,7 @@ const LinkFilesWithProvidersTab = () => {
     } else {
       if (
         links.some(
-          link => ['pre-init', 'searching', 'submitting'].includes(link.state),
+          link => ['pre-init', 'searching', 'submitting', 'fetching'].includes(link.state),
         )
       ) {
         return;
@@ -338,7 +380,7 @@ const LinkFilesWithProvidersTab = () => {
   const removeLinks = () => {
     if (
       !selectedRows.length
-      || selectedRows.some(link => ['searching', 'submitting'].includes(link.state))
+      || selectedRows.some(link => ['searching', 'submitting', 'fetching'].includes(link.state))
     ) return;
 
     setLinks((draft) => {

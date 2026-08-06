@@ -31,7 +31,7 @@ const Menu = (props: Props) => {
         name="Search for Release Info"
         keybinding="S"
         disabled={!selectedLinks.length
-          || !selectedLinks.some(link => ['ready', 'init', 'linked'].includes(link.state))}
+          || !selectedLinks.some(link => ['ready', 'init', 'fetching'].includes(link.state))}
       />
 
       <MenuButton
