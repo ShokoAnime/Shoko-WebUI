@@ -6,6 +6,7 @@ import {
   mdiChevronRight,
   mdiClipboardOutline,
   mdiCloseCircleOutline,
+  mdiCreation,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
   mdiFileDocumentEditOutline,
@@ -134,6 +135,10 @@ const Menu = (
     navigate('/webui/utilities/renamer');
   };
 
+  const navigateToEditLink = () => {
+    navigate('/webui/utilities/link-with-providers', { state: { selectedRows } });
+  };
+
   return (
     <div className="box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <div className={cx('grow gap-x-4', selectedRows.length === 0 ? 'flex' : 'hidden')}>
@@ -150,6 +155,7 @@ const Menu = (
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
+        <MenuButton onClick={navigateToEditLink} icon={mdiCreation} name="Edit Link" />
         <MenuButton
           onClick={showDeleteConfirmation}
           icon={mdiMinusCircleOutline}

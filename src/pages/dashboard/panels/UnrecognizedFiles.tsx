@@ -54,8 +54,7 @@ const FileItem = ({ file }: { file: FileType }) => {
       <Button
         tooltip="Link With Providers (beta)"
         className="relative ml-3"
-        onClick={() =>
-          navigate('/webui/utilities/unrecognized/files/link-with-providers', { state: { selectedRows: [file] } })}
+        onClick={() => navigate('/webui/utilities/link-with-providers', { state: { selectedRows: [file] } })}
       >
         <Icon
           path={mdiCreation}

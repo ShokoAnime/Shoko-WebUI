@@ -17,7 +17,6 @@ import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFile
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
 import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
-import Title from '@/components/Utilities/Unrecognized/Title';
 import {
   useAutoPreviewReleaseInfoForFileByIdMutation,
   usePreviewReleaseInfoByProviderIdMutation,
@@ -395,7 +394,7 @@ const LinkFilesWithProvidersTab = () => {
     <>
       <TransitionDiv className="flex size-full grow flex-col">
         <ShokoPanel
-          title={<Title />}
+          title="Link With Providers"
           options={<TitleOptions links={links} selectedCount={selectedRows.length} />}
         >
           <div className="flex items-center gap-x-3">
