@@ -27,6 +27,10 @@ import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 import type { FileType } from '@/core/types/api/file';
 import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
+const BUSY_STATES = new Set(['searching', 'submitting', 'fetching']);
+const NOT_SELECTABLE_STATES = new Set(['pre-init', ...BUSY_STATES]);
+const EDITABLE_STATES = new Set(['ready', 'init']);
+
 const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
@@ -96,7 +100,7 @@ const LinkFilesWithProviders = () => {
   const { cancelActiveWork } = useLinkWorkflow(links, setLinks, providerMap, initialized);
 
   const handleCancel = () => {
-    if (links.some(link => ['searching', 'submitting', 'fetching'].includes(link.state))) {
+    if (links.some(link => BUSY_STATES.has(link.state))) {
       cancelActiveWork();
       return;
     }
@@ -132,7 +136,7 @@ const LinkFilesWithProviders = () => {
     } else {
       if (
         links.some(
-          link => ['pre-init', 'searching', 'submitting', 'fetching'].includes(link.state),
+          link => NOT_SELECTABLE_STATES.has(link.state),
         )
       ) {
         return;
@@ -146,7 +150,7 @@ const LinkFilesWithProviders = () => {
   const removeLinks = () => {
     if (
       !selectedRows.length
-      || selectedRows.some(link => ['searching', 'submitting', 'fetching'].includes(link.state))
+      || selectedRows.some(link => BUSY_STATES.has(link.state))
     ) return;
 
     setLinks((draft) => {
@@ -161,7 +165,7 @@ const LinkFilesWithProviders = () => {
     if (!providers.some(provider => provider.enabled)) return;
     setLinks((draft) => {
       selectedRows.forEach((link) => {
-        if (['ready', 'init'].includes(link.state)) {
+        if (EDITABLE_STATES.has(link.state)) {
           draft[link.id].providers = providers;
           draft[link.id].state = 'searching';
         }
@@ -184,7 +188,7 @@ const LinkFilesWithProviders = () => {
   };
 
   const openAutoSearch = () => {
-    if (!selectedRows.length || !selectedRows.some(link => ['ready', 'init'].includes(link.state))) {
+    if (!selectedRows.length || !selectedRows.some(link => EDITABLE_STATES.has(link.state))) {
       return;
     }
     setShowAutoSearchModal(true);
