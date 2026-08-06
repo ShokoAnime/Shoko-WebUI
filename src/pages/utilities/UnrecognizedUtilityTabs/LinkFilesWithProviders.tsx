@@ -5,7 +5,6 @@ import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { produce } from 'immer';
 import { forEach } from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -17,18 +16,13 @@ import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFile
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
 import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
-import {
-  useAutoPreviewReleaseInfoForFileByIdMutation,
-  usePreviewReleaseInfoByProviderIdMutation,
-  useReleaseInfoByFileIdMutation,
-  useSubmitReleaseInfoForFileByIdMutation,
-} from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { ReleaseSource } from '@/core/types/api/file';
 import { handleShiftSelect } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
+import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
@@ -44,11 +38,6 @@ const generateLinkId = () => {
   return lastLinkId;
 };
 
-const currentlyInitializingLinks = new Set<number>();
-const currentlySearchingLinks = new Set<number>();
-const currentlySubmittingLinks = new Set<number>();
-const currentlyFetchingLinks = new Set<number>();
-
 const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
@@ -59,11 +48,6 @@ const LinkFilesWithProviders = () => {
     if (!releaseProvidersQuery.data) return {};
     return Object.fromEntries(releaseProvidersQuery.data.map(provider => [provider.ID, provider]));
   }, [releaseProvidersQuery.data]);
-
-  const { mutateAsync: previewReleaseInfo } = usePreviewReleaseInfoByProviderIdMutation();
-  const { mutateAsync: searchReleaseInfo } = useAutoPreviewReleaseInfoForFileByIdMutation();
-  const { mutateAsync: submitReleaseInfo } = useSubmitReleaseInfoForFileByIdMutation();
-  const { mutateAsync: fetchReleaseInfo } = useReleaseInfoByFileIdMutation();
 
   const [linksDict, setLinks] = useImmer<LinksType>({});
   const links = Object.values(linksDict);
@@ -137,13 +121,6 @@ const LinkFilesWithProviders = () => {
     initializeLinks();
   }, [releaseProvidersQuery.isSuccess]);
 
-  useEffect(() => () => {
-    currentlyInitializingLinks.clear();
-    currentlySearchingLinks.clear();
-    currentlySubmittingLinks.clear();
-    currentlyFetchingLinks.clear();
-  }, []);
-
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
     count: links.length,
@@ -177,14 +154,11 @@ const LinkFilesWithProviders = () => {
     navigate(-1);
   };
 
+  const { cancelActiveWork } = useLinkWorkflow(links, setLinks, providerMap, initialized);
+
   const handleCancel = () => {
     if (links.some(link => ['searching', 'submitting', 'fetching'].includes(link.state))) {
-      setLinks((draft) => {
-        forEach(draft, (draft2) => {
-          if (draft2.state === 'submitting') draft2.state = 'ready';
-          else if (['searching', 'fetching'].includes(draft2.state)) draft2.state = 'init';
-        });
-      });
+      cancelActiveWork();
       return;
     }
 
@@ -195,153 +169,6 @@ const LinkFilesWithProviders = () => {
 
     navigateBack();
   };
-
-  const processPreInit = useEffectEvent((link: ManualLinkType) => {
-    if (currentlyInitializingLinks.has(link.id)) return;
-    currentlyInitializingLinks.add(link.id);
-
-    const hasProvidersEnabled = link.providers.some(provider => provider.enabled);
-    const offlineImporterProviderId = link.providers.find(
-      provider => providerMap[provider.id]?.Name === 'Offline Importer',
-    )?.id;
-
-    if (!offlineImporterProviderId) {
-      setLinks((draft) => {
-        draft[link.id].state = hasProvidersEnabled ? 'searching' : 'init';
-      });
-      return;
-    }
-
-    const path = link.file.Locations.find(location => location.AbsolutePath)?.AbsolutePath
-      ?? link.file.Locations?.[0]?.RelativePath ?? '';
-
-    previewReleaseInfo({ id: `match://${path}`, providerId: offlineImporterProviderId })
-      .then((data) => {
-        if (!data) return;
-        setLinks((draft) => {
-          draft[link.id].release = data;
-          draft[link.id].state = hasProvidersEnabled ? 'searching' : 'init';
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = hasProvidersEnabled ? 'searching' : 'init';
-        });
-      })
-      .finally(() => currentlyInitializingLinks.delete(link.id));
-  });
-
-  const processSearch = useEffectEvent((link: ManualLinkType) => {
-    if (currentlySearchingLinks.has(link.id)) return;
-    currentlySearchingLinks.add(link.id);
-
-    const enabledReleaseProviders = link.providers
-      .filter(provider => provider.enabled)
-      .map(provider => provider.id);
-    if (!enabledReleaseProviders.length) return;
-
-    searchReleaseInfo({ fileId: link.file.ID, providerIDs: enabledReleaseProviders })
-      .then((data) => {
-        if (!data) {
-          setLinks((draft) => {
-            draft[link.id].state = 'init';
-          });
-          return;
-        }
-
-        const finalData = produce(data, (draft) => {
-          const original = link.release;
-
-          if (draft.Source === ReleaseSource.Unknown && link.release.Source !== ReleaseSource.Unknown) {
-            draft.Source = link.release.Source;
-          }
-
-          if (draft.Version < 1) draft.Version = 1;
-
-          draft.FileSize ??= original.FileSize;
-          draft.OriginalFilename ??= original.OriginalFilename;
-          draft.IsChaptered ??= original.IsChaptered;
-          draft.IsCensored ??= original.IsCensored;
-          draft.IsCreditless ??= original.IsCreditless;
-          draft.Group ??= original.Group;
-
-          if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
-            draft.ProviderName += '+User';
-          }
-        });
-
-        setLinks((draft) => {
-          draft[link.id].release = finalData;
-          draft[link.id].state = 'ready';
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = 'init';
-        });
-      })
-      .finally(() => currentlySearchingLinks.delete(link.id));
-  });
-
-  const processSubmit = useEffectEvent((link: ManualLinkType) => {
-    if (currentlySubmittingLinks.has(link.id)) return;
-    currentlySubmittingLinks.add(link.id);
-
-    submitReleaseInfo({ fileId: link.file.ID, release: link.release })
-      .then(() => {
-        setLinks((draft) => {
-          draft[link.id].state = 'submitted';
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = 'ready';
-        });
-      })
-      .finally(() => currentlySubmittingLinks.delete(link.id));
-  });
-
-  const processLinked = useEffectEvent((link: ManualLinkType) => {
-    if (currentlyFetchingLinks.has(link.id)) return;
-    currentlyFetchingLinks.add(link.id);
-
-    fetchReleaseInfo(link.file.ID)
-      .then((data) => {
-        if (!data) {
-          setLinks((draft) => {
-            draft[link.id].state = 'init';
-          });
-          return;
-        }
-
-        setLinks((draft) => {
-          draft[link.id].release = data;
-          draft[link.id].state = 'ready';
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = 'init';
-        });
-      })
-      .finally(() => currentlyFetchingLinks.delete(link.id));
-  });
-
-  useEffect(() => {
-    if (!initialized || !links.length) return;
-
-    links.forEach((link) => {
-      if (link.state === 'pre-init') {
-        processPreInit(link);
-      } else if (link.state === 'searching') {
-        processSearch(link);
-      } else if (link.state === 'submitting') {
-        processSubmit(link);
-      } else if (link.state === 'fetching') {
-        processLinked(link);
-      }
-    });
-  }, [initialized, links]);
 
   const handleSubmit = () => {
     if (allSubmitted) {
