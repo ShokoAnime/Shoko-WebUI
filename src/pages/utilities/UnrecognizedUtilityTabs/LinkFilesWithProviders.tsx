@@ -18,25 +18,14 @@ import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvi
 import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { ReleaseSource } from '@/core/types/api/file';
 import { handleShiftSelect } from '@/core/util';
+import createLinksFromFiles from '@/core/utilities/createLinksFromFiles';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
-import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
+import type { FileType } from '@/core/types/api/file';
 import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
-
-type LinksType = Record<number, ManualLinkType>;
-
-let lastLinkId = 0;
-const generateLinkId = () => {
-  if (lastLinkId === Number.MAX_SAFE_INTEGER) {
-    lastLinkId = 0;
-  }
-  lastLinkId += 1;
-  return lastLinkId;
-};
 
 const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();
@@ -49,7 +38,7 @@ const LinkFilesWithProviders = () => {
     return Object.fromEntries(releaseProvidersQuery.data.map(provider => [provider.ID, provider]));
   }, [releaseProvidersQuery.data]);
 
-  const [linksDict, setLinks] = useImmer<LinksType>({});
+  const [linksDict, setLinks] = useImmer<Record<number, ManualLinkType>>({});
   const links = Object.values(linksDict);
   const [initialized, setInitialized] = useState(false);
   const [showAutoSearchModal, setShowAutoSearchModal] = useState(false);
@@ -58,57 +47,7 @@ const LinkFilesWithProviders = () => {
 
   const initializeLinks = useEffectEvent(() => {
     if (!releaseProvidersQuery.data) return;
-
-    const sortedFiles = selectedFiles.toSorted((fileA, fileB) => {
-      let locationA = (fileA.Locations.find(loc => loc.IsAccessible) ?? fileA.Locations[0])?.RelativePath ?? '';
-      let locationB = (fileB.Locations.find(loc => loc.IsAccessible) ?? fileB.Locations[0])?.RelativePath ?? '';
-      if (locationA.startsWith('dot')) locationA = `.${locationA.substring(3)}`;
-      if (locationB.startsWith('dot')) locationB = `.${locationB.substring(3)}`;
-      return locationA.localeCompare(locationB, 'en-US', {
-        numeric: true,
-        ignorePunctuation: true,
-        sensitivity: 'base',
-      });
-    });
-
-    const newLinks: LinksType = {};
-    sortedFiles.forEach((file) => {
-      const now = new Date().toISOString();
-      const release: ReleaseInfoType = {
-        OriginalFilename: file.Locations?.[0]?.RelativePath.split(/[/\\]/g).pop(),
-        ProviderName: 'User',
-        Version: 1,
-        Source: ReleaseSource.Unknown,
-        CrossReferences: [],
-        FileSize: file.Size,
-        Hashes: file.Hashes,
-        IsCorrupted: false,
-        Released: file.MediaInfo?.Encoded?.slice(0, 10) ?? file.Created?.slice(0, 10),
-        Created: now,
-        Updated: now,
-      };
-
-      const linkId = generateLinkId();
-      if (file.Imported) {
-        newLinks[linkId] = {
-          id: linkId,
-          file,
-          providers: [],
-          state: 'fetching',
-          release,
-        };
-      } else {
-        newLinks[linkId] = {
-          id: linkId,
-          file,
-          providers: settings.WebUI_Settings.releaseInfoProviders ?? [],
-          state: 'pre-init',
-          release,
-        };
-      }
-    });
-
-    setLinks(newLinks);
+    setLinks(createLinksFromFiles(selectedFiles, settings.WebUI_Settings.releaseInfoProviders ?? []));
     setInitialized(true);
   });
 
