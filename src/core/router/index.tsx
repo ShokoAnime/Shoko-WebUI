@@ -52,7 +52,7 @@ import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
-import LinkFilesWithProvidersTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProvidersTab';
+import LinkFilesWithProviders from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProviders';
 import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
 import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
 
@@ -105,7 +105,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />
-            <Route path="link-with-providers" element={<LinkFilesWithProvidersTab />} />
+            <Route path="link-with-providers" element={<LinkFilesWithProviders />} />
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">

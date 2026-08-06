@@ -49,7 +49,7 @@ const currentlySearchingLinks = new Set<number>();
 const currentlySubmittingLinks = new Set<number>();
 const currentlyFetchingLinks = new Set<number>();
 
-const LinkFilesWithProvidersTab = () => {
+const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
 
@@ -534,4 +534,4 @@ const LinkFilesWithProvidersTab = () => {
   );
 };
 
-export default LinkFilesWithProvidersTab;
+export default LinkFilesWithProviders;

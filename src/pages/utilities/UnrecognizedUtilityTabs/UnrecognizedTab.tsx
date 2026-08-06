@@ -78,7 +78,7 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  // This is for invalidating queries for LinkFilesWithProvidersTab
+  // This is for invalidating queries for LinkFilesWithProviders
   useEffect(() => {
     invalidateQueries(['release-info']);
     invalidateQueries(['series', 'anidb']);
