@@ -13,9 +13,9 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/AutoSearchReleaseModal';
+import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/LinkCard';
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
-import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { handleShiftSelect } from '@/core/util';
@@ -267,7 +267,7 @@ const LinkFilesWithProviders = () => {
                           style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
                           ref={virtualizer.measureElement}
                         >
-                          <UnrecognizedVideo
+                          <LinkCard
                             link={link}
                             toggleSelect={event => handleSelect(event, virtualItem.index)}
                             selected={rowSelection[link.id]}

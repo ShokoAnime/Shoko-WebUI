@@ -30,7 +30,7 @@ const selectionDisabledStates = [
   'fetching',
 ];
 
-const UnrecognizedVideo = (props: Props) => {
+const LinkCard = (props: Props) => {
   const { link, selected, toggleSelect } = props;
 
   let border = 'border-panel-border';
@@ -105,4 +105,4 @@ const UnrecognizedVideo = (props: Props) => {
   );
 };
 
-export default UnrecognizedVideo;
+export default LinkCard;
