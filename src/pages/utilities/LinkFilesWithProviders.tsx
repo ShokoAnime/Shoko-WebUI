@@ -5,7 +5,6 @@ import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { produce } from 'immer';
 import { forEach } from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -14,42 +13,25 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/AutoSearchReleaseModal';
+import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/LinkCard';
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
-import UnrecognizedVideo from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/UnrecognizedVideo';
-import Title from '@/components/Utilities/Unrecognized/Title';
-import {
-  useAutoPreviewReleaseInfoForFileByIdMutation,
-  usePreviewReleaseInfoByProviderIdMutation,
-  useSubmitReleaseInfoForFileByIdMutation,
-} from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { ReleaseSource } from '@/core/types/api/file';
-import { LinkState } from '@/core/types/utilities/unrecognized-utility';
 import { handleShiftSelect } from '@/core/util';
+import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
+import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
-import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
+import type { FileType } from '@/core/types/api/file';
 import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
-type LinksType = Record<number, ManualLinkType>;
+const BUSY_STATES = new Set(['searching', 'submitting', 'fetching']);
+const NOT_SELECTABLE_STATES = new Set(['pre-init', ...BUSY_STATES]);
+const EDITABLE_STATES = new Set(['ready', 'init']);
 
-let lastLinkId = 0;
-const generateLinkId = () => {
-  if (lastLinkId === Number.MAX_SAFE_INTEGER) {
-    lastLinkId = 0;
-  }
-  lastLinkId += 1;
-  return lastLinkId;
-};
-
-const currentlyInitializingLinks = new Set<number>();
-const currentlySearchingLinks = new Set<number>();
-const currentlySubmittingLinks = new Set<number>();
-
-const LinkFilesWithProvidersTab = () => {
+const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
 
@@ -60,11 +42,7 @@ const LinkFilesWithProvidersTab = () => {
     return Object.fromEntries(releaseProvidersQuery.data.map(provider => [provider.ID, provider]));
   }, [releaseProvidersQuery.data]);
 
-  const { mutateAsync: previewReleaseInfo } = usePreviewReleaseInfoByProviderIdMutation();
-  const { mutateAsync: searchReleaseInfo } = useAutoPreviewReleaseInfoForFileByIdMutation();
-  const { mutateAsync: submitReleaseInfo } = useSubmitReleaseInfoForFileByIdMutation();
-
-  const [linksDict, setLinks] = useImmer<LinksType>({});
+  const [linksDict, setLinks] = useImmer<Record<number, ManualLinkType>>({});
   const links = Object.values(linksDict);
   const [initialized, setInitialized] = useState(false);
   const [showAutoSearchModal, setShowAutoSearchModal] = useState(false);
@@ -73,47 +51,7 @@ const LinkFilesWithProvidersTab = () => {
 
   const initializeLinks = useEffectEvent(() => {
     if (!releaseProvidersQuery.data) return;
-
-    const sortedFiles = selectedFiles.toSorted((fileA, fileB) => {
-      let locationA = (fileA.Locations.find(loc => loc.IsAccessible) ?? fileA.Locations[0])?.RelativePath ?? '';
-      let locationB = (fileB.Locations.find(loc => loc.IsAccessible) ?? fileB.Locations[0])?.RelativePath ?? '';
-      if (locationA.startsWith('dot')) locationA = `.${locationA.substring(3)}`;
-      if (locationB.startsWith('dot')) locationB = `.${locationB.substring(3)}`;
-      return locationA.localeCompare(locationB, 'en-US', {
-        numeric: true,
-        ignorePunctuation: true,
-        sensitivity: 'base',
-      });
-    });
-
-    const newLinks: LinksType = {};
-    sortedFiles.forEach((file) => {
-      const now = new Date().toISOString();
-      const release: ReleaseInfoType = {
-        OriginalFilename: file.Locations?.[0]?.RelativePath.split(/[/\\]/g).pop(),
-        ProviderName: 'User',
-        Version: 1,
-        Source: ReleaseSource.Unknown,
-        CrossReferences: [],
-        FileSize: file.Size,
-        Hashes: file.Hashes,
-        IsCorrupted: false,
-        Released: file.MediaInfo?.Encoded?.slice(0, 10) ?? file.Created?.slice(0, 10),
-        Created: now,
-        Updated: now,
-      };
-
-      const linkId = generateLinkId();
-      newLinks[linkId] = {
-        id: linkId,
-        file,
-        providers: settings.WebUI_Settings.releaseInfoProviders ?? [],
-        state: LinkState.PreInit,
-        release,
-      };
-    });
-
-    setLinks(newLinks);
+    setLinks(createLinksFromFiles(selectedFiles, settings.WebUI_Settings.releaseInfoProviders ?? []));
     setInitialized(true);
   });
 
@@ -125,12 +63,6 @@ const LinkFilesWithProvidersTab = () => {
     if (!releaseProvidersQuery.isSuccess) return;
     initializeLinks();
   }, [releaseProvidersQuery.isSuccess]);
-
-  useEffect(() => () => {
-    currentlyInitializingLinks.clear();
-    currentlySearchingLinks.clear();
-    currentlySubmittingLinks.clear();
-  }, []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -155,24 +87,21 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const canSubmit = initialized
-    && links.some(link => link.state === LinkState.Ready);
+    && links.some(link => link.state === 'ready');
 
   const allSubmitted = initialized
-    && links.every(link => link.state === LinkState.Submitted);
+    && links.every(link => link.state === 'submitted');
 
   const navigateBack = () => {
     setRowSelection({});
     navigate(-1);
   };
 
+  const { cancelActiveWork } = useLinkWorkflow(links, setLinks, providerMap, initialized);
+
   const handleCancel = () => {
-    if (links.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))) {
-      setLinks((draft) => {
-        forEach(draft, (draft2) => {
-          if (draft2.state === LinkState.Submitting) draft2.state = LinkState.Ready;
-          else if (draft2.state === LinkState.Searching) draft2.state = LinkState.Init;
-        });
-      });
+    if (links.some(link => BUSY_STATES.has(link.state))) {
+      cancelActiveWork();
       return;
     }
 
@@ -184,125 +113,6 @@ const LinkFilesWithProvidersTab = () => {
     navigateBack();
   };
 
-  const processPreInit = useEffectEvent((link: ManualLinkType) => {
-    if (currentlyInitializingLinks.has(link.id)) return;
-    currentlyInitializingLinks.add(link.id);
-
-    const hasProvidersEnabled = link.providers.some(provider => provider.enabled);
-    const offlineImporterProviderId = link.providers.find(
-      provider => providerMap[provider.id]?.Name === 'Offline Importer',
-    )?.id;
-
-    if (!offlineImporterProviderId) {
-      setLinks((draft) => {
-        draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
-      });
-      return;
-    }
-
-    const path = link.file.Locations.find(location => location.AbsolutePath)?.AbsolutePath
-      ?? link.file.Locations?.[0]?.RelativePath ?? '';
-
-    previewReleaseInfo({ id: `match://${path}`, providerId: offlineImporterProviderId })
-      .then((data) => {
-        if (!data) return;
-        setLinks((draft) => {
-          draft[link.id].release = data;
-          draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = hasProvidersEnabled ? LinkState.Searching : LinkState.Init;
-        });
-      })
-      .finally(() => currentlyInitializingLinks.delete(link.id));
-  });
-
-  const processSearch = useEffectEvent((link: ManualLinkType) => {
-    if (currentlySearchingLinks.has(link.id)) return;
-    currentlySearchingLinks.add(link.id);
-
-    const enabledReleaseProviders = link.providers
-      .filter(provider => provider.enabled)
-      .map(provider => provider.id);
-    if (!enabledReleaseProviders.length) return;
-
-    searchReleaseInfo({ fileId: link.file.ID, providerIDs: enabledReleaseProviders })
-      .then((data) => {
-        if (!data) {
-          setLinks((draft) => {
-            draft[link.id].state = LinkState.Init;
-          });
-          return;
-        }
-
-        const finalData = produce(data, (draft) => {
-          const original = link.release;
-
-          if (draft.Source === ReleaseSource.Unknown && link.release.Source !== ReleaseSource.Unknown) {
-            draft.Source = link.release.Source;
-          }
-
-          if (draft.Version < 1) draft.Version = 1;
-
-          draft.FileSize ??= original.FileSize;
-          draft.OriginalFilename ??= original.OriginalFilename;
-          draft.IsChaptered ??= original.IsChaptered;
-          draft.IsCensored ??= original.IsCensored;
-          draft.IsCreditless ??= original.IsCreditless;
-          draft.Group ??= original.Group;
-
-          if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
-            draft.ProviderName += '+User';
-          }
-        });
-
-        setLinks((draft) => {
-          draft[link.id].release = finalData;
-          draft[link.id].state = LinkState.Ready;
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = LinkState.Init;
-        });
-      })
-      .finally(() => currentlySearchingLinks.delete(link.id));
-  });
-
-  const processSubmit = useEffectEvent((link: ManualLinkType) => {
-    if (currentlySubmittingLinks.has(link.id)) return;
-    currentlySubmittingLinks.add(link.id);
-
-    submitReleaseInfo({ fileId: link.file.ID, release: link.release })
-      .then(() => {
-        setLinks((draft) => {
-          draft[link.id].state = LinkState.Submitted;
-        });
-      })
-      .catch(() => {
-        setLinks((draft) => {
-          draft[link.id].state = LinkState.Ready;
-        });
-      })
-      .finally(() => currentlySubmittingLinks.delete(link.id));
-  });
-
-  useEffect(() => {
-    if (!initialized || !links.length) return;
-
-    links.forEach((link) => {
-      if (link.state === LinkState.PreInit) {
-        processPreInit(link);
-      } else if (link.state === LinkState.Searching) {
-        processSearch(link);
-      } else if (link.state === LinkState.Submitting) {
-        processSubmit(link);
-      }
-    });
-  }, [initialized, links]);
-
   const handleSubmit = () => {
     if (allSubmitted) {
       navigateBack();
@@ -313,8 +123,8 @@ const LinkFilesWithProvidersTab = () => {
 
     setLinks((draft) => {
       forEach(draft, (draft2) => {
-        if (draft2.state === LinkState.Ready) {
-          draft2.state = LinkState.Submitting;
+        if (draft2.state === 'ready') {
+          draft2.state = 'submitting';
         }
       });
     });
@@ -326,7 +136,7 @@ const LinkFilesWithProvidersTab = () => {
     } else {
       if (
         links.some(
-          link => [LinkState.PreInit, LinkState.Searching, LinkState.Submitting].includes(link.state),
+          link => NOT_SELECTABLE_STATES.has(link.state),
         )
       ) {
         return;
@@ -340,7 +150,7 @@ const LinkFilesWithProvidersTab = () => {
   const removeLinks = () => {
     if (
       !selectedRows.length
-      || selectedRows.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))
+      || selectedRows.some(link => BUSY_STATES.has(link.state))
     ) return;
 
     setLinks((draft) => {
@@ -355,9 +165,9 @@ const LinkFilesWithProvidersTab = () => {
     if (!providers.some(provider => provider.enabled)) return;
     setLinks((draft) => {
       selectedRows.forEach((link) => {
-        if ([LinkState.Ready, LinkState.Init].includes(link.state)) {
+        if (EDITABLE_STATES.has(link.state)) {
           draft[link.id].providers = providers;
-          draft[link.id].state = LinkState.Searching;
+          draft[link.id].state = 'searching';
         }
       });
     });
@@ -365,12 +175,12 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const submitSelectedLinks = () => {
-    if (!selectedRows.length || !selectedRows.some(link => link.state === LinkState.Ready)) return;
+    if (!selectedRows.length || !selectedRows.some(link => link.state === 'ready')) return;
 
     setLinks((draft) => {
       selectedRows.forEach((link) => {
-        if (link.state === LinkState.Ready) {
-          draft[link.id].state = LinkState.Submitting;
+        if (link.state === 'ready') {
+          draft[link.id].state = 'submitting';
         }
       });
     });
@@ -378,7 +188,7 @@ const LinkFilesWithProvidersTab = () => {
   };
 
   const openAutoSearch = () => {
-    if (!selectedRows.length || !selectedRows.some(link => [LinkState.Ready, LinkState.Init].includes(link.state))) {
+    if (!selectedRows.length || !selectedRows.some(link => EDITABLE_STATES.has(link.state))) {
       return;
     }
     setShowAutoSearchModal(true);
@@ -396,7 +206,7 @@ const LinkFilesWithProvidersTab = () => {
     <>
       <TransitionDiv className="flex size-full grow flex-col">
         <ShokoPanel
-          title={<Title />}
+          title="Link With Providers"
           options={<TitleOptions links={links} selectedCount={selectedRows.length} />}
         >
           <div className="flex items-center gap-x-3">
@@ -457,7 +267,7 @@ const LinkFilesWithProvidersTab = () => {
                           style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
                           ref={virtualizer.measureElement}
                         >
-                          <UnrecognizedVideo
+                          <LinkCard
                             link={link}
                             toggleSelect={event => handleSelect(event, virtualItem.index)}
                             selected={rowSelection[link.id]}
@@ -494,4 +304,4 @@ const LinkFilesWithProvidersTab = () => {
   );
 };
 
-export default LinkFilesWithProvidersTab;
+export default LinkFilesWithProviders;

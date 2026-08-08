@@ -46,13 +46,13 @@ import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
+import LinkFilesWithProviders from '@/pages/utilities/LinkFilesWithProviders';
 import MissingEpisodes from '@/pages/utilities/MissingEpisodes';
 import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
-import LinkFilesWithProvidersTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesWithProvidersTab';
 import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
 import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
 
@@ -93,7 +93,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized" element={<Navigate to="files" replace />} />
             <Route path="unrecognized/files" element={<UnrecognizedTab />} />
             <Route path="unrecognized/files/link" element={<LinkFilesTab />} />
-            <Route path="unrecognized/files/link-with-providers" element={<LinkFilesWithProvidersTab />} />
+
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
             <Route path="release-management/:seriesId" element={<ReleaseManagementSeriesDetail />} />
@@ -105,6 +105,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />
+            <Route path="link-with-providers" element={<LinkFilesWithProviders />} />
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">

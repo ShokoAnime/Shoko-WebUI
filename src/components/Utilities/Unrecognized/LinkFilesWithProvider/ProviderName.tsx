@@ -1,5 +1,3 @@
-import { LinkState } from '@/core/types/utilities/unrecognized-utility';
-
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
 type Props = {
@@ -7,36 +5,40 @@ type Props = {
 };
 
 const linkStateAttributes = {
-  [LinkState.PreInit]: {
+  'pre-init': {
     className: 'opacity-65',
     text: 'Initializing metadata...',
   },
-  [LinkState.Init]: {
+  init: {
     className: 'text-panel-text-warning',
     text: 'Waiting for user action',
   },
-  [LinkState.Searching]: {
+  searching: {
     className: 'text-panel-text-primary',
     text: 'Searching for a match...',
   },
-  [LinkState.Ready]: {
+  ready: {
     className: 'text-panel-text-important',
     text: 'Ready for submission',
   },
-  [LinkState.Submitting]: {
+  submitting: {
     className: 'text-panel-text-primary',
     text: 'Submitting match...',
   },
-  [LinkState.Submitted]: {
+  submitted: {
     className: 'text-panel-text-important',
     text: 'Completed',
+  },
+  fetching: {
+    className: 'text-panel-text-primary',
+    text: 'Retrieving existing release info...',
   },
 } as const;
 
 const ProviderName = ({ link }: Props) => {
   const name = link.release.ProviderName;
   const editedByUser = name.startsWith('User+') || name.endsWith('+User');
-  const providerName = name !== 'User' && ![LinkState.Searching].includes(link.state)
+  const providerName = name !== 'User' && link.state !== 'searching'
     ? name
       .replace(/^User\+/, '')
       .replace(/\+User$/, '')

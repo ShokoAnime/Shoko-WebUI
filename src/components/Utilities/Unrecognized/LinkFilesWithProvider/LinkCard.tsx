@@ -1,8 +1,6 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
 import cx from 'classnames';
 
-import { LinkState } from '@/core/types/utilities/unrecognized-utility';
-
 import CrossReference from './CrossReference';
 import ProviderName from './ProviderName';
 import VideoMetadata from './VideoMetadata';
@@ -16,29 +14,31 @@ type Props = {
 };
 
 const linkStateClassMap = {
-  [LinkState.PreInit]: 'opacity-65 cursor-wait',
-  [LinkState.Init]: '',
-  [LinkState.Searching]: 'animate-pulse cursor-wait',
-  [LinkState.Ready]: 'cursor-pointer',
-  [LinkState.Submitting]: 'cursor-progress',
-  [LinkState.Submitted]: '',
+  'pre-init': 'opacity-65 cursor-wait',
+  init: '',
+  searching: 'animate-pulse cursor-wait',
+  ready: 'cursor-pointer',
+  submitting: 'cursor-progress',
+  submitted: '',
+  fetching: 'animate-pulse cursor-wait',
 } as const;
 
 const selectionDisabledStates = [
-  LinkState.PreInit,
-  LinkState.Searching,
-  LinkState.Submitting,
+  'pre-init',
+  'searching',
+  'submitting',
+  'fetching',
 ];
 
-const UnrecognizedVideo = (props: Props) => {
+const LinkCard = (props: Props) => {
   const { link, selected, toggleSelect } = props;
 
   let border = 'border-panel-border';
-  if (link.state === LinkState.Submitted) {
+  if (link.state === 'submitted') {
     border = 'border-panel-text-important';
-  } else if ([LinkState.Searching, LinkState.Submitting].includes(link.state)) {
+  } else if (['searching', 'submitting'].includes(link.state)) {
     border = 'border-panel-text-primary';
-  } else if (link.state === LinkState.Ready) {
+  } else if (link.state === 'ready') {
     border = 'border-panel-text-warning';
   } else if (selected) {
     border = 'border-panel-text-primary';
@@ -69,7 +69,7 @@ const UnrecognizedVideo = (props: Props) => {
         border,
         selected && 'bg-panel-background-selected-row!',
         !selected && linkStateClassMap[link.state],
-        [LinkState.Ready, LinkState.Submitting, LinkState.Submitted].includes(link.state) && 'bg-panel-background-alt',
+        ['ready', 'submitting', 'submitted'].includes(link.state) && 'bg-panel-background-alt',
       )}
       onMouseDown={handleMouseDown}
       onClick={handleSelect}
@@ -105,4 +105,4 @@ const UnrecognizedVideo = (props: Props) => {
   );
 };
 
-export default UnrecognizedVideo;
+export default LinkCard;

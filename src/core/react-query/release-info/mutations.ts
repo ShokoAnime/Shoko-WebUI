@@ -45,3 +45,11 @@ export const usePreviewReleaseInfoByProviderIdMutation = () =>
       id: 'release-info',
     },
   });
+
+export const useReleaseInfoByFileIdMutation = () =>
+  useMutation<ReleaseInfoType | null, unknown, number>({
+    mutationFn: fileId => axios.get(`ReleaseInfo/File/${fileId}`),
+    scope: {
+      id: 'release-info',
+    },
+  });

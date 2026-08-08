@@ -78,7 +78,7 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  // This is for invalidating queries for LinkFilesWithProvidersTab
+  // This is for invalidating queries for LinkFilesWithProviders
   useEffect(() => {
     invalidateQueries(['release-info']);
     invalidateQueries(['series', 'anidb']);
@@ -358,7 +358,7 @@ const UnrecognizedTab = () => {
                   buttonSize="normal"
                   tooltip="Link With Providers (beta)"
                   className="group -ml-3 flex flex-row flex-wrap items-center gap-x-2 rounded-l-none border-l-0"
-                  onClick={() => navigate('link-with-providers', { state: { selectedRows } })}
+                  onClick={() => navigate('/webui/utilities/link-with-providers', { state: { selectedRows } })}
                 >
                   <div className="relative">
                     <Icon path={mdiCreation} size={1} />

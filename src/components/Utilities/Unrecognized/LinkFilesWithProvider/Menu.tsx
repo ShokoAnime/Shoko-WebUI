@@ -1,7 +1,6 @@
 import { mdiMagnify, mdiPencil, mdiSelectAll, mdiSelection, mdiSelectionRemove, mdiTrayPlus } from '@mdi/js';
 
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
-import { LinkState } from '@/core/types/utilities/unrecognized-utility';
 
 import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
 
@@ -32,7 +31,7 @@ const Menu = (props: Props) => {
         name="Search for Release Info"
         keybinding="S"
         disabled={!selectedLinks.length
-          || !selectedLinks.some(link => [LinkState.Ready, LinkState.Init].includes(link.state))}
+          || !selectedLinks.some(link => ['ready', 'init', 'fetching'].includes(link.state))}
       />
 
       <MenuButton
@@ -50,7 +49,7 @@ const Menu = (props: Props) => {
       />
 
       {(selectedLinks.length > 0
-        && !selectedLinks.some(link => [LinkState.Searching, LinkState.Submitting].includes(link.state))) && (
+        && !selectedLinks.some(link => ['searching', 'submitting'].includes(link.state))) && (
         <MenuButton
           onClick={removeLinks}
           icon={mdiSelectionRemove}
@@ -59,7 +58,7 @@ const Menu = (props: Props) => {
         />
       )}
 
-      {selectedLinks.some(link => link.state === LinkState.Ready) && (
+      {selectedLinks.some(link => link.state === 'ready') && (
         <MenuButton
           onClick={addLinksToSubmitQueue}
           icon={mdiTrayPlus}
