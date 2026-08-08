@@ -30,7 +30,7 @@ import {
   useTmdbShowOrMovieQuery,
 } from '@/core/react-query/tmdb/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getAnidbAnimeLink } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -185,7 +185,7 @@ const TmdbLinking = () => {
           TmdbShowID: tmdbId,
           TmdbEpisodeID: overrideId,
           Index: index,
-          Rating: MatchRatingType.UserVerified,
+          Rating: 'UserVerified',
         });
       });
     });
