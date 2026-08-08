@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.106",
+      "minServerVersion": "6.0.0-dev.401",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.106/Shoko-WebUI-v2.6.0-dev.106.zip",
+      "checksum": "sha256:5958e6bdd71646878c669be5c96cbefac75391d0c9d3e47156625e578a57dd6b",
+      "commit": "483d78b3b03c6738a9ec6e0b2cc62c8f05a65d6e",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.401** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.401** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* refactor: decouple provider linking from Unrecognized Files, add FileSearch entry point by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1424\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.105...v2.6.0-dev.106\n"
+    },
+    {
       "version": "2.6.0-dev.105",
       "minServerVersion": "6.0.0-dev.400",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.105/Shoko-WebUI-v2.6.0-dev.105.zip",
