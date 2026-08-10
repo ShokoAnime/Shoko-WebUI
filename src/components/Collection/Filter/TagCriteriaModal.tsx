@@ -10,18 +10,21 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useAniDBTagsQuery, useUserTagsQuery } from '@/core/react-query/tag/queries';
-import { selectFilterTags, setFilterTag } from '@/core/slices/collection';
-import { useDispatch, useSelector } from '@/core/store';
+import { updateLeafValue } from '@/core/slices/collection';
+import { useDispatch } from '@/core/store';
 
-import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
+import type { FilterExpression, FilterTag, LeafNode } from '@/core/types/api/filter';
 import type { TagType } from '@/core/types/api/tags';
 
 type Props = {
-  criteria: FilterExpression;
-  show: boolean;
+  catalogEntry: FilterExpression;
+  node: LeafNode;
   onClose: () => void;
-  removeCriteria: () => void;
+  onRemove: () => void;
+  show: boolean;
 };
+
+const EMPTY_TAGS: FilterTag[] = [];
 
 const TagList = (
   { selectTag, unusedValues }: { selectTag: (name: string, select: boolean) => () => void, unusedValues: TagType[] },
@@ -88,21 +91,23 @@ const TagList = (
   );
 };
 
-const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) => {
+const TagCriteriaModal = ({ catalogEntry, node, onClose, onRemove, show }: Props) => {
   const dispatch = useDispatch();
   const anidbTagsQuery = useAniDBTagsQuery(
     { pageSize: 0, excludeDescriptions: true },
-    show && criteria.Expression === 'HasTag',
+    show && catalogEntry.Expression === 'HasTag',
   );
   const userTagsQuery = useUserTagsQuery(
     { pageSize: 0, excludeDescriptions: true },
-    show && criteria.Expression === 'HasCustomTag',
+    show && catalogEntry.Expression === 'HasCustomTag',
   );
-  const tags = criteria.Expression === 'HasTag' ? anidbTagsQuery.data : userTagsQuery.data;
+  const tags = catalogEntry.Expression === 'HasTag' ? anidbTagsQuery.data : userTagsQuery.data;
   const [search, setSearch] = useState('');
   // selectMode: included - true, excluded - false
   const [selectMode, setSelectMode] = useState<boolean>(true);
-  const selectedValues = useSelector(state => selectFilterTags(state, criteria));
+  // A TagCriteriaModal is only ever rendered for a tag-kind node; the fallback keeps a
+  // stable reference so it doesn't invalidate the useMemo hooks below on every render.
+  const selectedValues = node.value.kind === 'tag' ? node.value.tags : EMPTY_TAGS;
   const [unsavedValues, setUnsavedValues] = useState<FilterTag[]>([]);
   const unusedValues = useMemo(
     () =>
@@ -124,18 +129,24 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
       setUnsavedValues(filter([...unsavedValues], item => item.Name !== tagName));
     }
     if (findIndex(selectedValues, { Name: tagName }) !== -1) {
-      dispatch(setFilterTag({ [criteria.Expression]: filter([...selectedValues], item => item.Name !== tagName) }));
+      dispatch(updateLeafValue({
+        nodeId: node.id,
+        value: { kind: 'tag', tags: filter([...selectedValues], item => item.Name !== tagName) },
+      }));
     }
   };
 
   const handleCancel = () => {
     setUnsavedValues([]);
-    if (selectedValues.length === 0) removeCriteria();
+    if (selectedValues.length === 0) onRemove();
     onClose();
   };
 
   const handleSave = () => {
-    dispatch(setFilterTag({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
+    dispatch(updateLeafValue({
+      nodeId: node.id,
+      value: { kind: 'tag', tags: [...selectedValues, ...unsavedValues] },
+    }));
     setUnsavedValues([]);
     onClose();
   };
@@ -154,8 +165,8 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
       show={show}
       size="sm"
       onRequestClose={handleCancel}
-      header={`Edit Condition - ${criteria.Name}`}
-      subHeader={criteria.Description}
+      header={`Edit Condition - ${catalogEntry.Name}`}
+      subHeader={catalogEntry.Description}
       fullHeight
     >
       <div className="flex grow basis-0 flex-col gap-y-4">

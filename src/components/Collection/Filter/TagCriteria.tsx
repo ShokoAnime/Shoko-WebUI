@@ -2,10 +2,8 @@ import { useMemo } from 'react';
 import { forEach } from 'lodash';
 
 import Criteria from '@/components/Collection/Filter/Criteria';
-import { selectFilterTags } from '@/core/slices/collection';
-import { useSelector } from '@/core/store';
 
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { FilterExpression, LeafNode } from '@/core/types/api/filter';
 
 type TagLineProps = {
   title: string;
@@ -28,27 +26,32 @@ const Parameter = ({ excludedValues, includedValues }: { includedValues: string[
 );
 
 type Props = {
-  criteria: FilterExpression;
+  catalogEntry: FilterExpression;
+  node: LeafNode;
+  onRemove: () => void;
 };
 
-const TagCriteria = ({ criteria }: Props) => {
-  const selectedParameter = useSelector(state => selectFilterTags(state, criteria));
+const TagCriteria = ({ catalogEntry, node, onRemove }: Props) => {
   const [includedValues, excludedValues] = useMemo(() => {
     const included: string[] = [];
     const excluded: string[] = [];
-    forEach(selectedParameter, (tag) => {
-      if (tag.isExcluded) {
-        excluded.push(tag.Name);
-      } else {
-        included.push(tag.Name);
-      }
-    });
+    if (node.value.kind === 'tag') {
+      forEach(node.value.tags, (tag) => {
+        if (tag.isExcluded) {
+          excluded.push(tag.Name);
+        } else {
+          included.push(tag.Name);
+        }
+      });
+    }
     return [included, excluded];
-  }, [selectedParameter]);
+  }, [node.value]);
 
   return (
     <Criteria
-      criteria={criteria}
+      catalogEntry={catalogEntry}
+      node={node}
+      onRemove={onRemove}
       parameterExists={includedValues.length > 0 || excludedValues.length > 0}
       transformedParameter={<Parameter includedValues={includedValues} excludedValues={excludedValues} />}
       type="tag"

@@ -1,17 +1,17 @@
-import { useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Select from '@/components/Input/Select';
-import { addFilterCondition, removeFilterCriteria } from '@/core/slices/collection';
-import { useDispatch, useSelector } from '@/core/store';
+import { updateLeafValue } from '@/core/slices/collection';
+import { useDispatch } from '@/core/store';
 
-import type { RootState } from '@/core/store';
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { FilterExpression, LeafNode } from '@/core/types/api/filter';
 
 type Props = {
-  criteria: FilterExpression;
+  catalogEntry: FilterExpression;
+  node: LeafNode;
+  onRemove: () => void;
 };
 
 const Options = ({ onClick }: { onClick: () => void }) => (
@@ -20,39 +20,24 @@ const Options = ({ onClick }: { onClick: () => void }) => (
   </div>
 );
 
-const DefaultCriteria = ({ criteria }: Props) => {
+const DefaultCriteria = ({ catalogEntry, node, onRemove }: Props) => {
   const dispatch = useDispatch();
-  const selectedCondition = useSelector(
-    (state: RootState) => {
-      const value: boolean | undefined = state.collection.filterConditions[criteria.Expression];
-      if (value !== undefined) {
-        return value ? '1' : '0';
-      }
-      return value;
-    },
-  );
-
-  useEffect(() => {
-    if (selectedCondition === undefined) {
-      dispatch(addFilterCondition({ [criteria.Expression]: true }));
-    }
-  }, [criteria.Expression, dispatch, selectedCondition]);
+  const value = node.value.kind === 'boolean' ? node.value.value : true;
 
   const changeValue = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(addFilterCondition({ [criteria.Expression]: event.currentTarget.value === '1' }));
-  };
-
-  const removeCriteria = () => {
-    dispatch(removeFilterCriteria(criteria));
+    dispatch(updateLeafValue({
+      nodeId: node.id,
+      value: { kind: 'boolean', value: event.currentTarget.value === '1' },
+    }));
   };
 
   return (
     <Select
-      id={criteria.Expression}
-      label={criteria.Name}
-      value={selectedCondition}
+      id={node.id}
+      label={catalogEntry.Name}
+      value={value ? '1' : '0'}
       onChange={changeValue}
-      options={<Options onClick={removeCriteria} />}
+      options={<Options onClick={onRemove} />}
     >
       <option value="1">True</option>
       <option value="0">False</option>

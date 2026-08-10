@@ -2,46 +2,37 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
-import { removeFilterCriteria, selectFilterMatch } from '@/core/slices/collection';
-import { useDispatch, useSelector } from '@/core/store';
 
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { FilterExpression, LeafNode } from '@/core/types/api/filter';
 
-type ModalType = 'tag' | 'multivalue';
+type ModalType = 'multivalue' | 'tag';
 
 type Props = {
-  criteria: FilterExpression;
+  catalogEntry: FilterExpression;
+  node: LeafNode;
+  onRemove: () => void;
+  onToggleNegate?: () => void;
   parameterExists: boolean;
   transformedParameter: ReactNode;
   type: ModalType;
 };
 
-const getModalComponent = (type: ModalType) => {
-  switch (type) {
-    case 'multivalue':
-      return MultiValueCriteriaModal;
-    case 'tag':
-    default:
-      return TagCriteriaModal;
-  }
-};
+const getModalComponent = (type: ModalType) => (type === 'multivalue' ? MultiValueCriteriaModal : TagCriteriaModal);
 
-const ParameterList = ({ expression, value }: { expression: string, value: string }) => {
-  const filterMatch = useSelector(state => selectFilterMatch(state, expression));
+const ParameterList = ({ match, value }: { match: 'And' | 'Or', value: string }) => (
+  <div className="line-clamp-2">
+    <span className="pr-2 text-panel-text-important">{match === 'Or' ? 'In:' : 'All:'}</span>
+    {value}
+  </div>
+);
 
-  return (
-    <div className="line-clamp-2">
-      <span className="pr-2 text-panel-text-important">{filterMatch === 'Or' ? 'In:' : 'All:'}</span>
-      {value}
-    </div>
-  );
-};
-
-const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Props) => {
-  const dispatch = useDispatch();
+const Criteria = (
+  { catalogEntry, node, onRemove, onToggleNegate, parameterExists, transformedParameter, type }: Props,
+) => {
   const [showModal, setShowModal] = useState(false);
 
   const openModal = () => {
@@ -52,23 +43,36 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
     setShowModal(false);
   };
 
-  const removeCriteria = () => {
-    dispatch(removeFilterCriteria(criteria));
-  };
-
   useEffect(() => {
     if (parameterExists) return;
     setShowModal(true);
   }, [parameterExists]);
 
   const Modal = useMemo(() => getModalComponent(type), [type]);
+  const match = node.value.kind === 'multi' || node.value.kind === 'multiPair' ? node.value.match : 'Or';
 
   return (
     <>
       <div className="flex flex-col">
         <div className="mb-3 flex items-center justify-between">
-          <div className="font-semibold">
-            {criteria.Name}
+          <div className="flex items-center gap-x-2 font-semibold">
+            {onToggleNegate && (
+              <span
+                className={cx(
+                  'cursor-pointer rounded-sm border px-1.5 text-xs',
+                  node.negate
+                    ? 'border-panel-icon-danger text-panel-icon-danger'
+                    : 'border-panel-border text-panel-text-important',
+                )}
+                onClick={onToggleNegate}
+                data-tooltip-id="tooltip"
+                data-tooltip-content="Toggle NOT"
+                data-tooltip-delay-show={500}
+              >
+                NOT
+              </span>
+            )}
+            {catalogEntry.Name}
           </div>
           <div className="flex gap-x-2">
             <div onClick={openModal}>
@@ -81,7 +85,7 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
                 data-tooltip-delay-show={500}
               />
             </div>
-            <div onClick={removeCriteria}>
+            <div onClick={onRemove}>
               <Icon
                 className="cursor-pointer text-panel-icon-danger"
                 path={mdiMinusCircleOutline}
@@ -100,17 +104,18 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
                 className="flex cursor-pointer rounded-lg border border-panel-border bg-panel-input px-4 py-3"
                 onClick={openModal}
               >
-                <ParameterList expression={criteria.Expression} value={transformedParameter} />
+                <ParameterList match={match} value={transformedParameter} />
               </div>
             )
             : transformedParameter}
         </div>
       </div>
       <Modal
-        criteria={criteria}
+        catalogEntry={catalogEntry}
+        node={node}
         show={showModal}
         onClose={closeModal}
-        removeCriteria={removeCriteria}
+        onRemove={onRemove}
       />
     </>
   );

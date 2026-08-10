@@ -1,26 +1,33 @@
 import Criteria from '@/components/Collection/Filter/Criteria';
-import { selectFilterValues } from '@/core/slices/collection';
-import { useSelector } from '@/core/store';
 
-import type { RootState } from '@/core/store';
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { FilterExpression, LeafNode } from '@/core/types/api/filter';
 
 type Props = {
-  criteria: FilterExpression;
+  catalogEntry: FilterExpression;
+  node: LeafNode;
+  onRemove: () => void;
+  onToggleNegate: () => void;
 };
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
-const MultiValueCriteria = ({ criteria }: Props) => {
-  const selectedParameter = useSelector(
-    (state: RootState) => selectFilterValues(state, criteria),
-  );
+const getDisplayValues = (node: LeafNode): string[] => {
+  if (node.value.kind === 'multiPair') return node.value.values.map(([first, second]) => `${first}: ${second}`);
+  if (node.value.kind === 'multi') return node.value.values;
+  return [];
+};
+
+const MultiValueCriteria = ({ catalogEntry, node, onRemove, onToggleNegate }: Props) => {
+  const displayValues = getDisplayValues(node);
 
   return (
     <Criteria
-      criteria={criteria}
-      parameterExists={selectedParameter.length > 0}
-      transformedParameter={selectedParameter.map(capitalize).join(', ')}
+      catalogEntry={catalogEntry}
+      node={node}
+      onRemove={onRemove}
+      onToggleNegate={onToggleNegate}
+      parameterExists={displayValues.length > 0}
+      transformedParameter={displayValues.map(capitalize).join(', ')}
       type="multivalue"
     />
   );

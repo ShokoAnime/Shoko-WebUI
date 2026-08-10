@@ -5,42 +5,67 @@ import { filter, map, pull } from 'lodash';
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { selectFilterMatch, selectFilterValues, setFilterMatch, setFilterValues } from '@/core/slices/collection';
-import { useDispatch, useSelector } from '@/core/store';
+import { updateLeafValue } from '@/core/slices/collection';
+import { useDispatch } from '@/core/store';
 
-import type { RootState } from '@/core/store';
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { FilterExpression, LeafNode, LeafValue } from '@/core/types/api/filter';
 
 type Props = {
-  criteria: FilterExpression;
-  show: boolean;
+  catalogEntry: FilterExpression;
+  node: LeafNode;
   onClose: () => void;
-  removeCriteria: () => void;
+  onRemove: () => void;
+  show: boolean;
 };
-const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) => {
+
+// Pair values are joined into a single display string only for this picker's own list -
+// matched back against the catalog's original pair rather than re-split, so a value that
+// happens to contain ': ' can't be misinterpreted. The dispatched LeafValue always carries
+// real [string, string] tuples, never the joined string as the source of truth.
+const displayPair = (pair: string[]) => pair.join(': ');
+
+const MultiValueCriteriaModal = ({ catalogEntry, node, onClose, onRemove, show }: Props) => {
   const dispatch = useDispatch();
-  const selectedValues = useSelector(
-    (state: RootState) => selectFilterValues(state, criteria),
-  );
-  const [unsavedValues, setUnsavedValues] = useState([] as string[]);
+  const isPair = node.value.kind === 'multiPair';
+
+  const selectedDisplayValues = useMemo(() => {
+    if (node.value.kind === 'multiPair') return node.value.values.map(displayPair);
+    if (node.value.kind === 'multi') return node.value.values;
+    return [];
+  }, [node.value]);
+  const initialMatch = node.value.kind === 'multi' || node.value.kind === 'multiPair' ? node.value.match : 'Or';
+
+  const [unsavedValues, setUnsavedValues] = useState<string[]>([]);
+  const [match, setMatch] = useState<'And' | 'Or'>(initialMatch);
+
   const unusedValues = useMemo(
     () => {
-      // TODO: See delimiter TODO in buildFilter.ts
-      const possibleValues = criteria.PossibleParameters
-        ?? criteria.PossibleParameterPairs?.map(value => value.join(': '));
+      const possibleValues = catalogEntry.PossibleParameters
+        ?? catalogEntry.PossibleParameterPairs?.map(displayPair);
 
       return filter(
         possibleValues,
-        item => !selectedValues.includes(item) && !unsavedValues.includes(item),
+        item => !selectedDisplayValues.includes(item) && !unsavedValues.includes(item),
       );
     },
-    [criteria.PossibleParameters, criteria.PossibleParameterPairs, selectedValues, unsavedValues],
+    [catalogEntry.PossibleParameters, catalogEntry.PossibleParameterPairs, selectedDisplayValues, unsavedValues],
   );
-  const filterMatch = useSelector(state => selectFilterMatch(state, criteria.Expression));
 
-  const handleMatchChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setFilterMatch({ [criteria.Expression]: event.target.value as 'Or' | 'And' }));
+  const buildValue = (displayValues: string[], matchValue: 'And' | 'Or'): LeafValue => {
+    if (isPair) {
+      return {
+        kind: 'multiPair',
+        match: matchValue,
+        values: displayValues.map((display): [string, string] => {
+          const pair = catalogEntry.PossibleParameterPairs?.find(candidate => displayPair(candidate) === display);
+          return pair ? [pair[0], pair[1]] : [display, ''];
+        }),
+      };
+    }
+    return { kind: 'multi', values: displayValues, match: matchValue };
   };
+
+  const handleMatchChange = (event: ChangeEvent<HTMLSelectElement>) => setMatch(event.target.value as 'And' | 'Or');
 
   const selectValue = (value: string) => {
     setUnsavedValues([...unsavedValues, value]);
@@ -50,19 +75,25 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
     if (unsavedValues.includes(value)) {
       setUnsavedValues(pull([...unsavedValues], value));
     }
-    if (selectedValues.includes(value)) {
-      dispatch(setFilterValues({ [criteria.Expression]: pull([...selectedValues], value) }));
+    if (selectedDisplayValues.includes(value)) {
+      dispatch(updateLeafValue({
+        nodeId: node.id,
+        value: buildValue(pull([...selectedDisplayValues], value), match),
+      }));
     }
   };
 
   const handleCancel = () => {
     setUnsavedValues([]);
-    if (selectedValues.length === 0) removeCriteria();
+    if (selectedDisplayValues.length === 0) onRemove();
     onClose();
   };
 
   const handleSave = () => {
-    dispatch(setFilterValues({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
+    dispatch(updateLeafValue({
+      nodeId: node.id,
+      value: buildValue([...selectedDisplayValues, ...unsavedValues], match),
+    }));
     setUnsavedValues([]);
     onClose();
   };
@@ -72,11 +103,11 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
       show={show}
       size="sm"
       onRequestClose={handleCancel}
-      header={`Edit Condition - ${criteria.Name}`}
-      subHeader={criteria.Description}
+      header={`Edit Condition - ${catalogEntry.Name}`}
+      subHeader={catalogEntry.Description}
       fullHeight
     >
-      <Select id="match" onChange={handleMatchChange} value={filterMatch}>
+      <Select id="match" onChange={handleMatchChange} value={match}>
         <option value="Or">Match Any</option>
         <option value="And">Match All</option>
       </Select>
@@ -99,7 +130,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
         <div className="font-semibold">Selected Values</div>
         <div className="flex grow basis-0 overflow-y-auto rounded-lg bg-panel-input p-4">
           <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
-            {map([...selectedValues, ...unsavedValues], value => (
+            {map([...selectedDisplayValues, ...unsavedValues], value => (
               <div
                 onClick={() => {
                   removeValue(value);

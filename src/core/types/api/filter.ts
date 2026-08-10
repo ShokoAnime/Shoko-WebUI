@@ -1,28 +1,6 @@
-export type ExpressionType =
-  | 'And'
-  | 'Not'
-  | 'Or'
-  | 'AniDBIDsSelector'
-  | 'AllContains'
-  | 'AllRegexMatches'
-  | 'AnyContains'
-  | 'AnyEquals'
-  | 'AnyFuzzyMatches'
-  | 'AnyRegexMatches'
-  | 'HasUnwatchedEpisodes'
-  | 'HasWatchedEpisodes'
-  | 'NameSelector'
-  | 'NamesSelector'
-  | 'StringContains'
-  | 'StringEndsWith'
-  | 'StringEquals'
-  | 'StringFuzzyMatches'
-  | 'StringNotEquals'
-  | 'StringRegexMatches'
-  | 'StringStartsWith'
-  | 'HasTag'
-  | 'HasCustomTag'
-  | 'HasFuzzyName';
+// The server's catalog (`GET Filter/Expressions`) has ~200 expression types and is the
+// actual source of truth at runtime - a hardcoded union here can't be kept in sync with it.
+export type ExpressionType = string;
 
 type SortingType =
   | 'AddedDate'
@@ -105,3 +83,37 @@ export type FilterType = {
   IsLocked: boolean;
   Size: number;
 } & BaseFilterType;
+
+// Editable UI representation of a FilterCondition tree. Leaves reuse the existing
+// widget kinds (boolean/multi/multiPair/tag); anything else (Function calls, comparison
+// operators over selectors) is preserved verbatim as an UnsupportedNode rather than
+// dropped or partially interpreted.
+export type LeafValue =
+  | { kind: 'boolean', value: boolean }
+  | { kind: 'multi', values: string[], match: 'And' | 'Or' }
+  | { kind: 'multiPair', values: [string, string][], match: 'And' | 'Or' }
+  | { kind: 'tag', tags: FilterTag[] };
+
+export type LeafNode = {
+  id: string;
+  kind: 'leaf';
+  expression: string;
+  negate: boolean;
+  value: LeafValue;
+};
+
+export type GroupNode = {
+  id: string;
+  kind: 'group';
+  operator: 'And' | 'Or';
+  negate: boolean;
+  children: TreeNode[];
+};
+
+export type UnsupportedNode = {
+  id: string;
+  kind: 'unsupported';
+  raw: FilterCondition;
+};
+
+export type TreeNode = LeafNode | GroupNode | UnsupportedNode;

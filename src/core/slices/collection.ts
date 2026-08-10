@@ -1,145 +1,146 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { filter, keys } from 'lodash';
+
+import {
+  createEmptyGroupNode,
+  createLeafNode,
+  findGroupById,
+  findNodeById,
+  removeNodeById,
+} from '@/core/utilities/filterTree';
 
 import type { RootState } from '@/core/store';
-import type { FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
+import type { FilterCondition, FilterExpression, GroupNode, LeafValue } from '@/core/types/api/filter';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 /*
 Sidebar filter
 
-Naming these needs some improvements.
-Uses expressions received from server:
-filterCriteria - when user selects an expression it is copied here, then passed into relevant controls
+tree - the editable AND/OR/NOT condition tree, id-addressed so the same expression can
+appear more than once (e.g. two independent InYear conditions in different groups).
+Always a single root GroupNode once anything has been added; null means no filter.
 
-Values for the condition that user selected, key is criteria.Expression, split by type, technically could be a single array
-filterConditions - DefaultCriteria
-filterValues - MultiValueCriteria
-filterTags - TagCriteria
+activeFilter - the FilterCondition actually sent to the server, derived from `tree` via
+buildFilterTree() and cached here so Collection.tsx doesn't need to recompute/import the
+tree utilities itself; null if the filter is inactive/empty.
 
-activeFilter - actual filter expression is generated from all the values it is put here, if it is null filter is not active
+editingFilterId - set when `tree` was populated by loading an existing saved preset for
+editing (see Collection.tsx's Edit action), so the sidebar knows it's safe to offer
+"Save Changes" against that specific preset rather than only "Save as new preset". Cleared
+on resetFilter so stale/unrelated live-filter edits can never be silently PUT to a preset
+they don't actually represent.
 */
 
 type State = {
-  filterCriteria: Record<string, FilterExpression>;
-  filterConditions: Record<string, boolean>;
-  filterValues: Record<string, string[]>;
-  filterTags: Record<string, FilterTag[]>;
-  filterMatch: Record<string, 'Or' | 'And'>;
   activeFilter: FilterCondition | null;
+  editingFilterId: number | null;
+  tree: GroupNode | null;
 };
 
-const initialState = {
-  filterCriteria: {},
-  filterConditions: {},
-  filterValues: {},
-  filterTags: {},
-  filterMatch: {},
+const initialState: State = {
   activeFilter: null,
-} as State;
+  editingFilterId: null,
+  tree: null,
+};
 
 const collectionSlice = createSlice({
   name: 'collection',
   initialState,
   reducers: {
-    addFilterCriteria(sliceState, action: PayloadAction<FilterExpression>) {
-      const expression = action.payload;
-      sliceState.filterCriteria[expression.Expression] = expression;
-    },
-    removeFilterCriteria(sliceState, action: PayloadAction<FilterExpression>) {
-      const { Expression } = action.payload;
-      delete sliceState.filterCriteria[Expression];
-      if (sliceState.filterConditions[Expression] !== undefined) {
-        delete sliceState.filterConditions[Expression];
-      }
-      if (sliceState.filterValues[Expression] !== undefined) {
-        delete sliceState.filterValues[Expression];
-      }
-      if (sliceState.filterTags[Expression] !== undefined) {
-        delete sliceState.filterTags[Expression];
-      }
-      if (sliceState.filterMatch[Expression] !== undefined) {
-        delete sliceState.filterMatch[Expression];
-      }
+    setTree(sliceState, action: PayloadAction<GroupNode | null>) {
+      sliceState.tree = action.payload;
     },
     resetFilter() {
       return initialState;
     },
-    addFilterCondition(sliceState, action: PayloadAction<Record<string, boolean>>) {
-      sliceState.filterConditions = { ...sliceState.filterConditions, ...action.payload };
+    addLeaf(sliceState, action: PayloadAction<{ entry: FilterExpression, groupId?: string }>) {
+      const { entry, groupId } = action.payload;
+      const leaf = createLeafNode(entry);
+      sliceState.tree ??= createEmptyGroupNode('And');
+      const target = (groupId ? findGroupById(sliceState.tree, groupId) : null) ?? sliceState.tree;
+      target.children.push(leaf);
     },
-    setFilterValues(sliceState, action: PayloadAction<Record<string, string[]>>) {
-      sliceState.filterValues = { ...sliceState.filterValues, ...action.payload };
+    addGroup(sliceState, action: PayloadAction<{ groupId?: string } | undefined>) {
+      const groupId = action.payload?.groupId;
+      const newGroup = createEmptyGroupNode('And');
+      sliceState.tree ??= createEmptyGroupNode('And');
+      const target = (groupId ? findGroupById(sliceState.tree, groupId) : null) ?? sliceState.tree;
+      target.children.push(newGroup);
     },
-    setFilterTag(sliceState, action: PayloadAction<Record<string, FilterTag[]>>) {
-      sliceState.filterTags = action.payload;
+    removeNode(sliceState, action: PayloadAction<string>) {
+      if (!sliceState.tree) return;
+      if (sliceState.tree.id === action.payload) {
+        sliceState.tree = null;
+        return;
+      }
+      removeNodeById(sliceState.tree, action.payload);
     },
-    setFilterMatch(sliceState, action: PayloadAction<Record<string, 'Or' | 'And'>>) {
-      sliceState.filterMatch = { ...sliceState.filterMatch, ...action.payload };
+    setGroupOperator(sliceState, action: PayloadAction<{ nodeId: string, operator: 'And' | 'Or' }>) {
+      if (!sliceState.tree) return;
+      const node = findNodeById(sliceState.tree, action.payload.nodeId);
+      if (node?.kind === 'group') node.operator = action.payload.operator;
     },
-    setActiveFilter(sliceState, action: PayloadAction<FilterCondition>) {
+    setNegate(sliceState, action: PayloadAction<{ negate: boolean, nodeId: string }>) {
+      if (!sliceState.tree) return;
+      const node = findNodeById(sliceState.tree, action.payload.nodeId);
+      if (node && node.kind !== 'unsupported') node.negate = action.payload.negate;
+    },
+    updateLeafValue(sliceState, action: PayloadAction<{ nodeId: string, value: LeafValue }>) {
+      if (!sliceState.tree) return;
+      const node = findNodeById(sliceState.tree, action.payload.nodeId);
+      if (node?.kind === 'leaf') node.value = action.payload.value;
+    },
+    setActiveFilter(sliceState, action: PayloadAction<FilterCondition | null>) {
       sliceState.activeFilter = action.payload;
     },
-    resetActiveFilter(sliceState) {
-      sliceState.activeFilter = null;
+    setEditingFilterId(sliceState, action: PayloadAction<number | null>) {
+      sliceState.editingFilterId = action.payload;
     },
   },
 });
 
 export const {
-  addFilterCondition,
-  addFilterCriteria,
-  removeFilterCriteria,
-  resetActiveFilter,
+  addGroup,
+  addLeaf,
+  removeNode,
   resetFilter,
   setActiveFilter,
-  setFilterMatch,
-  setFilterTag,
-  setFilterValues,
+  setEditingFilterId,
+  setGroupOperator,
+  setNegate,
+  setTree,
+  updateLeafValue,
 } = collectionSlice.actions;
 
-export const selectFilterTags = createSelector(
+export const selectFilterTree = (state: RootState) => state.collection.tree;
+
+export const selectEditingFilterId = (state: RootState) => state.collection.editingFilterId;
+
+export const selectNodeById = createSelector(
   [
-    (state: RootState) => state.collection,
-    (_, criteria: FilterExpression) => criteria.Expression,
+    (state: RootState) => state.collection.tree,
+    (_: RootState, nodeId: string) => nodeId,
   ],
-  (values, expression) => values.filterTags[expression] ?? [],
+  (tree, nodeId) => (tree ? findNodeById(tree, nodeId) : null),
 );
 
-export const selectFilterValues = createSelector(
-  [
-    (state: RootState) => state.collection,
-    (_, criteria: FilterExpression) => criteria.Expression,
-  ],
-  (values, expression) => values.filterValues[expression] ?? [],
+export const selectHasEditableContent = createSelector(
+  [(state: RootState) => state.collection.tree],
+  tree => !!tree && tree.children.length > 0,
 );
 
-export const selectActiveCriteria = createSelector(
+// Used by AddCriteriaModal to avoid offering an expression already present as a direct
+// (non-nested) leaf of the group the user is adding to.
+export const selectUsedExpressionsInGroup = createSelector(
   [
-    (state: RootState) => state.collection,
+    (state: RootState) => state.collection.tree,
+    (_: RootState, groupId: string) => groupId,
   ],
-  values => keys(values.filterCriteria),
-);
-
-export const selectActiveCriteriaWithValues = createSelector(
-  [
-    (state: RootState) => state.collection.filterConditions,
-    (state: RootState) => state.collection.filterValues,
-    (state: RootState) => state.collection.filterTags,
-  ],
-  (filterConditions, filterValues, filterTags) => [
-    ...keys(filter(filterConditions, item => item !== undefined)),
-    ...keys(filter(filterValues, item => item.length > 0)),
-    ...keys(filter(filterTags, item => item.length > 0)),
-  ],
-);
-
-export const selectFilterMatch = createSelector(
-  [
-    (state: RootState) => state.collection.filterMatch,
-    (_, expression: string) => expression,
-  ],
-  (filterMatch, expression) => filterMatch[expression] ?? 'Or',
+  (tree, groupId) => {
+    if (!tree) return [];
+    const group = tree.id === groupId ? tree : findGroupById(tree, groupId);
+    if (!group) return [];
+    return group.children.filter(child => child.kind === 'leaf').map(child => child.expression);
+  },
 );
 
 export default collectionSlice.reducer;

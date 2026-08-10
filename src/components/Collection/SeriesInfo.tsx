@@ -4,10 +4,10 @@ import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
-import { resetFilter, setFilterValues } from '@/core/slices/collection';
+import { resetFilter } from '@/core/slices/collection';
 import { useDispatch } from '@/core/store';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
-import { addFilterCriteriaToStore } from '@/core/utilities/filter';
+import { startQuickFilter } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesType } from '@/core/types/api/series';
@@ -55,8 +55,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     if (!overview.FirstAirSeason) return;
     dispatch(resetFilter());
     const [season, year] = overview.FirstAirSeason.split(' ');
-    addFilterCriteriaToStore('InSeason').then(() => {
-      dispatch(setFilterValues({ InSeason: [`${year}: ${season}`] }));
+    startQuickFilter('InSeason', { kind: 'multiPair', values: [[year, season]], match: 'Or' }).then(() => {
       navigate('/webui/collection/filter/live');
     }).catch(console.error);
   };

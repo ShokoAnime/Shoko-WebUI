@@ -5,7 +5,7 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { useDispatch, useSelector } from '@/core/store';
-import { addFilterCriteriaToStore } from '@/core/utilities/filter';
+import { startQuickFilter } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const Item = (
@@ -15,7 +15,7 @@ const Item = (
   const navigate = useNavigateVoid();
   const handleMissingFilter = (filterName: string) => {
     dispatch(resetFilter());
-    addFilterCriteriaToStore(filterName).then(() => {
+    startQuickFilter(filterName).then(() => {
       navigate('/webui/collection/filter/live');
     }).catch(console.error);
   };
