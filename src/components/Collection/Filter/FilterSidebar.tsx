@@ -1,131 +1,127 @@
 import { useEffect, useState } from 'react';
-import type { MouseEventHandler } from 'react';
 import { useParams } from 'react-router';
-import { mdiContentSaveOutline, mdiFilterPlusOutline } from '@mdi/js';
-import { keys, map } from 'lodash';
+import { mdiContentSaveEditOutline, mdiContentSaveOutline } from '@mdi/js';
 
-import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
-import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
-import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
+import FilterGroup from '@/components/Collection/Filter/FilterGroup';
 import SavePresetModal from '@/components/Collection/Filter/SavePresetModal';
-import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import Button from '@/components/Input/Button';
 import IconButton from '@/components/Input/IconButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { useUpdateFilterMutation } from '@/core/react-query/filter/mutations';
+import { useAllFilterExpressionsQuery, useFilterQuery } from '@/core/react-query/filter/queries';
 import {
-  resetActiveFilter,
   resetFilter,
-  selectActiveCriteriaWithValues,
+  selectEditingFilterId,
+  selectFilterTree,
+  selectHasEditableContent,
   setActiveFilter,
+  setEditingFilterId,
 } from '@/core/slices/collection';
 import { useDispatch, useSelector } from '@/core/store';
-import { buildSidebarFilter } from '@/core/utilities/filter';
-
-import type { ButtonType } from '@/components/Input/Button.utils';
-import type { FilterExpression } from '@/core/types/api/filter';
-
-const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
-  if (criteria.Expression === 'HasCustomTag' || criteria.Expression === 'HasTag') {
-    return <TagCriteria criteria={criteria} />;
-  }
-  if (criteria.PossibleParameters ?? criteria.PossibleParameterPairs) {
-    return <MultiValueCriteria criteria={criteria} />;
-  }
-  return <DefaultCriteria criteria={criteria} />;
-};
-
-const OptionButton = (
-  { buttonType, disabled, icon, onClick, tooltip }: {
-    buttonType?: ButtonType;
-    disabled?: boolean;
-    icon: string;
-    onClick: MouseEventHandler<HTMLButtonElement>;
-    tooltip?: string;
-  },
-) => (
-  <IconButton
-    icon={icon}
-    buttonType={buttonType ?? 'secondary'}
-    buttonSize="normal"
-    onClick={onClick}
-    tooltip={tooltip}
-    disabled={disabled}
-  />
-);
+import toast from '@/core/toast';
+import { buildFilterTree, createEmptyGroupNode } from '@/core/utilities/filterTree';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type OptionsProps = {
-  showCriteriaModal: () => void;
+  canSaveChanges: boolean;
+  hasContent: boolean;
+  isSavingChanges: boolean;
+  onSaveChanges: () => void;
   showSavePresetModal: () => void;
 };
 
-const Options = ({ showCriteriaModal, showSavePresetModal }: OptionsProps) => {
-  const { filterId } = useParams();
-
-  const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
-
-  const saveDisabled = filterId !== 'live' || keys(activeCriteriaWithValues).length === 0;
-  const saveDisabledReason = filterId !== 'live' ? 'Editing presets is currently unsupported' : '';
-
-  return (
-    <div className="flex gap-2">
-      <OptionButton
-        onClick={showSavePresetModal}
-        icon={mdiContentSaveOutline}
-        tooltip={saveDisabled ? saveDisabledReason : 'Save as preset'}
-        disabled={saveDisabled}
+const Options = ({ canSaveChanges, hasContent, isSavingChanges, onSaveChanges, showSavePresetModal }: OptionsProps) => (
+  <div className="flex gap-2">
+    {canSaveChanges && (
+      <IconButton
+        icon={mdiContentSaveEditOutline}
+        buttonType="secondary"
+        buttonSize="normal"
+        onClick={onSaveChanges}
+        tooltip="Save Changes"
+        disabled={!hasContent || isSavingChanges}
       />
-      <OptionButton onClick={showCriteriaModal} icon={mdiFilterPlusOutline} tooltip="Add condition" />
-    </div>
-  );
-};
+    )}
+    <IconButton
+      icon={mdiContentSaveOutline}
+      buttonType="secondary"
+      buttonSize="normal"
+      onClick={showSavePresetModal}
+      tooltip="Save as new preset"
+      disabled={!hasContent}
+    />
+  </div>
+);
 
 const FilterSidebar = () => {
-  const [criteriaModal, showCriteriaModal] = useState(false);
+  const { filterId, groupId } = useParams();
   const [savePresetModal, showSavePresetModal] = useState(false);
   const dispatch = useDispatch();
-  const selectedCriteria = useSelector(state => state.collection.filterCriteria);
-  const selectedConditions = useSelector(state => state.collection.filterConditions);
-  const selectedMatch = useSelector(state => state.collection.filterMatch);
-  const selectedTags = useSelector(state => state.collection.filterTags);
-  const selectedValues = useSelector(state => state.collection.filterValues);
-  const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
+  const navigate = useNavigateVoid();
 
-  const isFilterValid = keys(selectedCriteria).length > 0
-    && keys(selectedCriteria).length === keys(activeCriteriaWithValues).length;
+  const tree = useSelector(selectFilterTree);
+  const editingFilterId = useSelector(selectEditingFilterId);
+  const hasContent = useSelector(selectHasEditableContent);
+  const catalog = useAllFilterExpressionsQuery().data ?? [];
 
-  const finalFilterExpression = isFilterValid
-    ? buildSidebarFilter(
-      Object.values(selectedCriteria),
-      {
-        filterConditions: selectedConditions,
-        filterMatch: selectedMatch,
-        filterTags: selectedTags,
-        filterValues: selectedValues,
-      },
-    )
-    : undefined;
+  const editingFilterQuery = useFilterQuery(editingFilterId ?? 0, !!editingFilterId);
+  const { isPending: isSavingChanges, mutate: updateFilter } = useUpdateFilterMutation();
+
+  // Only offer "Save Changes" while actually on the live editing buffer - every entry
+  // point that starts a fresh/unrelated live filter (Clear Filter, quick-filter jumps,
+  // opening the sidebar with no filterId) dispatches resetFilter() first, which clears
+  // editingFilterId, so this can't point at a preset the current buffer doesn't represent.
+  const canSaveChanges = !!editingFilterId && filterId === 'live';
 
   useEffect(() => {
-    if (isFilterValid && finalFilterExpression) dispatch(setActiveFilter(finalFilterExpression));
-    else dispatch(resetActiveFilter());
-  }, [dispatch, finalFilterExpression, isFilterValid]);
+    dispatch(setActiveFilter(buildFilterTree(tree) ?? null));
+  }, [dispatch, tree]);
+
+  const handleSaveChanges = () => {
+    if (!editingFilterId || !editingFilterQuery.data) return;
+    const { IDs, IsLocked: _IsLocked, Size: _Size, ...body } = editingFilterQuery.data;
+    updateFilter({
+      filterId: editingFilterId,
+      filter: { ...body, ParentID: IDs.ParentFilter ?? undefined, Expression: buildFilterTree(tree) },
+    }, {
+      onSuccess: () => {
+        toast.success('Preset updated!');
+        // Saving commits the edit and returns to the normal preset view. Only the "which
+        // preset am I editing" marker is cleared here, not the tree itself - the tree
+        // still accurately reflects what was just saved, so the sidebar (if left open)
+        // keeps showing the right conditions instead of going blank.
+        dispatch(setEditingFilterId(null));
+        navigate(
+          groupId
+            ? `/webui/collection/group/${groupId}/filter/${editingFilterId}`
+            : `/webui/collection/filter/${editingFilterId}`,
+        );
+      },
+      onError: () => toast.error('Failed to update preset!'),
+    });
+  };
+
+  const rootNode = tree ?? createEmptyGroupNode('And');
+  const title = canSaveChanges && editingFilterQuery.data?.Name
+    ? `Filter - Editing "${editingFilterQuery.data.Name}"`
+    : 'Filter';
 
   return (
     <ShokoPanel
-      title="Filter"
+      title={title}
       className="sticky top-24 ml-6 h-[calc(100vh-18rem)]! w-full"
       contentClassName="gap-y-6"
       options={
         <Options
-          showCriteriaModal={() => showCriteriaModal(true)}
+          canSaveChanges={canSaveChanges}
+          hasContent={hasContent}
+          isSavingChanges={isSavingChanges}
+          onSaveChanges={handleSaveChanges}
           showSavePresetModal={() => showSavePresetModal(true)}
         />
       }
     >
-      {map(
-        selectedCriteria,
-        item => <CriteriaComponent key={item.Expression} criteria={item} />,
-      )}
+      <FilterGroup catalog={catalog} node={rootNode} isRoot />
       <Button
         buttonType="danger"
         className="px-4 py-3"
@@ -133,11 +129,10 @@ const FilterSidebar = () => {
       >
         Clear Filter
       </Button>
-      <AddCriteriaModal show={criteriaModal} onClose={() => showCriteriaModal(false)} />
       <SavePresetModal
         show={savePresetModal}
         onClose={() => showSavePresetModal(false)}
-        filterCondition={finalFilterExpression}
+        filterCondition={buildFilterTree(tree)}
       />
     </ShokoPanel>
   );

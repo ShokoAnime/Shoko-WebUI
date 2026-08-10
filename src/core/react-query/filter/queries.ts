@@ -43,6 +43,18 @@ export const useFilterExpressionsQuery = (enabled = true) =>
     staleTime: Infinity, // This query does not return different results each time, so we can cache it forever.
   });
 
+// Unfiltered catalog (all groups, not just "Info") - needed to look up the display name/
+// widget shape for a leaf parsed out of an existing preset, which may reference an
+// expression outside the "Info" group even though AddCriteriaModal only offers Info-group
+// expressions when adding a new condition. Shares the same query cache as the query above.
+export const useAllFilterExpressionsQuery = (enabled = true) =>
+  useQuery<FilterExpression[]>({
+    queryKey: ['filter', 'expression', 'all'],
+    queryFn: () => axios.get('Filter/Expressions'),
+    enabled,
+    staleTime: Infinity,
+  });
+
 export const useFilteredSeriesInfiniteQuery = (
   { filterCriteria, ...params }: FilteredSeriesRequestType,
   enabled = true,

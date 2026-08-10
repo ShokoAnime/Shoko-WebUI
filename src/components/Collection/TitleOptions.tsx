@@ -6,6 +6,7 @@ import {
   mdiFormatListText,
   mdiMagnify,
   mdiPencil,
+  mdiPencilOutline,
   mdiViewGridOutline,
 } from '@mdi/js';
 import { useToggle } from 'usehooks-ts';
@@ -20,10 +21,12 @@ import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
+  canEditFilter: boolean;
   groupSearch: string;
   isSeries: boolean;
   item: CollectionGroupType | SeriesType;
   mode: string;
+  onEditFilter: () => void;
   seriesSearch: string;
   setSearch: (event: ChangeEvent<HTMLInputElement>) => void;
   toggleFilterSidebar: () => void;
@@ -48,10 +51,12 @@ const OptionButton = (
 
 const TitleOptions = (props: Props) => {
   const {
+    canEditFilter,
     groupSearch,
     isSeries,
     item,
     mode,
+    onEditFilter,
     seriesSearch,
     setSearch,
     toggleFilterSidebar,
@@ -75,7 +80,9 @@ const TitleOptions = (props: Props) => {
         />
         {!isSeries && <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />}
         {isSeries && <OptionButton onClick={editGroupModalCallback} icon={mdiPencil} tooltip="Edit Group" />}
-        <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />
+        {canEditFilter
+          ? <OptionButton onClick={onEditFilter} icon={mdiPencilOutline} tooltip="Edit Filter" />
+          : <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />}
         <OptionButton
           onClick={toggleMode}
           icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline}

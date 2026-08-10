@@ -6,23 +6,22 @@ import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilterExpressionsQuery } from '@/core/react-query/filter/queries';
-import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
+import { addLeaf, selectUsedExpressionsInGroup } from '@/core/slices/collection';
 import { useDispatch, useSelector } from '@/core/store';
 
-import type { FilterExpression } from '@/core/types/api/filter';
-
 type Props = {
-  show: boolean;
+  groupId: string;
   onClose: () => void;
+  show: boolean;
 };
 
-const AddCriteriaModal = ({ onClose, show }: Props) => {
+const AddCriteriaModal = ({ groupId, onClose, show }: Props) => {
   const dispatch = useDispatch();
   const allCriteria = useFilterExpressionsQuery(show).data;
-  const selectedKeys = useSelector(selectActiveCriteria);
-  const unusedCriteria = useMemo(() => filter(allCriteria, item => !selectedKeys.includes(item.Expression)), [
+  const usedKeys = useSelector(state => selectUsedExpressionsInGroup(state, groupId));
+  const unusedCriteria = useMemo(() => filter(allCriteria, item => !usedKeys.includes(item.Expression)), [
     allCriteria,
-    selectedKeys,
+    usedKeys,
   ]);
   const [newCriteria, setNewCriteria] = useState('');
 
@@ -32,8 +31,9 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
   };
 
   const handleSave = () => {
-    const filterExpression = filter(allCriteria, { Expression: newCriteria })[0] as FilterExpression;
-    dispatch(addFilterCriteria(filterExpression));
+    const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
+    if (!filterExpression) return;
+    dispatch(addLeaf({ entry: filterExpression, groupId }));
     handleClose();
   };
 

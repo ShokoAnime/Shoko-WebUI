@@ -3,9 +3,9 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
-import { resetFilter, setFilterTag } from '@/core/slices/collection';
+import { resetFilter } from '@/core/slices/collection';
 import { useDispatch } from '@/core/store';
-import { addFilterCriteriaToStore } from '@/core/utilities/filter';
+import { startQuickFilter } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
@@ -19,8 +19,7 @@ const TagButton = ({ tagType, text, type }: Props) => {
   const navigate = useNavigateVoid();
   const handleClick = () => {
     dispatch(resetFilter());
-    addFilterCriteriaToStore('HasTag').then(() => {
-      dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
+    startQuickFilter('HasTag', { kind: 'tag', tags: [{ Name: text, isExcluded: false }] }).then(() => {
       navigate('/webui/collection/filter/live');
     }).catch(console.error);
   };

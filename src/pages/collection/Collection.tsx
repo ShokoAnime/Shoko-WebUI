@@ -13,6 +13,7 @@ import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import TitleOptions from '@/components/Collection/TitleOptions';
 import {
+  useAllFilterExpressionsQuery,
   useFilterQuery,
   useFilteredGroupSeries,
   useFilteredGroupsInfiniteQuery,
@@ -22,9 +23,11 @@ import { resetQueries } from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
-import { resetFilter } from '@/core/slices/collection';
+import { resetFilter, setEditingFilterId, setTree } from '@/core/slices/collection';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import { buildFilter } from '@/core/utilities/filter';
+import { parseFilterTree } from '@/core/utilities/filterTree';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -128,6 +131,26 @@ const Collection = () => {
   }, [activeFilterFromStore, filterId]);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && !isLiveFilter);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
+  const catalogQuery = useAllFilterExpressionsQuery(!!filterId && !isLiveFilter);
+
+  const canEditFilter = !!filterId && !isLiveFilter;
+  const handleEditFilter = () => {
+    if (!canEditFilter || !filterQuery.data) return;
+    if (!catalogQuery.data) {
+      // Without the catalog, every leaf would fail its lookup and get misclassified as
+      // permanently unsupported instead of just not being ready yet - refuse to parse
+      // rather than silently corrupting the loaded tree.
+      toast.error('Could not load filter expressions, try again.');
+      return;
+    }
+    dispatch(setTree(parseFilterTree(filterQuery.data.Expression, catalogQuery.data)));
+    dispatch(setEditingFilterId(toNumber(filterId)));
+    // Absolute path: unlike handleFilterSidebarToggle (called when no filterId is present
+    // yet, so a relative 'filter/live' correctly appends), we're navigating away from a
+    // URL that already has a /filter/:filterId segment - a relative navigate would nest
+    // under it instead of replacing it.
+    navigate(isSeries ? `/webui/collection/group/${groupId}/filter/live` : '/webui/collection/filter/live');
+  };
 
   const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
@@ -147,8 +170,11 @@ const Collection = () => {
   };
 
   useEffect(() => {
-    if (filterId === 'live') setShowFilterSidebar(true);
-    if (!filterId) setShowFilterSidebar(false);
+    // The sidebar's own toggle button is hidden while viewing a saved preset (its
+    // controls - Add condition, Clear Filter - don't apply until you're actually editing
+    // it via the Edit Filter action), so make sure it can't be left open with no way to
+    // close it from there.
+    setShowFilterSidebar(filterId === 'live');
   }, [filterId, setShowFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
@@ -251,10 +277,12 @@ const Collection = () => {
             searchQuery={isSeries ? seriesSearch : groupSearch}
           />
           <TitleOptions
+            canEditFilter={canEditFilter}
             groupSearch={groupSearch}
             isSeries={isSeries}
             item={item}
             mode={mode}
+            onEditFilter={handleEditFilter}
             seriesSearch={seriesSearch}
             setSearch={setSearch}
             toggleFilterSidebar={handleFilterSidebarToggle}
