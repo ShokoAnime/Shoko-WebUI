@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.107",
+      "minServerVersion": "6.0.0-dev.401",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.107/Shoko-WebUI-v2.6.0-dev.107.zip",
+      "checksum": "sha256:169223a4675c56868d168014f91a81eaedadbe66ac000dfaf336ef7499298022",
+      "commit": "c462d829d2212b67a853d1f1216002ab0b4c9c0e",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.401** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.401** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Rework collection filter format to align with server, add preset editing by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1425\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.106...v2.6.0-dev.107\n"
+    },
+    {
       "version": "2.6.0-dev.106",
       "minServerVersion": "6.0.0-dev.401",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.106/Shoko-WebUI-v2.6.0-dev.106.zip",
