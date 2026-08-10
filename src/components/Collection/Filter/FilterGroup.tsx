@@ -7,6 +7,7 @@ import { map } from 'lodash';
 
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import FilterLeaf from '@/components/Collection/Filter/FilterLeaf';
+import NotToggle from '@/components/Collection/Filter/NotToggle';
 import UnsupportedCondition from '@/components/Collection/Filter/UnsupportedCondition';
 import Select from '@/components/Input/Select';
 import { addGroup, removeNode, setGroupOperator, setNegate } from '@/core/slices/collection';
@@ -44,20 +45,7 @@ const FilterGroup = ({ catalog, isRoot = false, node }: Props) => {
       {showChrome && (
         <div className="flex items-center justify-between gap-x-2">
           <div className="flex items-center gap-x-2">
-            <span
-              className={cx(
-                'cursor-pointer rounded-sm border px-1.5 text-xs font-semibold',
-                node.negate
-                  ? 'border-panel-icon-danger text-panel-icon-danger'
-                  : 'border-panel-border text-panel-text-important',
-              )}
-              onClick={toggleNegate}
-              data-tooltip-id="tooltip"
-              data-tooltip-content="Toggle NOT"
-              data-tooltip-delay-show={500}
-            >
-              NOT
-            </span>
+            <NotToggle negate={node.negate} onToggle={toggleNegate} />
             <Select id={`${node.id}-operator`} value={node.operator} onChange={changeOperator}>
               <option value="And">Match All of the following</option>
               <option value="Or">Match Any of the following</option>
@@ -90,7 +78,7 @@ const FilterGroup = ({ catalog, isRoot = false, node }: Props) => {
         return <FilterLeaf key={child.id} catalogEntry={catalogEntry} node={child} />;
       })}
 
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center justify-between">
         <div
           className="flex cursor-pointer items-center gap-x-2 font-semibold text-panel-text-primary"
           onClick={() => setShowAddCondition(true)}
@@ -99,7 +87,7 @@ const FilterGroup = ({ catalog, isRoot = false, node }: Props) => {
           Add condition
         </div>
         <div
-          className="flex cursor-pointer items-center gap-x-2 text-sm text-panel-text-important"
+          className="flex cursor-pointer items-center gap-x-2 font-semibold text-panel-text-primary"
           onClick={addSubGroup}
         >
           <Icon path={mdiPlusCircleMultipleOutline} size={0.75} />

@@ -25,6 +25,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter, setEditingFilterId, setTree } from '@/core/slices/collection';
 import { useDispatch, useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import { buildFilter } from '@/core/utilities/filter';
 import { parseFilterTree } from '@/core/utilities/filterTree';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -135,7 +136,14 @@ const Collection = () => {
   const canEditFilter = !!filterId && !isLiveFilter;
   const handleEditFilter = () => {
     if (!canEditFilter || !filterQuery.data) return;
-    dispatch(setTree(parseFilterTree(filterQuery.data.Expression, catalogQuery.data ?? [])));
+    if (!catalogQuery.data) {
+      // Without the catalog, every leaf would fail its lookup and get misclassified as
+      // permanently unsupported instead of just not being ready yet - refuse to parse
+      // rather than silently corrupting the loaded tree.
+      toast.error('Could not load filter expressions, try again.');
+      return;
+    }
+    dispatch(setTree(parseFilterTree(filterQuery.data.Expression, catalogQuery.data)));
     dispatch(setEditingFilterId(toNumber(filterId)));
     // Absolute path: unlike handleFilterSidebarToggle (called when no filterId is present
     // yet, so a relative 'filter/live' correctly appends), we're navigating away from a
