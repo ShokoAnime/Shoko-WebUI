@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { mdiInformationVariantCircleOutline } from '@mdi/js';
+import { mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useImmer } from 'use-immer';
 
@@ -119,55 +119,62 @@ const AutoSearchReleaseModal = (props: Props) => {
           </span>
         </div>
         <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-          <DnDList onDragEnd={onDragEnd}>
-            {providers.map((provider, index) => (
-              {
-                key: provider.id,
-                item: (
-                  <Checkbox
-                    autoFocus={index === 0}
-                    id={provider.id}
-                    isChecked={provider.enabled}
-                    onChange={handleToggle}
-                    labelRight
-                    justify
-                    className="grow"
-                    labelClassName="grow"
-                    label={
-                      <>
-                        <span className="flex grow gap-x-1.5">
-                          {providerMap[provider.id].Name}
-                          <span className="self-center text-xs opacity-65">
-                            (
-                            {providerMap[provider.id].Plugin.Name}
-                            )
+          {!providersQuery.isSuccess && (
+            <div className="flex grow items-center justify-center">
+              <Icon className="text-panel-text-primary" path={mdiLoading} size={1} spin={0.5} />
+            </div>
+          )}
+          {providersQuery.isSuccess && (
+            <DnDList onDragEnd={onDragEnd}>
+              {providers.map((provider, index) => (
+                {
+                  key: provider.id,
+                  item: (
+                    <Checkbox
+                      autoFocus={index === 0}
+                      id={provider.id}
+                      isChecked={provider.enabled}
+                      onChange={handleToggle}
+                      labelRight
+                      justify
+                      className="grow"
+                      labelClassName="grow"
+                      label={
+                        <>
+                          <span className="flex grow gap-x-1.5">
+                            {providerMap[provider.id].Name}
+                            <span className="self-center text-xs opacity-65">
+                              (
+                              {providerMap[provider.id].Plugin.Name}
+                              )
+                            </span>
                           </span>
-                        </span>
-                        <span className="flex gap-x-1">
-                          {/* Temporarily disabled until configuration modal is added */}
-                          {/* {providerMap[provider.id].Configuration && ( */}
-                          {/*   <Button */}
-                          {/*     id={`${provider.id}-config`} */}
-                          {/*     className="text-button-primary opacity-65 cursor-default" */}
-                          {/*   > */}
-                          {/*     <Icon path={mdiCog} size={1} /> */}
-                          {/*   </Button> */}
-                          {/* )} */}
-                          <Button
-                            id={`${provider.id}-info`}
-                            onClick={() => handleShowInfoModal(provider.id)}
-                            className="text-button-primary"
-                          >
-                            <Icon path={mdiInformationVariantCircleOutline} size={1} />
-                          </Button>
-                        </span>
-                      </>
-                    }
-                  />
-                ),
-              }
-            ))}
-          </DnDList>
+                          <span className="flex gap-x-1">
+                            {/* Temporarily disabled until configuration modal is added */}
+                            {/* {providerMap[provider.id].Configuration && ( */}
+                            {/*   <Button */}
+                            {/*     id={`${provider.id}-config`} */}
+                            {/*     className="text-button-primary opacity-65 cursor-default" */}
+                            {/*   > */}
+                            {/*     <Icon path={mdiCog} size={1} /> */}
+                            {/*   </Button> */}
+                            {/* )} */}
+                            <Button
+                              id={`${provider.id}-info`}
+                              onClick={() => handleShowInfoModal(provider.id)}
+                              className="text-button-primary"
+                            >
+                              <Icon path={mdiInformationVariantCircleOutline} size={1} />
+                            </Button>
+                          </span>
+                        </>
+                      }
+                    />
+                  ),
+                }
+              ))}
+            </DnDList>
+          )}
         </div>
         <div className="mt-1 text-sm text-panel-text opacity-65">
           Enabled providers in the manual linking process, in priority order.
@@ -186,7 +193,7 @@ const AutoSearchReleaseModal = (props: Props) => {
           onClick={handleSearch}
           buttonType="primary"
           className="px-5 py-2"
-          disabled={!providers.length}
+          disabled={!providersQuery.isSuccess || !providers.length}
           keybinding="Enter"
         >
           Search

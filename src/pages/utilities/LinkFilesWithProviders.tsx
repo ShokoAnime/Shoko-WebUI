@@ -34,6 +34,7 @@ const LinkFilesWithProviders = () => {
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
 
   const settings = useSettingsQuery().data;
+  // settingsRevision is 0 on initialData; it only becomes > 0 after the real fetch resolves
   const isSettingsLoaded = settings.WebUI_Settings.settingsRevision > 0;
   const [linksDict, setLinks] = useImmer<Record<number, ManualLinkType>>({});
   const links = Object.values(linksDict);

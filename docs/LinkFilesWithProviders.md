@@ -149,7 +149,7 @@ Converts `FileType[]` into `Record<number, ManualLinkType>`:
 
 ### `mergeReleaseInfo(incoming, original)`
 
-Merges AutoPreview result into the user's seed release. Preserves user-set fields via nullish coalescing (`FileSize`, `OriginalFilename`, `IsChaptered`, `IsCensored`, `IsCreditless`, `Group`), restores `Source` from the original only when the incoming `Source` is `Unknown`, enforces `Version >= 1`, and appends `+User` to `ProviderName` if not already present.
+Merges AutoPreview result into the user's seed release. Preserves user-set fields via nullish coalescing (`FileSize`, `OriginalFilename`, `IsChaptered`, `IsCensored`, `IsCreditless`, `Group`), restores `Source` from the original only when the incoming `Source` is `Unknown`, enforces `Version >= 1`, and appends `+User` to `ProviderName` unless it is already `'User'` or already contains `+User`.
 
 ## API Endpoints
 
