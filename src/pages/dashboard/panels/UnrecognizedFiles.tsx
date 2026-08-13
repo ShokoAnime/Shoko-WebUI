@@ -82,7 +82,7 @@ const UnrecognizedFiles = () => {
     () => {
       if (filesQuery.isSuccess) {
         return [
-          filesQuery.data.pages.flatMap(page => page.List),
+          filesQuery.data.pages.flatMap(page => page.List).filter(Boolean),
           filesQuery.data.pages[0].Total,
         ];
       }
