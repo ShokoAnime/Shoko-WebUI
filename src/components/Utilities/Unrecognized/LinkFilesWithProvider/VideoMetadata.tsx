@@ -1,6 +1,6 @@
 import { ReleaseSource } from '@/core/types/api/file';
 
-import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 const parseReleaseSource = (releaseSource: ReleaseSource) => {
   switch (releaseSource) {

@@ -5,7 +5,7 @@ import CrossReference from './CrossReference';
 import ProviderName from './ProviderName';
 import VideoMetadata from './VideoMetadata';
 
-import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 type Props = {
   link: ManualLinkType;
@@ -14,7 +14,6 @@ type Props = {
 };
 
 const linkStateClassMap = {
-  'pre-init': 'opacity-65 cursor-wait',
   init: '',
   searching: 'animate-pulse cursor-wait',
   ready: 'cursor-pointer',
@@ -24,7 +23,6 @@ const linkStateClassMap = {
 } as const;
 
 const selectionDisabledStates = [
-  'pre-init',
   'searching',
   'submitting',
   'fetching',

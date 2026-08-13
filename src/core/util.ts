@@ -15,7 +15,7 @@ import type { CollectionGroupType } from './types/api/collection';
 import type { EpisodeType } from './types/api/episode';
 import type { FileType } from './types/api/file';
 import type { SeriesType } from './types/api/series';
-import type { ManualLinkType } from './types/utilities/unrecognized-utility';
+import type { ManualLinkType } from './types/utilities/link-files-with-providers';
 import type { ShokoError } from '@/core/types/api';
 import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 import type { AxiosError } from 'axios';

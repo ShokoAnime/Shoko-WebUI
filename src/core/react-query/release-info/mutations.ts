@@ -37,15 +37,6 @@ export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
     },
   });
 
-export const usePreviewReleaseInfoByProviderIdMutation = () =>
-  useMutation<ReleaseInfoType, unknown, { id: string, providerId: string }>({
-    mutationFn: ({ id, providerId }) =>
-      axios.get(`ReleaseInfo/Provider/${providerId}/Preview/By-Release`, { params: { id } }),
-    scope: {
-      id: 'release-info',
-    },
-  });
-
 export const useReleaseInfoByFileIdMutation = () =>
   useMutation<ReleaseInfoType | null, unknown, number>({
     mutationFn: fileId => axios.get(`ReleaseInfo/File/${fileId}`),

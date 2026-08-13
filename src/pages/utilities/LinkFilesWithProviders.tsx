@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useLocation } from 'react-router';
@@ -16,7 +16,6 @@ import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFile
 import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/LinkCard';
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
-import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { handleShiftSelect } from '@/core/util';
 import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
@@ -25,10 +24,9 @@ import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
 import type { FileType } from '@/core/types/api/file';
-import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 const BUSY_STATES = new Set(['searching', 'submitting', 'fetching']);
-const NOT_SELECTABLE_STATES = new Set(['pre-init', ...BUSY_STATES]);
 const EDITABLE_STATES = new Set(['ready', 'init']);
 
 const LinkFilesWithProviders = () => {
@@ -36,12 +34,8 @@ const LinkFilesWithProviders = () => {
   const selectedFiles = (useLocation().state as { selectedRows?: FileType[] })?.selectedRows ?? [];
 
   const settings = useSettingsQuery().data;
-  const releaseProvidersQuery = useReleaseInfoProvidersQuery(true);
-  const providerMap = useMemo(() => {
-    if (!releaseProvidersQuery.data) return {};
-    return Object.fromEntries(releaseProvidersQuery.data.map(provider => [provider.ID, provider]));
-  }, [releaseProvidersQuery.data]);
-
+  // settingsRevision is 0 on initialData; it only becomes > 0 after the real fetch resolves
+  const isSettingsLoaded = settings.WebUI_Settings.settingsRevision > 0;
   const [linksDict, setLinks] = useImmer<Record<number, ManualLinkType>>({});
   const links = Object.values(linksDict);
   const [initialized, setInitialized] = useState(false);
@@ -50,7 +44,7 @@ const LinkFilesWithProviders = () => {
   const [confirmCancel, setConfirmCancel] = useState(false);
 
   const initializeLinks = useEffectEvent(() => {
-    if (!releaseProvidersQuery.data) return;
+    if (!isSettingsLoaded) return;
     setLinks(createLinksFromFiles(selectedFiles, settings.WebUI_Settings.releaseInfoProviders ?? []));
     setInitialized(true);
   });
@@ -60,9 +54,9 @@ const LinkFilesWithProviders = () => {
   }, [initialized, links, navigate]);
 
   useEffect(() => {
-    if (!releaseProvidersQuery.isSuccess) return;
+    if (!isSettingsLoaded) return;
     initializeLinks();
-  }, [releaseProvidersQuery.isSuccess]);
+  }, [isSettingsLoaded]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -97,7 +91,7 @@ const LinkFilesWithProviders = () => {
     navigate(-1);
   };
 
-  const { cancelActiveWork } = useLinkWorkflow(links, setLinks, providerMap, initialized);
+  const { cancelActiveWork } = useLinkWorkflow(links, setLinks, initialized);
 
   const handleCancel = () => {
     if (links.some(link => BUSY_STATES.has(link.state))) {
@@ -134,11 +128,7 @@ const LinkFilesWithProviders = () => {
     if (selectedRows.length === links.length) {
       setRowSelection({});
     } else {
-      if (
-        links.some(
-          link => NOT_SELECTABLE_STATES.has(link.state),
-        )
-      ) {
+      if (links.some(link => BUSY_STATES.has(link.state))) {
         return;
       }
 

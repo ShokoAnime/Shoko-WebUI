@@ -1,6 +1,6 @@
 import { countBy } from 'lodash';
 
-import type { LinkStateType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { LinkStateType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 const TitleOptions = ({ links, selectedCount }: { links: ManualLinkType[], selectedCount: number }) => {
   const countByStatus = countBy(links, link => link.state) as Record<LinkStateType, number>;

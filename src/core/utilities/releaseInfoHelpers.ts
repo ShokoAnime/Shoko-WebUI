@@ -1,9 +1,10 @@
 import { produce } from 'immer';
 
 import { ReleaseSource } from '@/core/types/api/file';
+import { dayjs } from '@/core/util';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
-import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 let lastLinkId = 0;
 const generateLinkId = () => {
@@ -47,9 +48,10 @@ const createLinksFromFiles = (files: FileType[], providers: ManualLinkProviderTy
     });
   });
 
+  const hasEnabledProviders = providers.some(provider => provider.enabled);
   const newLinks: Record<number, ManualLinkType> = {};
   sortedFiles.forEach((file) => {
-    const now = new Date().toISOString();
+    const now = dayjs().toISOString();
     const release: ReleaseInfoType = {
       OriginalFilename: file.Locations?.[0]?.RelativePath.split(/[/\\]/g).pop(),
       ProviderName: 'User',
@@ -78,7 +80,7 @@ const createLinksFromFiles = (files: FileType[], providers: ManualLinkProviderTy
         id: linkId,
         file,
         providers,
-        state: 'pre-init',
+        state: hasEnabledProviders ? 'searching' : 'init',
         release,
       };
     }

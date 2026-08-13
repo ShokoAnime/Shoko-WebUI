@@ -1,6 +1,6 @@
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 
-export type LinkStateType = 'pre-init' | 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
+export type LinkStateType = 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
 
 export type ManualLinkProviderType = {
   id: string;

@@ -2,7 +2,7 @@ import { mdiMagnify, mdiPencil, mdiSelectAll, mdiSelection, mdiSelectionRemove, 
 
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 
-import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 type Props = {
   linkCount: number;
