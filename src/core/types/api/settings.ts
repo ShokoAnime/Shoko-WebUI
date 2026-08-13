@@ -1,7 +1,7 @@
 import type { Layout } from 'react-grid-layout';
 
 import type { ReleaseChannelType } from '@/core/types/api/init';
-import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkProviderType } from '@/core/types/utilities/link-files-with-providers';
 
 export type SettingsDatabaseType = {
   MySqliteDirectory: string;

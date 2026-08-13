@@ -6,7 +6,7 @@ import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesWithCandidatesType } from '@/core/types/api/release-management';
 import type { SeriesType } from '@/core/types/api/series';
-import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 type RowType = EpisodeType | FileType | SeriesType | ManualLinkType | SeriesWithCandidatesType;
 

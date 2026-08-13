@@ -26,6 +26,9 @@ src/hooks/utilities/
 src/core/utilities/
   releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo
 
+src/core/types/utilities/
+  link-files-with-providers.ts    ManualLinkType, ManualLinkProviderType, LinkStateType
+
 src/components/Utilities/Unrecognized/LinkFilesWithProvider/
   LinkCard.tsx                    Per-link card (state-driven styling, selection)
   ProviderName.tsx               Status text per state
@@ -37,7 +40,7 @@ src/components/Utilities/Unrecognized/LinkFilesWithProvider/
 ## Key Types
 
 ```ts
-type LinkStateType = 'pre-init' | 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
+type LinkStateType = 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
 
 type ManualLinkProviderType = { id: string; enabled: boolean };
 
@@ -54,12 +57,11 @@ Each link's `state` field drives the entire workflow — the component never dir
 
 ## State Groups
 
-Three constants replace repeated arrays across the component:
+Two constants replace repeated arrays across the component:
 
 | Name | Values | Guards |
 |---|---|---|
-| `BUSY_STATES` | `searching, submitting, fetching` | Blocks removal; Escape cancels active work |
-| `NOT_SELECTABLE_STATES` | `pre-init` + `BUSY_STATES` | Blocks select-all |
+| `BUSY_STATES` | `searching, submitting, fetching` | Blocks removal and select-all; Escape cancels active work |
 | `EDITABLE_STATES` | `ready, init` | Enables search, provider update |
 
 ## State Machine
@@ -75,13 +77,7 @@ flowchart TD
     FetchResult -- Yes --> Ready[ready]
     FetchResult -- No or error --> Init[init]
 
-    Imported -- No --> PreInit[pre-init]
-    PreInit --> OfflineImporter{Offline Importer available?}
-    OfflineImporter -- No --> Providers{Providers enabled?}
-    OfflineImporter -- Yes --> Preview[Offline Importer preview]
-    Preview -- Non-null result --> Providers
-    Preview -- Error --> Providers
-    Preview -- Null result --> PreInit
+    Imported -- No --> Providers{Providers enabled?}
 
     Providers -- Yes --> Searching[searching]
     Providers -- No --> Init
@@ -100,7 +96,6 @@ flowchart TD
 
 | State | UI | Meaning |
 |---|---|---|
-| `pre-init` | `opacity-65 cursor-wait` | Seeding metadata via Offline Importer |
 | `init` | `text-warning` | Waiting for user to configure providers |
 | `searching` | `animate-pulse cursor-wait` | AutoPreview in progress |
 | `fetching` | `animate-pulse cursor-wait` | Fetching existing release info for already-linked files |
@@ -110,25 +105,12 @@ flowchart TD
 
 ### Process Handlers
 
-All handlers are `useEffectEvent` callbacks inside `useLinkWorkflow`. Each gates on a guard Set (`inFlight.current.*`) to prevent duplicate in-flight API calls, adds the link ID before calling, and normally removes it in `finally`.
-
-### `processPreInit`
-
-1. Checks if any provider is enabled
-2. Looks up the "Offline Importer" provider by name via `providerMap`
-3. If no Offline Importer exists → transitions directly to `searching` or `init`
-4. Otherwise calls `GET ReleaseInfo/Provider/{id}/Preview/By-Release?id=match://<path>` to seed file metadata
-5. On a non-null success: stores the seed release → `searching` or `init`
-6. On error: → `searching` or `init`
-
-If the preview returns null, the current implementation leaves the link in `pre-init` after clearing its guard.
-
-**State outcome**: `hasProvidersEnabled ? 'searching' : 'init'`
+All handlers are `useEffectEvent` callbacks inside `useLinkWorkflow`. Each gates on a guard Set (`inFlight.current.*`) to prevent duplicate in-flight API calls, adds the link ID before calling, and removes it in `finally`.
 
 ### `processSearch`
 
 1. Filters enabled providers from `link.providers`
-2. If none enabled → bails (guard NOT cleared; stays `searching` until providers are added)
+2. If none enabled → clears the guard and → `init`
 3. Calls `POST ReleaseInfo/File/{id}/AutoPreview?providerIDs=...`
 4. On null result → `init`
 5. On data → merges result via `mergeReleaseInfo(incoming, link.release)` → `ready`
@@ -155,7 +137,7 @@ Flips busy states back to idle when the user presses Escape: `submitting` → `r
 
 Converts `FileType[]` into `Record<number, ManualLinkType>`:
 
-1. Sorts files by the first accessible location's `RelativePath` (natural sort, case-insensitive, numeric, ignoring punctuation)
+1. Sorts files by `RelativePath` of the first accessible location (falling back to the first location) — natural, case-insensitive, numeric, ignoring punctuation
 2. For each file, builds a seed `ReleaseInfoType`:
    - `OriginalFilename` from last path segment
    - `ProviderName: 'User'`, `Source: Unknown`
@@ -163,25 +145,24 @@ Converts `FileType[]` into `Record<number, ManualLinkType>`:
    - `Released` date from `MediaInfo.Encoded` or `file.Created`
 3. Checks `file.Imported`:
    - **truthy** → `providers: []`, `state: 'fetching'` (will call GET ReleaseInfo)
-   - **falsy** → `providers` from settings, `state: 'pre-init'`
+   - **falsy** → `providers` from settings, `state: 'searching'` (if any provider is enabled) or `'init'`
 
 ### `mergeReleaseInfo(incoming, original)`
 
-Merges AutoPreview result into the user's seed release. Preserves user-set fields (`Source`, `FileSize`, `OriginalFilename`, flags) via nullish coalescing, enforces `Version >= 1`, and appends `+User` to `ProviderName` if not already present.
+Merges AutoPreview result into the user's seed release. Preserves user-set fields via nullish coalescing (`FileSize`, `OriginalFilename`, `IsChaptered`, `IsCensored`, `IsCreditless`, `Group`), restores `Source` from the original only when the incoming `Source` is `Unknown`, enforces `Version >= 1`, and appends `+User` to `ProviderName` if not already present.
 
 ## API Endpoints
 
 | Endpoint | Method | Used by | Purpose |
 |---|---|---|---|
 | `ReleaseInfo/Provider` | GET | Component | Fetch available providers |
-| `ReleaseInfo/Provider/{id}/Preview/By-Release?id=match://<path>` | GET | `processPreInit` | Seed metadata from Offline Importer |
 | `ReleaseInfo/File/{id}/AutoPreview?providerIDs=...` | POST | `processSearch` | Search enabled providers |
 | `ReleaseInfo/File/{id}` | GET | `processLinked` | Fetch existing release info |
 | `ReleaseInfo/File/{id}` | POST | `processSubmit` | Submit release info |
 
 ## Supporting Components
 
-- **`LinkCard`** — Per-link card. Border color reflects state (`submitted` → important, `searching`/`submitting` → primary, `ready` → warning). Click-to-select disabled for `NOT_SELECTABLE_STATES`.
-- **`ProviderName`** — Status text per state (`"Retrieving existing release info..."` for `fetching`, etc.). Appends "(Edited by User)" when `ProviderName` contains `+User`.
-- **`Menu`** — Action bar. "Search for Release Info" enables when any selected link is in `['ready', 'init', 'fetching']`. Hotkeys: `S` search, `E` edit, `A` select-all, `D` remove, `Q` submit.
-- **`TitleOptions`** — Header showing `{submitted} / {submitted + pending} Submitted | {total} Files | {selected} Selected`. Only `ready` and `submitting` count as pending; `init`, `searching`, `fetching`, and `pre-init` do not.
+- **`LinkCard`** — Per-link card. Border color reflects state (`submitted` → important, `searching`/`submitting` → primary, `ready` → warning). Click-to-select disabled for busy states (`searching`/`submitting`/`fetching`).
+- **`ProviderName`** — Status text per state (`"Retrieving existing release info..."` for `fetching`, etc.). Appends "(Edited by User)" when `ProviderName` starts with `User+` or ends with `+User`.
+- **`Menu`** — Action bar. "Search for Release Info" enables when any selected link is in `['ready', 'init', 'fetching']`; "Remove Selected" and "Submit Selected" render conditionally. The "Edit Release Info" button (`E`) is a disabled placeholder. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `Q` submit, `Esc` cancel, `Enter` submit.
+- **`TitleOptions`** — Header showing `{submitted} / {submitted + pending} Submitted | {total} Files | {selected} Selected`. Only `ready` and `submitting` count as pending; `init`, `searching`, and `fetching` do not.

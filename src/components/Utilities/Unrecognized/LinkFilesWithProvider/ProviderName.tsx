@@ -1,14 +1,10 @@
-import type { ManualLinkType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 type Props = {
   link: ManualLinkType;
 };
 
 const linkStateAttributes = {
-  'pre-init': {
-    className: 'opacity-65',
-    text: 'Initializing metadata...',
-  },
   init: {
     className: 'text-panel-text-warning',
     text: 'Waiting for user action',

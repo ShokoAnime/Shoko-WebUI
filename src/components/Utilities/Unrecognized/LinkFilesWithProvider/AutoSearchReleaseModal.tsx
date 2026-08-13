@@ -15,7 +15,7 @@ import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/provide
 import { useDispatch, useSelector } from '@/core/store';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { ManualLinkProviderType } from '@/core/types/utilities/unrecognized-utility';
+import type { ManualLinkProviderType } from '@/core/types/utilities/link-files-with-providers';
 import type { DropResult } from '@hello-pangea/dnd';
 
 type Props = {
@@ -30,7 +30,7 @@ const AutoSearchReleaseModal = (props: Props) => {
   const dispatch = useDispatch();
   const { show: showProviderInfoModal } = useSelector(state => state.modals.providerInfo);
 
-  const providersQuery = useReleaseInfoProvidersQuery(true);
+  const providersQuery = useReleaseInfoProvidersQuery(true, show);
   const providerMap = useMemo(() => {
     if (!providersQuery.data) return {};
     return Object.fromEntries(providersQuery.data.map(provider => [provider.ID, provider]));
