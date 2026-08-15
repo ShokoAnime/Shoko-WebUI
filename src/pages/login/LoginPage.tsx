@@ -22,7 +22,6 @@ import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
-import { ImageTypeEnum } from '@/core/types/api/common';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const LoginPage = () => {
@@ -45,7 +44,7 @@ const LoginPage = () => {
   const versionQuery = useVersionQuery();
   const { isPending: isLoginPending, mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);
-  const imageMetadataQuery = useRandomImageMetadataQuery(ImageTypeEnum.Backdrop);
+  const imageMetadataQuery = useRandomImageMetadataQuery('Backdrop');
 
   const setRedirect = () => {
     if (seriesId === 0) return;

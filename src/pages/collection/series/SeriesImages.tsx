@@ -14,22 +14,22 @@ import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModa
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import {
-  useDeleteImageCrossReferenceMutation,
-  useSetPreferredImageMutation,
-  useUnsetPreferredImageMutation,
-} from '@/core/react-query/image-management/mutations';
+import { useDeleteImageCrossReferenceMutation } from '@/core/react-query/image-management/mutations';
 import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import {
+  useSetSeriesPreferredImageMutation,
+  useUnsetSeriesPreferredImageMutation,
+} from '@/core/react-query/series/mutations';
 import toast from '@/core/toast';
 import { pxPerRem } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
+import type { ImageEntityType } from '@/core/types/api/common';
 import type { ImageCrossReferenceType, ImageTabType } from '@/core/types/api/image';
 
-const tabToImageTypeMap: Record<ImageTabType, string> = {
+const tabToImageTypeMap: Record<ImageTabType, ImageEntityType> = {
   Posters: 'Primary',
   Backdrops: 'Backdrop',
   Logos: 'Logo',
@@ -74,8 +74,8 @@ const SeriesImages = () => {
   const [selectedImage, setSelectedImage] = useState<ImageCrossReferenceType | null>(null);
   const imageLabel = tabType.slice(0, -1);
 
-  const { mutate: setPreferred } = useSetPreferredImageMutation();
-  const { mutate: unsetPreferred } = useUnsetPreferredImageMutation();
+  const { mutate: setPreferred } = useSetSeriesPreferredImageMutation(series.IDs.ID, tabToImageTypeMap[tabType]);
+  const { mutate: unsetPreferred } = useUnsetSeriesPreferredImageMutation(series.IDs.ID, tabToImageTypeMap[tabType]);
   const { mutateAsync: deleteImage } = useDeleteImageCrossReferenceMutation();
   const [showUploadModal, toggleUploadModal] = useToggle(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -86,17 +86,23 @@ const SeriesImages = () => {
 
   const handleTogglePreferredImage = () => {
     if (!selectedImage) return;
-    const isPreferred = selectedImage.IsPreferred;
-    const mutate = isPreferred ? unsetPreferred : setPreferred;
-    const action = isPreferred ? 'unset' : 'set';
-    mutate(selectedImage.ID, {
-      onSuccess: () => {
-        invalidateQueries(['series']);
-        toast.success(`Preferred ${imageLabel} has been ${action}.`);
-        setSelectedImage(null);
-      },
-      onError: () => toast.error(`Failed to ${action} preferred ${imageLabel}.`),
-    });
+    if (selectedImage.IsPreferred) {
+      unsetPreferred(undefined, {
+        onSuccess: () => {
+          toast.success(`Preferred ${imageLabel} has been unset.`);
+          setSelectedImage(null);
+        },
+        onError: () => toast.error(`Failed to unset preferred ${imageLabel}.`),
+      });
+    } else {
+      setPreferred(selectedImage.ImageID, {
+        onSuccess: () => {
+          toast.success(`Preferred ${imageLabel} has been set.`);
+          setSelectedImage(null);
+        },
+        onError: () => toast.error(`Failed to set preferred ${imageLabel}.`),
+      });
+    }
   };
 
   const handleDeleteImage = async () => {

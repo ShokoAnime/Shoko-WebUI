@@ -6,7 +6,7 @@ export type ImageLinkType = {
 
 export type ImageType = ImageLinkType & {
   Source: ImageSourceType;
-  Type: ImageTypeEnum;
+  Type: ImageEntityType;
   ID: number;
   PrimaryUID: string;
   Preferred: boolean;
@@ -20,6 +20,7 @@ export type ImagesType = {
   Backdrops: ImageType[];
   Banners: ImageType[];
   Logos: ImageType[];
+  Discs: ImageType[];
 };
 
 export type EpisodeImagesType = ImagesType & {
@@ -28,15 +29,7 @@ export type EpisodeImagesType = ImagesType & {
 
 export type ImageSourceType = 'AniDB' | 'TMDB' | 'Shoko' | 'User';
 
-export const enum ImageTypeEnum {
-  Poster = 'Poster',
-  Banner = 'Banner',
-  Thumb = 'Thumb',
-  Backdrop = 'Backdrop',
-  Character = 'Character',
-  Staff = 'Staff',
-  Static = 'Static',
-}
+export type ImageEntityType = 'None' | 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
 
 export type RatingType = {
   Value: number;
