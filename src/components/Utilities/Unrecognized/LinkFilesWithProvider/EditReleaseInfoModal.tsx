@@ -274,7 +274,8 @@ const EditReleaseInfoModal = (props: Props) => {
               onClick={handleSave}
               buttonType="primary"
               buttonSize="normal"
-              disabled={touchedFields.size === 0}
+              disabled={touchedFields.size === 0
+                || (!!formState.selectedSeriesId && !formState.selectedEpisodeId)}
             >
               Save
             </Button>
