@@ -21,8 +21,7 @@ import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import SeriesTopPanel from '@/components/Collection/SeriesTopPanel';
 import Button from '@/components/Input/Button';
 import { useGroupQuery } from '@/core/react-query/group/queries';
-import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
-import { useSeriesQuery } from '@/core/react-query/series/queries';
+import { useSeriesImagesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { useDispatch } from '@/core/store';
@@ -82,9 +81,10 @@ const Series = () => {
 
   const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
 
-  const backdropsQuery = useSeriesImageCrossReferencesQuery(
+  const backdropsQuery = useSeriesImagesInfiniteQuery(
     toNumber(seriesId) ?? 0,
-    { imageType: 'Backdrop', isAvailable: true, pageSize: 30 },
+    'Backdrop',
+    { pageSize: 30 },
     !!seriesId && showRandomBackdrop,
   );
 
@@ -96,9 +96,9 @@ const Series = () => {
     }
 
     const allBackdrops = flatMap(backdropsQuery.data?.pages, page => page.List)
-      .filter(xref => xref.Image?.Available);
+      .filter(image => image.Available);
     if (allBackdrops.length === 0) return;
-    setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)].Image);
+    setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)]);
   }, [backdropsQuery.data, series, showRandomBackdrop]);
 
   const [containerRef, containerBounds] = useMeasure();

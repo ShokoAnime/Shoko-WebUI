@@ -14,20 +14,20 @@ import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModa
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useDeleteImageCrossReferenceMutation } from '@/core/react-query/image-management/mutations';
-import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
+import { useDeleteImageMutation } from '@/core/react-query/image-management/mutations';
 import {
   useSetSeriesPreferredImageMutation,
   useUnsetSeriesPreferredImageMutation,
 } from '@/core/react-query/series/mutations';
+import { useSeriesImagesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
 import { pxPerRem } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
-import type { ImageEntityType } from '@/core/types/api/common';
-import type { ImageCrossReferenceType, ImageTabType } from '@/core/types/api/image';
+import type { ImageEntityType, ImageType } from '@/core/types/api/common';
+import type { ImageTabType } from '@/core/types/api/image';
 
 const tabToImageTypeMap: Record<ImageTabType, ImageEntityType> = {
   Posters: 'Primary',
@@ -63,30 +63,31 @@ const SeriesImages = () => {
 
   const tabType = (capitalize(imageType) ?? 'Posters') as ImageTabType;
 
-  const { fetchNextPage, isFetchingNextPage, ...crossReferencesQuery } = useSeriesImageCrossReferencesQuery(
+  const { fetchNextPage, isFetchingNextPage, ...imagesQuery } = useSeriesImagesInfiniteQuery(
     series.IDs.ID,
-    { imageType: tabToImageTypeMap[tabType], isAvailable: true, pageSize: 30 },
+    tabToImageTypeMap[tabType],
+    { pageSize: 30 },
     !!series.IDs.ID,
   );
 
-  const [images, imagesTotal] = useFlattenListResult(crossReferencesQuery.data);
+  const [images, imagesTotal] = useFlattenListResult(imagesQuery.data);
 
-  const [selectedImage, setSelectedImage] = useState<ImageCrossReferenceType | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
   const imageLabel = tabType.slice(0, -1);
 
   const { mutate: setPreferred } = useSetSeriesPreferredImageMutation(series.IDs.ID, tabToImageTypeMap[tabType]);
   const { mutate: unsetPreferred } = useUnsetSeriesPreferredImageMutation(series.IDs.ID, tabToImageTypeMap[tabType]);
-  const { mutateAsync: deleteImage } = useDeleteImageCrossReferenceMutation();
+  const { mutateAsync: deleteImage } = useDeleteImageMutation();
   const [showUploadModal, toggleUploadModal] = useToggle(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const handleSelectionChange = (item: ImageCrossReferenceType) => {
-    setSelectedImage(prev => (prev?.ID === item.ID ? null : item));
+  const handleSelectionChange = (item: ImageType) => {
+    setSelectedImage(prev => (prev?.UID === item.UID ? null : item));
   };
 
   const handleTogglePreferredImage = () => {
     if (!selectedImage) return;
-    if (selectedImage.IsPreferred) {
+    if (selectedImage.Preferred) {
       unsetPreferred(undefined, {
         onSuccess: () => {
           toast.success(`Preferred ${imageLabel} has been unset.`);
@@ -95,7 +96,7 @@ const SeriesImages = () => {
         onError: () => toast.error(`Failed to unset preferred ${imageLabel}.`),
       });
     } else {
-      setPreferred(selectedImage.ImageID, {
+      setPreferred(selectedImage.UID, {
         onSuccess: () => {
           toast.success(`Preferred ${imageLabel} has been set.`);
           setSelectedImage(null);
@@ -107,7 +108,7 @@ const SeriesImages = () => {
 
   const handleDeleteImage = async () => {
     if (!selectedImage) return;
-    await deleteImage(selectedImage.ID, {
+    await deleteImage(selectedImage.UID, {
       onSuccess: () => toast.success(`${imageLabel} deleted.`),
       onError: () => toast.error(`Failed to delete ${imageLabel.toLowerCase()}.`),
     });
@@ -159,12 +160,12 @@ const SeriesImages = () => {
           >
             <InfoLine
               title="Source"
-              value={selectedImage?.Image?.Source ?? selectedImage?.ImageSource ?? '-'}
+              value={selectedImage?.Source ?? '-'}
             />
             <InfoLine
               title="Size"
-              value={selectedImage?.Image?.Width && selectedImage?.Image?.Height
-                ? `${selectedImage.Image.Width} x ${selectedImage.Image.Height}`
+              value={selectedImage?.Width && selectedImage?.Height
+                ? `${selectedImage.Width} x ${selectedImage.Height}`
                 : '-'}
             />
             <Button
@@ -173,15 +174,15 @@ const SeriesImages = () => {
               disabled={!selectedImage}
               onClick={handleTogglePreferredImage}
             >
-              {selectedImage?.IsPreferred
+              {selectedImage?.Preferred
                 ? `Unset Preferred ${imageLabel}`
                 : `Set As Preferred ${imageLabel}`}
             </Button>
             <Button
               buttonType="danger"
               buttonSize="normal"
-              disabled={!selectedImage || selectedImage.ImageSource !== 'User'}
-              tooltip={selectedImage && selectedImage.ImageSource !== 'User'
+              disabled={!selectedImage || selectedImage.Source !== 'User'}
+              tooltip={selectedImage && selectedImage.Source !== 'User'
                 ? 'Only user-uploaded images can be deleted'
                 : ''}
               onClick={() => setShowDeleteConfirm(true)}
@@ -223,7 +224,7 @@ const SeriesImages = () => {
                 >
                   {Array.from({ length: itemsPerRow }).map((_, colIndex) => {
                     const index = virtualRow.index * itemsPerRow + colIndex;
-                    const xref = images[index];
+                    const image = images[index];
                     const isPlaceholder = index >= imagesTotal;
 
                     if (isPlaceholder) {
@@ -235,7 +236,7 @@ const SeriesImages = () => {
                       );
                     }
 
-                    if (!xref) {
+                    if (!image) {
                       if (!isFetchingNextPage) {
                         fetchNextPageDebounced();
                       }
@@ -255,17 +256,17 @@ const SeriesImages = () => {
 
                     return (
                       <div
-                        onClick={() => handleSelectionChange(xref)}
-                        key={xref.ID}
+                        onClick={() => handleSelectionChange(image)}
+                        key={image.UID}
                         className="group flex cursor-pointer items-center justify-between"
                         style={{ width: `${itemWidth}rem`, height: `${itemHeight}rem` }}
                       >
                         <BackgroundImagePlaceholderDiv
-                          image={xref.Image}
+                          image={image}
                           contain={tabType === 'Logos'}
                           className={cx(
                             'size-full rounded-lg drop-shadow-md',
-                            xref === selectedImage
+                            image === selectedImage
                               ? 'border-4 border-panel-text-important'
                               : 'border-2 border-panel-border',
                           )}
@@ -273,7 +274,7 @@ const SeriesImages = () => {
                           zoomOnHover
                           overlayOnHover
                         >
-                          {xref.IsPreferred && (
+                          {image.Preferred && (
                             <div
                               className="absolute top-0 right-0 z-10 rounded-bl-lg bg-panel-background-overlay p-2 text-panel-text-important transition-opacity"
                               data-tooltip-id="tooltip"

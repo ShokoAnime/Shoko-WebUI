@@ -76,3 +76,9 @@ export type UploadSeriesImageRequestType = {
 export type WatchSeriesEpisodesRequestType = {
   value: boolean;
 } & SeriesEpisodesBaseRequestType;
+
+export type SeriesImagesRequestType = {
+  includeDisabled?: boolean;
+  includeUndesired?: boolean;
+  showLinkedIDs?: boolean;
+} & PaginationType;

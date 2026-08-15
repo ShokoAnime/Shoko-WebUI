@@ -6,6 +6,7 @@ import { transformListResultSimplified } from '@/core/react-query/helpers';
 import type {
   SeriesAniDBEpisodesRequestType,
   SeriesEpisodesInfiniteRequestType,
+  SeriesImagesRequestType,
   SeriesNextUpRequestType,
   SeriesRequestType,
   SeriesTagsRequestType,
@@ -15,6 +16,7 @@ import type {
 import type { DashboardRequestType, FileRequestType } from '@/core/react-query/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { ImageEntityType, ImageType } from '@/core/types/api/common';
 import type { AniDBEpisodeType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
@@ -37,6 +39,32 @@ export const useSeriesQuery = (
     queryKey: ['series', seriesId, 'data', params],
     queryFn: () => axios.get(`Series/${seriesId}`, { params }),
     enabled,
+  });
+
+export const useSeriesImagesInfiniteQuery = (
+  seriesId: number,
+  imageType: ImageEntityType,
+  params: SeriesImagesRequestType,
+  enabled = true,
+) =>
+  useInfiniteQuery<ListResultType<ImageType>>({
+    queryKey: ['series', seriesId, 'images', imageType, params],
+    queryFn: ({ pageParam }) =>
+      axios.get(
+        `Series/${seriesId}/Images/${imageType}`,
+        {
+          params: {
+            ...params,
+            page: pageParam as number,
+          },
+        },
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam: number) => {
+      if (!params.pageSize || lastPage.Total / params.pageSize <= lastPageParam) return undefined;
+      return lastPageParam + 1;
+    },
+    enabled: enabled && !!seriesId,
   });
 
 export const useSeriesAniDBQuery = (anidbId: number, enabled = true, noStale = false) =>
