@@ -9,6 +9,7 @@ import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import SelectSmall from '@/components/Input/SelectSmall';
@@ -44,6 +45,7 @@ type FormState = {
   isChaptered?: boolean;
   isCreditless?: boolean;
   source: ReleaseSource | '';
+  comment: string;
   CrossReferences: ReleaseCrossReferenceType[];
 };
 
@@ -89,9 +91,10 @@ const EditReleaseInfoModal = (props: Props) => {
   const [formState, setFormState] = useImmer<FormState>({
     version: 1,
     source: ReleaseSource.Unknown,
+    comment: '',
     CrossReferences: [],
   });
-  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+  const [touchedFields, setTouchedFields] = useImmer<Set<string>>(new Set());
   const [seriesUpdating, setSeriesUpdating] = useState(false);
   const [hasDifferentSeries, setHasDifferentSeries] = useState(false);
   const [hasDifferentChaptered, setHasDifferentChaptered] = useState(false);
@@ -125,6 +128,7 @@ const EditReleaseInfoModal = (props: Props) => {
 
     const hasDifferentSource = isBulk && !allSame(link => link.Source);
     const hasDifferentVersion = isBulk && !allSame(link => link.Version);
+    const hasDifferentComment = isBulk && !allSame(link => link.Comment);
 
     setHasDifferentChaptered(isBulk && !allSame(link => link.IsChaptered));
     setHasDifferentCreditless(isBulk && !allSame(link => link.IsCreditless));
@@ -136,9 +140,10 @@ const EditReleaseInfoModal = (props: Props) => {
       isChaptered: first.IsChaptered,
       isCreditless: first.IsCreditless,
       source: hasDifferentSource ? '' : first.Source,
+      comment: hasDifferentComment ? '' : (first.Comment ?? ''),
       CrossReferences: first.CrossReferences ?? [],
     });
-  }, [isBulk, selectedLinks, setFormState, show]);
+  }, [isBulk, selectedLinks, setFormState, setTouchedFields, show]);
 
   const seriesSearchQuery = useSeriesAniDBQuery(
     formState.selectedSeriesId ?? 0,
@@ -171,7 +176,9 @@ const EditReleaseInfoModal = (props: Props) => {
     : seriesSearchQuery.data?.Title ?? 'Selected series';
 
   const markTouched = (field: string) => {
-    setTouchedFields(previous => new Set(previous).add(field));
+    setTouchedFields((draft) => {
+      draft.add(field);
+    });
   };
 
   const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
@@ -235,6 +242,13 @@ const EditReleaseInfoModal = (props: Props) => {
     });
   };
 
+  const handleCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markTouched('Comment');
+    setFormState((draft) => {
+      draft.comment = event.target.value;
+    });
+  };
+
   const handleEditSeries = () => {
     if (!hasDifferentSeries) {
       setInitialSeriesName(seriesName);
@@ -273,6 +287,9 @@ const EditReleaseInfoModal = (props: Props) => {
     }
     if (touchedFields.has('Source') && formState.source !== '') {
       releaseInfo.Source = formState.source;
+    }
+    if (touchedFields.has('Comment')) {
+      releaseInfo.Comment = formState.comment;
     }
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
@@ -315,7 +332,7 @@ const EditReleaseInfoModal = (props: Props) => {
         </div>
       }
       noPadding
-      className="h-144"
+      className="h-156"
     >
       <div className="flex grow flex-col gap-y-4 p-6">
         {!formState.selectedSeriesId && !hasDifferentSeries && (
@@ -366,14 +383,14 @@ const EditReleaseInfoModal = (props: Props) => {
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
               <div className="flex items-center justify-between">
-                <span className="font-semibold">Source</span>
+                Source
                 <SelectSmall id="release-source" value={formState.source} onChange={handleSourceChange}>
                   {sourceOptions}
                 </SelectSmall>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="font-semibold">Version</span>
+                Version
                 <InputSmall
                   id="release-version"
                   type="number"
@@ -400,6 +417,15 @@ const EditReleaseInfoModal = (props: Props) => {
                 indeterminate={hasDifferentCreditless}
                 onChange={handleCreditlessChange}
                 justify
+              />
+
+              <Input
+                id="release-comment"
+                label="Comment"
+                type="text"
+                value={formState.comment}
+                onChange={handleCommentChange}
+                className="col-span-2"
               />
             </div>
           </>
