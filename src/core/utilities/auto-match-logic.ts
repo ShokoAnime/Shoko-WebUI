@@ -217,3 +217,5 @@ export const findMostCommonShowName = (showList: (PathDetails | null)[]) => {
     showNames[0],
   );
 };
+
+export const AUTO_MATCH_EPISODE_ID = -1;

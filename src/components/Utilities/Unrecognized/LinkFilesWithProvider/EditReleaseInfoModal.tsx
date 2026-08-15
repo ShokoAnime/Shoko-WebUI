@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
-import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -21,12 +20,17 @@ import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { ReleaseSource } from '@/core/types/api/file';
 import { SeriesTypeEnum } from '@/core/types/api/series';
-import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/auto-match-logic';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
+import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
-import type { ReleaseCrossReferenceType, ReleaseInfoType } from '@/core/types/api/file';
+import type { ReleaseInfoType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
-import type { CrossReferenceType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
+import type {
+  CrossReferenceType,
+  ManualLinkType,
+  TouchableField,
+} from '@/core/types/utilities/link-files-with-providers';
 
 type Props = {
   show: boolean;
@@ -36,17 +40,6 @@ type Props = {
     releaseInfo: Partial<ReleaseInfoType>,
     crossReference?: CrossReferenceType,
   ) => void;
-};
-
-type FormState = {
-  selectedSeriesId?: number;
-  selectedEpisodeId?: number;
-  version: number | '';
-  isChaptered?: boolean;
-  isCreditless?: boolean;
-  source: ReleaseSource | '';
-  comment: string;
-  CrossReferences: ReleaseCrossReferenceType[];
 };
 
 const sourceOptions = [
@@ -83,67 +76,21 @@ const Title = ({ count }: { count: number }) => (
 
 const EditReleaseInfoModal = (props: Props) => {
   const { onClose, onSave, selectedLinks, show } = props;
-  const isBulk = selectedLinks.length > 1;
 
   const { mutateAsync: getSeriesAniDBData } = useGetSeriesAniDBMutation();
   const { isPending: isRefreshingSeries, mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
 
-  const [formState, setFormState] = useImmer<FormState>({
-    version: 1,
-    source: ReleaseSource.Unknown,
-    comment: '',
-    CrossReferences: [],
-  });
-  const [touchedFields, setTouchedFields] = useImmer<Set<string>>(new Set());
+  const {
+    formState,
+    hasDifferent,
+    initialSeriesName,
+    markTouched,
+    setFormState,
+    setHasDifferent,
+    setInitialSeriesName,
+    touchedFields,
+  } = useReleaseInfoForm(selectedLinks, show);
   const [seriesUpdating, setSeriesUpdating] = useState(false);
-  const [hasDifferentSeries, setHasDifferentSeries] = useState(false);
-  const [hasDifferentChaptered, setHasDifferentChaptered] = useState(false);
-  const [hasDifferentCreditless, setHasDifferentCreditless] = useState(false);
-  const [initialSeriesName, setInitialSeriesName] = useState('');
-
-  useEffect(() => {
-    if (!show) return;
-    const first = selectedLinks[0]?.release;
-    if (!first) return;
-
-    setTouchedFields(new Set());
-
-    const allSame = (selector: (release: ReleaseInfoType) => unknown) =>
-      selectedLinks.every(link => selector(link.release) === selector(first));
-
-    const hasMultipleSeries = isBulk && !allSame(link => link.CrossReferences[0]?.AnidbAnimeID);
-    const initialSeriesId = hasMultipleSeries ? undefined : first.CrossReferences[0]?.AnidbAnimeID;
-
-    setHasDifferentSeries(hasMultipleSeries);
-    setInitialSeriesName(
-      initialSeriesId
-        ? ''
-        : findMostCommonShowName(selectedLinks.map(link => detectShow(link.file?.Locations?.[0]?.RelativePath))),
-    );
-
-    const hasDifferentEpisodes = isBulk && !allSame(link => link.CrossReferences[0]?.AnidbEpisodeID);
-    const initialEpisodeId = initialSeriesId && !hasDifferentEpisodes
-      ? (first.CrossReferences[0]?.AnidbEpisodeID ?? -1)
-      : undefined;
-
-    const hasDifferentSource = isBulk && !allSame(link => link.Source);
-    const hasDifferentVersion = isBulk && !allSame(link => link.Version);
-    const hasDifferentComment = isBulk && !allSame(link => link.Comment);
-
-    setHasDifferentChaptered(isBulk && !allSame(link => link.IsChaptered));
-    setHasDifferentCreditless(isBulk && !allSame(link => link.IsCreditless));
-
-    setFormState({
-      selectedSeriesId: initialSeriesId,
-      selectedEpisodeId: initialEpisodeId,
-      version: hasDifferentVersion ? '' : first.Version,
-      isChaptered: first.IsChaptered,
-      isCreditless: first.IsCreditless,
-      source: hasDifferentSource ? '' : first.Source,
-      comment: hasDifferentComment ? '' : (first.Comment ?? ''),
-      CrossReferences: first.CrossReferences ?? [],
-    });
-  }, [isBulk, selectedLinks, setFormState, setTouchedFields, show]);
 
   const seriesSearchQuery = useSeriesAniDBQuery(
     formState.selectedSeriesId ?? 0,
@@ -158,7 +105,7 @@ const EditReleaseInfoModal = (props: Props) => {
   const episodeOptions = [
     {
       label: 'Auto-match (from filename)',
-      value: -1,
+      value: AUTO_MATCH_EPISODE_ID,
       type: EpisodeTypeEnum.Episode,
       AirDate: '',
     },
@@ -171,19 +118,17 @@ const EditReleaseInfoModal = (props: Props) => {
     })),
   ];
 
-  const seriesName = hasDifferentSeries
+  const seriesName = hasDifferent.series
     ? 'Multiple series selected'
     : seriesSearchQuery.data?.Title ?? 'Selected series';
 
-  const markTouched = (field: string) => {
-    setTouchedFields((draft) => {
-      draft.add(field);
-    });
-  };
+  const hasSeriesSelection = formState.selectedSeriesId ?? hasDifferent.series;
 
   const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
     markTouched('CrossReferences');
-    setHasDifferentSeries(false);
+    setHasDifferent((draft) => {
+      draft.series = false;
+    });
 
     if (series.Type !== SeriesTypeEnum.Unknown) {
       setFormState((draft) => {
@@ -221,7 +166,9 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const handleChapteredChange = (event: ChangeEvent<HTMLInputElement>) => {
     markTouched('IsChaptered');
-    setHasDifferentChaptered(false);
+    setHasDifferent((draft) => {
+      draft.chaptered = false;
+    });
     setFormState((draft) => {
       draft.isChaptered = event.target.checked;
     });
@@ -229,7 +176,9 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const handleCreditlessChange = (event: ChangeEvent<HTMLInputElement>) => {
     markTouched('IsCreditless');
-    setHasDifferentCreditless(false);
+    setHasDifferent((draft) => {
+      draft.creditless = false;
+    });
     setFormState((draft) => {
       draft.isCreditless = event.target.checked;
     });
@@ -250,14 +199,16 @@ const EditReleaseInfoModal = (props: Props) => {
   };
 
   const handleEditSeries = () => {
-    if (!hasDifferentSeries) {
+    if (!hasDifferent.series) {
       setInitialSeriesName(seriesName);
     }
     setFormState((draft) => {
       draft.selectedSeriesId = undefined;
-      draft.selectedEpisodeId = -1;
+      draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
     });
-    setHasDifferentSeries(false);
+    setHasDifferent((draft) => {
+      draft.series = false;
+    });
   };
 
   const handleRefreshSeries = () => {
@@ -276,26 +227,25 @@ const EditReleaseInfoModal = (props: Props) => {
     const releaseInfo: Partial<ReleaseInfoType> = {};
     let crossReference: CrossReferenceType | undefined;
 
-    if (touchedFields.has('Version') && formState.version !== '') {
-      releaseInfo.Version = formState.version;
-    }
-    if (touchedFields.has('IsChaptered')) {
-      releaseInfo.IsChaptered = formState.isChaptered;
-    }
-    if (touchedFields.has('IsCreditless')) {
-      releaseInfo.IsCreditless = formState.isCreditless;
-    }
-    if (touchedFields.has('Source') && formState.source !== '') {
-      releaseInfo.Source = formState.source;
-    }
-    if (touchedFields.has('Comment')) {
-      releaseInfo.Comment = formState.comment;
-    }
+    const setIfTouched = <FieldName extends TouchableField>(
+      field: FieldName,
+      value?: ReleaseInfoType[FieldName],
+    ) => {
+      if (!touchedFields.has(field)) return;
+      if (value === undefined) return;
+      releaseInfo[field] = value;
+    };
+
+    setIfTouched('Version', formState.version || undefined);
+    setIfTouched('IsChaptered', formState.isChaptered);
+    setIfTouched('IsCreditless', formState.isCreditless);
+    setIfTouched('Source', formState.source || undefined);
+    setIfTouched('Comment', formState.comment);
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
       crossReference = {
         seriesId: formState.selectedSeriesId,
-        episodeId: formState.selectedEpisodeId ?? -1,
+        episodeId: formState.selectedEpisodeId ?? AUTO_MATCH_EPISODE_ID,
         episodes: episodesQuery.data ?? [],
       };
     }
@@ -319,7 +269,7 @@ const EditReleaseInfoModal = (props: Props) => {
           <Button onClick={onClose} buttonType="secondary" buttonSize="normal">
             Cancel
           </Button>
-          {(formState.selectedSeriesId ?? hasDifferentSeries) && (
+          {hasSeriesSelection && (
             <Button
               onClick={handleSave}
               buttonType="primary"
@@ -335,7 +285,7 @@ const EditReleaseInfoModal = (props: Props) => {
       className="h-156"
     >
       <div className="flex grow flex-col gap-y-4 p-6">
-        {!formState.selectedSeriesId && !hasDifferentSeries && (
+        {!formState.selectedSeriesId && !hasDifferent.series && (
           <AnimeSelectPanel
             placeholder={initialSeriesName}
             onSelect={(series) => {
@@ -344,7 +294,7 @@ const EditReleaseInfoModal = (props: Props) => {
             showLoading={seriesUpdating}
           />
         )}
-        {(formState.selectedSeriesId ?? hasDifferentSeries) && (
+        {hasSeriesSelection && (
           <>
             <div className="flex flex-col gap-y-2">
               <span className="text-base font-semibold">Series</span>
@@ -356,9 +306,9 @@ const EditReleaseInfoModal = (props: Props) => {
               </div>
             </div>
             <div
-              className={cx('flex flex-col gap-y-2', hasDifferentSeries && 'opacity-65')}
+              className={cx('flex flex-col gap-y-2', hasDifferent.series && 'opacity-65')}
               data-tooltip-id="tooltip"
-              data-tooltip-content={hasDifferentSeries
+              data-tooltip-content={hasDifferent.series
                 ? 'Episode selection is unavailable when multiple series are selected'
                 : ''}
             >
@@ -366,8 +316,8 @@ const EditReleaseInfoModal = (props: Props) => {
                 <span className="text-base font-semibold">Episode</span>
                 <Button
                   onClick={handleRefreshSeries}
-                  tooltip={isRefreshingSeries || hasDifferentSeries ? '' : 'Force Refresh'}
-                  disabled={isRefreshingSeries || hasDifferentSeries}
+                  tooltip={isRefreshingSeries || hasDifferent.series ? '' : 'Force Refresh'}
+                  disabled={isRefreshingSeries || hasDifferent.series}
                 >
                   <Icon path={mdiRefresh} size={1} spin={isRefreshingSeries} className="text-panel-icon-action" />
                 </Button>
@@ -378,7 +328,7 @@ const EditReleaseInfoModal = (props: Props) => {
                 onChange={handleEpisodeSelect}
                 rowIdx={0}
                 standalone
-                disabled={hasDifferentSeries}
+                disabled={hasDifferent.series}
               />
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -404,8 +354,8 @@ const EditReleaseInfoModal = (props: Props) => {
               <Checkbox
                 id="release-chaptered"
                 label="Chaptered"
-                isChecked={!hasDifferentChaptered && !!formState.isChaptered}
-                indeterminate={hasDifferentChaptered}
+                isChecked={!hasDifferent.chaptered && !!formState.isChaptered}
+                indeterminate={hasDifferent.chaptered}
                 onChange={handleChapteredChange}
                 justify
               />
@@ -413,8 +363,8 @@ const EditReleaseInfoModal = (props: Props) => {
               <Checkbox
                 id="release-creditless"
                 label="Creditless"
-                isChecked={!hasDifferentCreditless && !!formState.isCreditless}
-                indeterminate={hasDifferentCreditless}
+                isChecked={!hasDifferent.creditless && !!formState.isCreditless}
+                indeterminate={hasDifferent.creditless}
                 onChange={handleCreditlessChange}
                 justify
               />
@@ -423,7 +373,7 @@ const EditReleaseInfoModal = (props: Props) => {
                 id="release-comment"
                 label="Comment"
                 type="text"
-                value={formState.comment}
+                value={formState.comment ?? ''}
                 onChange={handleCommentChange}
                 className="col-span-2"
               />

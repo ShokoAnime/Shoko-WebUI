@@ -22,3 +22,5 @@ export type CrossReferenceType = {
   episodeId: number;
   episodes: AniDBEpisodeType[];
 };
+
+export type TouchableField = 'Comment' | 'CrossReferences' | 'IsChaptered' | 'IsCreditless' | 'Source' | 'Version';

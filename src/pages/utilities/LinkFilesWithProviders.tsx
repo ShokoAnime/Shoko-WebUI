@@ -21,7 +21,7 @@ import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvi
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
-import { detectShow } from '@/core/utilities/auto-match-logic';
+import { AUTO_MATCH_EPISODE_ID, detectShow } from '@/core/utilities/auto-match-logic';
 import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -205,7 +205,7 @@ const LinkFilesWithProviders = () => {
         if (crossReference) {
           const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
           let episodeId = selectedEpisodeId;
-          if (episodeId === -1) {
+          if (episodeId === AUTO_MATCH_EPISODE_ID) {
             const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
             if (details) {
               const episodeNumber = details.episodeType === EpisodeTypeEnum.Special && details.episodeStart === 0
