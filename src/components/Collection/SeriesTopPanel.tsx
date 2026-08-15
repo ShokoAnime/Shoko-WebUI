@@ -34,7 +34,7 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
 
   const postersQuery = useSeriesImageCrossReferencesQuery(
     toNumber(seriesId) ?? 0,
-    { imageType: 'Poster', isAvailable: true, pageSize: 30 },
+    { imageType: 'Primary', isAvailable: true, pageSize: 30 },
     !!seriesId && showRandomPoster,
   );
 
