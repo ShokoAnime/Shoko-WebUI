@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { useImmer } from 'use-immer';
 
 import { ReleaseSource } from '@/core/types/api/file';
@@ -15,7 +15,6 @@ type FormState = {
   isCreditless?: ReleaseInfoType['IsCreditless'];
   source: ReleaseInfoType['Source'] | '';
   comment: ReleaseInfoType['Comment'];
-  CrossReferences: ReleaseInfoType['CrossReferences'];
 };
 
 const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
@@ -25,7 +24,6 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
     version: 1,
     source: ReleaseSource.Unknown,
     comment: '',
-    CrossReferences: [],
   });
   const [touchedFields, setTouchedFields] = useImmer<Set<TouchableField>>(new Set());
   const [hasDifferent, setHasDifferent] = useImmer({
@@ -35,8 +33,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
   });
   const [initialSeriesName, setInitialSeriesName] = useState('');
 
-  useEffect(() => {
-    if (!show) return;
+  const initForm = useEffectEvent(() => {
     const first = selectedLinks[0]?.release;
     if (!first) return;
 
@@ -77,9 +74,13 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
       isCreditless: first.IsCreditless,
       source: hasDifferentSource ? '' : first.Source,
       comment: hasDifferentComment ? '' : (first.Comment ?? ''),
-      CrossReferences: first.CrossReferences ?? [],
     });
-  }, [isBulk, selectedLinks, setFormState, setHasDifferent, setTouchedFields, show]);
+  });
+
+  useEffect(() => {
+    if (!show) return;
+    initForm();
+  }, [show]);
 
   const markTouched = (field: TouchableField) => {
     setTouchedFields((draft) => {

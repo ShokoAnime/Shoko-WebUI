@@ -26,7 +26,7 @@ const Menu = (props: Props) => {
   } = props;
 
   const releaseActionsDisabled = !selectedLinks.length
-    || !selectedLinks.some(link => ['ready', 'init', 'fetching'].includes(link.state));
+    || !selectedLinks.every(link => ['ready', 'init'].includes(link.state));
 
   return (
     <div className="relative box-border flex grow items-center gap-x-4 overflow-auto rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 whitespace-nowrap">

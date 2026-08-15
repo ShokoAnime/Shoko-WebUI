@@ -80,7 +80,7 @@ Two constants replace repeated arrays across the component:
 | Name | Values | Guards |
 |---|---|---|
 | `BUSY_STATES` | `searching, submitting, fetching` | Blocks removal and select-all; Escape cancels active work |
-| `EDITABLE_STATES` | `ready, init` | Enables search, provider update |
+| `EDITABLE_STATES` | `ready, init` | Enables search, provider update, and release info editing |
 
 ## State Machine
 
@@ -187,11 +187,11 @@ Opened from the Menu's "Edit Release Info" action (`E`) for the selected links. 
 
 Editable fields: `Version`, `Source`, `IsChaptered`, `IsCreditless`, and `Comment`. Episode selection includes an "Auto-match (from filename)" option (`AUTO_MATCH_EPISODE_ID = -1`). Save stays disabled until a field is touched and, for a single-series edit, until an episode (or auto-match) is selected.
 
-State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), appends the `+User` marker to `ProviderName`, and sets the link state to `ready`.
+State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), appends the `+User` marker to `ProviderName`, and sets the link state to `ready`. Links whose auto-match fails keep their previous state (no `ready` transition) and are reported in an error toast with the file count.
 
 ## Supporting Components
 
 - **`LinkCard`** — Per-link card. Border color reflects state (`submitted` → important, `searching`/`submitting` → primary, `ready` → warning). Click-to-select disabled for busy states (`searching`/`submitting`/`fetching`).
 - **`ProviderName`** — Status text per state (`"Retrieving existing release info..."` for `fetching`, etc.). Appends "(Edited by User)" when `ProviderName` starts with `User+` or ends with `+User`.
-- **`Menu`** — Action bar. "Search for Release Info" and "Edit Release Info" enable when any selected link is in `['ready', 'init', 'fetching']`; "Remove Selected" and "Submit Selected" render conditionally. The "Edit Release Info" button (`E`) opens the Edit Release Info modal. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `Q` submit, `Esc` cancel, `Enter` submit.
+- **`Menu`** — Action bar. "Search for Release Info" and "Edit Release Info" enable when all selected links are in `['ready', 'init']`; "Remove Selected" and "Submit Selected" render conditionally. The "Edit Release Info" button (`E`) opens the Edit Release Info modal. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `E` edit, `Q` submit, `Esc` cancel, `Enter` submit.
 - **`TitleOptions`** — Header showing `{submitted} / {submitted + pending} Submitted | {total} Files | {selected} Selected`. Only `ready` and `submitting` count as pending; `init`, `searching`, and `fetching` do not.

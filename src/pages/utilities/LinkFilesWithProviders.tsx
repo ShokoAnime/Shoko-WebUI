@@ -19,6 +19,7 @@ import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
 import { AUTO_MATCH_EPISODE_ID, detectShow } from '@/core/utilities/auto-match-logic';
@@ -187,21 +188,29 @@ const LinkFilesWithProviders = () => {
   };
 
   const openAutoSearch = () => {
-    if (!selectedRows.length || !selectedRows.some(link => EDITABLE_STATES.has(link.state))) {
+    if (!selectedRows.length || !selectedRows.every(link => EDITABLE_STATES.has(link.state))) {
       return;
     }
     setShowAutoSearchModal(true);
     setAutoSearchProviders(selectedRows[0].providers);
   };
 
+  const openEditReleaseInfo = () => {
+    if (!selectedRows.length || !selectedRows.every(link => EDITABLE_STATES.has(link.state))) return;
+    toggleEditModal();
+  };
+
   const handleSaveReleaseInfo = (
     releaseInfo: Partial<ReleaseInfoType>,
     crossReference?: CrossReferenceType,
   ) => {
+    let failedAutoMatchCount = 0;
+
     setLinks((draft) => {
       for (const link of selectedRows) {
         Object.assign(draft[link.id].release, releaseInfo);
 
+        let matchFailed = false;
         if (crossReference) {
           const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
           let episodeId = selectedEpisodeId;
@@ -224,20 +233,34 @@ const LinkFilesWithProviders = () => {
               PercentageStart: 0,
               PercentageEnd: 100,
             }];
+          } else {
+            failedAutoMatchCount += 1;
+            matchFailed = true;
           }
         }
 
         if (!draft[link.id].release.ProviderName.includes('+User')) {
           draft[link.id].release.ProviderName += '+User';
         }
-        draft[link.id].state = 'ready';
+        if (!matchFailed) {
+          draft[link.id].state = 'ready';
+        }
       }
     });
+
+    if (failedAutoMatchCount > 0) {
+      toast.error(
+        failedAutoMatchCount === 1
+          ? 'Failed to auto-match an episode for 1 file'
+          : `Failed to auto-match an episode for ${failedAutoMatchCount} files`,
+      );
+    }
   };
 
   useHotkeys('s', openAutoSearch, { scopes: 'primary' });
   useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
   useHotkeys('d', removeLinks, { scopes: 'primary' });
+  useHotkeys('e', openEditReleaseInfo, { scopes: 'primary' });
   useHotkeys('q', submitSelectedLinks, { scopes: 'primary' });
   useHotkeys('escape', handleCancel, { scopes: 'primary' });
   useHotkeys('enter', handleSubmit, { scopes: 'primary' });
@@ -257,7 +280,7 @@ const LinkFilesWithProviders = () => {
               removeLinks={removeLinks}
               toggleAllSelectedLinks={toggleAllSelectedLinks}
               addLinksToSubmitQueue={submitSelectedLinks}
-              onEditReleaseInfo={toggleEditModal}
+              onEditReleaseInfo={openEditReleaseInfo}
             />
 
             <div className="flex gap-x-3 font-semibold whitespace-nowrap">

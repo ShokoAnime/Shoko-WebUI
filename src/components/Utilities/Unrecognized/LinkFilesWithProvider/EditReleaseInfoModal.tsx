@@ -122,7 +122,7 @@ const EditReleaseInfoModal = (props: Props) => {
     ? 'Multiple series selected'
     : seriesSearchQuery.data?.Title ?? 'Selected series';
 
-  const hasSeriesSelection = formState.selectedSeriesId ?? hasDifferent.series;
+  const hasSeriesSelection = !!formState.selectedSeriesId || hasDifferent.series;
 
   const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
     markTouched('CrossReferences');
@@ -160,7 +160,7 @@ const EditReleaseInfoModal = (props: Props) => {
   const handleVersionChange = (event: ChangeEvent<HTMLInputElement>) => {
     markTouched('Version');
     setFormState((draft) => {
-      draft.version = event.target.valueAsNumber;
+      draft.version = Number.isNaN(event.target.valueAsNumber) ? '' : event.target.valueAsNumber;
     });
   };
 
