@@ -15,7 +15,7 @@ type Option = {
   label: string;
   value: number;
   type: EpisodeTypeEnum;
-  number: number;
+  number?: number;
   AirDate: string;
 };
 
@@ -25,6 +25,7 @@ type Props = {
   onChange: (optionValue: number) => void;
   disabled?: boolean;
   rowIdx: number;
+  standalone?: boolean;
 };
 
 const SelectOption = ({ option }: { option: Option }) => (
@@ -35,7 +36,7 @@ const SelectOption = ({ option }: { option: Option }) => (
     <div className="flex items-center justify-between">
       <div className="flex grow truncate">
         <div className="w-10 shrink-0 text-panel-text-important">
-          {getEpisodePrefix(option.type) + option.number}
+          {option.number != null && getEpisodePrefix(option.type) + option.number}
         </div>
         |
         <div className="ml-2">{option.label}</div>
@@ -45,18 +46,30 @@ const SelectOption = ({ option }: { option: Option }) => (
   </ListboxOption>
 );
 
-const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: number, selected: Option }) => (
+const SelectButton = (
+  { open, rowIdx, selected, standalone }: {
+    open: boolean;
+    rowIdx: number;
+    selected: Option;
+    standalone?: boolean;
+  },
+) => (
   <ListboxButton
     className={cx(
       'relative size-full rounded-lg border border-panel-border px-4 py-2 text-left transition-colors focus:border-panel-text-primary focus:outline-hidden data-open:border-panel-text-primary',
-      rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
+      standalone && 'bg-panel-input',
+      !standalone && (rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt'),
     )}
   >
     <div className="flex items-center truncate">
       {!selected?.label ? 'Select episode' : (
         <>
-          <span className="font-semibold text-panel-text-important">{selected.number}</span>
-          &nbsp;-&nbsp;
+          {selected.number != null && (
+            <>
+              <span className="font-semibold text-panel-text-important">{selected.number}</span>
+              &nbsp;-&nbsp;
+            </>
+          )}
           {selected.label}
           {selected?.type !== EpisodeTypeEnum.Episode && (
             <span className="mx-2 rounded-lg border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
@@ -72,7 +85,7 @@ const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: numbe
   </ListboxButton>
 );
 
-const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value }: Props) => {
+const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, standalone, value }: Props) => {
   const [epFilter, setEpFilter] = useState('');
   const [selected, setSelected] = useState<Option>(options[0]);
 
@@ -102,7 +115,7 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, value 
     >
       {({ open }) => (
         <>
-          <SelectButton open={open} rowIdx={rowIdx} selected={selected} />
+          <SelectButton open={open} rowIdx={rowIdx} selected={selected} standalone={standalone} />
 
           <Transition
             enter="transition-opacity"

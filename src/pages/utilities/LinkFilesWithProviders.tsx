@@ -5,26 +5,34 @@ import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { forEach } from 'lodash';
+import { find, forEach } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/AutoSearchReleaseModal';
+import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/EditReleaseInfoModal';
 import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/LinkCard';
 import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
+import { detectShow } from '@/core/utilities/auto-match-logic';
 import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
-import type { FileType } from '@/core/types/api/file';
-import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
+import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
+import type {
+  CrossReferenceType,
+  ManualLinkProviderType,
+  ManualLinkType,
+} from '@/core/types/utilities/link-files-with-providers';
 
 const BUSY_STATES = new Set(['searching', 'submitting', 'fetching']);
 const EDITABLE_STATES = new Set(['ready', 'init']);
@@ -42,6 +50,7 @@ const LinkFilesWithProviders = () => {
   const [showAutoSearchModal, setShowAutoSearchModal] = useState(false);
   const [autoSearchProviders, setAutoSearchProviders] = useState<ManualLinkProviderType[]>([]);
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const [showEditModal, toggleEditModal] = useToggle(false);
 
   const initializeLinks = useEffectEvent(() => {
     if (!isSettingsLoaded) return;
@@ -185,6 +194,47 @@ const LinkFilesWithProviders = () => {
     setAutoSearchProviders(selectedRows[0].providers);
   };
 
+  const handleSaveReleaseInfo = (
+    releaseInfo: Partial<ReleaseInfoType>,
+    crossReference?: CrossReferenceType,
+  ) => {
+    setLinks((draft) => {
+      for (const link of selectedRows) {
+        Object.assign(draft[link.id].release, releaseInfo);
+
+        if (crossReference) {
+          const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
+          let episodeId = selectedEpisodeId;
+          if (episodeId === -1) {
+            const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
+            if (details) {
+              const episodeNumber = details.episodeType === EpisodeTypeEnum.Special && details.episodeStart === 0
+                ? 1
+                : details.episodeStart;
+              episodeId = find(
+                episodes,
+                item => item.Type === details.episodeType && item.EpisodeNumber === episodeNumber,
+              )?.ID ?? 0;
+            }
+          }
+          if (episodeId > 0) {
+            draft[link.id].release.CrossReferences = [{
+              AnidbEpisodeID: episodeId,
+              AnidbAnimeID: seriesId,
+              PercentageStart: 0,
+              PercentageEnd: 100,
+            }];
+          }
+        }
+
+        if (!draft[link.id].release.ProviderName.includes('+User')) {
+          draft[link.id].release.ProviderName += '+User';
+        }
+        draft[link.id].state = 'ready';
+      }
+    });
+  };
+
   useHotkeys('s', openAutoSearch, { scopes: 'primary' });
   useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
   useHotkeys('d', removeLinks, { scopes: 'primary' });
@@ -207,6 +257,7 @@ const LinkFilesWithProviders = () => {
               removeLinks={removeLinks}
               toggleAllSelectedLinks={toggleAllSelectedLinks}
               addLinksToSubmitQueue={submitSelectedLinks}
+              onEditReleaseInfo={toggleEditModal}
             />
 
             <div className="flex gap-x-3 font-semibold whitespace-nowrap">
@@ -290,6 +341,13 @@ const LinkFilesWithProviders = () => {
       >
         Are you sure you want to abort the linking with unsubmitted changes?
       </ConfirmationPromptModal>
+
+      <EditReleaseInfoModal
+        show={showEditModal}
+        onClose={toggleEditModal}
+        selectedLinks={selectedRows}
+        onSave={handleSaveReleaseInfo}
+      />
     </>
   );
 };

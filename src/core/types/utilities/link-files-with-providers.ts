@@ -1,3 +1,4 @@
+import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 
 export type LinkStateType = 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
@@ -14,4 +15,10 @@ export type ManualLinkType = {
   release: ReleaseInfoType;
   metadata?: string;
   state: LinkStateType;
+};
+
+export type CrossReferenceType = {
+  seriesId: number;
+  episodeId: number;
+  episodes: AniDBEpisodeType[];
 };
