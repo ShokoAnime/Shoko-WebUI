@@ -93,7 +93,9 @@ const EditReleaseInfoModal = (props: Props) => {
   });
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [seriesUpdating, setSeriesUpdating] = useState(false);
-  const [hasMultipleSeries, setHasMultipleSeries] = useState(false);
+  const [hasDifferentSeries, setHasDifferentSeries] = useState(false);
+  const [hasDifferentChaptered, setHasDifferentChaptered] = useState(false);
+  const [hasDifferentCreditless, setHasDifferentCreditless] = useState(false);
   const [initialSeriesName, setInitialSeriesName] = useState('');
 
   useEffect(() => {
@@ -106,10 +108,10 @@ const EditReleaseInfoModal = (props: Props) => {
     const allSame = (selector: (release: ReleaseInfoType) => unknown) =>
       selectedLinks.every(link => selector(link.release) === selector(first));
 
-    const hasDifferentSeries = isBulk && !allSame(link => link.CrossReferences[0]?.AnidbAnimeID);
-    const initialSeriesId = hasDifferentSeries ? undefined : first.CrossReferences[0]?.AnidbAnimeID;
+    const hasMultipleSeries = isBulk && !allSame(link => link.CrossReferences[0]?.AnidbAnimeID);
+    const initialSeriesId = hasMultipleSeries ? undefined : first.CrossReferences[0]?.AnidbAnimeID;
 
-    setHasMultipleSeries(hasDifferentSeries);
+    setHasDifferentSeries(hasMultipleSeries);
     setInitialSeriesName(
       initialSeriesId
         ? ''
@@ -123,6 +125,9 @@ const EditReleaseInfoModal = (props: Props) => {
 
     const hasDifferentSource = isBulk && !allSame(link => link.Source);
     const hasDifferentVersion = isBulk && !allSame(link => link.Version);
+
+    setHasDifferentChaptered(isBulk && !allSame(link => link.IsChaptered));
+    setHasDifferentCreditless(isBulk && !allSame(link => link.IsCreditless));
 
     setFormState({
       selectedSeriesId: initialSeriesId,
@@ -161,7 +166,7 @@ const EditReleaseInfoModal = (props: Props) => {
     })),
   ];
 
-  const seriesName = hasMultipleSeries
+  const seriesName = hasDifferentSeries
     ? 'Multiple series selected'
     : seriesSearchQuery.data?.Title ?? 'Selected series';
 
@@ -171,7 +176,7 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
     markTouched('CrossReferences');
-    setHasMultipleSeries(false);
+    setHasDifferentSeries(false);
 
     if (series.Type !== SeriesTypeEnum.Unknown) {
       setFormState((draft) => {
@@ -209,6 +214,7 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const handleChapteredChange = (event: ChangeEvent<HTMLInputElement>) => {
     markTouched('IsChaptered');
+    setHasDifferentChaptered(false);
     setFormState((draft) => {
       draft.isChaptered = event.target.checked;
     });
@@ -216,6 +222,7 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const handleCreditlessChange = (event: ChangeEvent<HTMLInputElement>) => {
     markTouched('IsCreditless');
+    setHasDifferentCreditless(false);
     setFormState((draft) => {
       draft.isCreditless = event.target.checked;
     });
@@ -229,14 +236,14 @@ const EditReleaseInfoModal = (props: Props) => {
   };
 
   const handleEditSeries = () => {
-    if (!hasMultipleSeries) {
+    if (!hasDifferentSeries) {
       setInitialSeriesName(seriesName);
     }
     setFormState((draft) => {
       draft.selectedSeriesId = undefined;
       draft.selectedEpisodeId = -1;
     });
-    setHasMultipleSeries(false);
+    setHasDifferentSeries(false);
   };
 
   const handleRefreshSeries = () => {
@@ -295,7 +302,7 @@ const EditReleaseInfoModal = (props: Props) => {
           <Button onClick={onClose} buttonType="secondary" buttonSize="normal">
             Cancel
           </Button>
-          {(formState.selectedSeriesId ?? hasMultipleSeries) && (
+          {(formState.selectedSeriesId ?? hasDifferentSeries) && (
             <Button
               onClick={handleSave}
               buttonType="primary"
@@ -311,7 +318,7 @@ const EditReleaseInfoModal = (props: Props) => {
       className="h-144"
     >
       <div className="flex grow flex-col gap-y-4 p-6">
-        {!formState.selectedSeriesId && !hasMultipleSeries && (
+        {!formState.selectedSeriesId && !hasDifferentSeries && (
           <AnimeSelectPanel
             placeholder={initialSeriesName}
             onSelect={(series) => {
@@ -320,7 +327,7 @@ const EditReleaseInfoModal = (props: Props) => {
             showLoading={seriesUpdating}
           />
         )}
-        {(formState.selectedSeriesId ?? hasMultipleSeries) && (
+        {(formState.selectedSeriesId ?? hasDifferentSeries) && (
           <>
             <div className="flex flex-col gap-y-2">
               <span className="text-base font-semibold">Series</span>
@@ -332,9 +339,9 @@ const EditReleaseInfoModal = (props: Props) => {
               </div>
             </div>
             <div
-              className={cx('flex flex-col gap-y-2', hasMultipleSeries && 'opacity-65')}
+              className={cx('flex flex-col gap-y-2', hasDifferentSeries && 'opacity-65')}
               data-tooltip-id="tooltip"
-              data-tooltip-content={hasMultipleSeries
+              data-tooltip-content={hasDifferentSeries
                 ? 'Episode selection is unavailable when multiple series are selected'
                 : ''}
             >
@@ -342,8 +349,8 @@ const EditReleaseInfoModal = (props: Props) => {
                 <span className="text-base font-semibold">Episode</span>
                 <Button
                   onClick={handleRefreshSeries}
-                  tooltip={isRefreshingSeries || hasMultipleSeries ? '' : 'Force Refresh'}
-                  disabled={isRefreshingSeries || hasMultipleSeries}
+                  tooltip={isRefreshingSeries || hasDifferentSeries ? '' : 'Force Refresh'}
+                  disabled={isRefreshingSeries || hasDifferentSeries}
                 >
                   <Icon path={mdiRefresh} size={1} spin={isRefreshingSeries} className="text-panel-icon-action" />
                 </Button>
@@ -354,7 +361,7 @@ const EditReleaseInfoModal = (props: Props) => {
                 onChange={handleEpisodeSelect}
                 rowIdx={0}
                 standalone
-                disabled={hasMultipleSeries}
+                disabled={hasDifferentSeries}
               />
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -380,7 +387,8 @@ const EditReleaseInfoModal = (props: Props) => {
               <Checkbox
                 id="release-chaptered"
                 label="Chaptered"
-                isChecked={!!formState.isChaptered}
+                isChecked={!hasDifferentChaptered && !!formState.isChaptered}
+                indeterminate={hasDifferentChaptered}
                 onChange={handleChapteredChange}
                 justify
               />
@@ -388,7 +396,8 @@ const EditReleaseInfoModal = (props: Props) => {
               <Checkbox
                 id="release-creditless"
                 label="Creditless"
-                isChecked={!!formState.isCreditless}
+                isChecked={!hasDifferentCreditless && !!formState.isCreditless}
+                indeterminate={hasDifferentCreditless}
                 onChange={handleCreditlessChange}
                 justify
               />
