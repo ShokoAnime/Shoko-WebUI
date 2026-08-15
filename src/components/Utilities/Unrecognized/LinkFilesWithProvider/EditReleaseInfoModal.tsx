@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -7,13 +8,17 @@ import { map } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
+import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
 import { useGetSeriesAniDBMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { ReleaseSource } from '@/core/types/api/file';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
@@ -35,8 +40,33 @@ type Props = {
 type FormState = {
   selectedSeriesId?: number;
   selectedEpisodeId?: number;
+  version: number | '';
+  isChaptered?: boolean;
+  isCreditless?: boolean;
+  source: ReleaseSource | '';
   CrossReferences: ReleaseCrossReferenceType[];
 };
+
+const sourceOptions = [
+  <option key="mixed" value="" disabled>-</option>,
+  ...[
+    ReleaseSource.Unknown,
+    ReleaseSource.Other,
+    ReleaseSource.TV,
+    ReleaseSource.DVD,
+    ReleaseSource.BluRay,
+    ReleaseSource.Web,
+    ReleaseSource.VHS,
+    ReleaseSource.VCD,
+    ReleaseSource.LaserDisc,
+    ReleaseSource.Camera,
+    ReleaseSource.Film,
+  ].map(source => (
+    <option key={source} value={source}>
+      {source}
+    </option>
+  )),
+];
 
 const Title = ({ count }: { count: number }) => (
   <div className="flex items-center justify-between gap-x-1 font-semibold">
@@ -57,6 +87,8 @@ const EditReleaseInfoModal = (props: Props) => {
   const { isPending: isRefreshingSeries, mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
 
   const [formState, setFormState] = useImmer<FormState>({
+    version: 1,
+    source: ReleaseSource.Unknown,
     CrossReferences: [],
   });
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
@@ -84,23 +116,21 @@ const EditReleaseInfoModal = (props: Props) => {
         : findMostCommonShowName(selectedLinks.map(link => detectShow(link.file?.Locations?.[0]?.RelativePath))),
     );
 
-    if (!initialSeriesId) {
-      setFormState({
-        selectedSeriesId: initialSeriesId,
-        selectedEpisodeId: hasDifferentSeries ? undefined : -1,
-        CrossReferences: first.CrossReferences ?? [],
-      });
-      return;
-    }
-
     const hasDifferentEpisodes = isBulk && !allSame(link => link.CrossReferences[0]?.AnidbEpisodeID);
-    const initialEpisodeId = hasDifferentEpisodes
-      ? undefined
-      : (first.CrossReferences[0]?.AnidbEpisodeID ?? -1);
+    const initialEpisodeId = initialSeriesId && !hasDifferentEpisodes
+      ? (first.CrossReferences[0]?.AnidbEpisodeID ?? -1)
+      : undefined;
+
+    const hasDifferentSource = isBulk && !allSame(link => link.Source);
+    const hasDifferentVersion = isBulk && !allSame(link => link.Version);
 
     setFormState({
       selectedSeriesId: initialSeriesId,
       selectedEpisodeId: initialEpisodeId,
+      version: hasDifferentVersion ? '' : first.Version,
+      isChaptered: first.IsChaptered,
+      isCreditless: first.IsCreditless,
+      source: hasDifferentSource ? '' : first.Source,
       CrossReferences: first.CrossReferences ?? [],
     });
   }, [isBulk, selectedLinks, setFormState, show]);
@@ -170,6 +200,34 @@ const EditReleaseInfoModal = (props: Props) => {
     });
   };
 
+  const handleVersionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markTouched('Version');
+    setFormState((draft) => {
+      draft.version = event.target.valueAsNumber;
+    });
+  };
+
+  const handleChapteredChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markTouched('IsChaptered');
+    setFormState((draft) => {
+      draft.isChaptered = event.target.checked;
+    });
+  };
+
+  const handleCreditlessChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markTouched('IsCreditless');
+    setFormState((draft) => {
+      draft.isCreditless = event.target.checked;
+    });
+  };
+
+  const handleSourceChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    markTouched('Source');
+    setFormState((draft) => {
+      draft.source = event.target.value as ReleaseSource | '';
+    });
+  };
+
   const handleEditSeries = () => {
     if (!hasMultipleSeries) {
       setInitialSeriesName(seriesName);
@@ -196,6 +254,19 @@ const EditReleaseInfoModal = (props: Props) => {
   const handleSave = () => {
     const releaseInfo: Partial<ReleaseInfoType> = {};
     let crossReference: CrossReferenceType | undefined;
+
+    if (touchedFields.has('Version') && formState.version !== '') {
+      releaseInfo.Version = formState.version;
+    }
+    if (touchedFields.has('IsChaptered')) {
+      releaseInfo.IsChaptered = formState.isChaptered;
+    }
+    if (touchedFields.has('IsCreditless')) {
+      releaseInfo.IsCreditless = formState.isCreditless;
+    }
+    if (touchedFields.has('Source') && formState.source !== '') {
+      releaseInfo.Source = formState.source;
+    }
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
       crossReference = {
@@ -284,6 +355,42 @@ const EditReleaseInfoModal = (props: Props) => {
                 rowIdx={0}
                 standalone
                 disabled={hasMultipleSeries}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Source</span>
+                <SelectSmall id="release-source" value={formState.source} onChange={handleSourceChange}>
+                  {sourceOptions}
+                </SelectSmall>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Version</span>
+                <InputSmall
+                  id="release-version"
+                  type="number"
+                  value={formState.version}
+                  onChange={handleVersionChange}
+                  min={1}
+                  className="w-16 px-3 py-1 text-center"
+                />
+              </div>
+
+              <Checkbox
+                id="release-chaptered"
+                label="Chaptered"
+                isChecked={!!formState.isChaptered}
+                onChange={handleChapteredChange}
+                justify
+              />
+
+              <Checkbox
+                id="release-creditless"
+                label="Creditless"
+                isChecked={!!formState.isCreditless}
+                onChange={handleCreditlessChange}
+                justify
               />
             </div>
           </>
