@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ChangeEventHandler, ReactNode } from 'react';
 import type { PlacesType } from 'react-tooltip';
-import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline } from '@mdi/js';
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -14,6 +14,7 @@ type Props = {
   label?: ReactNode;
   labelClassName?: string;
   isChecked: boolean;
+  indeterminate?: boolean;
   disabled?: boolean;
   autoFocus?: boolean;
   className?: string;
@@ -30,6 +31,7 @@ const Checkbox = (props: Props) => {
     className,
     disabled = false,
     id,
+    indeterminate,
     isChecked,
     justify,
     label,
@@ -42,6 +44,13 @@ const Checkbox = (props: Props) => {
   const bodyVisible = useBodyVisibleContext();
   const inputRef = useAutoFocusRef(autoFocus && !disabled && bodyVisible);
   const [focused, setFocused] = useState(false);
+
+  // React has no `indeterminate` prop on <input>, so set the DOM property imperatively.
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.indeterminate = !!indeterminate;
+    }
+  }, [inputRef, indeterminate]);
 
   return (
     <label
@@ -79,12 +88,17 @@ const Checkbox = (props: Props) => {
           {label}
         </span>
       )}
-      {isChecked && (
+      {indeterminate && (
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
+          <Icon className="text-panel-icon-action" path={mdiCircleHalfFull} size={1} />
+        </TransitionDiv>
+      )}
+      {!indeterminate && isChecked && (
         <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
           <Icon className="text-panel-icon-action" path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
-      {!isChecked && (
+      {!indeterminate && !isChecked && (
         <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
           <Icon className="text-panel-icon-action" path={mdiCheckboxBlankCircleOutline} size={1} />
         </TransitionDiv>
