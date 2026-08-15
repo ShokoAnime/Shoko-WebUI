@@ -135,24 +135,22 @@ export const useUploadSeriesImageMutation = () =>
       return axios.post(`Series/${seriesId}/Images/${imageType}/Upload`, formData);
     },
     onSuccess: (_, { seriesId }) => {
-      invalidateQueries(['image-management', 'cross-references', seriesId]);
+      invalidateQueries(['series', seriesId, 'images']);
     },
   });
 
 export const useSetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityType) =>
   useMutation({
-    mutationFn: (ID: string) => axios.put(`Series/${seriesId}/Images/${imageType}`, { ID }),
+    mutationFn: (ID: string) => axios.put(`Series/${seriesId}/Images/${imageType}/Default`, { ID }),
     onSuccess: () => {
-      invalidateQueries(['image-management', 'cross-references', seriesId]);
-      invalidateQueries(['series']);
+      invalidateQueries(['series', seriesId]);
     },
   });
 
 export const useUnsetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityType) =>
   useMutation({
-    mutationFn: () => axios.delete(`Series/${seriesId}/Images/${imageType}`),
+    mutationFn: () => axios.delete(`Series/${seriesId}/Images/${imageType}/Default`),
     onSuccess: () => {
-      invalidateQueries(['image-management', 'cross-references', seriesId]);
-      invalidateQueries(['series']);
+      invalidateQueries(['series', seriesId]);
     },
   });

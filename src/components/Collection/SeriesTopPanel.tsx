@@ -13,8 +13,7 @@ import TagButton from '@/components/Collection/TagButton';
 import CustomTagModal from '@/components/Dialogs/CustomTagModal';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useSeriesImageCrossReferencesQuery } from '@/core/react-query/image-management/queries';
-import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
+import { useSeriesImagesInfiniteQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { getMainPoster } from '@/core/util';
 
@@ -32,9 +31,10 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
   const [poster, setPoster] = useState<ImageLinkType>();
   const [showTagModal, toggleTagModal] = useToggle(false);
 
-  const postersQuery = useSeriesImageCrossReferencesQuery(
+  const postersQuery = useSeriesImagesInfiniteQuery(
     toNumber(seriesId) ?? 0,
-    { imageType: 'Primary', isAvailable: true, pageSize: 30 },
+    'Primary',
+    { pageSize: 30 },
     !!seriesId && showRandomPoster,
   );
 
@@ -45,9 +45,9 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
     }
 
     const allPosters = flatMap(postersQuery.data?.pages, page => page.List)
-      .filter(xref => xref.Image?.Available);
+      .filter(image => image.Available);
     if (allPosters.length === 0) return;
-    setPoster(allPosters[Math.floor(Math.random() * allPosters.length)].Image);
+    setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
   }, [mainPoster, postersQuery.data, showRandomPoster]);
 
   // TODO: try to make this a grid for better responsiveness... but we'll have v3 soon so maybe not right now.

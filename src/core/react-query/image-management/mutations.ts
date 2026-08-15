@@ -3,10 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
-export const useDeleteImageCrossReferenceMutation = () =>
+export const useDeleteImageMutation = () =>
   useMutation({
-    mutationFn: (xrefId: number) => axios.delete(`Image/Management/CrossReference/${xrefId}`),
+    mutationFn: (imageID: string) => axios.delete(`Image/Management/${imageID}`),
     onSuccess: () => {
-      invalidateQueries(['image-management', 'cross-references']);
+      invalidateQueries(['series']);
     },
   });
