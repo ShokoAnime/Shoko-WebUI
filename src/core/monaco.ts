@@ -1,7 +1,7 @@
 import { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 // oxlint-disable-next-line import/default
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import editorWorker from 'monaco-editor/editor/editor.worker?worker';
 
 // oxlint-disable-next-line no-restricted-globals
 self.MonacoEnvironment = {
