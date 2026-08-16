@@ -206,6 +206,7 @@ const LinkFilesWithProviders = () => {
     let failedAutoMatchCount = 0;
 
     setLinks((draft) => {
+      let specials = 0;
       for (const link of selectedRows) {
         Object.assign(draft[link.id].release, releaseInfo);
 
@@ -217,7 +218,7 @@ const LinkFilesWithProviders = () => {
             const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
             if (details) {
               const episodeNumber = details.episodeType === EpisodeTypeEnum.Special && details.episodeStart === 0
-                ? 1
+                ? specials += 1
                 : details.episodeStart;
               episodeId = find(
                 episodes,
