@@ -238,10 +238,10 @@ const EditReleaseInfoModal = (props: Props) => {
       releaseInfo[field] = value;
     };
 
-    setIfTouched('Version', formState.version || undefined);
+    setIfTouched('Version', formState.version === '' ? undefined : formState.version);
     setIfTouched('IsChaptered', formState.isChaptered);
     setIfTouched('IsCreditless', formState.isCreditless);
-    setIfTouched('Source', formState.source || undefined);
+    setIfTouched('Source', formState.source === '' ? undefined : formState.source);
     setIfTouched('Comment', formState.comment);
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
