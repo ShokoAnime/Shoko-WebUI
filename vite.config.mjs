@@ -1,7 +1,7 @@
 import path from 'path';
 import { writeFile } from 'fs/promises';
 import childProcess from 'child_process';
-import pkg from './package.json';
+import pkg from './package.json' with { type: 'json' };
 
 import { defineConfig } from 'vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
@@ -15,7 +15,7 @@ export default defineConfig(async () => {
 
   let proxy = {};
   try {
-    proxy = await import('./proxy.config');
+    proxy = await import('./proxy.config.js');
   } catch {}
 
   let sentryPlugin;
@@ -43,7 +43,7 @@ export default defineConfig(async () => {
     },
     resolve: {
       alias: [
-        { find: '@', replacement: path.resolve(__dirname, 'src') },
+        { find: '@', replacement: path.resolve(import.meta.dirname, 'src') },
       ],
     },
     build: {
