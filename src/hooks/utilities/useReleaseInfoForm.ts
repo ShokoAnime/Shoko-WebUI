@@ -30,6 +30,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
   const [hasDifferent, setHasDifferent] = useImmer({
     chaptered: false,
     creditless: false,
+    episodes: false,
     series: false,
   });
   const [initialSeriesName, setInitialSeriesName] = useState('');
@@ -64,6 +65,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
     setHasDifferent({
       chaptered: isBulk && !allSame(link => link.IsChaptered),
       creditless: isBulk && !allSame(link => link.IsCreditless),
+      episodes: hasDifferentEpisodes,
       series: hasMultipleSeries,
     });
 

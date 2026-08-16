@@ -103,6 +103,15 @@ const EditReleaseInfoModal = (props: Props) => {
   );
 
   const episodeOptions = [
+    ...(hasDifferent.episodes
+      ? [{
+        label: 'Multiple episodes selected',
+        value: 0,
+        type: EpisodeTypeEnum.Episode,
+        AirDate: '',
+        disabled: true,
+      }]
+      : []),
     {
       label: 'Auto-match (from filename)',
       value: AUTO_MATCH_EPISODE_ID,
@@ -154,6 +163,9 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const handleEpisodeSelect = (optionValue: number) => {
     markTouched('CrossReferences');
+    setHasDifferent((draft) => {
+      draft.episodes = false;
+    });
     setFormState((draft) => {
       draft.selectedEpisodeId = optionValue;
     });
@@ -276,8 +288,7 @@ const EditReleaseInfoModal = (props: Props) => {
               onClick={handleSave}
               buttonType="primary"
               buttonSize="normal"
-              disabled={touchedFields.size === 0
-                || (!!formState.selectedSeriesId && !formState.selectedEpisodeId)}
+              disabled={touchedFields.size === 0}
             >
               Save
             </Button>
@@ -302,7 +313,7 @@ const EditReleaseInfoModal = (props: Props) => {
             <div className="flex flex-col gap-y-2">
               <span className="text-base font-semibold">Series</span>
               <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-input px-4 py-3">
-                <span className="truncate text-panel-text-important">{seriesName}</span>
+                <span className="truncate">{seriesName}</span>
                 <Button onClick={handleEditSeries}>
                   <Icon path={mdiPencilCircleOutline} size={1} className="shrink-0 text-panel-icon-action" />
                 </Button>
