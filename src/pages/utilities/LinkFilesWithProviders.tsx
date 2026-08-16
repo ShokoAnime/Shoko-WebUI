@@ -13,11 +13,11 @@ import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModa
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
-import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/AutoSearchReleaseModal';
-import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/EditReleaseInfoModal';
-import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/LinkCard';
-import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
-import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
+import AutoSearchReleaseModal from '@/components/Utilities/LinkFilesWithProvider/AutoSearchReleaseModal';
+import EditReleaseInfoModal from '@/components/Utilities/LinkFilesWithProvider/EditReleaseInfoModal';
+import LinkCard from '@/components/Utilities/LinkFilesWithProvider/LinkCard';
+import Menu from '@/components/Utilities/LinkFilesWithProvider/Menu';
+import TitleOptions from '@/components/Utilities/LinkFilesWithProvider/TitleOptions';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
