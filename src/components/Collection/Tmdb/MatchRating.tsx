@@ -1,22 +1,24 @@
 import cx from 'classnames';
 
-import { MatchRatingType } from '@/core/types/api/episode';
+import type { MatchRatingType } from '@/core/types/api/episode';
 
 const getAbbreviation = (rating?: MatchRatingType) => {
   switch (rating) {
-    case MatchRatingType.DateAndTitleMatches:
+    case 'DateAndTitleMatches':
       return ['DT', 'Date & Title'];
-    case MatchRatingType.DateAndTitleKindaMatches:
+    case 'DateAndTitleKindaMatches':
       return ['~DT', 'Date & Approx. Title'];
-    case MatchRatingType.DateMatches:
+    case 'DateMatches':
       return ['D', 'Date'];
-    case MatchRatingType.TitleMatches:
+    case 'TitleMatches':
       return ['T', 'Title'];
-    case MatchRatingType.TitleKindaMatches:
+    case 'TitleKindaMatches':
       return ['~T', 'Approx. Title'];
-    case MatchRatingType.UserVerified:
+    case 'DateKindaMatches':
+      return ['~D', 'Approx. Date'];
+    case 'UserVerified':
       return ['UO', 'User Override'];
-    case MatchRatingType.FirstAvailable:
+    case 'FirstAvailable':
       return ['BG', 'Best Guess'];
     default:
       return ['', ''];
@@ -34,14 +36,14 @@ const MatchRating = ({ isDisabled, isOdd, rating }: Props) => (
     className={cx(
       'flex w-16 items-center justify-center rounded-md border border-panel-border text-button-primary-text',
       {
-        'bg-panel-text-important': rating === MatchRatingType.DateAndTitleMatches
-          || rating === MatchRatingType.TitleMatches,
-        'bg-panel-text-warning': rating === MatchRatingType.DateMatches || rating === MatchRatingType.TitleKindaMatches
-          || rating === MatchRatingType.DateAndTitleKindaMatches,
-        'bg-panel-text-primary': rating === MatchRatingType.UserVerified,
-        'bg-panel-text-danger': rating === MatchRatingType.FirstAvailable,
-        'bg-panel-background': (!rating || rating === MatchRatingType.None) && !isOdd,
-        'bg-panel-background-alt': (!rating || rating === MatchRatingType.None) && isOdd,
+        'bg-panel-text-important': rating === 'DateAndTitleMatches'
+          || rating === 'TitleMatches',
+        'bg-panel-text-warning': rating === 'DateMatches' || rating === 'TitleKindaMatches'
+          || rating === 'DateAndTitleKindaMatches' || rating === 'DateKindaMatches',
+        'bg-panel-text-primary': rating === 'UserVerified',
+        'bg-panel-text-danger': rating === 'FirstAvailable',
+        'bg-panel-background': (!rating || rating === 'None') && !isOdd,
+        'bg-panel-background-alt': (!rating || rating === 'None') && isOdd,
         'opacity-65': isDisabled,
       },
     )}
