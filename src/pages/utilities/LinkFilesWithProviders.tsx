@@ -5,29 +5,37 @@ import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { forEach } from 'lodash';
+import { find, forEach } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
-import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/AutoSearchReleaseModal';
-import LinkCard from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/LinkCard';
-import Menu from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/Menu';
-import TitleOptions from '@/components/Utilities/Unrecognized/LinkFilesWithProvider/TitleOptions';
+import AutoSearchReleaseModal from '@/components/Utilities/LinkFilesWithProvider/AutoSearchReleaseModal';
+import EditReleaseInfoModal from '@/components/Utilities/LinkFilesWithProvider/EditReleaseInfoModal';
+import LinkCard from '@/components/Utilities/LinkFilesWithProvider/LinkCard';
+import Menu from '@/components/Utilities/LinkFilesWithProvider/Menu';
+import TitleOptions from '@/components/Utilities/LinkFilesWithProvider/TitleOptions';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import toast from '@/core/toast';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
-import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
+import { detectShow } from '@/core/utilities/auto-match-logic';
+import createLinksFromFiles, { AUTO_MATCH_EPISODE_ID, EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
-import type { FileType } from '@/core/types/api/file';
-import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
+import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
+import type {
+  CrossReferenceType,
+  ManualLinkProviderType,
+  ManualLinkType,
+} from '@/core/types/utilities/link-files-with-providers';
 
 const BUSY_STATES = new Set(['searching', 'submitting', 'fetching']);
-const EDITABLE_STATES = new Set(['ready', 'init']);
 
 const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();
@@ -42,6 +50,7 @@ const LinkFilesWithProviders = () => {
   const [showAutoSearchModal, setShowAutoSearchModal] = useState(false);
   const [autoSearchProviders, setAutoSearchProviders] = useState<ManualLinkProviderType[]>([]);
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const [showEditModal, toggleEditModal] = useToggle(false);
 
   const initializeLinks = useEffectEvent(() => {
     if (!isSettingsLoaded) return;
@@ -178,16 +187,80 @@ const LinkFilesWithProviders = () => {
   };
 
   const openAutoSearch = () => {
-    if (!selectedRows.length || !selectedRows.some(link => EDITABLE_STATES.has(link.state))) {
+    if (!selectedRows.length || !selectedRows.every(link => EDITABLE_STATES.has(link.state))) {
       return;
     }
     setShowAutoSearchModal(true);
     setAutoSearchProviders(selectedRows[0].providers);
   };
 
+  const openEditReleaseInfo = () => {
+    if (!selectedRows.length || !selectedRows.every(link => EDITABLE_STATES.has(link.state))) return;
+    toggleEditModal();
+  };
+
+  const handleSaveReleaseInfo = (
+    releaseInfo: Partial<ReleaseInfoType>,
+    crossReference?: CrossReferenceType,
+  ) => {
+    let failedAutoMatchCount = 0;
+
+    setLinks((draft) => {
+      let specials = 0;
+      for (const link of selectedRows) {
+        Object.assign(draft[link.id].release, releaseInfo);
+
+        let matchFailed = false;
+        if (crossReference) {
+          const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
+          let episodeId = selectedEpisodeId;
+          if (episodeId === AUTO_MATCH_EPISODE_ID) {
+            const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
+            if (details) {
+              const episodeNumber = details.episodeType === EpisodeTypeEnum.Special && details.episodeStart === 0
+                ? specials += 1
+                : details.episodeStart;
+              episodeId = find(
+                episodes,
+                item => item.Type === details.episodeType && item.EpisodeNumber === episodeNumber,
+              )?.ID ?? 0;
+            }
+          }
+          if (episodeId > 0) {
+            draft[link.id].release.CrossReferences = [{
+              AnidbEpisodeID: episodeId,
+              AnidbAnimeID: seriesId,
+              PercentageStart: 0,
+              PercentageEnd: 100,
+            }];
+          } else {
+            failedAutoMatchCount += 1;
+            matchFailed = true;
+          }
+        }
+
+        if (!draft[link.id].release.ProviderName.includes('+User')) {
+          draft[link.id].release.ProviderName += '+User';
+        }
+        if (!matchFailed) {
+          draft[link.id].state = 'ready';
+        }
+      }
+    });
+
+    if (failedAutoMatchCount > 0) {
+      toast.error(
+        failedAutoMatchCount === 1
+          ? 'Failed to auto-match an episode for 1 file'
+          : `Failed to auto-match an episode for ${failedAutoMatchCount} files`,
+      );
+    }
+  };
+
   useHotkeys('s', openAutoSearch, { scopes: 'primary' });
   useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
   useHotkeys('d', removeLinks, { scopes: 'primary' });
+  useHotkeys('e', openEditReleaseInfo, { scopes: 'primary' });
   useHotkeys('q', submitSelectedLinks, { scopes: 'primary' });
   useHotkeys('escape', handleCancel, { scopes: 'primary' });
   useHotkeys('enter', handleSubmit, { scopes: 'primary' });
@@ -207,6 +280,7 @@ const LinkFilesWithProviders = () => {
               removeLinks={removeLinks}
               toggleAllSelectedLinks={toggleAllSelectedLinks}
               addLinksToSubmitQueue={submitSelectedLinks}
+              onEditReleaseInfo={openEditReleaseInfo}
             />
 
             <div className="flex gap-x-3 font-semibold whitespace-nowrap">
@@ -290,6 +364,13 @@ const LinkFilesWithProviders = () => {
       >
         Are you sure you want to abort the linking with unsubmitted changes?
       </ConfirmationPromptModal>
+
+      <EditReleaseInfoModal
+        show={showEditModal}
+        onClose={toggleEditModal}
+        selectedLinks={selectedRows}
+        onSave={handleSaveReleaseInfo}
+      />
     </>
   );
 };

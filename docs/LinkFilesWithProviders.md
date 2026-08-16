@@ -22,19 +22,25 @@ src/pages/utilities/
 
 src/hooks/utilities/
   useLinkWorkflow.ts             State machine: dispatch, guard sets, drive loop
+  useReleaseInfoForm.ts          Form state + touched-field tracking for the Edit Release Info modal
 
 src/core/utilities/
-  releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo
+  releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo; shared constants EDITABLE_STATES, AUTO_MATCH_EPISODE_ID
+  auto-match-logic.ts            detectShow, findMostCommonShowName
 
 src/core/types/utilities/
-  link-files-with-providers.ts    ManualLinkType, ManualLinkProviderType, LinkStateType
+  link-files-with-providers.ts    ManualLinkType, ManualLinkProviderType, LinkStateType, CrossReferenceType, TouchableField
 
-src/components/Utilities/Unrecognized/LinkFilesWithProvider/
-  LinkCard.tsx                    Per-link card (state-driven styling, selection)
-  ProviderName.tsx               Status text per state
-  Menu.tsx                       Action bar (Search, Edit, Submit, etc.)
-  TitleOptions.tsx               Header counts (submitted/pending/total/selected)
-  AutoSearchReleaseModal.tsx     Provider picker modal
+src/components/Utilities/Unrecognized/
+  AnimeSelectPanel.tsx           Shared AniDB series search panel (modal + LinkFilesTab)
+
+  LinkFilesWithProvider/
+    LinkCard.tsx                 Per-link card (state-driven styling, selection)
+    ProviderName.tsx             Status text per state
+    Menu.tsx                     Action bar (Search, Edit, Submit, etc.)
+    TitleOptions.tsx             Header counts (submitted/pending/total/selected)
+    AutoSearchReleaseModal.tsx   Provider picker modal
+    EditReleaseInfoModal.tsx     Edit release metadata for selected links
 ```
 
 ## Key Types
@@ -55,14 +61,26 @@ type ManualLinkType = {
 
 Each link's `state` field drives the entire workflow — the component never directly calls process handlers, only the drive loop dispatches based on current state.
 
+The Edit Release Info modal adds two shared types:
+
+```ts
+type CrossReferenceType = {
+  seriesId: number;
+  episodeId: number;
+  episodes: AniDBEpisodeType[];
+};
+
+type TouchableField = 'Comment' | 'CrossReferences' | 'IsChaptered' | 'IsCreditless' | 'Source' | 'Version';
+```
+
 ## State Groups
 
-Two constants replace repeated arrays across the component:
+Two constants replace repeated arrays across the workflow. `EDITABLE_STATES` lives in `releaseInfoHelpers.ts` so `Menu` and the page share it; `BUSY_STATES` remains page-local.
 
 | Name | Values | Guards |
 |---|---|---|
 | `BUSY_STATES` | `searching, submitting, fetching` | Blocks removal and select-all; Escape cancels active work |
-| `EDITABLE_STATES` | `ready, init` | Enables search, provider update |
+| `EDITABLE_STATES` | `ready, init` | Enables search, provider update, and release info editing |
 
 ## State Machine
 
@@ -160,9 +178,20 @@ Merges AutoPreview result into the user's seed release. Preserves user-set field
 | `ReleaseInfo/File/{id}` | GET | `processLinked` | Fetch existing release info |
 | `ReleaseInfo/File/{id}` | POST | `processSubmit` | Submit release info |
 
+## Edit Release Info Modal
+
+Opened from the Menu's "Edit Release Info" action (`E`) for the selected links. Two-step flow:
+
+1. **Series search** — a shared `AnimeSelectPanel` (debounced AniDB search) when no series is selected.
+2. **Review form** — once a series is chosen (or when bulk-selecting mixed series), shows series + episode selection and the release fields.
+
+Editable fields: `Version`, `Source`, `IsChaptered`, `IsCreditless`, and `Comment`. Episode selection includes an "Auto-match (from filename)" option (`AUTO_MATCH_EPISODE_ID = -1`). When selected files have differing episode links, the selector shows a disabled "Multiple episodes selected" entry and those per-file links are preserved unless an episode (or auto-match) is explicitly chosen. Save stays disabled until a field is touched.
+
+State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), appends the `+User` marker to `ProviderName`, and sets the link state to `ready`. Links whose auto-match fails keep their previous state (no `ready` transition) and are reported in an error toast with the file count.
+
 ## Supporting Components
 
 - **`LinkCard`** — Per-link card. Border color reflects state (`submitted` → important, `searching`/`submitting` → primary, `ready` → warning). Click-to-select disabled for busy states (`searching`/`submitting`/`fetching`).
 - **`ProviderName`** — Status text per state (`"Retrieving existing release info..."` for `fetching`, etc.). Appends "(Edited by User)" when `ProviderName` starts with `User+` or ends with `+User`.
-- **`Menu`** — Action bar. "Search for Release Info" enables when any selected link is in `['ready', 'init', 'fetching']`; "Remove Selected" and "Submit Selected" render conditionally. The "Edit Release Info" button (`E`) is a disabled placeholder. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `Q` submit, `Esc` cancel, `Enter` submit.
+- **`Menu`** — Action bar. "Search for Release Info" and "Edit Release Info" enable when all selected links are in `EDITABLE_STATES` (`ready`/`init`); "Remove Selected" and "Submit Selected" render conditionally. The "Edit Release Info" button (`E`) opens the Edit Release Info modal. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `E` edit, `Q` submit, `Esc` cancel, `Enter` submit.
 - **`TitleOptions`** — Header showing `{submitted} / {submitted + pending} Submitted | {total} Files | {selected} Selected`. Only `ready` and `submitting` count as pending; `init`, `searching`, and `fetching` do not.

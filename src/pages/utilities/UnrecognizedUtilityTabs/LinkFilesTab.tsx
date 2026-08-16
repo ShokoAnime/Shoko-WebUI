@@ -4,8 +4,6 @@ import type { ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import {
   mdiLink,
-  mdiLoading,
-  mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
   mdiPencilCircleOutline,
@@ -17,14 +15,13 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { countBy, filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
-import Input from '@/components/Input/Input';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
+import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import Title from '@/components/Utilities/Unrecognized/Title';
@@ -37,15 +34,11 @@ import {
   useGetSeriesAniDBMutation,
   useRefreshAniDBSeriesMutation,
 } from '@/core/react-query/series/mutations';
-import {
-  useSeriesAniDBEpisodesQuery,
-  useSeriesAniDBSearchQuery,
-  useSeriesEpisodesInfiniteQuery,
-} from '@/core/react-query/series/queries';
+import { useSeriesAniDBEpisodesQuery, useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
-import { formatThousand, getAnidbAnimeLink } from '@/core/util';
+import { getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -113,81 +106,6 @@ const parseLinks = (links: ManualLink[]) => {
   manyToMany = uniqBy(manyToMany, link => `${link.FileID}-${link.EpisodeID}`);
 
   return { manyToMany, manyToOne, oneToMany, oneToOne, none };
-};
-
-const AnimeResultRow = (
-  { changeSelectedSeries, data }: {
-    changeSelectedSeries: (series: SeriesAniDBSearchResult) => Promise<void>;
-    data: SeriesAniDBSearchResult;
-  },
-) => (
-  <div
-    key={data.ID}
-    onClick={() => {
-      changeSelectedSeries(data).catch(console.error);
-    }}
-    className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
-  >
-    <a
-      className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
-      href={getAnidbAnimeLink(data.ID)}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {data.ID}
-      <Icon path={mdiOpenInNew} size={0.833} className="ml-auto" />
-    </a>
-    |
-    <div>{data.Title}</div>
-    <div className="ml-auto">{data.Type}</div>
-    |
-    <div className="w-10 shrink-0">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
-  </div>
-);
-
-const AnimeSelectPanel = (
-  { changeSelectedSeries, placeholder, seriesUpdating }: {
-    changeSelectedSeries: (series: SeriesAniDBSearchResult) => Promise<void>;
-    seriesUpdating: boolean;
-    placeholder: string;
-  },
-) => {
-  const [searchText, setSearchText] = useState(placeholder);
-  const [debouncedSearch] = useDebounceValue(searchText, 200);
-  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
-
-  const searchRows = useMemo(() => {
-    const rows: ReactNode[] = [];
-    if (!seriesUpdating && !searchQuery.isPending) {
-      forEach(searchQuery.data, (data) => {
-        rows.push(<AnimeResultRow key={data.ID} data={data} changeSelectedSeries={changeSelectedSeries} />);
-      });
-    } else {
-      rows.push(
-        <div key="loading" className="flex grow items-center justify-center text-panel-text-primary">
-          <Icon path={mdiLoading} size={4} spin />
-        </div>,
-      );
-    }
-    return rows;
-  }, [seriesUpdating, searchQuery.isPending, searchQuery.data, changeSelectedSeries]);
-
-  return (
-    <div className="flex w-1/2 flex-col gap-y-2 contain-strict">
-      <Input
-        id="link-search"
-        type="text"
-        value={searchText}
-        onChange={event => setSearchText(event.target.value)}
-        placeholder="Enter Series Name or AniDB ID..."
-        inputClassName="!p-4"
-        startIcon={mdiMagnify}
-      />
-      <div className="flex grow flex-col overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
-        {searchRows}
-      </div>
-    </div>
-  );
 };
 
 const LinkFilesTab = () => {
@@ -762,11 +680,15 @@ const LinkFilesTab = () => {
             {selectedSeriesLoaded ? renderDynamicFileLinks() : renderStaticFileLinks()}
           </div>
           {!selectedSeriesLoaded && (
-            <AnimeSelectPanel
-              changeSelectedSeries={changeSelectedSeries}
-              seriesUpdating={seriesUpdating || anidbEpisodesQuery.isFetching}
-              placeholder={initialSearchName}
-            />
+            <div className="w-1/2">
+              <AnimeSelectPanel
+                onSelect={(series) => {
+                  changeSelectedSeries(series).catch(console.error);
+                }}
+                showLoading={seriesUpdating || anidbEpisodesQuery.isFetching}
+                placeholder={initialSearchName}
+              />
+            </div>
           )}
         </div>
       </TransitionDiv>

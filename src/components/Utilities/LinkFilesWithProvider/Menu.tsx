@@ -1,6 +1,7 @@
 import { mdiMagnify, mdiPencil, mdiSelectAll, mdiSelection, mdiSelectionRemove, mdiTrayPlus } from '@mdi/js';
 
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import { EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
 
 import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
@@ -11,17 +12,22 @@ type Props = {
   removeLinks: () => void;
   selectedLinks: ManualLinkType[];
   addLinksToSubmitQueue: () => void;
+  onEditReleaseInfo: () => void;
 };
 
 const Menu = (props: Props) => {
   const {
     addLinksToSubmitQueue,
     linkCount,
+    onEditReleaseInfo,
     openSearchDialog,
     removeLinks,
     selectedLinks,
     toggleAllSelectedLinks,
   } = props;
+
+  const releaseActionsDisabled = !selectedLinks.length
+    || !selectedLinks.every(link => EDITABLE_STATES.has(link.state));
 
   return (
     <div className="relative box-border flex grow items-center gap-x-4 overflow-auto rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 whitespace-nowrap">
@@ -30,15 +36,15 @@ const Menu = (props: Props) => {
         icon={mdiMagnify}
         name="Search for Release Info"
         keybinding="S"
-        disabled={!selectedLinks.length
-          || !selectedLinks.some(link => ['ready', 'init', 'fetching'].includes(link.state))}
+        disabled={releaseActionsDisabled}
       />
 
       <MenuButton
+        onClick={onEditReleaseInfo}
         icon={mdiPencil}
         name="Edit Release Info"
         keybinding="E"
-        disabled
+        disabled={releaseActionsDisabled}
       />
 
       <MenuButton
