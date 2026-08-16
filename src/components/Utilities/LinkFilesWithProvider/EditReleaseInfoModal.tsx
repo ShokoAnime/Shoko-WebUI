@@ -133,6 +133,7 @@ const EditReleaseInfoModal = (props: Props) => {
     if (series.Type !== SeriesTypeEnum.Unknown) {
       setFormState((draft) => {
         draft.selectedSeriesId = series.ID;
+        draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
       });
       return;
     }
@@ -143,6 +144,7 @@ const EditReleaseInfoModal = (props: Props) => {
       const seriesData = await getSeriesAniDBData(series.ID);
       setFormState((draft) => {
         draft.selectedSeriesId = seriesData.ID;
+        draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
       });
     } catch (_) {
       toast.error('Failed to get series data!');
