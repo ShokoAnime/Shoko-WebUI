@@ -2,7 +2,8 @@ import { useEffect, useEffectEvent, useState } from 'react';
 import { useImmer } from 'use-immer';
 
 import { ReleaseSource } from '@/core/types/api/file';
-import { AUTO_MATCH_EPISODE_ID, detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 
 import type { ReleaseInfoType } from '@/core/types/api/file';
 import type { ManualLinkType, TouchableField } from '@/core/types/utilities/link-files-with-providers';

@@ -4,7 +4,14 @@ import { ReleaseSource } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
-import type { ManualLinkProviderType, ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
+import type {
+  LinkStateType,
+  ManualLinkProviderType,
+  ManualLinkType,
+} from '@/core/types/utilities/link-files-with-providers';
+
+export const EDITABLE_STATES = new Set<LinkStateType>(['ready', 'init']);
+export const AUTO_MATCH_EPISODE_ID = -1;
 
 let lastLinkId = 0;
 const generateLinkId = () => {

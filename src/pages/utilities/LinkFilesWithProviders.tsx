@@ -22,8 +22,8 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
-import { AUTO_MATCH_EPISODE_ID, detectShow } from '@/core/utilities/auto-match-logic';
-import createLinksFromFiles from '@/core/utilities/releaseInfoHelpers';
+import { detectShow } from '@/core/utilities/auto-match-logic';
+import createLinksFromFiles, { AUTO_MATCH_EPISODE_ID, EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
@@ -36,7 +36,6 @@ import type {
 } from '@/core/types/utilities/link-files-with-providers';
 
 const BUSY_STATES = new Set(['searching', 'submitting', 'fetching']);
-const EDITABLE_STATES = new Set(['ready', 'init']);
 
 const LinkFilesWithProviders = () => {
   const navigate = useNavigateVoid();

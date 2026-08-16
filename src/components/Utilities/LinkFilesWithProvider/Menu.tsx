@@ -1,6 +1,7 @@
 import { mdiMagnify, mdiPencil, mdiSelectAll, mdiSelection, mdiSelectionRemove, mdiTrayPlus } from '@mdi/js';
 
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import { EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
 
 import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
@@ -26,7 +27,7 @@ const Menu = (props: Props) => {
   } = props;
 
   const releaseActionsDisabled = !selectedLinks.length
-    || !selectedLinks.every(link => ['ready', 'init'].includes(link.state));
+    || !selectedLinks.every(link => EDITABLE_STATES.has(link.state));
 
   return (
     <div className="relative box-border flex grow items-center gap-x-4 overflow-auto rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 whitespace-nowrap">

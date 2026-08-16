@@ -20,7 +20,7 @@ import toast from '@/core/toast';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { ReleaseSource } from '@/core/types/api/file';
 import { SeriesTypeEnum } from '@/core/types/api/series';
-import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/auto-match-logic';
+import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
