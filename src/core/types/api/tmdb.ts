@@ -1,4 +1,4 @@
-import type { MatchRatingType } from '@/core/types/api/episode';
+import type { MatchRatingValues } from '@/core/types/api/episode';
 
 export type TmdbEpisodeType = {
   ID: number;
@@ -31,7 +31,7 @@ export type TmdbEpisodeXrefType = {
   TmdbShowID: number;
   TmdbEpisodeID: number;
   Index: number;
-  Rating: MatchRatingType;
+  Rating: MatchRatingValues;
 } & TmdbXrefType;
 
 export type TmdbMovieXrefType = {

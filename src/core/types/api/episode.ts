@@ -37,19 +37,18 @@ export type EpisodeTitleType = {
   Source: string;
 };
 
-export const enum EpisodeTypeEnum {
-  Unknown = 'Unknown',
-  Other = 'Other',
-  Episode = 'Episode',
-  Special = 'Special',
-  Trailer = 'Trailer',
-  Credits = 'Credits',
-  Parody = 'Parody',
-}
+export type EpisodeTypeValues =
+  | 'Unknown'
+  | 'Other'
+  | 'Episode'
+  | 'Special'
+  | 'Trailer'
+  | 'Credits'
+  | 'Parody';
 
 export type AniDBEpisodeType = {
   ID: number;
-  Type: EpisodeTypeEnum;
+  Type: EpisodeTypeValues;
   EpisodeNumber: number;
   AirDate: string | null;
   Title: string;
@@ -58,7 +57,7 @@ export type AniDBEpisodeType = {
   Rating: RatingType;
 };
 
-export type MatchRatingType =
+export type MatchRatingValues =
   | 'DateAndTitleKindaMatches'
   | 'DateAndTitleMatches'
   | 'DateKindaMatches'

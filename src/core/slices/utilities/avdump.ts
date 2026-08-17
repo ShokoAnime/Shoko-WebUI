@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 
-import { AVDumpEventTypeEnum } from '@/core/signalr/types';
 import toast from '@/core/toast';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/signalr/types';
@@ -31,7 +30,7 @@ const avdumpSlice = createSlice({
     updateAVDumpEvent(sliceState, action: PayloadAction<AVDumpEventType>) {
       const event = action.payload;
       switch (event.Type) {
-        case AVDumpEventTypeEnum.Started:
+        case 'Started':
           sliceState.sessions[event.SessionID] = {
             status: 'Running',
             fileIDs: event.VideoIDs,
@@ -42,7 +41,7 @@ const avdumpSlice = createSlice({
           });
           break;
 
-        case AVDumpEventTypeEnum.Success:
+        case 'Success':
           if (sliceState.sessions[event.SessionID]) {
             const session = sliceState.sessions[event.SessionID];
             session.status = 'Success';
@@ -50,7 +49,7 @@ const avdumpSlice = createSlice({
           }
           break;
 
-        case AVDumpEventTypeEnum.Failure:
+        case 'Failure':
           if (sliceState.sessions[event.SessionID]) {
             const session = sliceState.sessions[event.SessionID];
             session.status = 'Failed';
@@ -58,7 +57,7 @@ const avdumpSlice = createSlice({
           }
           break;
 
-        case AVDumpEventTypeEnum.GenericException:
+        case 'GenericException':
           if (sliceState.sessions[event.SessionID]) {
             const session = sliceState.sessions[event.SessionID];
             session.status = 'Failed';
@@ -66,7 +65,7 @@ const avdumpSlice = createSlice({
           }
           break;
 
-        case AVDumpEventTypeEnum.InstallException:
+        case 'InstallException':
           toast.error('AVDump failed to install!', event.Message);
           break;
 

@@ -1,8 +1,8 @@
-import type { ImageEntityType } from './common';
+import type { ImageEntityValues } from './common';
 
 export type RandomImageMetadataResultType = {
   Source: string;
-  Type: ImageEntityType;
+  Type: ImageEntityValues;
   UID: string;
   Available: boolean;
   Preferred: boolean;

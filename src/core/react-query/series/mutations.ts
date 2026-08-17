@@ -11,7 +11,7 @@ import type {
   UploadSeriesImageRequestType,
   WatchSeriesEpisodesRequestType,
 } from '@/core/react-query/series/types';
-import type { ImageEntityType } from '@/core/types/api/common';
+import type { ImageEntityValues } from '@/core/types/api/common';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 
 export const useDeleteSeriesMutation = () =>
@@ -139,7 +139,7 @@ export const useUploadSeriesImageMutation = () =>
     },
   });
 
-export const useSetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityType) =>
+export const useSetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityValues) =>
   useMutation({
     mutationFn: (ID: string) => axios.put(`Series/${seriesId}/Images/${imageType}/Default`, { ID }),
     onSuccess: () => {
@@ -147,7 +147,7 @@ export const useSetSeriesPreferredImageMutation = (seriesId: number, imageType: 
     },
   });
 
-export const useUnsetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityType) =>
+export const useUnsetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityValues) =>
   useMutation({
     mutationFn: () => axios.delete(`Series/${seriesId}/Images/${imageType}/Default`),
     onSuccess: () => {

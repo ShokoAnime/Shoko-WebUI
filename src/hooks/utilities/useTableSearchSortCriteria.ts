@@ -2,16 +2,16 @@ import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 
-import type { FileSortCriteriaEnum } from '@/core/types/api/file';
+import type { FileSortOrderValue } from '@/core/types/api/file';
 
-const useTableSearchSortCriteria = (defaultSortCriteria: FileSortCriteriaEnum) => {
-  const [sortCriteria, setSortCriteria] = useState<number>(defaultSortCriteria);
-  const [searchSortCriteria, setSearchSortCriteria] = useState<number>();
+const useTableSearchSortCriteria = (defaultSortCriteria: FileSortOrderValue) => {
+  const [sortCriteria, setSortCriteria] = useState<FileSortOrderValue>(defaultSortCriteria);
+  const [searchSortCriteria, setSearchSortCriteria] = useState<FileSortOrderValue>();
 
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 250);
 
-  const updateSortCriteria = (newCriteria: FileSortCriteriaEnum) => {
+  const updateSortCriteria = (newCriteria: FileSortOrderValue) => {
     if (debouncedSearch) setSearchSortCriteria(newCriteria);
     else setSortCriteria(newCriteria);
   };

@@ -1,7 +1,6 @@
 import { merge, toNumber } from 'lodash';
 
 import { webuiSettingsPatches } from '@/core/patches';
-import { LanguageSource } from '@/core/types/api/settings';
 
 import type { SupportedLanguagesResponseType } from '@/core/react-query/settings/types';
 import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
@@ -376,11 +375,11 @@ export const initialSettings: SettingsType = {
   Language: {
     UseSynonyms: false,
     SeriesTitleLanguageOrder: ['x-main'],
-    SeriesTitleSourceOrder: [LanguageSource.AniDB, LanguageSource.TMDB],
+    SeriesTitleSourceOrder: ['AniDB', 'TMDB'],
     EpisodeTitleLanguageOrder: ['en'],
-    EpisodeTitleSourceOrder: [LanguageSource.TMDB, LanguageSource.AniDB],
+    EpisodeTitleSourceOrder: ['TMDB', 'AniDB'],
     DescriptionLanguageOrder: ['en'],
-    DescriptionSourceOrder: [LanguageSource.TMDB, LanguageSource.AniDB],
+    DescriptionSourceOrder: ['TMDB', 'AniDB'],
   },
   Plex: {
     Server: '',
@@ -416,7 +415,7 @@ export const initialSettings: SettingsType = {
     AllowDeletion: true,
     AutoDeleteOnImport: false,
     PerFileDeletionForAiringSeries: false,
-    EpisodeTypeScope: 'AllTogether',
+    EpisodeTypeScope: 'KeepTogether',
   },
   LoadImageMetadata: false,
   Plugins: {

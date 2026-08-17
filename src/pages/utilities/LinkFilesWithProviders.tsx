@@ -20,7 +20,6 @@ import Menu from '@/components/Utilities/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/LinkFilesWithProvider/TitleOptions';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
 import { detectShow } from '@/core/utilities/auto-match-logic';
 import createLinksFromFiles, { AUTO_MATCH_EPISODE_ID, EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
@@ -217,7 +216,7 @@ const LinkFilesWithProviders = () => {
           if (episodeId === AUTO_MATCH_EPISODE_ID) {
             const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
             if (details) {
-              const episodeNumber = details.episodeType === EpisodeTypeEnum.Special && details.episodeStart === 0
+              const episodeNumber = details.episodeType === 'Special' && details.episodeStart === 0
                 ? specials += 1
                 : details.episodeStart;
               episodeId = find(

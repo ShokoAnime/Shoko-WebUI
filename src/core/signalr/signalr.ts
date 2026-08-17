@@ -10,7 +10,6 @@ import { throttle } from 'lodash';
 
 import Events from '@/core/events';
 import { handleEvent } from '@/core/signalr/eventHandlers';
-import { AVDumpEventTypeEnum } from '@/core/signalr/types';
 import {
   resetQueueStatus,
   setFetched,
@@ -26,7 +25,7 @@ import type {
   AVDumpEventType,
   AVDumpRestoreType,
   AniDBBanItemType,
-  NetworkAvailabilityEnum,
+  NetworkAvailabilityValues,
   QueueStatusType,
   RestartRequiredType,
 } from '@/core/signalr/types';
@@ -90,7 +89,7 @@ const onRestartRequiredUpdate = (state: RestartRequiredType) => {
 
 // Network Events
 
-type NetworkAvailabilityType = { NetworkAvailability: NetworkAvailabilityEnum };
+type NetworkAvailabilityType = { NetworkAvailability: NetworkAvailabilityValues };
 const onNetworkChanged = (dispatch: typeof store.dispatch) => ({ NetworkAvailability }: NetworkAvailabilityType) =>
   dispatch(setNetworkStatus(NetworkAvailability));
 
@@ -102,11 +101,11 @@ const onAvDumpConnected = (dispatch: typeof store.dispatch) => (state: AVDumpRes
 
 const onAvDumpEvent = (dispatch: typeof store.dispatch) => (event: AVDumpEventType) => {
   switch (event.Type) {
-    case AVDumpEventTypeEnum.Started:
-    case AVDumpEventTypeEnum.Success:
-    case AVDumpEventTypeEnum.Failure:
-    case AVDumpEventTypeEnum.GenericException:
-    case AVDumpEventTypeEnum.InstallException:
+    case 'Started':
+    case 'Success':
+    case 'Failure':
+    case 'GenericException':
+    case 'InstallException':
       dispatch(updateAVDumpEvent(event));
       break;
 

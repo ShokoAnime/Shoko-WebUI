@@ -17,14 +17,11 @@ import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPan
 import { useGetSeriesAniDBMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
-import { ReleaseSource } from '@/core/types/api/file';
-import { SeriesTypeEnum } from '@/core/types/api/series';
 import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
-import type { ReleaseInfoType } from '@/core/types/api/file';
+import type { ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 import type {
   CrossReferenceType,
@@ -45,17 +42,17 @@ type Props = {
 const sourceOptions = [
   <option key="mixed" value="" disabled>-</option>,
   ...[
-    ReleaseSource.Unknown,
-    ReleaseSource.Other,
-    ReleaseSource.TV,
-    ReleaseSource.DVD,
-    ReleaseSource.BluRay,
-    ReleaseSource.Web,
-    ReleaseSource.VHS,
-    ReleaseSource.VCD,
-    ReleaseSource.LaserDisc,
-    ReleaseSource.Camera,
-    ReleaseSource.Film,
+    'Unknown',
+    'Other',
+    'TV',
+    'DVD',
+    'BluRay',
+    'Web',
+    'VHS',
+    'VCD',
+    'LaserDisc',
+    'Camera',
+    'Film',
   ].map(source => (
     <option key={source} value={source}>
       {source}
@@ -104,20 +101,22 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const episodeOptions = [
     ...(hasDifferent.episodes
-      ? [{
-        label: 'Multiple episodes selected',
-        value: 0,
-        type: EpisodeTypeEnum.Episode,
-        AirDate: '',
-        disabled: true,
-      }]
+      ? [
+        {
+          label: 'Multiple episodes selected',
+          value: 0,
+          type: 'Episode',
+          AirDate: '',
+          disabled: true,
+        } as const,
+      ]
       : []),
     {
       label: 'Auto-match (from filename)',
       value: AUTO_MATCH_EPISODE_ID,
-      type: EpisodeTypeEnum.Episode,
+      type: 'Episode',
       AirDate: '',
-    },
+    } as const,
     ...map(episodesQuery.data ?? [], episode => ({
       label: episode.Title,
       value: episode.ID,
@@ -139,7 +138,7 @@ const EditReleaseInfoModal = (props: Props) => {
       draft.series = false;
     });
 
-    if (series.Type !== SeriesTypeEnum.Unknown) {
+    if (series.Type !== 'Unknown') {
       setFormState((draft) => {
         draft.selectedSeriesId = series.ID;
         draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
@@ -201,7 +200,7 @@ const EditReleaseInfoModal = (props: Props) => {
   const handleSourceChange = (event: ChangeEvent<HTMLSelectElement>) => {
     markTouched('Source');
     setFormState((draft) => {
-      draft.source = event.target.value as ReleaseSource | '';
+      draft.source = event.target.value as ReleaseSourceValues | '';
     });
   };
 

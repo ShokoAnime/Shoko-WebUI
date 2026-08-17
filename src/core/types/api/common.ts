@@ -5,8 +5,8 @@ export type ImageLinkType = {
 };
 
 export type ImageType = ImageLinkType & {
-  Source: ImageSourceType;
-  Type: ImageEntityType;
+  Source: DataSourceValues;
+  Type: ImageEntityValues;
   ID: number;
   PrimaryUID: string;
   Preferred: boolean;
@@ -27,9 +27,7 @@ export type EpisodeImagesType = ImagesType & {
   Thumbnails?: ImageType[];
 };
 
-export type ImageSourceType = 'AniDB' | 'TMDB' | 'Shoko' | 'User';
-
-export type ImageEntityType = 'None' | 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
+export type ImageEntityValues = 'None' | 'Primary' | 'Backdrop' | 'Banner' | 'Logo' | 'Disc';
 
 export type RatingType = {
   Value: number;
@@ -45,4 +43,25 @@ export type LogLineType = {
   Level: string;
 };
 
-export type DataSourceType = 'AniDB' | 'TMDB' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';
+export type DataSourceValues =
+  | 'Plugin'
+  | 'LocallyGenerated'
+  | 'None'
+  | 'User'
+  | 'Shoko'
+  | 'AniDB'
+  | 'TMDB'
+  | 'TvDB'
+  | 'AniList'
+  | 'Animeshon'
+  | 'Kitsu'
+  | 'MAL'
+  | 'FanartTV'
+  | 'IMDB'
+  | 'OMDB'
+  | 'TraktTv'
+  | 'TPDB'
+  | 'MediUX'
+  | 'SimKL';
+
+export type DataSourceTypeValues = 'AniDB' | 'TMDB';

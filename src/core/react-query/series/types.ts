@@ -1,14 +1,14 @@
 import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 import type { PaginationType } from '@/core/types/api';
-import type { DataSourceType, ImageEntityType } from '@/core/types/api/common';
-import type { EpisodeTypeEnum } from '@/core/types/api/episode';
+import type { DataSourceTypeValues, ImageEntityValues } from '@/core/types/api/common';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 
 type SeriesEpisodesBaseRequestType = {
   includeMissing?: IncludeOnlyFilterType;
   includeHidden?: IncludeOnlyFilterType;
   includeWatched?: IncludeOnlyFilterType;
   includeUnaired?: IncludeOnlyFilterType;
-  type?: EpisodeTypeEnum[];
+  type?: EpisodeTypeValues[];
   search?: string;
   fuzzy?: boolean;
 };
@@ -20,7 +20,7 @@ export type DeleteSeriesRequestType = {
 };
 
 export type SeriesRequestType = {
-  includeDataFrom?: DataSourceType[];
+  includeDataFrom?: DataSourceTypeValues[];
   randomImages?: boolean;
 };
 
@@ -28,7 +28,7 @@ export type SeriesAniDBEpisodesRequestType = SeriesEpisodesBaseRequestType & Pag
 
 export type SeriesEpisodesInfiniteRequestType =
   & {
-    includeDataFrom?: DataSourceType[];
+    includeDataFrom?: DataSourceTypeValues[];
     includeFiles?: boolean;
     includeAbsolutePaths?: boolean;
     includeMediaInfo?: boolean;
@@ -38,7 +38,7 @@ export type SeriesEpisodesInfiniteRequestType =
   & PaginationType;
 
 export type SeriesNextUpRequestType = {
-  includeDataFrom?: DataSourceType[];
+  includeDataFrom?: DataSourceTypeValues[];
   includeMissing?: boolean;
   onlyUnwatched?: boolean;
 };
@@ -69,7 +69,7 @@ export type RefreshSeriesAniDBInfoRequestType = {
 
 export type UploadSeriesImageRequestType = {
   file: File;
-  imageType: ImageEntityType;
+  imageType: ImageEntityValues;
   seriesId: number;
 };
 

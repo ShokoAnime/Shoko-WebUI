@@ -2,7 +2,6 @@ import { Link } from 'react-router';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { SeriesTypeEnum } from '@/core/types/api/series';
 import { dayjs, getMainPoster } from '@/core/util';
 
 import type { SeriesType } from '@/core/types/api/series';
@@ -10,8 +9,8 @@ import type { SeriesType } from '@/core/types/api/series';
 const TimelineItem = ({ series }: { series: SeriesType }) => {
   const mainPoster = getMainPoster(series);
   let seriesType = series.AniDB?.Type as string | undefined;
-  if (seriesType === SeriesTypeEnum.TVSpecial) seriesType = 'TV Special';
-  else if (seriesType === SeriesTypeEnum.MusicVideo) seriesType = 'Music Video';
+  if (seriesType === 'TVSpecial') seriesType = 'TV Special';
+  else if (seriesType === 'MusicVideo') seriesType = 'Music Video';
 
   return (
     <div className="flex gap-x-3" key={series.IDs.ID}>

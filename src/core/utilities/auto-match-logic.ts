@@ -1,22 +1,21 @@
 import { every, reduce } from 'lodash';
 
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
-
 import PathMatchRuleSet from './auto-match-regexes';
 
-import type { ReleaseSource } from '@/core/types/api/file';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
+import type { ReleaseSourceValues } from '@/core/types/api/file';
 
 export type PathDetails = {
   filePath: string;
   fileExtension: string | null;
   releaseGroup: string | null;
-  source: ReleaseSource | null;
+  source: ReleaseSourceValues | null;
   showName: string | null;
   season: number | null;
   episodeName: string | null;
   episodeStart: number;
   episodeEnd: number;
-  episodeType: EpisodeTypeEnum;
+  episodeType: EpisodeTypeValues;
   version: number | null;
   crc32: string | null;
   ruleName: string;
@@ -40,24 +39,24 @@ const DriveLetterRegex = /^[A-Z]:$/;
 
 const noopTransform = (show: PathDetails) => show;
 
-const detectEpisodeType = (matchGroups: Record<string, string | undefined>): EpisodeTypeEnum => {
+const detectEpisodeType = (matchGroups: Record<string, string | undefined>): EpisodeTypeValues => {
   if (matchGroups.isSpecial) {
-    return EpisodeTypeEnum.Special;
+    return 'Special';
   }
 
   if (matchGroups.isThemeSong) {
-    return EpisodeTypeEnum.Credits;
+    return 'Credits';
   }
 
   if (matchGroups.isOther) {
-    return EpisodeTypeEnum.Other;
+    return 'Other';
   }
 
   if (matchGroups.isTrailer) {
-    return EpisodeTypeEnum.Trailer;
+    return 'Trailer';
   }
 
-  return EpisodeTypeEnum.Episode;
+  return 'Episode';
 };
 
 export const detectShow = (filePath: string | undefined | null) => {
@@ -105,8 +104,8 @@ export const detectShow = (filePath: string | undefined | null) => {
       // The user is responsible if they link it without checking. We even show
       // a notification telling them to verify the matches before saving.
       let episodeType = detectEpisodeType(match.groups);
-      if (episodeType === EpisodeTypeEnum.Episode && episodeStart === episodeEnd && !Number.isInteger(episodeStart)) {
-        episodeType = EpisodeTypeEnum.Special;
+      if (episodeType === 'Episode' && episodeStart === episodeEnd && !Number.isInteger(episodeStart)) {
+        episodeType = 'Special';
         episodeStart = 0;
         episodeEnd = 0;
       }

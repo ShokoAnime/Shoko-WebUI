@@ -1,8 +1,8 @@
 import cx from 'classnames';
 
-import type { MatchRatingType } from '@/core/types/api/episode';
+import type { MatchRatingValues } from '@/core/types/api/episode';
 
-const getAbbreviation = (rating?: MatchRatingType) => {
+const getAbbreviation = (rating?: MatchRatingValues) => {
   switch (rating) {
     case 'DateAndTitleMatches':
       return ['DT', 'Date & Title'];
@@ -28,7 +28,7 @@ const getAbbreviation = (rating?: MatchRatingType) => {
 type Props = {
   isDisabled: boolean;
   isOdd: boolean;
-  rating?: MatchRatingType;
+  rating?: MatchRatingValues;
 };
 
 const MatchRating = ({ isDisabled, isOdd, rating }: Props) => (

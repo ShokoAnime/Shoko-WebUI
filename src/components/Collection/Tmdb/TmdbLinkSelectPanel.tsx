@@ -12,8 +12,8 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTmdbRefreshMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/tmdb/queries';
 import toast from '@/core/toast';
-import { SeriesTypeEnum } from '@/core/types/api/series';
 
+import type { AnimeTypeValues } from '@/core/types/api/series';
 import type { TmdbSearchResultType } from '@/core/types/api/tmdb';
 
 type SearchResultRowProps = {
@@ -49,12 +49,12 @@ const SearchResultRow = ({ linkType, result, selectLink }: SearchResultRowProps)
   );
 };
 
-const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: SeriesTypeEnum }) => {
+const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) => {
   const { seriesId } = useParams();
 
   const [, setSearchParams] = useSearchParams();
 
-  const [linkType, setLinkType] = useState<'Show' | 'Movie'>(seriesType === SeriesTypeEnum.Movie ? 'Movie' : 'Show');
+  const [linkType, setLinkType] = useState<'Show' | 'Movie'>(seriesType === 'Movie' ? 'Movie' : 'Show');
   const [selectedId, setSelectedId] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
