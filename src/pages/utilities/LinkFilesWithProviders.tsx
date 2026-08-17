@@ -22,7 +22,11 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import toast from '@/core/toast';
 import { handleShiftSelect } from '@/core/util';
 import { detectShow } from '@/core/utilities/auto-match-logic';
-import createLinksFromFiles, { AUTO_MATCH_EPISODE_ID, EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
+import createLinksFromFiles, {
+  AUTO_MATCH_EPISODE_ID,
+  EDITABLE_STATES,
+  isUserEdited,
+} from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
@@ -238,7 +242,7 @@ const LinkFilesWithProviders = () => {
           }
         }
 
-        if (!draft[link.id].release.ProviderName.includes('+User')) {
+        if (!isUserEdited(draft[link.id].release.ProviderName)) {
           draft[link.id].release.ProviderName += '+User';
         }
         if (!matchFailed) {
