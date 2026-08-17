@@ -7,7 +7,6 @@ import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useSetPreferredTmdbShowOrderingMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbShowOrderingQuery } from '@/core/react-query/tmdb/queries';
-import { AlternateOrderingTypeEnum } from '@/core/react-query/tmdb/types';
 import toast from '@/core/toast';
 
 type Props = {
@@ -17,14 +16,14 @@ type Props = {
 };
 
 const orderingDescriptionMap = {
-  [AlternateOrderingTypeEnum.Unknown]: ' (Unknown)',
-  [AlternateOrderingTypeEnum.OriginalAirDate]: ' (Original Air Date)',
-  [AlternateOrderingTypeEnum.Absolute]: ' (Absolute)',
-  [AlternateOrderingTypeEnum.DVD]: ' (DVD)',
-  [AlternateOrderingTypeEnum.Digital]: ' (Digital)',
-  [AlternateOrderingTypeEnum.StoryArc]: ' (Story Arc)',
-  [AlternateOrderingTypeEnum.Production]: ' (Production)',
-  [AlternateOrderingTypeEnum.TV]: ' (TV)',
+  Unknown: ' (Unknown)',
+  OriginalAirDate: ' (Original Air Date)',
+  Absolute: ' (Absolute)',
+  DVD: ' (DVD)',
+  Digital: ' (Digital)',
+  StoryArc: ' (Story Arc)',
+  Production: ' (Production)',
+  TV: ' (TV)',
   default: '',
 } as const;
 

@@ -1,6 +1,6 @@
 import type { ImageType, RatingType } from './common';
-import type { EpisodeTypeEnum } from './episode';
-import type { FileSourceEnum } from './file';
+import type { EpisodeTypeValues } from './episode';
+import type { ReleaseSourceValues } from './file';
 import type { SeriesTitleType } from './series';
 import type { TagType } from './tags';
 
@@ -61,7 +61,7 @@ export type WebuiSeriesFileSummaryGroupType = {
     FileID: number;
     Number: number;
     Size: number;
-    Type: EpisodeTypeEnum;
+    Type: EpisodeTypeValues;
   }[];
   Locations?: {
     ID: number;
@@ -111,12 +111,12 @@ export type WebuiSeriesFileSummaryOverview = {
 };
 
 export type WebuiSeriesFileSummarySourcesByType = {
-  Type: EpisodeTypeEnum;
+  Type: EpisodeTypeValues;
   Sources: WebuiSeriesFileSummarySourceCount[];
 };
 
 export type WebuiSeriesFileSummarySourceCount = {
-  Type: FileSourceEnum;
+  Type: ReleaseSourceValues;
   Count: number;
 };
 

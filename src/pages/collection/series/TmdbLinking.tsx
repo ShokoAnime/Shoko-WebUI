@@ -30,7 +30,6 @@ import {
   useTmdbShowOrMovieQuery,
 } from '@/core/react-query/tmdb/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getAnidbAnimeLink } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -69,7 +68,7 @@ const TmdbLinking = () => {
       includeDataFrom: ['AniDB'],
       includeMissing: 'true',
       includeUnaired: 'true',
-      type: [EpisodeTypeEnum.Episode, EpisodeTypeEnum.Special, EpisodeTypeEnum.Other],
+      type: ['Episode', 'Special', 'Other'],
       pageSize: 50,
     },
     !!seriesId,

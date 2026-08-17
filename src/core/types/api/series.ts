@@ -38,7 +38,7 @@ export type SeriesIDsType = {
 export type AniDBSeriesType = {
   ID: number;
   ShokoID?: number;
-  Type: SeriesTypeEnum;
+  Type: AnimeTypeValues;
   Restricted: boolean;
   Title: string;
   Titles: SeriesTitleType[];
@@ -49,37 +49,35 @@ export type AniDBSeriesType = {
   Rating: RatingType;
 };
 
-export const enum SeriesTypeEnum {
-  Unknown = 'Unknown',
-  Other = 'Other',
-  TV = 'TV',
-  TVSpecial = 'TVSpecial',
-  Web = 'Web',
-  Movie = 'Movie',
-  OVA = 'OVA',
-  MusicVideo = 'MusicVideo',
-}
+export type AnimeTypeValues =
+  | 'Unknown'
+  | 'Other'
+  | 'TV'
+  | 'TVSpecial'
+  | 'Web'
+  | 'Movie'
+  | 'OVA'
+  | 'MusicVideo';
 
-export const enum SeriesRelationTypeEnum {
-  Other = 'Other',
-  SameSetting = 'SameSetting',
-  AlternativeSetting = 'AlternativeSetting',
-  AlternativeVersion = 'AlternativeVersion',
-  SharedCharacters = 'SharedCharacters',
-  Prequel = 'Prequel',
-  MainStory = 'MainStory',
-  FullStory = 'FullStory',
-  Sequel = 'Sequel',
-  SideStory = 'SideStory',
-  Summary = 'Summary',
-}
+export type RelationTypeValues =
+  | 'Other'
+  | 'SameSetting'
+  | 'AlternativeSetting'
+  | 'AlternativeVersion'
+  | 'SharedCharacters'
+  | 'Prequel'
+  | 'MainStory'
+  | 'FullStory'
+  | 'Sequel'
+  | 'SideStory'
+  | 'Summary';
 
 export type SeriesAniDBSearchResult = {
   ID: number;
   Title: string;
   Titles: SeriesTitleType[];
   ShokoID: number | null;
-  Type: SeriesTypeEnum;
+  Type: AnimeTypeValues;
   EpisodeCount: number;
 };
 
@@ -141,7 +139,7 @@ export type SeriesRecommendedType = {
 export type SeriesAniDBRelatedType = {
   ID: number;
   ShokoID: number | null;
-  Type: SeriesTypeEnum;
+  Type: AnimeTypeValues;
   Title: string;
   Titles: SeriesTitleType[];
   Restricted: boolean;
@@ -149,13 +147,13 @@ export type SeriesAniDBRelatedType = {
   EpisodeCount: number | null;
   Rating: RatingType;
   UserApproval: RatingType;
-  Relation: SeriesRelationTypeEnum;
+  Relation: RelationTypeValues;
 };
 
 export type SeriesAniDBSimilarType = {
   ID: number;
   ShokoID: number | null;
-  Type: SeriesTypeEnum;
+  Type: AnimeTypeValues;
   Title: string;
   Titles: SeriesTitleType[];
   Restricted: boolean;
@@ -163,7 +161,7 @@ export type SeriesAniDBSimilarType = {
   EpisodeCount: number | null;
   Rating: RatingType;
   UserApproval: RatingType;
-  Relation: SeriesRelationTypeEnum;
+  Relation: RelationTypeValues;
 };
 
 export type SeriesRolePerson = {

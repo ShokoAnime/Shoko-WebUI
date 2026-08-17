@@ -1,16 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { NetworkAvailabilityEnum } from '@/core/signalr/types';
-
-import type { AniDBBanItemType, AniDBBanType, QueueStatusType } from '@/core/signalr/types';
+import type { AniDBBanItemType, NetworkAvailabilityValues, QueueStatusType } from '@/core/signalr/types';
 import type { SliceActions } from '@/core/types/util';
 import type { PayloadAction } from '@reduxjs/toolkit';
+
+type AniDBBanType = {
+  http: AniDBBanItemType;
+  udp: AniDBBanItemType;
+};
 
 type State = {
   fetched: Record<string, boolean>;
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
-  networkStatus: NetworkAvailabilityEnum;
+  networkStatus: NetworkAvailabilityValues;
   layoutEditMode: boolean;
 };
 
@@ -28,15 +31,15 @@ const initialState: State = {
   queueStatus: initialQueueStatus,
   banStatus: {
     http: {
-      UpdateType: 2,
+      UpdateType: 'HTTPBan',
       Value: false,
     },
     udp: {
-      UpdateType: 1,
+      UpdateType: 'UDPBan',
       Value: false,
     },
   } as AniDBBanType,
-  networkStatus: NetworkAvailabilityEnum.Internet,
+  networkStatus: 'Internet',
   layoutEditMode: false,
 };
 
@@ -66,7 +69,7 @@ const mainpageSlice = createSlice({
     setLayoutEditMode(sliceState, action: PayloadAction<boolean>) {
       sliceState.layoutEditMode = action.payload;
     },
-    setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailabilityEnum>) {
+    setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailabilityValues>) {
       sliceState.networkStatus = action.payload;
     },
   },

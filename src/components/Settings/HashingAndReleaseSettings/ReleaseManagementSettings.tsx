@@ -7,10 +7,10 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import { signalLabels } from '@/core/utilities/releaseManagementHelpers';
 
-import type { ReleaseComparisonPreferencesType, SignalType } from '@/core/types/api/settings';
+import type { ReleaseComparisonPreferencesType, ReleaseSignalTypeValues } from '@/core/types/api/settings';
 import type { DropResult } from '@hello-pangea/dnd';
 
-const ALL_SIGNALS = Object.keys(signalLabels) as SignalType[];
+const ALL_SIGNALS = Object.keys(signalLabels) as ReleaseSignalTypeValues[];
 
 type Props = {
   preferences: ReleaseComparisonPreferencesType;
@@ -80,10 +80,10 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               id="rm-episode-type-scope"
               value={preferences.EpisodeTypeScope}
               onChange={event =>
-                updateSetting('EpisodeTypeScope', event.target.value as 'AllTogether' | 'PerEpisodeType')}
+                updateSetting('EpisodeTypeScope', event.target.value as 'KeepTogether' | 'BestPerType')}
             >
-              <option value="AllTogether">All Together</option>
-              <option value="PerEpisodeType">Per Episode Type</option>
+              <option value="KeepTogether">All Together</option>
+              <option value="BestPerType">Per Episode Type</option>
             </SelectSmall>
           </div>
           <div className="text-xs opacity-65">

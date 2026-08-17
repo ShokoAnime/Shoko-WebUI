@@ -14,7 +14,6 @@ import { useFilteredSeriesInfiniteQuery } from '@/core/react-query/filter/querie
 import queryClient from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import store from '@/core/store';
-import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { ListResultType } from '@/core/types/api';
@@ -43,7 +42,7 @@ const addRecentlyImportedFiles = (pageSize: number) => {
       queryKey: ['files', 'recently-imported', pageSize],
       queryFn: () =>
         axios.get('File', {
-          params: { pageSize, exclude: ['Unrecognized'], sortOrder: [-FileSortCriteriaEnum.CreatedAt] },
+          params: { pageSize, exclude: ['Unrecognized'], sortOrder: ['-CreatedAt'] },
         }),
     },
   )

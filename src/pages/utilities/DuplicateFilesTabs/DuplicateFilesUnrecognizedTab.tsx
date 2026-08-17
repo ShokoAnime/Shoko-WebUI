@@ -15,29 +15,28 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
-import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { FileType } from '@/core/types/api/file';
+import type { FileSortOrderValue, FileType } from '@/core/types/api/file';
 
 const DuplicateFilesUnrecognizedTab = () => {
   const [selectedFile, setSelectedFile] = useState(-1);
   const [showModal, toggleModal, setShowModal] = useToggle(false);
 
   const { debouncedSearch, search, setSearch, setSortCriteria, sortCriteria } = useTableSearchSortCriteria(
-    FileSortCriteriaEnum.DuplicateCount,
+    'DuplicateCount',
   );
 
   const managedFolderQuery = useManagedFoldersQuery();
   const managedFolders = managedFolderQuery?.data ?? [];
 
-  let sortOrder: FileSortCriteriaEnum[] | undefined;
+  let sortOrder: FileSortOrderValue[] | undefined;
   if (debouncedSearch && sortCriteria) {
     sortOrder = [sortCriteria];
   } else if (sortCriteria) {
-    sortOrder = [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
+    sortOrder = [sortCriteria, 'FileName', 'RelativePath'];
   }
 
   const filesQuery = useFilesInfiniteQuery(

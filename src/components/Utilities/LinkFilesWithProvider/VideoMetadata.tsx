@@ -1,10 +1,9 @@
-import { ReleaseSource } from '@/core/types/api/file';
-
+import type { ReleaseSourceValues } from '@/core/types/api/file';
 import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
-const parseReleaseSource = (releaseSource: ReleaseSource) => {
+const parseReleaseSource = (releaseSource: ReleaseSourceValues) => {
   switch (releaseSource) {
-    case ReleaseSource.BluRay:
+    case 'BluRay':
       return 'Blu-Ray';
     default:
       return releaseSource;

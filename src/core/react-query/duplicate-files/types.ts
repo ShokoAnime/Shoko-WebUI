@@ -1,10 +1,10 @@
 import type { PaginationType } from '@/core/types/api';
-import type { DataSourceType } from '@/core/types/api/common';
+import type { DataSourceTypeValues } from '@/core/types/api/common';
 
 export type DuplicateFilesSeriesRequestType = {
   collecting?: boolean;
   ignoreVariations?: boolean;
-  includeDataFrom?: DataSourceType[];
+  includeDataFrom?: DataSourceTypeValues[];
   onlyFinishedSeries?: boolean;
 } & PaginationType;
 
@@ -12,7 +12,7 @@ export type DuplicateFilesEpisodesRequestType = {
   collecting?: boolean;
   ignoreVariations?: boolean;
   includeAbsolutePaths?: boolean;
-  includeDataFrom?: DataSourceType[];
+  includeDataFrom?: DataSourceTypeValues[];
   includeFiles?: boolean;
   includeMediaInfo?: boolean;
 } & PaginationType;

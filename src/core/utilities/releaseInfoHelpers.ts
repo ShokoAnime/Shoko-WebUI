@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 
-import { ReleaseSource } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
@@ -24,7 +23,7 @@ const generateLinkId = () => {
 
 export const mergeReleaseInfo = (incoming: ReleaseInfoType, original: ReleaseInfoType): ReleaseInfoType =>
   produce(incoming, (draft) => {
-    if (draft.Source === ReleaseSource.Unknown && original.Source !== ReleaseSource.Unknown) {
+    if (draft.Source === 'Unknown' && original.Source !== 'Unknown') {
       draft.Source = original.Source;
     }
 
@@ -63,7 +62,7 @@ const createLinksFromFiles = (files: FileType[], providers: ManualLinkProviderTy
       OriginalFilename: file.Locations?.[0]?.RelativePath.split(/[/\\]/g).pop(),
       ProviderName: 'User',
       Version: 1,
-      Source: ReleaseSource.Unknown,
+      Source: 'Unknown',
       CrossReferences: [],
       FileSize: file.Size,
       Hashes: file.Hashes,

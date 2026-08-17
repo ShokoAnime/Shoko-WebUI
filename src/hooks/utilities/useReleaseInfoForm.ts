@@ -1,7 +1,6 @@
 import { useEffect, useEffectEvent, useState } from 'react';
 import { useImmer } from 'use-immer';
 
-import { ReleaseSource } from '@/core/types/api/file';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 
@@ -23,7 +22,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
   const [formState, setFormState] = useImmer<FormState>({
     version: 1,
-    source: ReleaseSource.Unknown,
+    source: 'Unknown',
     comment: '',
   });
   const [touchedFields, setTouchedFields] = useImmer<Set<TouchableField>>(new Set());

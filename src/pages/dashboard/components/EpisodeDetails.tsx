@@ -1,10 +1,10 @@
 import DashboardEpisode from '@/components/Dashboard/DashboardEpisode';
 import SeriesPoster from '@/components/SeriesPoster';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
 
 import type { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 
 type Props = {
   episode: DashboardEpisodeDetailsType;
@@ -21,19 +21,19 @@ const CalendarConfig = {
   sameElse: 'dddd',
 };
 
-const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string => {
+const anidbEpisodePrefixes = (type: EpisodeTypeValues, epNumber: number): string => {
   const fullPrefixes = (prefix: string) => `${prefix}${epNumber}`;
   // Prefixes for episode types base on https://wiki.anidb.net/Content:Episodes#Type
   switch (type) {
-    case EpisodeTypeEnum.Credits:
+    case 'Credits':
       return fullPrefixes('C');
-    case EpisodeTypeEnum.Special:
+    case 'Special':
       return fullPrefixes('S');
-    case EpisodeTypeEnum.Trailer:
+    case 'Trailer':
       return fullPrefixes('T');
-    case EpisodeTypeEnum.Other:
+    case 'Other':
       return fullPrefixes('O');
-    case EpisodeTypeEnum.Parody:
+    case 'Parody':
       return fullPrefixes('P');
     default:
       return fullPrefixes('');

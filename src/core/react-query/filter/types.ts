@@ -1,5 +1,5 @@
 import type { PaginationType } from '@/core/types/api';
-import type { DataSourceType } from '@/core/types/api/common';
+import type { DataSourceTypeValues } from '@/core/types/api/common';
 import type { CreateOrUpdateFilterType } from '@/core/types/api/filter';
 
 export type FilteredGroupsRequestType = {
@@ -11,7 +11,7 @@ export type FilteredGroupsRequestType = {
 export type FilteredGroupSeriesRequestType = {
   randomImages?: boolean;
   filterCriteria: CreateOrUpdateFilterType;
-  includeDataFrom?: DataSourceType[];
+  includeDataFrom?: DataSourceTypeValues[];
   recursive?: boolean;
   includeMissing?: boolean;
 };

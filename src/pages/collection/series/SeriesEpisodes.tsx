@@ -13,17 +13,17 @@ import EpisodeWatchModal from '@/components/Collection/Episode/EpisodeWatchModal
 import Button from '@/components/Input/Button';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { IncludeOnlyFilterType } from '@/core/react-query/types';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 
 const pageSize = 26;
 
 type FilterOptionsType = {
-  type: EpisodeTypeEnum[];
+  type: EpisodeTypeValues[];
   includeMissing: IncludeOnlyFilterType;
   includeWatched: IncludeOnlyFilterType;
   includeHidden: IncludeOnlyFilterType;
@@ -43,7 +43,7 @@ const SeriesEpisodes = () => {
   const [debouncedSearch] = useDebounceValue(search, 200);
 
   const filterOptions = useMemo(() => ({
-    type: [searchParams.get('type') ?? EpisodeTypeEnum.Episode],
+    type: [searchParams.get('type') ?? 'Episode'],
     includeMissing: searchParams.get('includeMissing') ?? 'false',
     includeWatched: searchParams.get('includeWatched') ?? 'true',
     includeHidden: searchParams.get('includeHidden') ?? 'false',

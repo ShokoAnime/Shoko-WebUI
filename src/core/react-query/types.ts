@@ -1,9 +1,9 @@
 import type { PaginationType } from '@/core/types/api';
-import type { FileSortCriteriaEnum } from '@/core/types/api/file';
+import type { FileSortOrderValue } from '@/core/types/api/file';
 
 export type IncludeOnlyFilterType = 'true' | 'false' | 'only';
 
-type FileIncludeType =
+type FileIncludeValues =
   | 'Ignored'
   | 'MediaInfo'
   | 'ReleaseInfo'
@@ -11,13 +11,13 @@ type FileIncludeType =
   | 'AbsolutePaths'
   | 'ImportLimbo'
   | 'LocationUIDs';
-type FileExcludeType =
+type FileExcludeValues =
   | 'Watched'
   | 'Duplicates'
   | 'Unrecognized'
   | 'ManualLinks'
   | 'Variations';
-type FileIncludeOnlyType =
+type FileIncludeOnlyValues =
   | 'Watched'
   | 'Variations'
   | 'Duplicates'
@@ -27,10 +27,10 @@ type FileIncludeOnlyType =
   | 'ImportLimbo';
 
 export type FileRequestType = {
-  include?: FileIncludeType[];
-  exclude?: FileExcludeType[];
-  include_only?: FileIncludeOnlyType[];
-  sortOrder?: FileSortCriteriaEnum[];
+  include?: FileIncludeValues[];
+  exclude?: FileExcludeValues[];
+  include_only?: FileIncludeOnlyValues[];
+  sortOrder?: FileSortOrderValue[];
 } & PaginationType;
 
 export type DashboardRequestType = {

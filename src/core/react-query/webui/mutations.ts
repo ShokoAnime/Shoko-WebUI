@@ -2,12 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 
-import type { ReleaseChannelType } from '@/core/types/api/init';
+import type { ReleaseChannelValues } from '@/core/types/api/init';
 import type { WebuiTheme } from '@/core/types/api/webui';
 
 export const useUpdateWebuiMutation = () =>
   useMutation({
-    mutationFn: (channel: ReleaseChannelType) => axios.post('WebUI/Update', null, { params: { channel } }),
+    mutationFn: (channel: ReleaseChannelValues) => axios.post('WebUI/Update', null, { params: { channel } }),
   });
 
 export const useWebuiUploadThemeMutation = () =>

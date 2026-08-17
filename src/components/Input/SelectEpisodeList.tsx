@@ -6,15 +6,16 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { find, toInteger } from 'lodash';
 
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import Input from './Input';
 
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
+
 type Option = {
   label: string;
   value: number;
-  type: EpisodeTypeEnum;
+  type: EpisodeTypeValues;
   number?: number;
   AirDate: string;
   disabled?: boolean;
@@ -73,7 +74,7 @@ const SelectButton = (
             </>
           )}
           {selected.label}
-          {selected?.type !== EpisodeTypeEnum.Episode && (
+          {selected?.type !== 'Episode' && (
             <span className="mx-2 rounded-lg border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
               {selected.type}
             </span>

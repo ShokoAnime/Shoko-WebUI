@@ -1,7 +1,7 @@
-import type { EpisodeTypeEnum } from '@/core/types/api/episode';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 
 export type EpisodeCoverageType = {
-  Type: EpisodeTypeEnum;
+  Type: EpisodeTypeValues;
   Number: number;
   GroupShortName?: string;
   /** PlaceIDs of every file covering this episode. Only populated on candidate-level `Episodes`; always empty on a file's own `Episodes`. More than one entry means multiple files legitimately cover this episode. */

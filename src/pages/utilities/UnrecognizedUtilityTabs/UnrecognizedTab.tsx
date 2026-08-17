@@ -44,7 +44,6 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
 import toast from '@/core/toast';
-import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { processError } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -53,7 +52,7 @@ import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { FileType } from '@/core/types/api/file';
+import type { FileSortOrderValue, FileType } from '@/core/types/api/file';
 import type { AxiosError } from 'axios';
 import type { Updater } from 'use-immer';
 
@@ -242,7 +241,7 @@ const UnrecognizedTab = () => {
     setSearch,
     setSortCriteria,
     sortCriteria,
-  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ManagedFolderName);
+  } = useTableSearchSortCriteria('ManagedFolderName');
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
 
   const { mutateAsync: avdumpFiles } = useAvdumpFilesMutation();
@@ -250,11 +249,11 @@ const UnrecognizedTab = () => {
   const managedFolderQuery = useManagedFoldersQuery();
   const managedFolders = managedFolderQuery?.data ?? [];
 
-  let sortOrder: FileSortCriteriaEnum[] | undefined;
+  let sortOrder: FileSortOrderValue[] | undefined;
   if (debouncedSearch && sortCriteria) {
     sortOrder = [sortCriteria];
   } else if (sortCriteria) {
-    sortOrder = [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
+    sortOrder = [sortCriteria, 'FileName', 'RelativePath'];
   }
 
   const filesQuery = useFilesInfiniteQuery(

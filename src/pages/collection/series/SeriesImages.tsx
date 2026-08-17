@@ -26,10 +26,10 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
-import type { ImageEntityType, ImageType } from '@/core/types/api/common';
+import type { ImageEntityValues, ImageType } from '@/core/types/api/common';
 import type { ImageTabType } from '@/core/types/api/image';
 
-const tabToImageTypeMap: Record<ImageTabType, ImageEntityType> = {
+const tabToImageTypeMap: Record<ImageTabType, ImageEntityValues> = {
   Posters: 'Primary',
   Backdrops: 'Backdrop',
   Logos: 'Logo',

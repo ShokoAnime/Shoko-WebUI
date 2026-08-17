@@ -9,7 +9,7 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
-import type { MatchRatingType } from '@/core/types/api/episode';
+import type { MatchRatingValues } from '@/core/types/api/episode';
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 type Props = {
@@ -39,7 +39,7 @@ const TopPanel = (props: Props) => {
   const matchRatingCounts = useMemo(
     () => (flatXrefs ? countBy(flatXrefs, 'Rating') : {}),
     [flatXrefs],
-  ) as Record<MatchRatingType, number>;
+  ) as Record<MatchRatingValues, number>;
 
   return (
     <ShokoPanel

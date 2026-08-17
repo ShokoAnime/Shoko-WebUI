@@ -1,36 +1,36 @@
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 
-export const getEpisodePrefix = (type?: EpisodeTypeEnum) => {
+export const getEpisodePrefix = (type?: EpisodeTypeValues) => {
   switch (type) {
-    case EpisodeTypeEnum.Special:
+    case 'Special':
       return 'S';
-    case EpisodeTypeEnum.Credits:
+    case 'Credits':
       return 'C';
-    case EpisodeTypeEnum.Trailer:
+    case 'Trailer':
       return 'T';
-    case EpisodeTypeEnum.Other:
+    case 'Other':
       return 'O';
-    case EpisodeTypeEnum.Parody:
+    case 'Parody':
       return 'P';
-    case EpisodeTypeEnum.Episode:
+    case 'Episode':
     default:
       return '';
   }
 };
 
-export const getEpisodePrefixAlt = (type?: EpisodeTypeEnum) => {
+export const getEpisodePrefixAlt = (type?: EpisodeTypeValues) => {
   switch (type) {
-    case EpisodeTypeEnum.Special:
+    case 'Special':
       return 'SP';
-    case EpisodeTypeEnum.Credits:
+    case 'Credits':
       return 'C';
-    case EpisodeTypeEnum.Trailer:
+    case 'Trailer':
       return 'T';
-    case EpisodeTypeEnum.Other:
+    case 'Other':
       return 'O';
-    case EpisodeTypeEnum.Parody:
+    case 'Parody':
       return 'P';
-    case EpisodeTypeEnum.Episode:
+    case 'Episode':
     default:
       return 'EP';
   }

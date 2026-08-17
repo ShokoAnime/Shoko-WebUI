@@ -13,10 +13,10 @@ import { useUploadSeriesImageMutation } from '@/core/react-query/series/mutation
 import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { ImageEntityType } from '@/core/types/api/common';
+import type { ImageEntityValues } from '@/core/types/api/common';
 import type { ImageTabType } from '@/core/types/api/image';
 
-const tabLabelMap: Record<ImageTabType, { label: string, serverType: ImageEntityType }> = {
+const tabLabelMap: Record<ImageTabType, { label: string, serverType: ImageEntityValues }> = {
   Posters: { label: 'Poster', serverType: 'Primary' },
   Backdrops: { label: 'Backdrop', serverType: 'Backdrop' },
   Logos: { label: 'Logo', serverType: 'Logo' },
