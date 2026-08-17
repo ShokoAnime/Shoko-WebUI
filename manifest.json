@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.115",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.115/Shoko-WebUI-v2.6.0-dev.115.zip",
+      "checksum": "sha256:ea41abb19d22d42328fb08d4e25496c002992243939999e3a9ffcc04c3786e21",
+      "commit": "444abc450f99623d06d17a6f77fb5f8b8ba57606",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* refactor: convert enums to string unions by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1433\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.114...v2.6.0-dev.115\n"
+    },
+    {
       "version": "2.6.0-dev.114",
       "minServerVersion": "6.0.0-dev.409",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.114/Shoko-WebUI-v2.6.0-dev.114.zip",
