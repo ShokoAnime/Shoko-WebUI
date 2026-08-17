@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.116",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.116/Shoko-WebUI-v2.6.0-dev.116.zip",
+      "checksum": "sha256:eac1b3750dee6223eee38288ffe1a73628bcb30685e036a128c18a211b31b013",
+      "commit": "c9091351ff984c5e01a48feba1981fbca534d06f",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add opencode.json to .gitignore (#1434) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1434\n* Add release group field to Edit Release Info modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1435\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.115...v2.6.0-dev.116\n"
+    },
+    {
       "version": "2.6.0-dev.115",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.115/Shoko-WebUI-v2.6.0-dev.115.zip",
