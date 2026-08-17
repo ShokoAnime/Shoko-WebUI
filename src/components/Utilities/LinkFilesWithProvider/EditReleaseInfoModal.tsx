@@ -268,7 +268,11 @@ const EditReleaseInfoModal = (props: Props) => {
     setIfTouched('IsCreditless', formState.isCreditless);
     setIfTouched('Source', formState.source === '' ? undefined : formState.source);
     setIfTouched('Comment', formState.comment);
-    setIfTouched('Group', formState.group);
+    // Unlike the other fields, an undefined Group must be written through so it
+    // is omitted from the payload and the server clears the stored group.
+    if (touchedFields.has('Group')) {
+      releaseInfo.Group = formState.group;
+    }
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
       crossReference = {
