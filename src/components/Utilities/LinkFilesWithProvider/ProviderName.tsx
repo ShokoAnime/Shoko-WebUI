@@ -1,3 +1,5 @@
+import { isUserEdited } from '@/core/utilities/releaseInfoHelpers';
+
 import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
 type Props = {
@@ -33,7 +35,7 @@ const linkStateAttributes = {
 
 const ProviderName = ({ link }: Props) => {
   const name = link.release.ProviderName;
-  const editedByUser = name.startsWith('User+') || name.endsWith('+User');
+  const editedByUser = isUserEdited(name);
   const providerName = name !== 'User' && link.state !== 'searching'
     ? name
       .replace(/^User\+/, '')

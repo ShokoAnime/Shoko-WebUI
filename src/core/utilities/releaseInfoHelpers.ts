@@ -12,6 +12,8 @@ import type {
 export const EDITABLE_STATES = new Set<LinkStateType>(['ready', 'init']);
 export const AUTO_MATCH_EPISODE_ID = -1;
 
+export const isUserEdited = (providerName: string) => providerName.split('+').includes('User');
+
 let lastLinkId = 0;
 const generateLinkId = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
@@ -36,7 +38,7 @@ export const mergeReleaseInfo = (incoming: ReleaseInfoType, original: ReleaseInf
     draft.IsCreditless ??= original.IsCreditless;
     draft.Group ??= original.Group;
 
-    if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
+    if (!isUserEdited(draft.ProviderName)) {
       draft.ProviderName += '+User';
     }
   });
