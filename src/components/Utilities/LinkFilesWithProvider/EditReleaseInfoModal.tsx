@@ -11,7 +11,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
-import SelectReleaseGroup from '@/components/Input/SelectReleaseGroup';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
@@ -22,6 +21,8 @@ import toast from '@/core/toast';
 import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
+
+import SelectReleaseGroup from './SelectReleaseGroup';
 
 import type { ReleaseGroupType, ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';

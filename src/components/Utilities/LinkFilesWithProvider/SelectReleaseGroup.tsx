@@ -8,7 +8,7 @@ import type { ReleaseGroupType } from '@/core/types/api/file';
 type Props = {
   options: ReleaseGroupType[];
   value?: ReleaseGroupType;
-  onChange: (group: ReleaseGroupType | undefined) => void;
+  onChange: (group?: ReleaseGroupType) => void;
   disabled?: boolean;
   hasDifferent?: boolean;
 };
