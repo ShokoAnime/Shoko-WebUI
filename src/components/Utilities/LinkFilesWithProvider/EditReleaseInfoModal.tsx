@@ -11,9 +11,11 @@ import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
+import SelectReleaseGroup from '@/components/Input/SelectReleaseGroup';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
+import { useReleaseInfoReleaseGroupsQuery } from '@/core/react-query/release-info/queries';
 import { useGetSeriesAniDBMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
@@ -21,7 +23,7 @@ import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
-import type { ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
+import type { ReleaseGroupType, ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 import type {
   CrossReferenceType,
@@ -99,6 +101,8 @@ const EditReleaseInfoModal = (props: Props) => {
     !!formState.selectedSeriesId && show,
   );
 
+  const releaseGroupOptions = useReleaseInfoReleaseGroupsQuery(show).data ?? [];
+
   const episodeOptions = [
     ...(hasDifferent.episodes
       ? [
@@ -167,6 +171,16 @@ const EditReleaseInfoModal = (props: Props) => {
     });
     setFormState((draft) => {
       draft.selectedEpisodeId = optionValue;
+    });
+  };
+
+  const handleReleaseGroupChange = (group?: ReleaseGroupType) => {
+    markTouched('Group');
+    setHasDifferent((draft) => {
+      draft.group = false;
+    });
+    setFormState((draft) => {
+      draft.group = group;
     });
   };
 
@@ -254,6 +268,7 @@ const EditReleaseInfoModal = (props: Props) => {
     setIfTouched('IsCreditless', formState.isCreditless);
     setIfTouched('Source', formState.source === '' ? undefined : formState.source);
     setIfTouched('Comment', formState.comment);
+    setIfTouched('Group', formState.group);
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
       crossReference = {
@@ -295,7 +310,7 @@ const EditReleaseInfoModal = (props: Props) => {
         </div>
       }
       noPadding
-      className="h-156"
+      className="h-172"
     >
       <div className="flex grow flex-col gap-y-4 p-6">
         {!formState.selectedSeriesId && !hasDifferent.series && (
@@ -310,7 +325,7 @@ const EditReleaseInfoModal = (props: Props) => {
         {hasSeriesSelection && (
           <>
             <div className="flex flex-col gap-y-2">
-              <span className="text-base font-semibold">Series</span>
+              <span className="font-semibold">Series</span>
               <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-input px-4 py-3">
                 <span className="truncate">{seriesName}</span>
                 <Button onClick={handleEditSeries}>
@@ -326,7 +341,7 @@ const EditReleaseInfoModal = (props: Props) => {
                 : ''}
             >
               <div className="flex items-center gap-x-2">
-                <span className="text-base font-semibold">Episode</span>
+                <span className="font-semibold">Episode</span>
                 <Button
                   onClick={handleRefreshSeries}
                   tooltip={isRefreshingSeries || hasDifferent.series ? '' : 'Force Refresh'}
@@ -342,6 +357,15 @@ const EditReleaseInfoModal = (props: Props) => {
                 rowIdx={0}
                 standalone
                 disabled={hasDifferent.series}
+              />
+            </div>
+            <div className="flex flex-col gap-y-2">
+              <span className="font-semibold">Release Group</span>
+              <SelectReleaseGroup
+                options={releaseGroupOptions}
+                value={formState.group}
+                onChange={handleReleaseGroupChange}
+                hasDifferent={hasDifferent.group}
               />
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">

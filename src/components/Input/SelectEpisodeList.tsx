@@ -34,7 +34,7 @@ const SelectOption = ({ option }: { option: Option }) => (
   <ListboxOption
     value={option}
     disabled={option.disabled}
-    className="group relative cursor-pointer px-2 py-0.5 text-panel-text transition-colors select-none data-disabled:cursor-not-allowed data-disabled:opacity-60 data-focus:text-panel-text-primary"
+    className="group relative cursor-pointer px-2 py-0.5 text-panel-text transition-colors select-none data-disabled:cursor-auto data-disabled:opacity-60 data-focus:text-panel-text-primary"
   >
     <div className="flex items-center justify-between">
       <div className="flex grow truncate">
