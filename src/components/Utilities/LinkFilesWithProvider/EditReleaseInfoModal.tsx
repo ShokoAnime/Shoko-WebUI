@@ -257,9 +257,10 @@ const EditReleaseInfoModal = (props: Props) => {
     const setIfTouched = <FieldName extends TouchableField>(
       field: FieldName,
       value?: ReleaseInfoType[FieldName],
+      writeUndefined = false,
     ) => {
       if (!touchedFields.has(field)) return;
-      if (value === undefined) return;
+      if (value === undefined && !writeUndefined) return;
       releaseInfo[field] = value;
     };
 
@@ -267,12 +268,10 @@ const EditReleaseInfoModal = (props: Props) => {
     setIfTouched('IsChaptered', formState.isChaptered);
     setIfTouched('IsCreditless', formState.isCreditless);
     setIfTouched('Source', formState.source === '' ? undefined : formState.source);
-    setIfTouched('Comment', formState.comment);
-    // Unlike the other fields, an undefined Group must be written through so it
-    // is omitted from the payload and the server clears the stored group.
-    if (touchedFields.has('Group')) {
-      releaseInfo.Group = formState.group;
-    }
+    // Comment and Group can be cleared: write undefined through so it is
+    // omitted from the payload and the server clears the stored value.
+    setIfTouched('Comment', formState.comment === '' ? undefined : formState.comment, true);
+    setIfTouched('Group', formState.group, true);
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
       crossReference = {
