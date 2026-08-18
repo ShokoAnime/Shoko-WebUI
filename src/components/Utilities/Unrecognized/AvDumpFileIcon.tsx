@@ -3,8 +3,9 @@ import type { MouseEvent } from 'react';
 import {
   mdiDumpTruck,
   mdiFileDocumentAlertOutline,
+  mdiFileDocumentArrowRightOutline,
   mdiFileDocumentCheckOutline,
-  mdiFileDocumentPlusOutline,
+  mdiFileDocumentOutline,
   mdiFileDocumentRefreshOutline,
   mdiLoading,
 } from '@mdi/js';
@@ -50,7 +51,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
 
     if (dumpSession?.status === 'Success') {
       return {
-        path: mdiFileDocumentCheckOutline,
+        path: mdiFileDocumentArrowRightOutline,
         color: 'text-panel-icon-important',
         title: 'Dumped Successfully!',
         state: 'success',
@@ -68,7 +69,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
 
     if (file.AVDump.LastDumpedAt) {
       return {
-        path: mdiFileDocumentCheckOutline,
+        path: mdiFileDocumentArrowRightOutline,
         color: 'text-panel-icon-important',
         title: 'Previously Dumped!',
         state: 'success',
@@ -84,19 +85,26 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
       } as const;
     }
 
-    if (!file.Locations[0].RelativePath?.includes(file.Hashes.find(hash => hash.Type === 'CRC32')?.Value ?? '')) {
-      return {
-        path: mdiFileDocumentAlertOutline,
-        color: 'text-panel-text-warning',
-        title: 'The computed CRC32 does not match or is not present in filename!',
-        state: 'info',
-      } as const;
+    const crc32 = (/\b[0-9A-F]{8}\b/i.exec(file.Locations[0].RelativePath))?.[0].toUpperCase();
+    if (crc32) {
+      return crc32 === file.Hashes.find(hash => hash.Type === 'CRC32')?.Value
+        ? {
+          path: mdiFileDocumentCheckOutline,
+          color: 'text-panel-text-primary',
+          title: 'Computed CRC32 matches filename!',
+          state: 'info',
+        } as const
+        : {
+          path: mdiFileDocumentAlertOutline,
+          color: 'text-panel-text-warning',
+          title: 'Computed CRC32 does not match filename!',
+          state: 'info',
+        } as const;
     }
 
     return {
-      path: mdiFileDocumentPlusOutline,
-      color: 'text-panel-text-primary',
-      title: 'File CRC32 is present in filename and matches',
+      path: mdiFileDocumentOutline,
+      color: 'text-panel-text',
       state: 'info',
     } as const;
   }, [file, dumpSession, truck]);
