@@ -29,6 +29,7 @@ import createLinksFromFiles, {
 } from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
@@ -213,7 +214,7 @@ const LinkFilesWithProviders = () => {
       for (const link of selectedRows) {
         Object.assign(draft[link.id].release, releaseInfo);
 
-        let matchFailed = false;
+        let matchFailed = true;
         if (crossReference) {
           const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
           let episodeId = selectedEpisodeId;
@@ -236,9 +237,9 @@ const LinkFilesWithProviders = () => {
               PercentageStart: 0,
               PercentageEnd: 100,
             }];
+            matchFailed = false;
           } else {
             failedAutoMatchCount += 1;
-            matchFailed = true;
           }
         }
 
@@ -260,6 +261,7 @@ const LinkFilesWithProviders = () => {
     }
   };
 
+  useToggleModalKeybinds(!confirmCancel, 'primary');
   useHotkeys('s', openAutoSearch, { scopes: 'primary' });
   useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
   useHotkeys('d', removeLinks, { scopes: 'primary' });

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
+import { mdiInformationOutline, mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -22,6 +23,7 @@ import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
+import SelectedFilesModal from './SelectedFilesModal';
 import SelectReleaseGroup from './SelectReleaseGroup';
 
 import type { ReleaseGroupType, ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
@@ -63,16 +65,47 @@ const sourceOptions = [
   )),
 ];
 
-const Title = ({ count }: { count: number }) => (
-  <div className="flex items-center justify-between gap-x-1 font-semibold">
-    Edit Release Info
-    <div className="flex">
-      <div className="text-panel-text-important">{count}</div>
-      &nbsp;
-      {count === 1 ? 'File' : 'Files'}
-    </div>
-  </div>
-);
+const Title = ({ selectedLinks }: { selectedLinks: ManualLinkType[] }) => {
+  const [showFilesModal, toggleShowFilesModal, setShowFilesModal] = useToggle(false);
+  const count = selectedLinks.length;
+
+  useToggleModalKeybinds(!showFilesModal, 'modal');
+
+  const singleFileName = count === 1
+    ? selectedLinks[0].file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? ''
+    : '';
+
+  const handleShowFiles = () => {
+    if (count > 1) toggleShowFilesModal();
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-x-1 font-semibold">
+        Edit Release Info
+        <div className="flex items-center gap-x-1">
+          <div>
+            <span className="text-panel-text-important">{count}</span>
+            &nbsp;
+            {count === 1 ? 'File' : 'Files'}
+          </div>
+          <Button
+            onClick={handleShowFiles}
+            tooltip={count === 1 ? singleFileName : 'Show files'}
+            className="text-panel-icon-action"
+          >
+            <Icon path={mdiInformationOutline} size={1} />
+          </Button>
+        </div>
+      </div>
+      <SelectedFilesModal
+        show={showFilesModal}
+        onClose={() => setShowFilesModal(false)}
+        files={selectedLinks.map(link => link.file)}
+      />
+    </>
+  );
+};
 
 const EditReleaseInfoModal = (props: Props) => {
   const { onClose, onSave, selectedLinks, show } = props;
@@ -295,7 +328,7 @@ const EditReleaseInfoModal = (props: Props) => {
       show={show}
       size="md"
       onRequestClose={onClose}
-      header={<Title count={selectedLinks.length} />}
+      header={<Title selectedLinks={selectedLinks} />}
       footer={
         <div className="flex justify-end gap-x-3">
           <Button onClick={onClose} buttonType="secondary" buttonSize="normal">
