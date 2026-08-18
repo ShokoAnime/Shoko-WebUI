@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.117",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.117/Shoko-WebUI-v2.6.0-dev.117.zip",
+      "checksum": "sha256:d2ef5f86dd739df1c1f89abb33d033321f4a3013fb581c3f53bee411aa01fc78",
+      "commit": "933b66679af0f8ae4b559529dbf404ecc2b7a33e",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Add selected files modal to Edit Release Info; fix cross-reference matching and hotkeys by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1437\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.116...v2.6.0-dev.117\n"
+    },
+    {
       "version": "2.6.0-dev.116",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.116/Shoko-WebUI-v2.6.0-dev.116.zip",
