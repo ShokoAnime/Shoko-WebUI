@@ -213,7 +213,7 @@ const LinkFilesWithProviders = () => {
       for (const link of selectedRows) {
         Object.assign(draft[link.id].release, releaseInfo);
 
-        let matchFailed = false;
+        let matchFailed = true;
         if (crossReference) {
           const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
           let episodeId = selectedEpisodeId;
@@ -236,9 +236,9 @@ const LinkFilesWithProviders = () => {
               PercentageStart: 0,
               PercentageEnd: 100,
             }];
+            matchFailed = false;
           } else {
             failedAutoMatchCount += 1;
-            matchFailed = true;
           }
         }
 
