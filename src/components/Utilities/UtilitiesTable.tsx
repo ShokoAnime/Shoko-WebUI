@@ -4,7 +4,7 @@ import { mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, toNumber } from 'lodash';
+import { debounce } from 'lodash';
 
 import { criteriaMap } from '@/components/Utilities/constants';
 import { useSelector } from '@/core/store';
@@ -12,7 +12,7 @@ import { handleShiftSelect } from '@/core/util';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
+import type { FileSortOrderValue, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
 import type { VirtualItem } from '@tanstack/react-virtual';
 import type { Updater } from 'use-immer';
@@ -23,9 +23,9 @@ type Props = {
   fetchNextPage?: () => Promise<unknown>;
   isFetchingNextPage?: boolean;
   rows: EpisodeType[] | FileType[] | SeriesType[];
-  setSortCriteria?: Dispatch<SetStateAction<FileSortCriteriaEnum>>;
+  setSortCriteria?: Dispatch<SetStateAction<FileSortOrderValue>>;
   skipSort?: boolean;
-  sortCriteria?: FileSortCriteriaEnum;
+  sortCriteria?: FileSortOrderValue;
   handleRowSelect?: (id: number, select: boolean) => void;
   rowSelection?: Record<number, boolean>;
   setRowSelection?: Updater<Record<number, boolean>>;
@@ -90,9 +90,9 @@ const HeaderItem = (
     className: string;
     id: string;
     name: string;
-    setSortCriteria?: Dispatch<SetStateAction<FileSortCriteriaEnum>>;
+    setSortCriteria?: Dispatch<SetStateAction<FileSortOrderValue>>;
     skipSort?: boolean;
-    sortCriteria?: FileSortCriteriaEnum;
+    sortCriteria?: FileSortOrderValue;
   },
 ) => {
   const {
@@ -117,20 +117,20 @@ const HeaderItem = (
     const criteria = criteriaMap[headerId];
     if (!criteria || !setSortCriteria) return;
 
-    setSortCriteria(prevCriteria => ((prevCriteria === criteria) ? -criteria : criteria));
+    setSortCriteria(prevCriteria => (prevCriteria === criteria ? `-${criteria}` : criteria));
   };
 
   const sortIndicator = (headerId: string) => {
     if (skipSort || !isCriteriaMapKey(headerId)) return null;
     const criteria = criteriaMap[headerId];
-    if (!criteria || !sortCriteria || Math.abs(sortCriteria) !== toNumber(criteria)) return null;
+    if (!criteria || !sortCriteria || (sortCriteria !== criteria && sortCriteria !== `-${criteria}`)) return null;
 
     return (
       <Icon
         path={mdiMenuUp}
         size={1}
         className="ml-2 inline text-panel-text-primary transition-transform"
-        rotate={toNumber(sortCriteria) === (criteria * -1) ? 180 : 0}
+        rotate={sortCriteria === `-${criteria}` ? 180 : 0}
       />
     );
   };

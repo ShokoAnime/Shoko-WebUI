@@ -3,12 +3,12 @@ import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import type { EpisodeTypeEnum } from '@/core/types/api/episode';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { WebuiSeriesFileSummaryOverview, WebuiSeriesFileSummarySourceCount } from '@/core/types/api/webui';
 
 type FileTypeSummaryProps = {
   sources: WebuiSeriesFileSummarySourceCount[];
-  type: EpisodeTypeEnum;
+  type: EpisodeTypeValues;
 };
 const FileTypeSummary = ({ sources, type }: FileTypeSummaryProps) => {
   const typeCount = sources.reduce((prev, curr) => (prev + curr.Count), 0);

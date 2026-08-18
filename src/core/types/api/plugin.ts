@@ -1,4 +1,4 @@
-import type { ReleaseChannelType } from '@/core/types/api/init';
+import type { ReleaseChannelValues } from '@/core/types/api/init';
 
 export type PackageThumbnailInfoType = {
   MimeType: string;
@@ -15,7 +15,7 @@ export type PluginInfoType = {
   AbstractionVersion: string;
   SourceRevision?: string;
   ReleaseTag?: string;
-  Channel: ReleaseChannelType;
+  Channel: ReleaseChannelValues;
   ReleasedAt: string;
   Authors?: string;
   RepositoryUrl?: string;

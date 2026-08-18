@@ -25,7 +25,7 @@ src/hooks/utilities/
   useReleaseInfoForm.ts          Form state + touched-field tracking for the Edit Release Info modal
 
 src/core/utilities/
-  releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo; shared constants EDITABLE_STATES, AUTO_MATCH_EPISODE_ID
+  releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo, isUserEdited; shared constants EDITABLE_STATES, AUTO_MATCH_EPISODE_ID
   auto-match-logic.ts            detectShow, findMostCommonShowName
 
 src/core/types/utilities/
@@ -40,7 +40,9 @@ src/components/Utilities/Unrecognized/
     Menu.tsx                     Action bar (Search, Edit, Submit, etc.)
     TitleOptions.tsx             Header counts (submitted/pending/total/selected)
     AutoSearchReleaseModal.tsx   Provider picker modal
+    SelectReleaseGroup.tsx       Searchable release-group combobox
     EditReleaseInfoModal.tsx     Edit release metadata for selected links
+    SelectedFilesModal.tsx       Nested "Selected Files" list modal (opened from Edit Release Info header)
 ```
 
 ## Key Types
@@ -70,7 +72,7 @@ type CrossReferenceType = {
   episodes: AniDBEpisodeType[];
 };
 
-type TouchableField = 'Comment' | 'CrossReferences' | 'IsChaptered' | 'IsCreditless' | 'Source' | 'Version';
+type TouchableField = 'Comment' | 'CrossReferences' | 'Group' | 'IsChaptered' | 'IsCreditless' | 'Source' | 'Version';
 ```
 
 ## State Groups
@@ -167,7 +169,11 @@ Converts `FileType[]` into `Record<number, ManualLinkType>`:
 
 ### `mergeReleaseInfo(incoming, original)`
 
-Merges AutoPreview result into the user's seed release. Preserves user-set fields via nullish coalescing (`FileSize`, `OriginalFilename`, `IsChaptered`, `IsCensored`, `IsCreditless`, `Group`), restores `Source` from the original only when the incoming `Source` is `Unknown`, enforces `Version >= 1`, and appends `+User` to `ProviderName` unless it is already `'User'` or already contains `+User`.
+Merges AutoPreview result into the user's seed release. Preserves user-set fields via nullish coalescing (`FileSize`, `OriginalFilename`, `IsChaptered`, `IsCensored`, `IsCreditless`, `Group`), restores `Source` from the original only when the incoming `Source` is `Unknown`, enforces `Version >= 1`, and appends `+User` to `ProviderName` unless `isUserEdited` reports it as already user-edited.
+
+### `isUserEdited(providerName)`
+
+Returns whether `User` is one of the providers in the `+`-joined `ProviderName` chain (e.g. `AniDB+User`, `User+AniDB`, `AniDB+User+TestProvider`). Shared by `mergeReleaseInfo`, `handleSaveReleaseInfo`, and `ProviderName` to detect user edits consistently.
 
 ## API Endpoints
 
@@ -185,13 +191,15 @@ Opened from the Menu's "Edit Release Info" action (`E`) for the selected links. 
 1. **Series search** — a shared `AnimeSelectPanel` (debounced AniDB search) when no series is selected.
 2. **Review form** — once a series is chosen (or when bulk-selecting mixed series), shows series + episode selection and the release fields.
 
-Editable fields: `Version`, `Source`, `IsChaptered`, `IsCreditless`, and `Comment`. Episode selection includes an "Auto-match (from filename)" option (`AUTO_MATCH_EPISODE_ID = -1`). When selected files have differing episode links, the selector shows a disabled "Multiple episodes selected" entry and those per-file links are preserved unless an episode (or auto-match) is explicitly chosen. Save stays disabled until a field is touched.
+The header shows the selected file count alongside an info button (`mdiInformationOutline`). For a single file the button's tooltip is the filename; for multiple files it opens a nested `SelectedFilesModal` (tooltip "Show files"). The modal lists each file's managed-folder name, parent directory (or `Root Level`), and filename, with the full `RelativePath` in a hover tooltip.
 
-State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), appends the `+User` marker to `ProviderName`, and sets the link state to `ready`. Links whose auto-match fails keep their previous state (no `ready` transition) and are reported in an error toast with the file count.
+Editable fields: `Version`, `Source`, `IsChaptered`, `IsCreditless`, `Comment`, and `Release Group`. The release group is a searchable `SelectReleaseGroup` combobox that filters known groups by name/shortname and only shows options while typing; typing an unknown name offers a `Create "…"` option that sets the group's `Name`, `ShortName`, and `ID` to the typed value with `Source: User`. Episode selection includes an "Auto-match (from filename)" option (`AUTO_MATCH_EPISODE_ID = -1`). When selected files have differing episode links, the selector shows a disabled "Multiple episodes selected" entry and those per-file links are preserved unless an episode (or auto-match) is explicitly chosen; the release group field shows "Multiple groups selected" for mixed groups. Save stays disabled until a field is touched.
+
+State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). Clearing the release group or comment and leaving the field removes the stored value on save — `setIfTouched` uses a `writeUndefined` option so an empty value is omitted from the payload and cleared server-side. On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), and appends the `+User` marker to `ProviderName` (unless `isUserEdited`). A link's state is set to `ready` only when a cross-reference is actually resolved (a concrete `episodeId` is written); when no `crossReference` was provided, or auto-match fails to find an episode, the link keeps its previous state (no `ready` transition). Failed auto-matches — where a `crossReference` was present but resolution failed — are reported in an error toast with the file count.
 
 ## Supporting Components
 
 - **`LinkCard`** — Per-link card. Border color reflects state (`submitted` → important, `searching`/`submitting` → primary, `ready` → warning). Click-to-select disabled for busy states (`searching`/`submitting`/`fetching`).
-- **`ProviderName`** — Status text per state (`"Retrieving existing release info..."` for `fetching`, etc.). Appends "(Edited by User)" when `ProviderName` starts with `User+` or ends with `+User`.
-- **`Menu`** — Action bar. "Search for Release Info" and "Edit Release Info" enable when all selected links are in `EDITABLE_STATES` (`ready`/`init`); "Remove Selected" and "Submit Selected" render conditionally. The "Edit Release Info" button (`E`) opens the Edit Release Info modal. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `E` edit, `Q` submit, `Esc` cancel, `Enter` submit.
+- **`ProviderName`** — Status text per state (`"Retrieving existing release info..."` for `fetching`, etc.). Appends "(Edited by User)" when `User` is part of the `+`-joined `ProviderName` chain (via `isUserEdited`).
+- **`Menu`** — Action bar. "Search for Release Info" and "Edit Release Info" enable when all selected links are in `EDITABLE_STATES` (`ready`/`init`); "Remove Selected" and "Submit Selected" render conditionally. Hotkeys are registered on the page: `S` search, `A` select-all, `D` remove, `E` edit, `Q` submit, `Esc` cancel, `Enter` submit. A `useToggleModalKeybinds(!confirmCancel, 'primary')` call re-enables this `primary` scope when the abort-linking confirmation modal closes, so page shortcuts work again.
 - **`TitleOptions`** — Header showing `{submitted} / {submitted + pending} Submitted | {total} Files | {selected} Selected`. Only `ready` and `submitting` count as pending; `init`, `searching`, and `fetching` do not.

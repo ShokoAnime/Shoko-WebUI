@@ -1,5 +1,3 @@
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
-
 import type { PathDetails, PathMatchRule } from './auto-match-logic';
 
 const PathMatchRuleSet: PathMatchRule[] = [];
@@ -146,7 +144,7 @@ try {
         const { episode: episodeText = '0' } = trailerCheckResult.groups!;
         const episode = parseInt(episodeText, 10);
 
-        modifiedDetails.episodeType = EpisodeTypeEnum.Trailer;
+        modifiedDetails.episodeType = 'Trailer';
         if (episode > 0) {
           modifiedDetails.episodeStart = episode;
           modifiedDetails.episodeEnd = episode;
@@ -157,7 +155,7 @@ try {
         const { episode: episodeText = '0' } = extraCheckResult.groups!;
         const episode = parseInt(episodeText, 10);
 
-        modifiedDetails.episodeType = EpisodeTypeEnum.Special;
+        modifiedDetails.episodeType = 'Special';
         if (episode > 0) {
           modifiedDetails.episodeStart = episode;
           modifiedDetails.episodeEnd = episode;

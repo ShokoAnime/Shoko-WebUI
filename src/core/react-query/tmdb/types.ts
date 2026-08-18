@@ -60,7 +60,7 @@ export type TmdbShowOrderingInformationType = {
    * The alternate ordering type. Will not be set if the main ordering is
    * used.
    */
-  OrderingType?: AlternateOrderingTypeEnum;
+  OrderingType?: AlternateOrderingTypeValues;
 
   /**
    * English name of the ordering scheme.
@@ -98,13 +98,12 @@ export type TmdbShowOrderingInformationType = {
   InUse: boolean;
 };
 
-export const enum AlternateOrderingTypeEnum {
-  Unknown = 'Unknown',
-  OriginalAirDate = 'OriginalAirDate',
-  Absolute = 'Absolute',
-  DVD = 'DVD',
-  Digital = 'Digital',
-  StoryArc = 'StoryArc',
-  Production = 'Production',
-  TV = 'TV',
-}
+export type AlternateOrderingTypeValues =
+  | 'Unknown'
+  | 'OriginalAirDate'
+  | 'Absolute'
+  | 'DVD'
+  | 'Digital'
+  | 'StoryArc'
+  | 'Production'
+  | 'TV';

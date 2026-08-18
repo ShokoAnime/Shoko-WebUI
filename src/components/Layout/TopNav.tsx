@@ -45,7 +45,6 @@ import { useCheckNetworkConnectivityMutation } from '@/core/react-query/settings
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useServerUpdateCheckQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { NetworkAvailabilityEnum } from '@/core/signalr/types';
 import { useDispatch, useSelector } from '@/core/store';
 import { getUiVersion, isDebug } from '@/core/util';
 
@@ -102,8 +101,8 @@ const TopNav = () => {
   const [showServerUpdateModal, setShowServerUpdateModal] = useState(false);
   const [showWebuiUpdateModal, setShowWebuiUpdateModal] = useState(false);
 
-  const isOffline = !(networkStatus === NetworkAvailabilityEnum.Internet
-    || networkStatus === NetworkAvailabilityEnum.PartialInternet);
+  const isOffline = !(networkStatus === 'Internet'
+    || networkStatus === 'PartialInternet');
 
   const closeModalsAndSubmenus = (event?: MouseEvent<HTMLAnchorElement>, id?: string) => {
     if (layoutEditMode && event) {

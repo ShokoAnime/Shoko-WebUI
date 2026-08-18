@@ -20,12 +20,16 @@ import Menu from '@/components/Utilities/LinkFilesWithProvider/Menu';
 import TitleOptions from '@/components/Utilities/LinkFilesWithProvider/TitleOptions';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { handleShiftSelect } from '@/core/util';
 import { detectShow } from '@/core/utilities/auto-match-logic';
-import createLinksFromFiles, { AUTO_MATCH_EPISODE_ID, EDITABLE_STATES } from '@/core/utilities/releaseInfoHelpers';
+import createLinksFromFiles, {
+  AUTO_MATCH_EPISODE_ID,
+  EDITABLE_STATES,
+  isUserEdited,
+} from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
@@ -210,14 +214,14 @@ const LinkFilesWithProviders = () => {
       for (const link of selectedRows) {
         Object.assign(draft[link.id].release, releaseInfo);
 
-        let matchFailed = false;
+        let matchFailed = true;
         if (crossReference) {
           const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
           let episodeId = selectedEpisodeId;
           if (episodeId === AUTO_MATCH_EPISODE_ID) {
             const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
             if (details) {
-              const episodeNumber = details.episodeType === EpisodeTypeEnum.Special && details.episodeStart === 0
+              const episodeNumber = details.episodeType === 'Special' && details.episodeStart === 0
                 ? specials += 1
                 : details.episodeStart;
               episodeId = find(
@@ -233,13 +237,13 @@ const LinkFilesWithProviders = () => {
               PercentageStart: 0,
               PercentageEnd: 100,
             }];
+            matchFailed = false;
           } else {
             failedAutoMatchCount += 1;
-            matchFailed = true;
           }
         }
 
-        if (!draft[link.id].release.ProviderName.includes('+User')) {
+        if (!isUserEdited(draft[link.id].release.ProviderName)) {
           draft[link.id].release.ProviderName += '+User';
         }
         if (!matchFailed) {
@@ -257,6 +261,7 @@ const LinkFilesWithProviders = () => {
     }
   };
 
+  useToggleModalKeybinds(!confirmCancel, 'primary');
   useHotkeys('s', openAutoSearch, { scopes: 'primary' });
   useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
   useHotkeys('d', removeLinks, { scopes: 'primary' });

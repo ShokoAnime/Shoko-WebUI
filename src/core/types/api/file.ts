@@ -46,7 +46,7 @@ export type ReleaseInfoType = {
   IsCreditless?: boolean;
   IsChaptered?: boolean;
   IsCorrupted: boolean;
-  Source: ReleaseSource;
+  Source: ReleaseSourceValues;
   Group?: ReleaseGroupType;
   Hashes?: FileHashDigestType[];
   MediaInfo?: ReleaseMediaInfoType;
@@ -57,19 +57,18 @@ export type ReleaseInfoType = {
   Created: string;
 };
 
-export const enum ReleaseSource {
-  Unknown = 'Unknown',
-  Other = 'Other',
-  TV = 'TV',
-  DVD = 'DVD',
-  BluRay = 'BluRay',
-  Web = 'Web',
-  VHS = 'VHS',
-  VCD = 'VCD',
-  LaserDisc = 'LaserDisc',
-  Camera = 'Camera',
-  Film = 'Film',
-}
+export type ReleaseSourceValues =
+  | 'Unknown'
+  | 'Other'
+  | 'TV'
+  | 'DVD'
+  | 'BluRay'
+  | 'Web'
+  | 'VHS'
+  | 'VCD'
+  | 'LaserDisc'
+  | 'Camera'
+  | 'Film';
 
 export type ReleaseGroupType = {
   ID: string;
@@ -110,19 +109,6 @@ export type FileAVDumpType = {
   LastDumpedAt: string | null;
   LastVersion: string | null;
 };
-
-export const enum FileSourceEnum {
-  Unknown = 'Unknown',
-  Other = 'Other',
-  TV = 'TV',
-  DVD = 'DVD',
-  BluRay = 'BluRay',
-  Web = 'Web',
-  VHS = 'VHS',
-  VCD = 'VCD',
-  LaserDisc = 'LaserDisc',
-  Camera = 'Camera',
-}
 
 export type FileMediaInfoType = {
   Title: string;
@@ -227,22 +213,28 @@ export type FileMediaInfoChapterType = {
   Timestamp: string;
 };
 
-export enum FileSortCriteriaEnum {
-  None = 0,
-  ManagedFolderName = 1,
-  ManagedFolderID = 2,
-  AbsolutePath = 3,
-  RelativePath = 4,
-  FileSize = 5,
-  DuplicateCount = 6,
-  CreatedAt = 7,
-  ImportedAt = 8,
-  ViewedAt = 9,
-  WatchedAt = 10,
-  ED2K = 11,
-  MD5 = 12,
-  SHA1 = 13,
-  CRC32 = 14,
-  FileName = 15,
-  FileID = 16,
-}
+type FileSortCriteriaValues =
+  | 'None'
+  | 'ManagedFolderName'
+  | 'ManagedFolderID'
+  | 'AbsolutePath'
+  | 'RelativePath'
+  | 'FileSize'
+  | 'DuplicateCount'
+  | 'CreatedAt'
+  | 'ImportedAt'
+  | 'ViewedAt'
+  | 'WatchedAt'
+  | 'ED2K'
+  | 'MD5'
+  | 'SHA1'
+  | 'CRC32'
+  | 'FileName'
+  | 'FileID'
+  | 'ReleaseProviderName'
+  | 'ReleaseProviderID'
+  | 'ReleaseGroupName'
+  | 'ReleaseGroupShortName'
+  | 'ReleaseGroupID';
+
+export type FileSortOrderValue = FileSortCriteriaValues | `-${FileSortCriteriaValues}`;

@@ -1,11 +1,10 @@
 import { useEffect, useEffectEvent, useState } from 'react';
 import { useImmer } from 'use-immer';
 
-import { ReleaseSource } from '@/core/types/api/file';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 
-import type { ReleaseInfoType } from '@/core/types/api/file';
+import type { ReleaseGroupType, ReleaseInfoType } from '@/core/types/api/file';
 import type { ManualLinkType, TouchableField } from '@/core/types/utilities/link-files-with-providers';
 
 type FormState = {
@@ -16,6 +15,7 @@ type FormState = {
   isCreditless?: ReleaseInfoType['IsCreditless'];
   source: ReleaseInfoType['Source'] | '';
   comment: ReleaseInfoType['Comment'];
+  group?: ReleaseGroupType;
 };
 
 const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
@@ -23,7 +23,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
   const [formState, setFormState] = useImmer<FormState>({
     version: 1,
-    source: ReleaseSource.Unknown,
+    source: 'Unknown',
     comment: '',
   });
   const [touchedFields, setTouchedFields] = useImmer<Set<TouchableField>>(new Set());
@@ -31,6 +31,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
     chaptered: false,
     creditless: false,
     episodes: false,
+    group: false,
     series: false,
   });
   const [initialSeriesName, setInitialSeriesName] = useState('');
@@ -61,11 +62,13 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
     const hasDifferentSource = isBulk && !allSame(link => link.Source);
     const hasDifferentVersion = isBulk && !allSame(link => link.Version);
     const hasDifferentComment = isBulk && !allSame(link => link.Comment);
+    const hasDifferentGroup = isBulk && !allSame(link => [link.Group?.Source, link.Group?.ID].join(':'));
 
     setHasDifferent({
       chaptered: isBulk && !allSame(link => link.IsChaptered),
       creditless: isBulk && !allSame(link => link.IsCreditless),
       episodes: hasDifferentEpisodes,
+      group: hasDifferentGroup,
       series: hasMultipleSeries,
     });
 
@@ -77,6 +80,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
       isCreditless: first.IsCreditless,
       source: hasDifferentSource ? '' : first.Source,
       comment: hasDifferentComment ? '' : (first.Comment ?? ''),
+      group: hasDifferentGroup ? undefined : first.Group,
     });
   });
 

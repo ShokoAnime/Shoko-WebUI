@@ -1,4 +1,4 @@
-import type { ReleaseChannelType } from '@/core/types/api/init';
+import type { ReleaseChannelValues } from '@/core/types/api/init';
 
 export type GroupViewRequestType = {
   GroupIDs: number[];
@@ -14,6 +14,6 @@ export type SeriesFileSummaryRequestType = {
 };
 
 export type UpdateCheckRequestType = {
-  channel: ReleaseChannelType;
+  channel: ReleaseChannelValues;
   force: boolean;
 };

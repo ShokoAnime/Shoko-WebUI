@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
+import { mdiInformationOutline, mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -14,17 +15,18 @@ import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
+import { useReleaseInfoReleaseGroupsQuery } from '@/core/react-query/release-info/queries';
 import { useGetSeriesAniDBMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
-import { ReleaseSource } from '@/core/types/api/file';
-import { SeriesTypeEnum } from '@/core/types/api/series';
 import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
-import type { ReleaseInfoType } from '@/core/types/api/file';
+import SelectedFilesModal from './SelectedFilesModal';
+import SelectReleaseGroup from './SelectReleaseGroup';
+
+import type { ReleaseGroupType, ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 import type {
   CrossReferenceType,
@@ -45,17 +47,17 @@ type Props = {
 const sourceOptions = [
   <option key="mixed" value="" disabled>-</option>,
   ...[
-    ReleaseSource.Unknown,
-    ReleaseSource.Other,
-    ReleaseSource.TV,
-    ReleaseSource.DVD,
-    ReleaseSource.BluRay,
-    ReleaseSource.Web,
-    ReleaseSource.VHS,
-    ReleaseSource.VCD,
-    ReleaseSource.LaserDisc,
-    ReleaseSource.Camera,
-    ReleaseSource.Film,
+    'Unknown',
+    'Other',
+    'TV',
+    'DVD',
+    'BluRay',
+    'Web',
+    'VHS',
+    'VCD',
+    'LaserDisc',
+    'Camera',
+    'Film',
   ].map(source => (
     <option key={source} value={source}>
       {source}
@@ -63,16 +65,47 @@ const sourceOptions = [
   )),
 ];
 
-const Title = ({ count }: { count: number }) => (
-  <div className="flex items-center justify-between gap-x-1 font-semibold">
-    Edit Release Info
-    <div className="flex">
-      <div className="text-panel-text-important">{count}</div>
-      &nbsp;
-      {count === 1 ? 'File' : 'Files'}
-    </div>
-  </div>
-);
+const Title = ({ selectedLinks }: { selectedLinks: ManualLinkType[] }) => {
+  const [showFilesModal, toggleShowFilesModal, setShowFilesModal] = useToggle(false);
+  const count = selectedLinks.length;
+
+  useToggleModalKeybinds(!showFilesModal, 'modal');
+
+  const singleFileName = count === 1
+    ? selectedLinks[0].file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? ''
+    : '';
+
+  const handleShowFiles = () => {
+    if (count > 1) toggleShowFilesModal();
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-x-1 font-semibold">
+        Edit Release Info
+        <div className="flex items-center gap-x-1">
+          <div>
+            <span className="text-panel-text-important">{count}</span>
+            &nbsp;
+            {count === 1 ? 'File' : 'Files'}
+          </div>
+          <Button
+            onClick={handleShowFiles}
+            tooltip={count === 1 ? singleFileName : 'Show files'}
+            className="text-panel-icon-action"
+          >
+            <Icon path={mdiInformationOutline} size={1} />
+          </Button>
+        </div>
+      </div>
+      <SelectedFilesModal
+        show={showFilesModal}
+        onClose={() => setShowFilesModal(false)}
+        files={selectedLinks.map(link => link.file)}
+      />
+    </>
+  );
+};
 
 const EditReleaseInfoModal = (props: Props) => {
   const { onClose, onSave, selectedLinks, show } = props;
@@ -102,22 +135,26 @@ const EditReleaseInfoModal = (props: Props) => {
     !!formState.selectedSeriesId && show,
   );
 
+  const releaseGroupOptions = useReleaseInfoReleaseGroupsQuery(show).data ?? [];
+
   const episodeOptions = [
     ...(hasDifferent.episodes
-      ? [{
-        label: 'Multiple episodes selected',
-        value: 0,
-        type: EpisodeTypeEnum.Episode,
-        AirDate: '',
-        disabled: true,
-      }]
+      ? [
+        {
+          label: 'Multiple episodes selected',
+          value: 0,
+          type: 'Episode',
+          AirDate: '',
+          disabled: true,
+        } as const,
+      ]
       : []),
     {
       label: 'Auto-match (from filename)',
       value: AUTO_MATCH_EPISODE_ID,
-      type: EpisodeTypeEnum.Episode,
+      type: 'Episode',
       AirDate: '',
-    },
+    } as const,
     ...map(episodesQuery.data ?? [], episode => ({
       label: episode.Title,
       value: episode.ID,
@@ -139,7 +176,7 @@ const EditReleaseInfoModal = (props: Props) => {
       draft.series = false;
     });
 
-    if (series.Type !== SeriesTypeEnum.Unknown) {
+    if (series.Type !== 'Unknown') {
       setFormState((draft) => {
         draft.selectedSeriesId = series.ID;
         draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
@@ -168,6 +205,16 @@ const EditReleaseInfoModal = (props: Props) => {
     });
     setFormState((draft) => {
       draft.selectedEpisodeId = optionValue;
+    });
+  };
+
+  const handleReleaseGroupChange = (group?: ReleaseGroupType) => {
+    markTouched('Group');
+    setHasDifferent((draft) => {
+      draft.group = false;
+    });
+    setFormState((draft) => {
+      draft.group = group;
     });
   };
 
@@ -201,7 +248,7 @@ const EditReleaseInfoModal = (props: Props) => {
   const handleSourceChange = (event: ChangeEvent<HTMLSelectElement>) => {
     markTouched('Source');
     setFormState((draft) => {
-      draft.source = event.target.value as ReleaseSource | '';
+      draft.source = event.target.value as ReleaseSourceValues | '';
     });
   };
 
@@ -244,9 +291,10 @@ const EditReleaseInfoModal = (props: Props) => {
     const setIfTouched = <FieldName extends TouchableField>(
       field: FieldName,
       value?: ReleaseInfoType[FieldName],
+      writeUndefined = false,
     ) => {
       if (!touchedFields.has(field)) return;
-      if (value === undefined) return;
+      if (value === undefined && !writeUndefined) return;
       releaseInfo[field] = value;
     };
 
@@ -254,7 +302,10 @@ const EditReleaseInfoModal = (props: Props) => {
     setIfTouched('IsChaptered', formState.isChaptered);
     setIfTouched('IsCreditless', formState.isCreditless);
     setIfTouched('Source', formState.source === '' ? undefined : formState.source);
-    setIfTouched('Comment', formState.comment);
+    // Comment and Group can be cleared: write undefined through so it is
+    // omitted from the payload and the server clears the stored value.
+    setIfTouched('Comment', formState.comment === '' ? undefined : formState.comment, true);
+    setIfTouched('Group', formState.group, true);
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
       crossReference = {
@@ -277,7 +328,7 @@ const EditReleaseInfoModal = (props: Props) => {
       show={show}
       size="md"
       onRequestClose={onClose}
-      header={<Title count={selectedLinks.length} />}
+      header={<Title selectedLinks={selectedLinks} />}
       footer={
         <div className="flex justify-end gap-x-3">
           <Button onClick={onClose} buttonType="secondary" buttonSize="normal">
@@ -296,7 +347,7 @@ const EditReleaseInfoModal = (props: Props) => {
         </div>
       }
       noPadding
-      className="h-156"
+      className="h-172"
     >
       <div className="flex grow flex-col gap-y-4 p-6">
         {!formState.selectedSeriesId && !hasDifferent.series && (
@@ -311,7 +362,7 @@ const EditReleaseInfoModal = (props: Props) => {
         {hasSeriesSelection && (
           <>
             <div className="flex flex-col gap-y-2">
-              <span className="text-base font-semibold">Series</span>
+              <span className="font-semibold">Series</span>
               <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-input px-4 py-3">
                 <span className="truncate">{seriesName}</span>
                 <Button onClick={handleEditSeries}>
@@ -327,7 +378,7 @@ const EditReleaseInfoModal = (props: Props) => {
                 : ''}
             >
               <div className="flex items-center gap-x-2">
-                <span className="text-base font-semibold">Episode</span>
+                <span className="font-semibold">Episode</span>
                 <Button
                   onClick={handleRefreshSeries}
                   tooltip={isRefreshingSeries || hasDifferent.series ? '' : 'Force Refresh'}
@@ -343,6 +394,15 @@ const EditReleaseInfoModal = (props: Props) => {
                 rowIdx={0}
                 standalone
                 disabled={hasDifferent.series}
+              />
+            </div>
+            <div className="flex flex-col gap-y-2">
+              <span className="font-semibold">Release Group</span>
+              <SelectReleaseGroup
+                options={releaseGroupOptions}
+                value={formState.group}
+                onChange={handleReleaseGroupChange}
+                hasDifferent={hasDifferent.group}
               />
             </div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">

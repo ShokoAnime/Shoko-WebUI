@@ -2,7 +2,6 @@ import type { MouseEvent } from 'react';
 
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
@@ -25,7 +24,7 @@ const CrossReference = ({ xref }: { xref: ReleaseCrossReferenceType }) => {
         <>
           <span className="text-panel-text-important">
             {getEpisodePrefix(episodeQuery.data.Type)}
-            {episodeQuery.data.Type === EpisodeTypeEnum.Episode
+            {episodeQuery.data.Type === 'Episode'
               ? episodeQuery.data.EpisodeNumber.toString().padStart(2, '0')
               : episodeQuery.data.EpisodeNumber}
           </span>

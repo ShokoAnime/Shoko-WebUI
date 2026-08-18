@@ -15,12 +15,12 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
-import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
+import type { FileSortOrderValue, FileType } from '@/core/types/api/file';
 import type { Updater } from 'use-immer';
 
 const Menu = (
@@ -89,16 +89,16 @@ const IgnoredFilesTab = () => {
     setSearch,
     setSortCriteria,
     sortCriteria,
-  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ManagedFolderName);
+  } = useTableSearchSortCriteria('ManagedFolderName');
 
   const managedFolderQuery = useManagedFoldersQuery();
   const managedFolders = managedFolderQuery?.data ?? [];
 
-  let sortOrder: FileSortCriteriaEnum[] | undefined;
+  let sortOrder: FileSortOrderValue[] | undefined;
   if (debouncedSearch && sortCriteria) {
     sortOrder = [sortCriteria];
   } else if (sortCriteria) {
-    sortOrder = [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
+    sortOrder = [sortCriteria, 'FileName', 'RelativePath'];
   }
 
   const filesQuery = useFilesInfiniteQuery(

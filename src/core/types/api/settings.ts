@@ -1,6 +1,7 @@
 import type { Layout } from 'react-grid-layout';
 
-import type { ReleaseChannelType } from '@/core/types/api/init';
+import type { DataSourceValues } from './common';
+import type { ReleaseChannelValues } from '@/core/types/api/init';
 import type { ManualLinkProviderType } from '@/core/types/utilities/link-files-with-providers';
 
 export type SettingsDatabaseType = {
@@ -246,11 +247,6 @@ export type SettingsTMDBType = {
   UserApiKey: string | null;
 };
 
-export const enum LanguageSource {
-  AniDB = 'AniDB',
-  TMDB = 'TMDB',
-}
-
 export type SettingsLanguageType = {
   /**
    * Use synonyms when selecting the preferred language from AniDB.
@@ -269,9 +265,9 @@ export type SettingsLanguageType = {
   /**
    * Series / group title source preference order.
    *
-   * @default [LanguageSource.AniDB, LanguageSource.TMDB]
+   * @default ['AniDB', 'TMDB']
    */
-  SeriesTitleSourceOrder: LanguageSource[];
+  SeriesTitleSourceOrder: DataSourceValues[];
 
   /**
    * Episode / season title language preference order.
@@ -283,9 +279,9 @@ export type SettingsLanguageType = {
   /**
    * Episode / season title source preference order.
    *
-   * @default [LanguageSource.TMDB, LanguageSource.AniDB]
+   * @default ['TMDB', 'AniDB']
    */
-  EpisodeTitleSourceOrder: LanguageSource[];
+  EpisodeTitleSourceOrder: DataSourceValues[];
 
   /**
    * Description language preference order.
@@ -297,9 +293,9 @@ export type SettingsLanguageType = {
   /**
    * Description source preference order.
    *
-   * @default [LanguageSource.TMDB, LanguageSource.AniDB]
+   * @default ['TMDB', 'AniDB']
    */
-  DescriptionSourceOrder: LanguageSource[];
+  DescriptionSourceOrder: DataSourceValues[];
 };
 
 export type SettingsPlexType = {
@@ -323,7 +319,7 @@ export type SettingsImportType = {
   VideoExtensions: string[];
 };
 
-export type SignalType =
+export type ReleaseSignalTypeValues =
   | 'Source'
   | 'Resolution'
   | 'VideoCodec'
@@ -341,10 +337,8 @@ export type SignalType =
   | 'GroupHomogeneity'
   | 'SubGroup';
 
-export type EpisodeTypeScopeType = 'AllTogether' | 'PerEpisodeType';
-
 export type ReleaseComparisonPreferencesType = {
-  SignalPriority: SignalType[];
+  SignalPriority: ReleaseSignalTypeValues[];
   SourceOrder: string[];
   ResolutionOrder: string[];
   VideoCodecOrder: string[];
@@ -356,7 +350,7 @@ export type ReleaseComparisonPreferencesType = {
   AllowDeletion: boolean;
   AutoDeleteOnImport: boolean;
   PerFileDeletionForAiringSeries: boolean;
-  EpisodeTypeScope: EpisodeTypeScopeType;
+  EpisodeTypeScope: 'KeepTogether' | 'BestPerType';
 };
 
 export type PluginRenamerSettingsType = {
@@ -412,8 +406,8 @@ export type WebUISettingsType = {
   settingsRevision: number;
   theme: string;
   toastPosition: 'top-right' | 'bottom-right';
-  updateChannel: ReleaseChannelType;
-  serverUpdateChannel: ReleaseChannelType;
+  updateChannel: ReleaseChannelValues;
+  serverUpdateChannel: ReleaseChannelValues;
   layout: {
     dashboard: Partial<Record<string, Layout>>;
   };

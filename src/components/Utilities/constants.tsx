@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { find } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -18,13 +17,13 @@ export type UtilityHeaderType<T extends EpisodeType | FileType | SeriesType | Re
 };
 
 export const criteriaMap = {
-  managedFolder: FileSortCriteriaEnum.ManagedFolderName,
-  filename: FileSortCriteriaEnum.FileName,
-  crc32: FileSortCriteriaEnum.CRC32,
-  size: FileSortCriteriaEnum.FileSize,
-  created: FileSortCriteriaEnum.CreatedAt,
+  managedFolder: 'ManagedFolderName',
+  filename: 'FileName',
+  crc32: 'CRC32',
+  size: 'FileSize',
+  created: 'CreatedAt',
   status: null,
-};
+} as const;
 
 export const getManagedFolderColumn = (managedFolders: ManagedFolderType[]): UtilityHeaderType<FileType> => ({
   id: 'managedFolder',

@@ -22,53 +22,28 @@ export type AniDBBanItemType = {
   Message: string;
   PauseTimeSecs: number;
   UpdateTime: string;
-  UpdateType: AniDBBanTypeEnum;
+  UpdateType: BanUpdateTypeValues;
   Value: boolean;
 };
 
-export const enum AniDBBanTypeEnum {
-  None = 0,
-  UDPBan = 1,
-  HTTPBan = 2,
-  InvalidSession = 3,
-  OverloadBackoff = 4,
-  WaitingOnResponse = 5,
-}
+export type BanUpdateTypeValues =
+  | 'None'
+  | 'UDPBan'
+  | 'HTTPBan'
+  | 'InvalidSession'
+  | 'OverloadBackoff'
+  | 'WaitingOnResponse'
+  | 'LoginFailed';
 
-export type AniDBBanType = {
-  http: AniDBBanItemType;
-  udp: AniDBBanItemType;
-};
-
-export const enum NetworkAvailabilityEnum {
-  /**
-   * Shoko was unable to find any network interfaces.
-   */
-  NoInterfaces = 'NoInterfaces',
-
-  /**
-   * Shoko was unable to find any local gateways to use.
-   */
-  NoGateways = 'NoGateways',
-
-  /**
-   * Shoko was able to find a local gateway.
-   */
-  LocalOnly = 'LocalOnly',
-
-  /**
-   * Shoko was able to connect to some internet endpoints in WAN.
-   */
-  PartialInternet = 'PartialInternet',
-
-  /**
-   * Shoko was able to connect to all internet endpoints in WAN.
-   */
-  Internet = 'Internet',
-}
+export type NetworkAvailabilityValues =
+  | 'NoInterfaces'
+  | 'NoGateways'
+  | 'LocalOnly'
+  | 'PartialInternet'
+  | 'Internet';
 
 export type AVDumpRestoreType = {
-  Type: AVDumpEventTypeEnum.Restore;
+  Type: 'Restore';
   SessionID: number;
   VideoIDs: number[];
   CommandID: number | null;
@@ -81,7 +56,7 @@ export type AVDumpRestoreType = {
 };
 
 export type AVDumpEventType = {
-  Type: AVDumpEventTypeEnum.Started;
+  Type: 'Started';
   SessionID: number;
   VideoIDs: number[];
   CommandID: number | null;
@@ -91,38 +66,38 @@ export type AVDumpEventType = {
   PendingCreqCount: number;
   StartedAt: string;
 } | {
-  Type: AVDumpEventTypeEnum.Progress;
+  Type: 'Progress';
   SessionID: number;
   Progress: number;
 } | {
-  Type: AVDumpEventTypeEnum.CreqUpdate;
+  Type: 'CreqUpdate';
   SessionID: number;
   SucceededCreqCount: number;
   FailedCreqCount: number;
   PendingCreqCount: number;
 } | {
-  Type: AVDumpEventTypeEnum.Message | AVDumpEventTypeEnum.Error | AVDumpEventTypeEnum.ED2KLink;
+  Type: 'Message' | 'Error' | 'ED2KLink';
   SessionID: number;
   Message: string;
 } | {
   Type:
-    | AVDumpEventTypeEnum.InstalledAVDump
-    | AVDumpEventTypeEnum.InstallingAVDump
-    | AVDumpEventTypeEnum.InvalidCredentials
-    | AVDumpEventTypeEnum.MissingApiKey
-    | AVDumpEventTypeEnum.Timeout;
+    | 'InstalledAVDump'
+    | 'InstallingAVDump'
+    | 'InvalidCredentials'
+    | 'MissingApiKey'
+    | 'Timeout';
 } | {
-  Type: AVDumpEventTypeEnum.InstallException;
+  Type: 'InstallException';
   Message: string;
   ExceptionStackTrace: string;
 } | {
-  Type: AVDumpEventTypeEnum.GenericException;
+  Type: 'GenericException';
   SessionID: number;
   Message: string;
   ExceptionStackTrace: string;
   StartedAt: string;
 } | {
-  Type: AVDumpEventTypeEnum.Failure;
+  Type: 'Failure';
   SessionID: number;
   VideoIDs: number[];
   CommandID: number | null;
@@ -133,7 +108,7 @@ export type AVDumpEventType = {
   StartedAt: string;
   EndedAt: string;
 } | {
-  Type: AVDumpEventTypeEnum.Success;
+  Type: 'Success';
   SessionID: number;
   VideoIDs: number[];
   CommandID: number | null;
@@ -145,25 +120,6 @@ export type AVDumpEventType = {
   StartedAt: string;
   EndedAt: string;
 };
-
-export const enum AVDumpEventTypeEnum {
-  Message = 'Message',
-  Error = 'Error',
-  Progress = 'Progress',
-  CreqUpdate = 'CreqUpdate',
-  ED2KLink = 'ED2KLink',
-  Started = 'Started',
-  Success = 'Success',
-  Failure = 'Failure',
-  Restore = 'Restore',
-  GenericException = 'GenericException',
-  MissingApiKey = 'MissingApiKey',
-  InvalidCredentials = 'InvalidCredentials',
-  Timeout = 'Timeout',
-  InstallingAVDump = 'InstallingAVDump',
-  InstalledAVDump = 'InstalledAVDump',
-  InstallException = 'InstallException',
-}
 
 export type SeriesUpdateEventType = {
   ShokoSeriesIDs: number[];

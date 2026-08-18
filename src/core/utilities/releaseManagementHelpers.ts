@@ -1,7 +1,7 @@
 import { groupBy, mapValues } from 'lodash';
 
 import type { EpisodeCoverageType } from '@/core/types/api/release-management';
-import type { SignalType } from '@/core/types/api/settings';
+import type { ReleaseSignalTypeValues } from '@/core/types/api/settings';
 
 const episodePriority: string[] = ['Episode', 'Special', 'Trailer', 'Credits', 'Parody', 'Other', 'Unknown'];
 
@@ -9,7 +9,7 @@ export const typeOrder: Record<string, number> = Object.fromEntries(
   episodePriority.map((type, idx) => [type, idx]),
 );
 
-export const signalLabels: Record<SignalType, string> = {
+export const signalLabels: Record<ReleaseSignalTypeValues, string> = {
   AudioCodec: 'Audio Codec',
   AudioLanguage: 'Audio Language',
   AudioStreams: 'Audio Streams',

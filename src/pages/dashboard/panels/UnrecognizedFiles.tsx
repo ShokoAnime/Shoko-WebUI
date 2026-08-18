@@ -10,9 +10,10 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
-import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
+
+import type { FileType } from '@/core/types/api/file';
 
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
@@ -76,7 +77,7 @@ const UnrecognizedFiles = () => {
   const filesQuery = useFilesInfiniteQuery({
     pageSize: 20,
     include_only: ['Unrecognized'],
-    sortOrder: [FileSortCriteriaEnum.FileID * -1],
+    sortOrder: ['-FileID'],
   });
   const [files, fileCount] = useMemo(
     () => {

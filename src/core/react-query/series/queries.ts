@@ -16,7 +16,7 @@ import type {
 import type { DashboardRequestType, FileRequestType } from '@/core/react-query/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
-import type { ImageEntityType, ImageType } from '@/core/types/api/common';
+import type { ImageEntityValues, ImageType } from '@/core/types/api/common';
 import type { AniDBEpisodeType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
@@ -43,7 +43,7 @@ export const useSeriesQuery = (
 
 export const useSeriesImagesInfiniteQuery = (
   seriesId: number,
-  imageType: ImageEntityType,
+  imageType: ImageEntityValues,
   params: SeriesImagesRequestType,
   enabled = true,
 ) =>

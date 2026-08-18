@@ -43,7 +43,6 @@ import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
-import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { copyToClipboard, isAnidbFileUri } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -348,7 +347,7 @@ const FileSearch = () => {
     setSearch,
     setSortCriteria,
     sortCriteria,
-  } = useTableSearchSortCriteria(-FileSortCriteriaEnum.CreatedAt);
+  } = useTableSearchSortCriteria('-CreatedAt');
 
   const filesQuery = useFilesInfiniteQuery({
     include: ['XRefs', 'ImportLimbo'],

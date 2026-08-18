@@ -36,8 +36,6 @@ import {
 } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
-import { SeriesTypeEnum } from '@/core/types/api/series';
 import { getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -117,7 +115,7 @@ const LinkFilesTab = () => {
     createdNewSeries: true,
   });
   const [selectedLink, setSelectedLink] = useState<number>(-1);
-  const [selectedSeries, setSelectedSeries] = useState({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
+  const [selectedSeries, setSelectedSeries] = useState({ Type: 'Unknown' } as SeriesAniDBSearchResult);
   const [seriesUpdating, setSeriesUpdating] = useState(false);
   const [showRangeFillModal, setShowRangeFillModal] = useState(false);
   const [links, setLinks] = useImmer<ManualLink[]>(
@@ -147,7 +145,7 @@ const LinkFilesTab = () => {
       includeMissing: 'true',
       includeUnaired: 'true',
     },
-    !!selectedSeries.ID && selectedSeries.Type !== SeriesTypeEnum.Unknown,
+    !!selectedSeries.ID && selectedSeries.Type !== 'Unknown',
   );
 
   const selectedSeriesLoaded = useMemo(() => !!selectedSeries?.ID && !anidbEpisodesQuery.isFetching, [
@@ -184,7 +182,7 @@ const LinkFilesTab = () => {
         value: item.ID,
         AirDate: item?.AirDate ?? '',
         label: item?.Title ?? '',
-        type: item?.Type ?? EpisodeTypeEnum.Unknown,
+        type: item?.Type ?? 'Unknown',
         number: item?.EpisodeNumber ?? 0,
       }
     ))
@@ -228,7 +226,7 @@ const LinkFilesTab = () => {
       });
     });
 
-    if (series.Type !== SeriesTypeEnum.Unknown) {
+    if (series.Type !== 'Unknown') {
       setSelectedSeries(series);
       return;
     }
@@ -260,7 +258,7 @@ const LinkFilesTab = () => {
   };
 
   const editSelectedSeries = () => {
-    setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
+    setSelectedSeries({ Type: 'Unknown' } as SeriesAniDBSearchResult);
   };
 
   const openRangeFill = () => {
@@ -272,7 +270,7 @@ const LinkFilesTab = () => {
   };
 
   const cancelChanges = () => {
-    setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
+    setSelectedSeries({ Type: 'Unknown' } as SeriesAniDBSearchResult);
     navigate('../');
   };
 
@@ -334,7 +332,7 @@ const LinkFilesTab = () => {
       // single episode link
       if ((episodeEnd - episodeStart) === 0) {
         // Special handling of specials if we were unable to determine the episode number during the detection phase.
-        const episodeNumber = episodeType === EpisodeTypeEnum.Special && episodeStart === 0
+        const episodeNumber = episodeType === 'Special' && episodeStart === 0
           ? specials += 1
           : episodeStart;
         const episode = find(
@@ -598,7 +596,7 @@ const LinkFilesTab = () => {
                   onClick={openRangeFill}
                   buttonType="secondary"
                   className="px-4 py-3"
-                  disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
+                  disabled={isLinking || selectedSeries.Type === 'Unknown'}
                 >
                   Range Fill
                 </Button>
@@ -611,7 +609,7 @@ const LinkFilesTab = () => {
                   }}
                   buttonType="primary"
                   className="px-4 py-3"
-                  disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
+                  disabled={isLinking || selectedSeries.Type === 'Unknown'}
                   loading={isLinking}
                 >
                   Save

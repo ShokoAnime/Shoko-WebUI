@@ -1,6 +1,5 @@
 import { produce } from 'immer';
 
-import { ReleaseSource } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
@@ -13,6 +12,8 @@ import type {
 export const EDITABLE_STATES = new Set<LinkStateType>(['ready', 'init']);
 export const AUTO_MATCH_EPISODE_ID = -1;
 
+export const isUserEdited = (providerName: string) => providerName.split('+').includes('User');
+
 let lastLinkId = 0;
 const generateLinkId = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
@@ -24,7 +25,7 @@ const generateLinkId = () => {
 
 export const mergeReleaseInfo = (incoming: ReleaseInfoType, original: ReleaseInfoType): ReleaseInfoType =>
   produce(incoming, (draft) => {
-    if (draft.Source === ReleaseSource.Unknown && original.Source !== ReleaseSource.Unknown) {
+    if (draft.Source === 'Unknown' && original.Source !== 'Unknown') {
       draft.Source = original.Source;
     }
 
@@ -37,7 +38,7 @@ export const mergeReleaseInfo = (incoming: ReleaseInfoType, original: ReleaseInf
     draft.IsCreditless ??= original.IsCreditless;
     draft.Group ??= original.Group;
 
-    if (draft.ProviderName !== 'User' && !/\+User\b/.test(draft.ProviderName)) {
+    if (!isUserEdited(draft.ProviderName)) {
       draft.ProviderName += '+User';
     }
   });
@@ -63,7 +64,7 @@ const createLinksFromFiles = (files: FileType[], providers: ManualLinkProviderTy
       OriginalFilename: file.Locations?.[0]?.RelativePath.split(/[/\\]/g).pop(),
       ProviderName: 'User',
       Version: 1,
-      Source: ReleaseSource.Unknown,
+      Source: 'Unknown',
       CrossReferences: [],
       FileSize: file.Size,
       Hashes: file.Hashes,
