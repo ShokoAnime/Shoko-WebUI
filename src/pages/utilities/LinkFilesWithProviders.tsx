@@ -29,6 +29,7 @@ import createLinksFromFiles, {
 } from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
+import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useLinkWorkflow from '@/hooks/utilities/useLinkWorkflow';
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
@@ -260,6 +261,7 @@ const LinkFilesWithProviders = () => {
     }
   };
 
+  useToggleModalKeybinds(!confirmCancel, 'primary');
   useHotkeys('s', openAutoSearch, { scopes: 'primary' });
   useHotkeys('a', toggleAllSelectedLinks, { scopes: 'primary' });
   useHotkeys('d', removeLinks, { scopes: 'primary' });
