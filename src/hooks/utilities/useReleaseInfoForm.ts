@@ -5,11 +5,12 @@ import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-
 import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 
 import type { ReleaseGroupType, ReleaseInfoType } from '@/core/types/api/file';
-import type { ManualLinkType, TouchableField } from '@/core/types/utilities/link-files-with-providers';
+import type { ManualLinkType, RangeFillType, TouchableField } from '@/core/types/utilities/link-files-with-providers';
 
 type FormState = {
   selectedSeriesId?: number;
   selectedEpisodeId?: number;
+  rangeFill?: RangeFillType;
   version: ReleaseInfoType['Version'] | '';
   isChaptered?: ReleaseInfoType['IsChaptered'];
   isCreditless?: ReleaseInfoType['IsCreditless'];

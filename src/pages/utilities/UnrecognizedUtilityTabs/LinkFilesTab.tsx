@@ -13,7 +13,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { countBy, filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
+import { countBy, filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
@@ -40,6 +40,7 @@ import { getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 
@@ -291,14 +292,9 @@ const LinkFilesTab = () => {
     }
   };
 
-  const rangeFill = (rangeStart: string, epType: string) => {
-    if (toInteger(rangeStart) <= 0) {
-      toast.error('Value is not a positive integer.');
-      return;
-    }
-
-    const items = filter(episodeOptions, ['type', epType]);
-    const idx = findIndex(items, ['number', toInteger(rangeStart)]);
+  const handleRangeFill = (episodeType: EpisodeTypeValues, rangeStart: number) => {
+    const items = filter(episodeOptions, ['type', episodeType]);
+    const idx = findIndex(items, ['number', rangeStart]);
     if (idx === -1) {
       toast.error('Unable to find starting episode.');
       return;
@@ -690,7 +686,7 @@ const LinkFilesTab = () => {
           )}
         </div>
       </TransitionDiv>
-      <RangeFillModal show={showRangeFillModal} onClose={closeRangeFill} rangeFill={rangeFill} />
+      <RangeFillModal show={showRangeFillModal} onClose={closeRangeFill} handleRangeFill={handleRangeFill} />
     </>
   );
 };
