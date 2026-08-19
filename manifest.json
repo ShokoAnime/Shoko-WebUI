@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.118",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.118/Shoko-WebUI-v2.6.0-dev.118.zip",
+      "checksum": "sha256:bcf4366bdcb5253b13cc9c81f1f7ce570249bf3a90133eb69f4ca8dde1e835b9",
+      "commit": "8a34984944676d541eae575f2e2c868773ce2885",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* [no ci] Update LinkFilesWithProviders docs for Selected Files modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1438\n* Add range fill to Edit Release Info modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1439\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.117...v2.6.0-dev.118\n"
+    },
+    {
       "version": "2.6.0-dev.117",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.117/Shoko-WebUI-v2.6.0-dev.117.zip",
