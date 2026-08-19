@@ -87,7 +87,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     }
 
     const relativePath = file.Locations?.[0]?.RelativePath;
-    const crc32Result = relativePath && Crc32Regex.exec(relativePath)?.[0]?.toUpperCase();
+    const crc32Result = relativePath && Crc32Regex.exec(relativePath)?.[1]?.toUpperCase();
 
     if (crc32Result) {
       return crc32Result === file.Hashes.find(hash => hash.Type === 'CRC32')?.Value

@@ -2,7 +2,7 @@ import type { PathDetails, PathMatchRule } from './auto-match-logic';
 
 const PathMatchRuleSet: PathMatchRule[] = [];
 
-export const Crc32Regex = /\b[0-9A-F]{8}\b/i;
+export const Crc32Regex = /[^0-9A-Z]([0-9A-F]{8})[^0-9A-Z]/i;
 
 try {
   const TrimShowNameRegex =
@@ -49,7 +49,7 @@ try {
     const modifiedDetails = { ...originalDetails };
 
     // Add crc32 if found
-    modifiedDetails.crc32 = Crc32Regex.exec(match[0])?.[0] ?? null;
+    modifiedDetails.crc32 = Crc32Regex.exec(match[0])?.[1] ?? null;
 
     // Fix up show name by removing unwanted details and fixing spaces.
     if (modifiedDetails.showName) {
