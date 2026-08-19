@@ -25,14 +25,15 @@ src/hooks/utilities/
   useReleaseInfoForm.ts          Form state + touched-field tracking for the Edit Release Info modal
 
 src/core/utilities/
-  releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo, isUserEdited; shared constants EDITABLE_STATES, AUTO_MATCH_EPISODE_ID
+  releaseInfoHelpers.ts          Pure helpers: createLinksFromFiles, mergeReleaseInfo, isUserEdited; shared constants EDITABLE_STATES, AUTO_MATCH_EPISODE_ID, RANGE_FILL_EPISODE_ID
   auto-match-logic.ts            detectShow, findMostCommonShowName
 
 src/core/types/utilities/
-  link-files-with-providers.ts    ManualLinkType, ManualLinkProviderType, LinkStateType, CrossReferenceType, TouchableField
+  link-files-with-providers.ts    ManualLinkType, ManualLinkProviderType, LinkStateType, CrossReferenceType, RangeFillType, TouchableField
 
 src/components/Utilities/Unrecognized/
   AnimeSelectPanel.tsx           Shared AniDB series search panel (modal + LinkFilesTab)
+  RangeFillModal.tsx             Range fill options modal (episode type + starting number)
 
   LinkFilesWithProvider/
     LinkCard.tsx                 Per-link card (state-driven styling, selection)
@@ -63,13 +64,19 @@ type ManualLinkType = {
 
 Each link's `state` field drives the entire workflow — the component never directly calls process handlers, only the drive loop dispatches based on current state.
 
-The Edit Release Info modal adds two shared types:
+The Edit Release Info modal adds three shared types:
 
 ```ts
 type CrossReferenceType = {
   seriesId: number;
   episodeId: number;
   episodes: AniDBEpisodeType[];
+  rangeFill?: RangeFillType;
+};
+
+type RangeFillType = {
+  episodeType: EpisodeTypeValues;
+  rangeStart: number;
 };
 
 type TouchableField = 'Comment' | 'CrossReferences' | 'Group' | 'IsChaptered' | 'IsCreditless' | 'Source' | 'Version';
@@ -193,9 +200,15 @@ Opened from the Menu's "Edit Release Info" action (`E`) for the selected links. 
 
 The header shows the selected file count alongside an info button (`mdiInformationOutline`). For a single file the button's tooltip is the filename; for multiple files it opens a nested `SelectedFilesModal` (tooltip "Show files"). The modal lists each file's managed-folder name, parent directory (or `Root Level`), and filename, with the full `RelativePath` in a hover tooltip.
 
-Editable fields: `Version`, `Source`, `IsChaptered`, `IsCreditless`, `Comment`, and `Release Group`. The release group is a searchable `SelectReleaseGroup` combobox that filters known groups by name/shortname and only shows options while typing; typing an unknown name offers a `Create "…"` option that sets the group's `Name`, `ShortName`, and `ID` to the typed value with `Source: User`. Episode selection includes an "Auto-match (from filename)" option (`AUTO_MATCH_EPISODE_ID = -1`). When selected files have differing episode links, the selector shows a disabled "Multiple episodes selected" entry and those per-file links are preserved unless an episode (or auto-match) is explicitly chosen; the release group field shows "Multiple groups selected" for mixed groups. Save stays disabled until a field is touched.
+Editable fields: `Version`, `Source`, `IsChaptered`, `IsCreditless`, `Comment`, and `Release Group`. The release group is a searchable `SelectReleaseGroup` combobox that filters known groups by name/shortname and only shows options while typing; typing an unknown name offers a `Create "…"` option that sets the group's `Name`, `ShortName`, and `ID` to the typed value with `Source: User`. Episode selection includes an "Auto-match (from filename)" option (`AUTO_MATCH_EPISODE_ID = -1`) and, directly below it, a "Range Fill" option (`RANGE_FILL_EPISODE_ID = -2`), whose label reads "Range Fill (from S3)" once a range is configured (episode prefix via `getEpisodePrefix` + starting number) and "Range Fill (not set)" otherwise. Selecting "Range Fill" (from the dropdown or via the `r` hotkey) automatically opens the `RangeFillModal` (episode type + starting number); a pencil edit button, shown only while "Range Fill" is selected, reopens it. On save, consecutive episodes of the chosen type are assigned to the selected files in sorted order. When selected files have differing episode links, the selector shows a disabled "Multiple episodes selected" entry and those per-file links are preserved unless an episode (or auto-match/range-fill) is explicitly chosen; the release group field shows "Multiple groups selected" for mixed groups. Save is gated by a `saveDisabled` flag (`!show`, no touched fields, or "Range Fill" selected without a configured range) that disables the Save button and is also checked at the top of `handleSave` so `Enter` triggers save safely.
 
-State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). Clearing the release group or comment and leaving the field removes the stored value on save — `setIfTouched` uses a `writeUndefined` option so an empty value is omitted from the payload and cleared server-side. On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), and appends the `+User` marker to `ProviderName` (unless `isUserEdited`). A link's state is set to `ready` only when a cross-reference is actually resolved (a concrete `episodeId` is written); when no `crossReference` was provided, or auto-match fails to find an episode, the link keeps its previous state (no `ready` transition). Failed auto-matches — where a `crossReference` was present but resolution failed — are reported in an error toast with the file count.
+State is managed by the `useReleaseInfoForm` hook (form state, touched-field tracking, mixed-selection flags). Clearing the release group or comment and leaving the field removes the stored value on save — `setIfTouched` uses a `writeUndefined` option so an empty value is omitted from the payload and cleared server-side. On save, `handleSaveReleaseInfo` in the page merges the patch into each selected link's `release`, resolves the episode cross-reference (auto-match resolves via `detectShow` → matching episode, writing `CrossReferences` at 0–100%), and appends the `+User` marker to `ProviderName` (unless `isUserEdited`). The per-link mutation (apply the `releaseInfo` patch, write `CrossReferences`, append `+User`, transition to `ready`) lives in a local `applyRelease(link, episodeId)` helper shared by the auto-match/single-episode and range-fill branches. A link's state is set to `ready` only when a cross-reference is actually resolved (a concrete `episodeId` is written); when no `crossReference` was provided, or auto-match fails to find an episode, the link keeps its previous state (no `ready` transition). Failed auto-matches — where a `crossReference` was present but resolution failed — are reported in an error toast with the file count. For range fill, the selected links are iterated in sorted (`RelativePath`) order and each gets the next consecutive episode of the chosen type starting from the configured number; if the episode queue runs out before all selected files are processed, a warning toast reports how many files could not be filled.
+
+### Modal Hotkeys
+
+The Edit Release Info modal registers `Esc` (close), `R` (select "Range Fill", gated on a selected series), and `Enter` (save) in the `modal` scope. While the nested `RangeFillModal` is open, `useToggleModalKeybinds(show && !showRangeFill, 'modal')` suspends the `modal` scope so its shortcuts don't fire.
+
+The `RangeFillModal` runs in the `nested-modal` scope with `Esc` (cancel) and `Enter` (fill). Its Fill button is disabled until a positive starting number is entered, and `Enter` inside the "Range Starting Number" input also fills via the input's `onKeyUp` handler. Guards such as `saveDisabled` and `!show || !formState.selectedSeriesId` live inside the handlers themselves (`handleSave`, `handleEpisodeSelect`) rather than in the hotkey callbacks.
 
 ## Supporting Components
 

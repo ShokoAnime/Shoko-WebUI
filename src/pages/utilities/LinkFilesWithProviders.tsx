@@ -5,7 +5,7 @@ import { useLocation } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { find, forEach } from 'lodash';
+import { filter, find, findIndex, forEach } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useToggle } from 'usehooks-ts';
 
@@ -25,6 +25,7 @@ import { detectShow } from '@/core/utilities/auto-match-logic';
 import createLinksFromFiles, {
   AUTO_MATCH_EPISODE_ID,
   EDITABLE_STATES,
+  RANGE_FILL_EPISODE_ID,
   isUserEdited,
 } from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -208,16 +209,45 @@ const LinkFilesWithProviders = () => {
     crossReference?: CrossReferenceType,
   ) => {
     let failedAutoMatchCount = 0;
+    let unfilledRangeFillCount = 0;
 
     setLinks((draft) => {
+      const applyRelease = (link: ManualLinkType, episodeId: number) => {
+        Object.assign(draft[link.id].release, releaseInfo);
+        if (crossReference && episodeId > 0) {
+          draft[link.id].release.CrossReferences = [{
+            AnidbEpisodeID: episodeId,
+            AnidbAnimeID: crossReference.seriesId,
+            PercentageStart: 0,
+            PercentageEnd: 100,
+          }];
+          draft[link.id].state = 'ready';
+        }
+        if (!isUserEdited(draft[link.id].release.ProviderName)) {
+          draft[link.id].release.ProviderName += '+User';
+        }
+      };
+
+      if (crossReference?.episodeId === RANGE_FILL_EPISODE_ID && crossReference.rangeFill) {
+        const items = filter(crossReference.episodes, ['Type', crossReference.rangeFill.episodeType]);
+        const startIndex = findIndex(items, ['EpisodeNumber', crossReference.rangeFill.rangeStart]);
+        const queue = startIndex === -1 ? [] : items.slice(startIndex);
+        let filled = 0;
+        for (const link of selectedRows) {
+          const episode = queue[filled];
+          applyRelease(link, episode?.ID ?? 0);
+          if (episode) filled += 1;
+        }
+        unfilledRangeFillCount = selectedRows.length - filled;
+        return;
+      }
+
       let specials = 0;
       for (const link of selectedRows) {
-        Object.assign(draft[link.id].release, releaseInfo);
-
-        let matchFailed = true;
+        let episodeId = 0;
         if (crossReference) {
-          const { episodeId: selectedEpisodeId, episodes, seriesId } = crossReference;
-          let episodeId = selectedEpisodeId;
+          const { episodeId: selectedEpisodeId, episodes } = crossReference;
+          episodeId = selectedEpisodeId;
           if (episodeId === AUTO_MATCH_EPISODE_ID) {
             const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
             if (details) {
@@ -230,25 +260,11 @@ const LinkFilesWithProviders = () => {
               )?.ID ?? 0;
             }
           }
-          if (episodeId > 0) {
-            draft[link.id].release.CrossReferences = [{
-              AnidbEpisodeID: episodeId,
-              AnidbAnimeID: seriesId,
-              PercentageStart: 0,
-              PercentageEnd: 100,
-            }];
-            matchFailed = false;
-          } else {
+          if (episodeId <= 0) {
             failedAutoMatchCount += 1;
           }
         }
-
-        if (!isUserEdited(draft[link.id].release.ProviderName)) {
-          draft[link.id].release.ProviderName += '+User';
-        }
-        if (!matchFailed) {
-          draft[link.id].state = 'ready';
-        }
+        applyRelease(link, episodeId);
       }
     });
 
@@ -257,6 +273,12 @@ const LinkFilesWithProviders = () => {
         failedAutoMatchCount === 1
           ? 'Failed to auto-match an episode for 1 file'
           : `Failed to auto-match an episode for ${failedAutoMatchCount} files`,
+      );
+    }
+
+    if (unfilledRangeFillCount > 0) {
+      toast.warning(
+        `Only ${selectedRows.length - unfilledRangeFillCount} of ${selectedRows.length} files could be range-filled`,
       );
     }
   };

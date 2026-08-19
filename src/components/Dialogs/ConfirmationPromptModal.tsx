@@ -32,6 +32,7 @@ const ConfirmationPromptModal = ({
   const [isConfirmPending, setIsConfirmPending] = useState(false);
 
   const handleConfirm = () => {
+    if (!show) return;
     setIsConfirmPending(true);
     Promise.resolve()
       .then(() => onConfirm())

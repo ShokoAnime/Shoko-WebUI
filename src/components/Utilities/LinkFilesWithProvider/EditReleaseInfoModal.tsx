@@ -4,7 +4,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiInformationOutline, mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { map } from 'lodash';
+import { filter, findIndex, map } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -15,17 +15,20 @@ import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
+import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import { useReleaseInfoReleaseGroupsQuery } from '@/core/react-query/release-info/queries';
 import { useGetSeriesAniDBMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { AUTO_MATCH_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
+import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
+import { AUTO_MATCH_EPISODE_ID, RANGE_FILL_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 
 import SelectedFilesModal from './SelectedFilesModal';
 import SelectReleaseGroup from './SelectReleaseGroup';
 
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { ReleaseGroupType, ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 import type {
@@ -124,6 +127,7 @@ const EditReleaseInfoModal = (props: Props) => {
     touchedFields,
   } = useReleaseInfoForm(selectedLinks, show);
   const [seriesUpdating, setSeriesUpdating] = useState(false);
+  const [showRangeFill, toggleRangeFill, setShowRangeFill] = useToggle(false);
 
   const seriesSearchQuery = useSeriesAniDBQuery(
     formState.selectedSeriesId ?? 0,
@@ -155,6 +159,14 @@ const EditReleaseInfoModal = (props: Props) => {
       type: 'Episode',
       AirDate: '',
     } as const,
+    {
+      label: formState.rangeFill
+        ? `Range Fill (from ${getEpisodePrefix(formState.rangeFill.episodeType)}${formState.rangeFill.rangeStart})`
+        : 'Range Fill (not set)',
+      value: RANGE_FILL_EPISODE_ID,
+      type: 'Episode',
+      AirDate: '',
+    } as const,
     ...map(episodesQuery.data ?? [], episode => ({
       label: episode.Title,
       value: episode.ID,
@@ -180,6 +192,7 @@ const EditReleaseInfoModal = (props: Props) => {
       setFormState((draft) => {
         draft.selectedSeriesId = series.ID;
         draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
+        draft.rangeFill = undefined;
       });
       return;
     }
@@ -191,6 +204,7 @@ const EditReleaseInfoModal = (props: Props) => {
       setFormState((draft) => {
         draft.selectedSeriesId = seriesData.ID;
         draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
+        draft.rangeFill = undefined;
       });
     } catch (_) {
       toast.error('Failed to get series data!');
@@ -199,12 +213,36 @@ const EditReleaseInfoModal = (props: Props) => {
   };
 
   const handleEpisodeSelect = (optionValue: number) => {
+    if (!show || !formState.selectedSeriesId) return;
     markTouched('CrossReferences');
     setHasDifferent((draft) => {
       draft.episodes = false;
     });
     setFormState((draft) => {
       draft.selectedEpisodeId = optionValue;
+      if (optionValue !== RANGE_FILL_EPISODE_ID) {
+        draft.rangeFill = undefined;
+      }
+    });
+    if (optionValue === RANGE_FILL_EPISODE_ID) {
+      setShowRangeFill(true);
+    }
+  };
+
+  const handleRangeFill = (episodeType: EpisodeTypeValues, rangeStart: number) => {
+    const items = filter(episodesQuery.data ?? [], ['Type', episodeType]);
+    if (findIndex(items, ['EpisodeNumber', rangeStart]) === -1) {
+      toast.error('Unable to find starting episode.');
+      return;
+    }
+
+    markTouched('CrossReferences');
+    setHasDifferent((draft) => {
+      draft.episodes = false;
+    });
+    setFormState((draft) => {
+      draft.selectedEpisodeId = RANGE_FILL_EPISODE_ID;
+      draft.rangeFill = { episodeType, rangeStart };
     });
   };
 
@@ -266,6 +304,7 @@ const EditReleaseInfoModal = (props: Props) => {
     setFormState((draft) => {
       draft.selectedSeriesId = undefined;
       draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
+      draft.rangeFill = undefined;
     });
     setHasDifferent((draft) => {
       draft.series = false;
@@ -284,7 +323,13 @@ const EditReleaseInfoModal = (props: Props) => {
     });
   };
 
+  const saveDisabled = !show
+    || touchedFields.size === 0
+    || (formState.selectedEpisodeId === RANGE_FILL_EPISODE_ID && !formState.rangeFill);
+
   const handleSave = () => {
+    if (saveDisabled) return;
+
     const releaseInfo: Partial<ReleaseInfoType> = {};
     let crossReference: CrossReferenceType | undefined;
 
@@ -312,6 +357,9 @@ const EditReleaseInfoModal = (props: Props) => {
         seriesId: formState.selectedSeriesId,
         episodeId: formState.selectedEpisodeId ?? AUTO_MATCH_EPISODE_ID,
         episodes: episodesQuery.data ?? [],
+        ...(formState.selectedEpisodeId === RANGE_FILL_EPISODE_ID && formState.rangeFill
+          ? { rangeFill: formState.rangeFill }
+          : {}),
       };
     }
 
@@ -319,9 +367,17 @@ const EditReleaseInfoModal = (props: Props) => {
     onClose();
   };
 
-  useToggleModalKeybinds(show, 'modal');
+  useToggleModalKeybinds(show && !showRangeFill, 'modal');
   useToggleModalKeybinds(!show, 'primary');
-  useHotkeys('escape', onClose, { scopes: 'modal' });
+  useHotkeys(
+    'escape',
+    () => {
+      if (show) onClose();
+    },
+    { scopes: 'modal' },
+  );
+  useHotkeys('r', () => handleEpisodeSelect(RANGE_FILL_EPISODE_ID), { scopes: 'modal' });
+  useHotkeys('enter', handleSave, { scopes: 'modal' });
 
   return (
     <ModalPanel
@@ -339,7 +395,7 @@ const EditReleaseInfoModal = (props: Props) => {
               onClick={handleSave}
               buttonType="primary"
               buttonSize="normal"
-              disabled={touchedFields.size === 0}
+              disabled={saveDisabled}
             >
               Save
             </Button>
@@ -387,14 +443,23 @@ const EditReleaseInfoModal = (props: Props) => {
                   <Icon path={mdiRefresh} size={1} spin={isRefreshingSeries} className="text-panel-icon-action" />
                 </Button>
               </div>
-              <SelectEpisodeList
-                options={episodeOptions}
-                value={formState.selectedEpisodeId ?? 0}
-                onChange={handleEpisodeSelect}
-                rowIdx={0}
-                standalone
-                disabled={hasDifferent.series}
-              />
+              <div className="flex items-center gap-x-2">
+                <div className="grow">
+                  <SelectEpisodeList
+                    options={episodeOptions}
+                    value={formState.selectedEpisodeId ?? 0}
+                    onChange={handleEpisodeSelect}
+                    rowIdx={0}
+                    standalone
+                    disabled={hasDifferent.series}
+                  />
+                </div>
+                {formState.selectedEpisodeId === RANGE_FILL_EPISODE_ID && (
+                  <Button onClick={toggleRangeFill}>
+                    <Icon path={mdiPencilCircleOutline} size={1} className="shrink-0 text-panel-icon-action" />
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="flex flex-col gap-y-2">
               <span className="font-semibold">Release Group</span>
@@ -455,6 +520,7 @@ const EditReleaseInfoModal = (props: Props) => {
           </>
         )}
       </div>
+      <RangeFillModal show={showRangeFill} onClose={toggleRangeFill} handleRangeFill={handleRangeFill} />
     </ModalPanel>
   );
 };

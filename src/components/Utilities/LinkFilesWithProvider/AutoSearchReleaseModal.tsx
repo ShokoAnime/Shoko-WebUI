@@ -90,6 +90,7 @@ const AutoSearchReleaseModal = (props: Props) => {
   };
 
   const handleSearch = () => {
+    if (!show) return;
     onUpdateProviders(providers);
     onClose();
   };
@@ -101,7 +102,13 @@ const AutoSearchReleaseModal = (props: Props) => {
 
   useToggleModalKeybinds(show && !showProviderInfoModal, 'modal');
   useToggleModalKeybinds(!show, 'primary');
-  useHotkeys('escape', onClose, { scopes: 'modal' });
+  useHotkeys(
+    'escape',
+    () => {
+      if (show) onClose();
+    },
+    { scopes: 'modal' },
+  );
   useHotkeys('enter', handleSearch, { scopes: 'modal' });
 
   return (

@@ -1,4 +1,4 @@
-import type { AniDBEpisodeType } from '@/core/types/api/episode';
+import type { AniDBEpisodeType, EpisodeTypeValues } from '@/core/types/api/episode';
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 
 export type LinkStateType = 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
@@ -17,10 +17,16 @@ export type ManualLinkType = {
   state: LinkStateType;
 };
 
+export type RangeFillType = {
+  episodeType: EpisodeTypeValues;
+  rangeStart: number;
+};
+
 export type CrossReferenceType = {
   seriesId: number;
   episodeId: number;
   episodes: AniDBEpisodeType[];
+  rangeFill?: RangeFillType;
 };
 
 export type TouchableField =
