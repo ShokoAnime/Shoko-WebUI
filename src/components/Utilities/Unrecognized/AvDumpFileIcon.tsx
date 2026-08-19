@@ -29,7 +29,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
 
-  const ed2kHashLink = useMemo(() => getEd2kLink(file), [file]);
+  const ed2kHashLink = getEd2kLink(file);
 
   const { color, path, state, title } = useMemo(() => {
     if (dumpSession?.status === 'Running') {
