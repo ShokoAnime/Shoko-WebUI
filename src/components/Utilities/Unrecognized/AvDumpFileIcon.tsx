@@ -17,6 +17,7 @@ import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
 import { copyToClipboard, processError } from '@/core/util';
+import { Crc32Regex } from '@/core/utilities/auto-match-regexes';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 
 import type { FileType } from '@/core/types/api/file';
@@ -85,10 +86,11 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
       } as const;
     }
 
-    const crc32 = file.Locations[0].RelativePath
-      && /\b[0-9A-F]{8}\b/i.exec(file.Locations[0].RelativePath)?.[0].toUpperCase();
-    if (crc32) {
-      return crc32 === file.Hashes.find(hash => hash.Type === 'CRC32')?.Value
+    const relativePath = file.Locations?.[0]?.RelativePath;
+    const crc32Result = relativePath && Crc32Regex.exec(relativePath)?.[0]?.toUpperCase();
+
+    if (crc32Result) {
+      return crc32Result === file.Hashes.find(hash => hash.Type === 'CRC32')?.Value
         ? {
           path: mdiFileDocumentCheckOutline,
           color: 'text-panel-text-primary',
