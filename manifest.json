@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.120",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.120/Shoko-WebUI-v2.6.0-dev.120.zip",
+      "checksum": "sha256:2acc214363a494825451c6e936550c40131cd555f492d48fd116e2ae1cc38616",
+      "commit": "03fc232066e4dd3a0069fbda72e00e141ddcccc4",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(avdump): Display CRC32 filename matching status by @pokyunn in https://github.com/ShokoAnime/Shoko-WebUI/pull/1436\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.119...v2.6.0-dev.120\n"
+    },
+    {
       "version": "2.6.0-dev.119",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.119/Shoko-WebUI-v2.6.0-dev.119.zip",
