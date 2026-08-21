@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
-import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiFolderOpen } from '@mdi/js';
+import { mdiFolderOpen, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { find } from 'lodash';
@@ -44,13 +44,10 @@ type DeleteModeOptionProps = {
 };
 
 const DeleteModeOption = ({ description, isSelected, onSelect, title }: DeleteModeOptionProps) => (
-  <button
-    type="button"
-    role="radio"
-    aria-checked={isSelected}
+  <Button
     onClick={onSelect}
     className={cx(
-      'flex cursor-pointer gap-x-2 rounded-lg border p-4 text-left transition ease-in-out',
+      'flex gap-x-2 rounded-lg border p-4 text-left transition-colors',
       isSelected
         ? 'border-panel-text-primary bg-panel-background-alt'
         : 'border-panel-border hover:bg-panel-background-alt',
@@ -58,14 +55,14 @@ const DeleteModeOption = ({ description, isSelected, onSelect, title }: DeleteMo
   >
     <Icon
       className="shrink-0 text-panel-icon-action"
-      path={isSelected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
+      path={isSelected ? mdiRadioboxMarked : mdiRadioboxBlank}
       size={1}
     />
     <div className="flex flex-col gap-y-1">
       <div className="font-semibold">{title}</div>
-      <div className="text-sm opacity-65">{description}</div>
+      <div className="text-sm font-medium opacity-65">{description}</div>
     </div>
-  </button>
+  </Button>
 );
 
 const ManagedFolderModal = () => {
@@ -109,7 +106,11 @@ const ManagedFolderModal = () => {
   const handleDelete = async () => {
     if (!ID) return;
     const removeRecords = deleteMode === 'remove-records';
-    await deleteFolder({ folderId: ID, removeRecords, ...(removeRecords && { skipEvents: !removeFromMyList }) })
+    await deleteFolder({
+      folderId: ID,
+      removeRecords,
+      skipEvents: removeRecords ? !removeFromMyList : undefined,
+    })
       .then(() => {
         toast.success('Managed folder deleted!');
         dispatch(setStatus(false));
@@ -225,13 +226,15 @@ const ManagedFolderModal = () => {
         <div>
           You are about to stop managing&nbsp;
           <span className="font-semibold text-panel-text-important">{managedFolder.Name}</span>
-          . Nothing on your disk is deleted &mdash; only what Shoko remembers about these files changes.
+          . Your files on disk aren&apos;t touched. Only what Shoko remembers about them changes.
         </div>
-        <div className="flex flex-col gap-y-1 rounded-lg border border-panel-border bg-panel-background-alt p-4">
+
+        <div>
           <div className="text-sm opacity-65">Location</div>
           <div className="break-all text-panel-text-important">{managedFolder.Path}</div>
         </div>
-        <div className="flex flex-col gap-y-3" role="radiogroup" aria-label="What to do with the file records">
+
+        <div className="flex flex-col gap-y-3">
           <DeleteModeOption
             title="The files only moved"
             description="Keeps every file record. Pick this for a new drive letter, a renamed path, or a migration, then add the new location so your collection re-links without re-hashing."
@@ -245,6 +248,7 @@ const ManagedFolderModal = () => {
             onSelect={() => setDeleteMode('remove-records')}
           />
         </div>
+
         {deleteMode === 'keep-records' && (
           <div className="text-sm opacity-65">
             Changed your mind later? Run&nbsp;
@@ -254,6 +258,7 @@ const ManagedFolderModal = () => {
             &nbsp;to do the same without touching your AniDB MyList.
           </div>
         )}
+
         {deleteMode === 'remove-records' && (
           <div className="flex flex-col gap-y-2">
             <Checkbox
