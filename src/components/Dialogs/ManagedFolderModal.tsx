@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import type { ChangeEvent } from 'react';
-import { mdiFolderOpen } from '@mdi/js';
+import type { ChangeEvent, ReactNode } from 'react';
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiFolderOpen } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { find } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -32,6 +34,40 @@ const defaultManagedFolder = {
   ID: 0,
 } as ManagedFolderType;
 
+type DeleteMode = 'remove-records' | 'keep-records';
+
+type DeleteModeOptionProps = {
+  description: ReactNode;
+  isSelected: boolean;
+  onSelect: () => void;
+  title: string;
+};
+
+const DeleteModeOption = ({ description, isSelected, onSelect, title }: DeleteModeOptionProps) => (
+  <button
+    type="button"
+    role="radio"
+    aria-checked={isSelected}
+    onClick={onSelect}
+    className={cx(
+      'flex cursor-pointer gap-x-2 rounded-lg border p-4 text-left transition ease-in-out',
+      isSelected
+        ? 'border-panel-text-primary bg-panel-background-alt'
+        : 'border-panel-border hover:bg-panel-background-alt',
+    )}
+  >
+    <Icon
+      className="shrink-0 text-panel-icon-action"
+      path={isSelected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
+      size={1}
+    />
+    <div className="flex flex-col gap-y-1">
+      <div className="font-semibold">{title}</div>
+      <div className="text-sm opacity-65">{description}</div>
+    </div>
+  </button>
+);
+
 const ManagedFolderModal = () => {
   const dispatch = useDispatch();
 
@@ -45,12 +81,14 @@ const ManagedFolderModal = () => {
   const { isPending: isUpdatePending, mutate: updateFolder } = useUpdateManagedFolderMutation();
 
   const [managedFolder, setManagedFolder] = useState(defaultManagedFolder);
-  const [keepAssociatedFileRecords, setKeepAssociatedFileRecords] = useState(false);
+  const [deleteMode, setDeleteMode] = useState<DeleteMode>('keep-records');
+  const [removeFromMyList, setRemoveFromMyList] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const getFolderDetails = () => {
     setManagedFolder(defaultManagedFolder);
-    setKeepAssociatedFileRecords(false);
+    setDeleteMode('keep-records');
+    setRemoveFromMyList(true);
     setShowDeleteConfirm(false);
 
     if (edit) {
@@ -70,7 +108,8 @@ const ManagedFolderModal = () => {
 
   const handleDelete = async () => {
     if (!ID) return;
-    await deleteFolder({ folderId: ID, removeRecords: !keepAssociatedFileRecords })
+    const removeRecords = deleteMode === 'remove-records';
+    await deleteFolder({ folderId: ID, removeRecords, ...(removeRecords && { skipEvents: !removeFromMyList }) })
       .then(() => {
         toast.success('Managed folder deleted!');
         dispatch(setStatus(false));
@@ -180,31 +219,55 @@ const ManagedFolderModal = () => {
         onClose={() => setShowDeleteConfirm(false)}
         show={showDeleteConfirm}
         title="Delete Managed Folder"
-        confirmButtonType="danger"
-        confirmText="Delete"
+        confirmButtonType={deleteMode === 'remove-records' ? 'danger' : 'primary'}
+        confirmText={deleteMode === 'remove-records' ? 'Delete Records' : 'Remove Folder Only'}
       >
         <div>
-          Are you sure you want to delete the managed folder&nbsp;
+          You are about to stop managing&nbsp;
           <span className="font-semibold text-panel-text-important">{managedFolder.Name}</span>
-          ?
+          . Nothing on your disk is deleted &mdash; only what Shoko remembers about these files changes.
         </div>
         <div className="flex flex-col gap-y-1 rounded-lg border border-panel-border bg-panel-background-alt p-4">
           <div className="text-sm opacity-65">Location</div>
           <div className="break-all text-panel-text-important">{managedFolder.Path}</div>
         </div>
-        <div className="flex flex-col gap-y-2">
-          <Checkbox
-            id="keep-associated-file-records"
-            isChecked={keepAssociatedFileRecords}
-            onChange={event => setKeepAssociatedFileRecords(event.target.checked)}
-            label="Keep associated file records"
-            labelRight
+        <div className="flex flex-col gap-y-3" role="radiogroup" aria-label="What to do with the file records">
+          <DeleteModeOption
+            title="The files only moved"
+            description="Keeps every file record. Pick this for a new drive letter, a renamed path, or a migration, then add the new location so your collection re-links without re-hashing."
+            isSelected={deleteMode === 'keep-records'}
+            onSelect={() => setDeleteMode('keep-records')}
           />
-          <div className="text-sm opacity-65">
-            Keep VideoLocals, DuplicateFiles, and related records for this folder. Use this when migrating files to a
-            new location.
-          </div>
+          <DeleteModeOption
+            title="The files are gone for good"
+            description="Shoko forgets every file here: episode matches, watched state, resume position, and stored hashes. Files that also live in another managed folder are kept."
+            isSelected={deleteMode === 'remove-records'}
+            onSelect={() => setDeleteMode('remove-records')}
+          />
         </div>
+        {deleteMode === 'keep-records' && (
+          <div className="text-sm opacity-65">
+            Changed your mind later? Run&nbsp;
+            <span className="font-semibold text-panel-text-important">Remove Missing Files</span>
+            &nbsp;from the Actions menu to clear out records whose files are no longer accessible, or&nbsp;
+            <span className="font-semibold text-panel-text-important">Remove Missing Files (Keep in MyList)</span>
+            &nbsp;to do the same without touching your AniDB MyList.
+          </div>
+        )}
+        {deleteMode === 'remove-records' && (
+          <div className="flex flex-col gap-y-2">
+            <Checkbox
+              id="remove-from-mylist"
+              isChecked={removeFromMyList}
+              onChange={event => setRemoveFromMyList(event.target.checked)}
+              label="Also remove these files from your AniDB MyList"
+              labelRight
+            />
+            <div className="text-sm opacity-65">
+              This cannot be undone by re-adding the folder. Uncheck it to leave your MyList untouched.
+            </div>
+          </div>
+        )}
       </ConfirmationPromptModal>
       <BrowseFolderModal onSelect={onFolderSelect} />
     </>
