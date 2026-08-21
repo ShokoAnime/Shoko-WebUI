@@ -11,6 +11,7 @@ import type {
 
 export const EDITABLE_STATES = new Set<LinkStateType>(['ready', 'init']);
 export const AUTO_MATCH_EPISODE_ID = -1;
+export const RANGE_FILL_EPISODE_ID = -2;
 
 export const isUserEdited = (providerName: string) => providerName.split('+').includes('User');
 
