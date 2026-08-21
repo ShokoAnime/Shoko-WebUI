@@ -3,9 +3,10 @@ import type { MouseEvent } from 'react';
 import {
   mdiDumpTruck,
   mdiFileDocumentAlertOutline,
+  mdiFileDocumentArrowRightOutline,
   mdiFileDocumentCheckOutline,
+  mdiFileDocumentOutline,
   mdiFileDocumentRefreshOutline,
-  mdiInformationOutline,
   mdiLoading,
 } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -16,6 +17,7 @@ import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
 import { copyToClipboard, processError } from '@/core/util';
+import { Crc32Regex } from '@/core/utilities/auto-match-regexes';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 
 import type { FileType } from '@/core/types/api/file';
@@ -27,7 +29,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
 
-  const hash = useMemo(() => getEd2kLink(file), [file]);
+  const ed2kHashLink = getEd2kLink(file);
 
   const { color, path, state, title } = useMemo(() => {
     if (dumpSession?.status === 'Running') {
@@ -50,7 +52,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
 
     if (dumpSession?.status === 'Success') {
       return {
-        path: mdiFileDocumentCheckOutline,
+        path: mdiFileDocumentArrowRightOutline,
         color: 'text-panel-icon-important',
         title: 'Dumped Successfully!',
         state: 'success',
@@ -68,7 +70,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
 
     if (file.AVDump.LastDumpedAt) {
       return {
-        path: mdiFileDocumentCheckOutline,
+        path: mdiFileDocumentArrowRightOutline,
         color: 'text-panel-icon-important',
         title: 'Previously Dumped!',
         state: 'success',
@@ -84,11 +86,29 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
       } as const;
     }
 
+    const relativePath = file.Locations?.[0]?.RelativePath;
+    const crc32Result = relativePath && Crc32Regex.exec(relativePath)?.[1]?.toUpperCase();
+
+    if (crc32Result) {
+      return crc32Result === file.Hashes.find(hash => hash.Type === 'CRC32')?.Value
+        ? {
+          path: mdiFileDocumentCheckOutline,
+          color: 'text-panel-text-primary',
+          title: 'Computed CRC32 matches filename!',
+          state: 'info',
+        } as const
+        : {
+          path: mdiFileDocumentAlertOutline,
+          color: 'text-panel-text-warning',
+          title: 'Computed CRC32 does not match filename!',
+          state: 'info',
+        } as const;
+    }
+
     return {
-      path: mdiInformationOutline,
+      path: mdiFileDocumentOutline,
       color: 'text-panel-text',
-      title: 'Click to Dump!',
-      state: 'idle',
+      state: 'info',
     } as const;
   }, [file, dumpSession, truck]);
 
@@ -102,7 +122,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
 
   const handleCopy = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    copyToClipboard(hash, 'ED2K hash').catch(console.error);
+    copyToClipboard(ed2kHashLink, 'ED2K hash').catch(console.error);
   };
 
   return (
@@ -112,17 +132,20 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
           <Button
             onClick={handleCopy}
             className={color}
+            tooltip={title}
           >
-            <Icon path={path} spin={path === mdiLoading} size={1} title={title} />
+            <Icon path={path} spin={path === mdiLoading} size={1} />
           </Button>
         )
         : (
           <Button
             onClick={handleDump}
-            className={cx((state !== 'idle' && state !== 'failed') && 'pointer-events-none cursor-default')}
-            tooltip="Dump File"
+            className={cx(
+              (state !== 'idle' && state !== 'failed' && state !== 'info') && 'pointer-events-none cursor-default',
+            )}
+            tooltip={title}
           >
-            <Icon path={path} spin={path === mdiLoading} size={1} className={color} title={title} />
+            <Icon path={path} spin={path === mdiLoading} size={1} className={color} />
           </Button>
         )}
     </div>
