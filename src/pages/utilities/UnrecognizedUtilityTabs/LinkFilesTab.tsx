@@ -44,6 +44,14 @@ import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 
+const splitFilePath = (path: string) => {
+  const separatorIndex = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+  return {
+    filename: separatorIndex === -1 ? path : path.slice(separatorIndex + 1),
+    relativePath: separatorIndex === -1 ? 'Root Level' : path.slice(0, separatorIndex),
+  };
+};
+
 type ManualLink = {
   LinkID: number;
   FileID: number;
@@ -499,9 +507,10 @@ const LinkFilesTab = () => {
     map(orderedLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
+      const { filename, relativePath } = splitFilePath(path);
+
       return (
         <div
-          title={path}
           className={cx([
             'w-full rounded-lg border border-panel-border p-4 leading-5 odd:bg-panel-background-alt even:bg-panel-background',
             selectedLink === idx && 'border-panel-text-primary',
@@ -509,11 +518,14 @@ const LinkFilesTab = () => {
           key={`${link.FileID}-${link.EpisodeID}-${idx}-static`}
           onClick={() => updateSelectedLink(idx)}
           data-tooltip-id="tooltip"
-          data-tooltip-content={path}
+          data-tooltip-content={filename}
         >
-          <div className="line-clamp-1">
-            {path}
-          </div>
+          <span className="line-clamp-1 text-sm font-semibold opacity-65">
+            {relativePath}
+          </span>
+          <span className="line-clamp-1">
+            {filename}
+          </span>
         </div>
       );
     });
@@ -522,12 +534,12 @@ const LinkFilesTab = () => {
     reduce<ManualLink, ReactNode[]>(orderedLinks, (result, link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
+      const { filename, relativePath } = splitFilePath(path);
       const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div
-          title={path}
           className={cx([
-            'col-start-1 flex w-full cursor-pointer items-center rounded-lg border border-panel-border p-4 leading-5 transition-colors',
+            'col-start-1 w-full cursor-pointer items-center rounded-lg border border-panel-border p-4 leading-5 transition-colors',
             idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
             selectedLink === idx && 'border-panel-text-primary',
           ])}
@@ -535,12 +547,15 @@ const LinkFilesTab = () => {
           data-file-id={link.FileID}
           onClick={() => updateSelectedLink(idx)}
           data-tooltip-id="tooltip"
-          data-tooltip-content={path}
+          data-tooltip-content={filename}
         >
-          <div className="line-clamp-1">
-            {path}
+          <span className="line-clamp-1 text-sm font-semibold opacity-65">
+            {relativePath}
+          </span>
+          <span className="line-clamp-1">
+            {filename}
             {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
-          </div>
+          </span>
         </div>,
       );
       if (episodes.length > 0) {
