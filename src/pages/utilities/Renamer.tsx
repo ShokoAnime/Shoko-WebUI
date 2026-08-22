@@ -344,7 +344,7 @@ const Renamer = () => {
   const [showPresetModal, togglePresetModal] = useToggle(false);
   const [presetRename, setPresetRename] = useState(false);
 
-  const configEdited = configQuery.isSuccess ? !isEqual(configQuery.data ?? {}, newConfig) : true;
+  const configEdited = renamerHasConfig && !isEqual(configQuery.data, newConfig);
   const configInitialized = !isEqual({}, newConfig);
 
   const fetchPreviewPage = async (index: number) => {
