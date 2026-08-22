@@ -133,6 +133,7 @@ const TmdbLinking = () => {
     count: episodeCount,
     getScrollElement: () => scrollRef.current,
     estimateSize,
+    initialOffset: () => scrollRef.current?.scrollTop ?? 0,
     overscan: 10,
     gap: 8,
   });

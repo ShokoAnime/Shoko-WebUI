@@ -134,6 +134,7 @@ const SeriesEpisodes = () => {
     count: episodeCount,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => 370, // 370px is the minimum height of a loaded row
+    initialOffset: () => scrollRef.current?.scrollTop ?? 0,
     overscan: 5,
     gap: 16,
   });
