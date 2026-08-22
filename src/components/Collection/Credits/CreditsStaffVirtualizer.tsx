@@ -30,6 +30,7 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
     count: castArray.length,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => dynamicCardSize.y,
+    initialOffset: () => scrollRef.current?.scrollTop ?? 0,
     overscan,
     lanes,
     gap: dynamicCardSize.gap,

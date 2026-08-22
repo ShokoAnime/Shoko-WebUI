@@ -61,7 +61,7 @@ const SeriesImages = () => {
   const { scrollRef, series } = useOutletContext<SeriesContextType>();
   const navigate = useNavigateVoid();
 
-  const tabType = (capitalize(imageType) ?? 'Posters') as ImageTabType;
+  const tabType = (imageType ? capitalize(imageType) : 'Posters') as ImageTabType;
 
   const { fetchNextPage, isFetchingNextPage, ...imagesQuery } = useSeriesImagesInfiniteQuery(
     series.IDs.ID,
@@ -124,16 +124,16 @@ const SeriesImages = () => {
 
   const { height: itemHeight, width: itemWidth } = imageItemSize[tabType];
 
-  const itemsPerRow = Math.max(
-    1,
-    Math.floor((gridContainerBounds.width / pxPerRem + itemGap) / (itemWidth + itemGap)),
-  );
-  const rowCount = Math.ceil(imagesTotal / itemsPerRow);
+  const itemsPerRow = gridContainerBounds.width > 0
+    ? Math.max(1, Math.floor((gridContainerBounds.width / pxPerRem + itemGap) / (itemWidth + itemGap)))
+    : 0;
+  const rowCount = itemsPerRow > 0 ? Math.ceil(imagesTotal / itemsPerRow) : 0;
 
   const virtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => (itemHeight + itemGap) * pxPerRem,
+    estimateSize: () => itemHeight * pxPerRem,
+    initialOffset: () => scrollRef.current?.scrollTop ?? 0,
     overscan: 4,
     gap: 24,
   });
