@@ -17,10 +17,17 @@ jobs:
       actions: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           persist-credentials: false
+
+      - name: Install pnpm and Node.js
+        uses: pnpm/setup@v1
+        with:
+          version: 11
+          runtime: node@24
+          cache: true
 
       - name: Run OpenCode
         uses: anomalyco/opencode/github@latest

@@ -14,24 +14,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
+      - name: Install pnpm and Node.js
+        uses: pnpm/setup@v1
         with:
           version: 11
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+          runtime: node@24
+          cache: true
 
       - name: Determine bump type
         uses: zwaldowski/match-label-action@v6
