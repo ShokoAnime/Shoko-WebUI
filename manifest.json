@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.123",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.123/Shoko-WebUI-v2.6.0-dev.123.zip",
+      "checksum": "sha256:e9951be0d9016fbb0f993ae63dfc3c9ed3d9720975d85a0030122ccc9e0817a6",
+      "commit": "5d2738fa311662094b869ae6068813f990cf0823",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* ci: grant actions:write so opencode cache saves succeed (#1444) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1444\n* fix(series): stop tab clicks from resetting scroll position by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1446\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.122...v2.6.0-dev.123\n"
+    },
+    {
       "version": "2.6.0-dev.122",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.122/Shoko-WebUI-v2.6.0-dev.122.zip",
