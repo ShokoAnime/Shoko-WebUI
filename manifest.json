@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.124",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.124/Shoko-WebUI-v2.6.0-dev.124.zip",
+      "checksum": "sha256:37ce4ef03a56cf65fe49a546128002762940dae6db593eaadcc58bd1ef23dd24",
+      "commit": "94230f60b650b263350c689ca9ed1e14e1f13a07",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* ci: upgrade actions to v7 and consolidate pnpm/node setup by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1447\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.123...v2.6.0-dev.124\n"
+    },
+    {
       "version": "2.6.0-dev.123",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.123/Shoko-WebUI-v2.6.0-dev.123.zip",
