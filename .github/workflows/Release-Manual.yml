@@ -49,7 +49,7 @@ jobs:
         if: ${{ steps.regex-match1.outputs.match == '' && steps.regex-match2.outputs.match == '' }}
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.inputs.ref }}
           fetch-depth: 0
@@ -62,20 +62,12 @@ jobs:
         id: prev-tag
         run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
+      - name: Install pnpm and Node.js
+        uses: pnpm/setup@v1
         with:
           version: 11
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+          runtime: node@24
+          cache: true
 
       - name: Lint
         run: pnpm lint --quiet
