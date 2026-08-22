@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.121",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.121/Shoko-WebUI-v2.6.0-dev.121.zip",
+      "checksum": "sha256:f4793b8b764b446ac11e23e3f4c145d3fb54a9595b5eb887378227e903aab51f",
+      "commit": "543771f822b0cb00d0b66244230611b8952e71d8",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix(renamer): treat missing config as unedited instead of always edited by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1441\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.120...v2.6.0-dev.121\n"
+    },
+    {
       "version": "2.6.0-dev.120",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.120/Shoko-WebUI-v2.6.0-dev.120.zip",
