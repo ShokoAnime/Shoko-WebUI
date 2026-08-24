@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { find } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import { dayjs } from '@/core/util';
+import { dayjs, extractFileNameFromPath } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -54,8 +54,7 @@ export const fileNameColumn: UtilityHeaderType<FileType> = {
   className: 'line-clamp-2 grow basis-0 overflow-hidden',
   item: (file) => {
     const path = file.Locations[0]?.RelativePath ?? '';
-    const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-    const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+    const { fileName, relativePath } = extractFileNameFromPath(path);
     return (
       <div
         className="flex flex-col"
@@ -67,7 +66,7 @@ export const fileNameColumn: UtilityHeaderType<FileType> = {
           {relativePath}
         </span>
         <span className="line-clamp-1">
-          {path?.split(/[/\\]/g).pop()}
+          {fileName}
         </span>
       </div>
     );

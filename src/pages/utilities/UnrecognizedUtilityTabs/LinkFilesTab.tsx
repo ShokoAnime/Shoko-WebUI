@@ -36,21 +36,13 @@ import {
 } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { getAnidbAnimeLink } from '@/core/util';
+import { extractFileNameFromPath, getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
-
-const splitFilePath = (path: string) => {
-  const separatorIndex = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
-  return {
-    filename: separatorIndex === -1 ? path : path.slice(separatorIndex + 1),
-    relativePath: separatorIndex === -1 ? 'Root Level' : path.slice(0, separatorIndex),
-  };
-};
 
 type ManualLink = {
   LinkID: number;
@@ -507,7 +499,7 @@ const LinkFilesTab = () => {
     map(orderedLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
-      const { filename, relativePath } = splitFilePath(path);
+      const { fileName, relativePath } = extractFileNameFromPath(path);
 
       return (
         <div
@@ -518,13 +510,13 @@ const LinkFilesTab = () => {
           key={`${link.FileID}-${link.EpisodeID}-${idx}-static`}
           onClick={() => updateSelectedLink(idx)}
           data-tooltip-id="tooltip"
-          data-tooltip-content={filename}
+          data-tooltip-content={path}
         >
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
             {relativePath}
           </span>
           <span className="line-clamp-1">
-            {filename}
+            {fileName}
           </span>
         </div>
       );
@@ -534,12 +526,12 @@ const LinkFilesTab = () => {
     reduce<ManualLink, ReactNode[]>(orderedLinks, (result, link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
-      const { filename, relativePath } = splitFilePath(path);
+      const { fileName, relativePath } = extractFileNameFromPath(path);
       const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div
           className={cx([
-            'col-start-1 w-full cursor-pointer items-center rounded-lg border border-panel-border p-4 leading-5 transition-colors',
+            'col-start-1 w-full cursor-pointer rounded-lg border border-panel-border p-4 leading-5 transition-colors',
             idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
             selectedLink === idx && 'border-panel-text-primary',
           ])}
@@ -547,13 +539,13 @@ const LinkFilesTab = () => {
           data-file-id={link.FileID}
           onClick={() => updateSelectedLink(idx)}
           data-tooltip-id="tooltip"
-          data-tooltip-content={filename}
+          data-tooltip-content={path}
         >
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
             {relativePath}
           </span>
           <span className="line-clamp-1">
-            {filename}
+            {fileName}
             {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
           </span>
         </div>,
