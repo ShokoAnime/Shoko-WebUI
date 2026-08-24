@@ -122,13 +122,11 @@ const getResultColumn = (
     }
 
     const path = result.RelativePath ?? '';
-    const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-    const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+    const { fileName, relativePath } = extractFileNameFromPath(path);
     const managedFolder = find(
       managedFolders,
       { ID: result.ManagedFolderID ?? -1 },
     )?.Name ?? '<Unknown>';
-    const fileName = path ? path?.split(/[/\\]/g).pop() : 'No change!';
 
     return (
       <div
@@ -197,15 +195,14 @@ const getStatusColumn = (
 
     if (result) {
       const path = file.Locations[0]?.RelativePath ?? '';
-      const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-      const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+      const { relativePath } = extractFileNameFromPath(path);
       const managedFolder = find(
         managedFolders,
         { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
       )?.Name ?? '<Unknown>';
 
       const newPath = result.RelativePath ?? '';
-      const newRelativePath = match ? newPath?.substring(0, match.index) : 'Root Level';
+      const { relativePath: newRelativePath } = extractFileNameFromPath(newPath);
       const newManagedFolder = find(
         managedFolders,
         { ID: result?.ManagedFolderID ?? -1 },
