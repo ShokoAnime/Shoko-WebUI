@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.125",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.125/Shoko-WebUI-v2.6.0-dev.125.zip",
+      "checksum": "sha256:33b967b28fbb6deed728ebfaf9859c97aaf098bbc79a2b84a20bb08f160a9496",
+      "commit": "2e2087f0eb3d0525ad24f1f5356e12099e4e6df1",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* ci(opencode): skip bot comments and require write access before running (#1449) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1449\n* feat: Split file path display in Link Files tab by @pokyunn in https://github.com/ShokoAnime/Shoko-WebUI/pull/1448\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.124...v2.6.0-dev.125\n"
+    },
+    {
       "version": "2.6.0-dev.124",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.124/Shoko-WebUI-v2.6.0-dev.124.zip",
