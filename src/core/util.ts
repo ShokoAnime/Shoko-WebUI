@@ -150,3 +150,13 @@ export const handleShiftSelect = (params: {
 
 /** Root font size in px, read once from the document. */
 export const pxPerRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+export const extractFileNameFromPath = (path: string) => {
+  const match = /[/\\](?=[^/\\]*$)/g.exec(path);
+  const relativePath = match ? path.substring(0, match.index) : 'Root Level';
+  const fileName = path.split(/[/\\]/g).pop();
+  return {
+    fileName,
+    relativePath,
+  };
+};

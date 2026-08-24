@@ -1,3 +1,5 @@
+import { extractFileNameFromPath } from '@/core/util';
+
 import type { ReleaseSourceValues } from '@/core/types/api/file';
 import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
 
@@ -13,8 +15,7 @@ const parseReleaseSource = (releaseSource: ReleaseSourceValues) => {
 const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
   const { file } = link;
   const path = file.Locations[0]?.RelativePath ?? '';
-  const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-  const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+  const { fileName, relativePath } = extractFileNameFromPath(path);
 
   return (
     <div className="flex flex-col gap-2 border-y border-panel-border text-sm">
@@ -29,7 +30,7 @@ const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
             {relativePath}
           </span>
           <span className="line-clamp-1">
-            {path?.split(/[/\\]/g).pop()}
+            {fileName}
           </span>
         </div>
       </div>

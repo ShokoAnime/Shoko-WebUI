@@ -50,6 +50,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearResults, removeFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
 import toast from '@/core/toast';
+import { extractFileNameFromPath } from '@/core/util';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -67,8 +68,7 @@ const getFileColumn = (managedFolders: ManagedFolderType[]) => ({
   className: 'line-clamp-2 grow basis-0 overflow-hidden',
   item: (file) => {
     const path = file.Locations[0]?.RelativePath ?? '';
-    const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-    const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+    const { fileName, relativePath } = extractFileNameFromPath(path);
     const managedFolder = find(
       managedFolders,
       { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
@@ -84,7 +84,7 @@ const getFileColumn = (managedFolders: ManagedFolderType[]) => ({
           {`${managedFolder} - ${relativePath}`}
         </span>
         <span className="line-clamp-1 break-all">
-          {path?.split(/[/\\]/g).pop()}
+          {fileName}
         </span>
       </div>
     );
@@ -122,13 +122,11 @@ const getResultColumn = (
     }
 
     const path = result.RelativePath ?? '';
-    const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-    const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+    const { fileName, relativePath } = extractFileNameFromPath(path);
     const managedFolder = find(
       managedFolders,
       { ID: result.ManagedFolderID ?? -1 },
     )?.Name ?? '<Unknown>';
-    const fileName = path ? path?.split(/[/\\]/g).pop() : 'No change!';
 
     return (
       <div
@@ -197,15 +195,14 @@ const getStatusColumn = (
 
     if (result) {
       const path = file.Locations[0]?.RelativePath ?? '';
-      const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-      const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+      const { relativePath } = extractFileNameFromPath(path);
       const managedFolder = find(
         managedFolders,
         { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
       )?.Name ?? '<Unknown>';
 
       const newPath = result.RelativePath ?? '';
-      const newRelativePath = match ? newPath?.substring(0, match.index) : 'Root Level';
+      const { relativePath: newRelativePath } = extractFileNameFromPath(newPath);
       const newManagedFolder = find(
         managedFolders,
         { ID: result?.ManagedFolderID ?? -1 },

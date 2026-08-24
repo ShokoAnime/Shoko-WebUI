@@ -2,6 +2,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
+import { extractFileNameFromPath } from '@/core/util';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { FileType } from '@/core/types/api/file';
@@ -31,9 +32,7 @@ const SelectedFilesModal = ({ files, onClose, show }: Props) => {
         {files.map((file) => {
           const location = file.Locations[0];
           const path = location?.RelativePath ?? '';
-          const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-          const relativePath = match ? path.substring(0, match.index) : 'Root Level';
-          const fileName = path.split(/[/\\]/g).pop() ?? `<missing file path for ${file.ID}>`;
+          const { fileName, relativePath } = extractFileNameFromPath(path);
           const folderName = managedFoldersQuery.data?.find(
             folder => folder.ID === location?.ManagedFolderID,
           )?.Name ?? '';
@@ -51,7 +50,7 @@ const SelectedFilesModal = ({ files, onClose, show }: Props) => {
                 &nbsp;-&nbsp;
                 {relativePath}
               </span>
-              <span className="line-clamp-1 truncate text-sm">{fileName}</span>
+              <span className="line-clamp-1 truncate text-sm">{fileName ?? `<missing file path for ${file.ID}>`}</span>
             </div>
           );
         })}

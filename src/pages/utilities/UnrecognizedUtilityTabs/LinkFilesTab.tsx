@@ -36,7 +36,7 @@ import {
 } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { getAnidbAnimeLink } from '@/core/util';
+import { extractFileNameFromPath, getAnidbAnimeLink } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -499,9 +499,10 @@ const LinkFilesTab = () => {
     map(orderedLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
+      const { fileName, relativePath } = extractFileNameFromPath(path);
+
       return (
         <div
-          title={path}
           className={cx([
             'w-full rounded-lg border border-panel-border p-4 leading-5 odd:bg-panel-background-alt even:bg-panel-background',
             selectedLink === idx && 'border-panel-text-primary',
@@ -511,9 +512,12 @@ const LinkFilesTab = () => {
           data-tooltip-id="tooltip"
           data-tooltip-content={path}
         >
-          <div className="line-clamp-1">
-            {path}
-          </div>
+          <span className="line-clamp-1 text-sm font-semibold opacity-65">
+            {relativePath}
+          </span>
+          <span className="line-clamp-1">
+            {fileName}
+          </span>
         </div>
       );
     });
@@ -522,12 +526,12 @@ const LinkFilesTab = () => {
     reduce<ManualLink, ReactNode[]>(orderedLinks, (result, link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
+      const { fileName, relativePath } = extractFileNameFromPath(path);
       const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div
-          title={path}
           className={cx([
-            'col-start-1 flex w-full cursor-pointer items-center rounded-lg border border-panel-border p-4 leading-5 transition-colors',
+            'col-start-1 w-full cursor-pointer rounded-lg border border-panel-border p-4 leading-5 transition-colors',
             idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
             selectedLink === idx && 'border-panel-text-primary',
           ])}
@@ -537,10 +541,13 @@ const LinkFilesTab = () => {
           data-tooltip-id="tooltip"
           data-tooltip-content={path}
         >
-          <div className="line-clamp-1">
-            {path}
+          <span className="line-clamp-1 text-sm font-semibold opacity-65">
+            {relativePath}
+          </span>
+          <span className="line-clamp-1">
+            {fileName}
             {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
-          </div>
+          </span>
         </div>,
       );
       if (episodes.length > 0) {

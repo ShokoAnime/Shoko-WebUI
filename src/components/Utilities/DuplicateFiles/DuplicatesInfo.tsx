@@ -8,6 +8,7 @@ import Button from '@/components/Input/Button';
 import { useDeleteFileLocationMutation } from '@/core/react-query/file/mutations';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import { extractFileNameFromPath } from '@/core/util';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { FileLocationType, FileType } from '@/core/types/api/file';
@@ -35,9 +36,7 @@ const DuplicatesInfo = ({ file, location }: Props) => {
   useToggleModalKeybinds(!confirmDelete, 'modal');
 
   const path = location.RelativePath ?? '';
-  const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-  const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
-  const fileName = path?.split(/[/\\]/g).pop();
+  const { fileName, relativePath } = extractFileNameFromPath(path);
   const folderName = managedFoldersQuery.data?.find(
     folder => folder.ID === location.ManagedFolderID,
   )?.Name ?? '';
