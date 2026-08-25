@@ -207,6 +207,13 @@ try {
       transform: defaultTransform,
     },
     {
+      name: 'trailing-native-title',
+      // Catches releases (e.g. CR) that append a native/romaji title after the codec, which no other rule terminates before.
+      regex:
+        /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?<showName>[^\n]+?(?: \((?<year>(?:19|20)\d{2})\))?)(?:- ?)? S(?<season>\d+)E(?<episode>\d+)(?:v(?<version>\d+))? (?<resolution>\d{3,4}p) .+\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+      transform: defaultTransform,
+    },
+    {
       name: 'default',
       regex:
         // oxlint-disable-next-line no-useless-escape
