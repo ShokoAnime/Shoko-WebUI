@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { create } from 'axios';
 
+import Events from '@/core/events';
 import store from '@/core/store';
 import { isDebug } from '@/core/util';
 
@@ -87,6 +88,24 @@ const unwrapResponse = (response: AxiosResponse) => {
 
 const handleResponseError = (error: AxiosError) => {
   addApiBreadcrumb(error.config, (error.response as AxiosResponse | undefined)?.data, error.response?.status, 'error');
+
+  // Log out when an authenticated Shoko API request is rejected with 401 (eg. an invalid or revoked apikey).
+  // Guards:
+  // - `AUTH_URL_PATTERN` excludes auth endpoints themselves - failed logins also return 401.
+  // - Path check excludes Plex requests (/plex), which use their own authentication.
+  // - `apikey` check ensures this fires only while logged in, and therefore at most once per session.
+  const status = error.response?.status;
+  const url = error.config?.url ?? '';
+  const fullPath = `${error.config?.baseURL ?? ''}${url}`;
+  if (
+    status === 401
+    && !AUTH_URL_PATTERN.test(url)
+    && fullPath.startsWith('/api')
+    && store.getState().apiSession.apikey
+  ) {
+    store.dispatch({ type: Events.AUTH_LOGOUT });
+  }
+
   return Promise.reject(error);
 };
 
