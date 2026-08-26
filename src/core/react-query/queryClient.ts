@@ -79,7 +79,10 @@ const queryClient = new QueryClient({
 
         if (status !== 404 && failureCount < 4) return true; // 1 initial request + retry 4 times
 
-        toast.error(header, message);
+        // Deduplicates identical error toasts: react-toastify skips a new toast while
+        // one with the same `toastId` is still active.
+        const errorToastId = `query-error-${`${header} ${message}`.replace(/[^a-zA-Z\d]+/g, '-')}`;
+        toast.error(header, message, { toastId: errorToastId });
 
         return false;
       },
