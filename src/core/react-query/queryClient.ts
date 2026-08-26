@@ -6,7 +6,35 @@ import store from '@/core/store';
 import toast from '@/core/toast';
 
 import type { QueryKey } from '@tanstack/react-query';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
+
+type ShokoErrorData = {
+  Detail?: string;
+  Message?: string;
+  detail?: string;
+  errors?: Record<string, string[]>;
+};
+
+// Extracts a readable message across all known Shoko server error shapes:
+// - v3 ValidationProblemDetails: `{ detail | Detail, errors: { field: [msg] } }`
+//   (Detail is often null; useful text lives in `errors`)
+// - v3 object errors (412/409/424 plugin/package): `{ Message }` (PascalCase)
+// - v3 simple errors (NotFound/BadRequest(msg), 503 middleware): JSON/plain string body
+const extractServerErrorMessage = (data: unknown): string | undefined => {
+  if (typeof data === 'string') return data.length > 0 ? data : undefined;
+  if (data === null || typeof data !== 'object') return undefined;
+
+  const errorData = data as ShokoErrorData;
+  const detail = errorData.detail ?? errorData.Detail;
+  if (detail != null && detail.length > 0) return detail;
+
+  if (errorData.errors) {
+    const fieldMessages = Object.values(errorData.errors).flat().filter(fieldMessage => fieldMessage.length > 0);
+    if (fieldMessages.length > 0) return fieldMessages.join(' ');
+  }
+
+  return errorData.Message ?? undefined;
+};
 
 const processError = (error: AxiosError | Error) => {
   let errorHeader: string;
@@ -14,13 +42,13 @@ const processError = (error: AxiosError | Error) => {
   let errorStatus = 0;
 
   if (isAxiosError(error)) {
-    const { message } = error;
-    const { method, url } = error.config as AxiosRequestConfig;
-    const { data, status } = error.response as AxiosResponse<{ detail: string }> ?? {};
+    const { config, message } = error;
+    const { method, url } = config ?? {};
+    const { data, status } = (error.response ?? {}) as Partial<AxiosResponse<unknown>>;
 
     errorHeader = `Error ${status}: ${method?.toUpperCase()} ${url}`;
-    errorMessage = data?.detail ?? message;
-    errorStatus = status;
+    errorMessage = extractServerErrorMessage(data) ?? message;
+    errorStatus = status ?? 0;
   } else {
     errorHeader = '[API]';
     errorMessage = `Error ${error.message}`;
