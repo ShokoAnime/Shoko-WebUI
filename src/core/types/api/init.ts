@@ -6,11 +6,15 @@ export type UserType = {
 export type ServerStatusType = {
   StartupMessage: string;
   State: 'Starting' | 'Started' | 'Failed' | 'Waiting';
-  Uptime: string;
-  DatabaseBlocked: {
-    Progress: number;
+  CanShutdown?: boolean;
+  CanRestart?: boolean;
+  BootstrappedAt?: string;
+  StartedAt?: string;
+  Uptime?: string;
+  StartupTime?: string;
+  DatabaseBlocked?: {
     Blocked: boolean;
-    Status: string;
+    Reason?: string;
   };
 };
 
