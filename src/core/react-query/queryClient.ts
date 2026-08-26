@@ -1,8 +1,6 @@
 import { MutationCache, QueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
-import Events from '@/core/events';
-import store from '@/core/store';
 import toast from '@/core/toast';
 
 import type { QueryKey } from '@tanstack/react-query';
@@ -61,6 +59,20 @@ const processError = (error: AxiosError | Error) => {
   };
 };
 
+const RETRY_LIMIT = 4;
+// Transient client-side failures worth retrying (server will accept the same request later).
+const RETRYABLE_STATUSES = new Set([408, 425, 429]);
+
+// Retries only transient failures: network errors (no response), request timeouts,
+// rate limiting, and server errors. Other client errors (4xx) fail identically on
+// retry and are given up immediately.
+const shouldRetryQuery = (failureCount: number, status: number) => {
+  if (failureCount >= RETRY_LIMIT) return false;
+  // status 0 = network error / no HTTP response
+  if (status === 0) return true;
+  return status >= 500 || RETRYABLE_STATUSES.has(status);
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -69,15 +81,7 @@ const queryClient = new QueryClient({
       retry: (failureCount, error: AxiosError | Error) => {
         const { header, message, status } = processError(error);
 
-        if (
-          isAxiosError(error) && (error.request as XMLHttpRequest).responseURL.endsWith('/Settings')
-          && status === 401
-        ) {
-          store.dispatch({ type: Events.AUTH_LOGOUT });
-          return false;
-        }
-
-        if (status !== 404 && failureCount < 4) return true; // 1 initial request + retry 4 times
+        if (shouldRetryQuery(failureCount, status)) return true; // 1 initial request + retry up to 4 times
 
         // Deduplicates identical error toasts: react-toastify skips a new toast while
         // one with the same `toastId` is still active.
