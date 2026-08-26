@@ -1,13 +1,15 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
-import { mdiBrushOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
+import { mdiBrushOutline, mdiOpenInNew, mdiPower, mdiRefresh, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
-import { useVersionQuery } from '@/core/react-query/init/queries';
+import { useServerRestartMutation, useServerShutdownMutation } from '@/core/react-query/init/mutations';
+import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import {
   useServerUpdateCheckQuery,
@@ -43,8 +45,13 @@ const GeneralSettings = () => {
   const themePathHref = useMemo(() => document.getElementById('theme-css')!.attributes.getNamedItem('href')!, []);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const versionQuery = useVersionQuery();
+  const serverStatusQuery = useServerStatusQuery();
+  const { isPending: isRestarting, mutateAsync: restartServer } = useServerRestartMutation();
+  const { isPending: isShuttingDown, mutateAsync: shutdownServer } = useServerShutdownMutation();
   const themesQuery = useWebuiThemesQuery();
   const { isPending: isUploading, mutate: uploadTheme } = useWebuiUploadThemeMutation();
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+  const [showShutdownConfirm, setShowShutdownConfirm] = useState(false);
 
   const onOpenFileDialog = (event: MouseEvent<HTMLButtonElement>) => {
     if (isUploading) {
@@ -94,7 +101,61 @@ const GeneralSettings = () => {
     <>
       <title>Settings &gt; General | Shoko</title>
       <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">General</div>
+        <div className="flex items-center justify-between">
+          <div className="text-xl font-semibold">General</div>
+          <div className="flex items-center gap-2">
+            {serverStatusQuery.data?.CanRestart && (
+              <>
+                <Button
+                  className="text-button-primary"
+                  tooltip="Restart Shoko"
+                  onClick={() => setShowRestartConfirm(true)}
+                >
+                  <Icon path={mdiRestart} size={1} spin={isRestarting} />
+                </Button>
+                <ConfirmationPromptModal
+                  onConfirm={async () => {
+                    await restartServer(undefined)
+                      .then(() => toast.success('Shoko is restarting'))
+                      .catch(() => toast.error('Failed to restart Shoko'));
+                  }}
+                  onClose={() => setShowRestartConfirm(false)}
+                  show={showRestartConfirm}
+                  confirmButtonType="primary"
+                  confirmText="Restart"
+                  title="Restart Shoko"
+                >
+                  Are you sure you want to restart Shoko?
+                </ConfirmationPromptModal>
+              </>
+            )}
+            {serverStatusQuery.data?.CanShutdown && (
+              <>
+                <Button
+                  className="text-button-danger"
+                  tooltip="Shutdown Shoko"
+                  onClick={() => setShowShutdownConfirm(true)}
+                >
+                  <Icon path={mdiPower} size={1} spin={isShuttingDown} />
+                </Button>
+                <ConfirmationPromptModal
+                  onConfirm={async () => {
+                    await shutdownServer(undefined)
+                      .then(() => toast.success('Shoko is shutting down'))
+                      .catch(() => toast.error('Failed to shutdown Shoko'));
+                  }}
+                  onClose={() => setShowShutdownConfirm(false)}
+                  show={showShutdownConfirm}
+                  confirmButtonType="danger"
+                  confirmText="Shutdown"
+                  title="Shutdown Shoko"
+                >
+                  Are you sure you want to shutdown Shoko?
+                </ConfirmationPromptModal>
+              </>
+            )}
+          </div>
+        </div>
         <div>
           Here you can find settings for version details, theme customization, notification management, and log
           configurations.
