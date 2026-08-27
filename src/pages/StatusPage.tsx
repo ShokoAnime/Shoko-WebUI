@@ -48,13 +48,13 @@ const variantDetailMap: Record<Variant, VariantDetail> = {
     button: 'Retry Now',
     headline: 'Shoko appears to be offline',
     title: 'Offline | Shoko',
-    whisper: 'You can also retry manually — automatic checks keep running either way.',
+    whisper: 'You can also retry manually. Automatic checks keep running either way.',
   },
   restarting: {
     headline: 'Shoko is restarting…',
     statusFallback: 'Waiting for the server to come back…',
     title: 'Restarting… | Shoko',
-    whisper: 'This can take a minute or two.',
+    whisper: 'This may take a moment.',
   },
   'shutting-down': {
     activity: 'Waiting for the server to stop…',
@@ -69,7 +69,7 @@ const variantDetailMap: Record<Variant, VariantDetail> = {
     title: 'Shut Down | Shoko',
   },
   starting: {
-    activity: 'This usually takes less than a minute.',
+    activity: 'This may take a moment.',
     headline: 'Shoko is starting up…',
     statusFallback: 'Preparing…',
     title: 'Starting… | Shoko',
@@ -126,10 +126,26 @@ const StatusPage = () => {
 
   const [consecutiveErrors, setConsecutiveErrors] = useState(0);
   const [offlineStartedAt, setOfflineStartedAt] = useState<number | null>(null);
-  const [refetchInterval, setRefetchInterval] = useState(0);
   const [isManualRetryPending, setIsManualRetryPending] = useState(false);
 
-  const serverStatusQuery = useServerStatusQuery(refetchInterval);
+  const serverStatusQuery = useServerStatusQuery((query) => {
+    const isError = !!query.state.error;
+    const serverState = query.state.data?.State;
+    const variant = deriveVariant(lifecycle.action, lifecycle.initiatedAt, isError, serverState, consecutiveErrors);
+    switch (variant) {
+      case 'restarting':
+      case 'shutting-down':
+      case 'starting':
+        return POLL_INTERVAL_FAST_MS;
+      case 'failed':
+        return RETRY_INTERVAL_SLOW_MS;
+      case 'offline':
+        if (offlineStartedAt === null) return RETRY_INTERVAL_FAST_MS;
+        return Date.now() - offlineStartedAt < OFFLINE_BACKOFF_MS ? RETRY_INTERVAL_FAST_MS : RETRY_INTERVAL_SLOW_MS;
+      default:
+        return false;
+    }
+  });
   const { isPending: isRestartPending, mutateAsync: restartServer } = useServerRestartMutation();
 
   const lastSeenStartedAtRef = useRef(serverStatusQuery.dataUpdatedAt);
@@ -158,22 +174,6 @@ const StatusPage = () => {
 
   const icon = variantIconMap[variant];
 
-  const nextRefetchInterval = (() => {
-    switch (variant) {
-      case 'restarting':
-      case 'shutting-down':
-      case 'starting':
-        return POLL_INTERVAL_FAST_MS;
-      case 'failed':
-        return RETRY_INTERVAL_SLOW_MS;
-      case 'offline':
-        if (offlineStartedAt === null) return RETRY_INTERVAL_FAST_MS;
-        return Date.now() - offlineStartedAt < OFFLINE_BACKOFF_MS ? RETRY_INTERVAL_FAST_MS : RETRY_INTERVAL_SLOW_MS;
-      default:
-        return 0;
-    }
-  })();
-
   // Counts completed poll cycles that settled on error; a successful cycle resets it.
   // Used for the shutdown Phase A -> B transition (2 *consecutive* failures).
   useEffect(() => {
@@ -192,10 +192,6 @@ const StatusPage = () => {
       setOfflineStartedAt(null);
     }
   }, [variant, offlineStartedAt]);
-
-  useEffect(() => {
-    setRefetchInterval(nextRefetchInterval);
-  }, [nextRefetchInterval]);
 
   // When the server is back to Started, redirect immediately — no recovery UI.
   // Fires on a *transition* into Started after a disruption, so stale pre-restart 'Started'

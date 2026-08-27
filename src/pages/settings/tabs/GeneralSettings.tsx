@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { mdiBrushOutline, mdiOpenInNew, mdiPower, mdiRefresh, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { isAxiosError } from 'axios';
 import cx from 'classnames';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
@@ -26,6 +27,11 @@ import useSettingsContext from '@/hooks/useSettingsContext';
 let themeUpdateCounter = 0;
 
 const UI_VERSION = getUiVersion();
+
+const isNetworkError = (error: unknown): boolean => {
+  if (!isAxiosError(error)) return false;
+  return !error.response || error.code === 'ERR_NETWORK' || error.message === 'Network Error';
+};
 
 const GeneralSettings = () => {
   const { newSettings, updateSetting } = useSettingsContext();
@@ -105,6 +111,11 @@ const GeneralSettings = () => {
       navigate('/webui/status');
     } catch (error) {
       console.error(error);
+      if (isNetworkError(error)) {
+        // Server likely dropped the connection mid-restart; treat as success
+        navigate('/webui/status');
+        return;
+      }
       dispatch(clearAction());
       toast.error('Failed to restart Shoko');
     }
@@ -117,6 +128,11 @@ const GeneralSettings = () => {
       navigate('/webui/status');
     } catch (error) {
       console.error(error);
+      if (isNetworkError(error)) {
+        // Server likely dropped the connection mid-shutdown; treat as success
+        navigate('/webui/status');
+        return;
+      }
       dispatch(clearAction());
       toast.error('Failed to shutdown Shoko');
     }
