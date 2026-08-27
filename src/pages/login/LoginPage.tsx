@@ -2,14 +2,7 @@ import { useEffect, useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { useSearchParams } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
-import {
-  mdiAlertCircleOutline,
-  mdiCloseCircleOutline,
-  mdiGithub,
-  mdiHelpCircleOutline,
-  mdiLoading,
-  mdiOpenInNew,
-} from '@mdi/js';
+import { mdiAlertCircleOutline, mdiGithub, mdiHelpCircleOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { siDiscord } from 'simple-icons';
@@ -67,12 +60,21 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (!serverStatusQuery.data) setPollingInterval(500);
-    else if (serverStatusQuery.data?.State !== 'Starting') setPollingInterval(0);
+    else setPollingInterval(0);
+
+    // Only Started and Waiting are handled here; anything else belongs on the status page.
+    if (
+      serverStatusQuery.isError
+      || (serverStatusQuery.data && !['Started', 'Waiting'].includes(serverStatusQuery.data.State))
+    ) {
+      navigate('/webui/status', { replace: true });
+      return;
+    }
 
     if (serverStatusQuery.data?.State === 'Started' && apiSession.apikey !== '') {
       navigate(searchParams.get('redirectTo') ?? '/webui', { replace: true });
     }
-  }, [serverStatusQuery.data, apiSession, navigate, searchParams]);
+  }, [serverStatusQuery.data, serverStatusQuery.isError, apiSession, navigate, searchParams]);
 
   const handleSignIn = (event: SubmitEvent) => {
     event.preventDefault();
@@ -139,16 +141,6 @@ const LoginPage = () => {
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
                 </div>
               )}
-              {serverStatusQuery.data?.State === 'Starting' && (
-                <div className="flex flex-col items-center justify-center gap-y-2">
-                  <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
-                  <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
-                  <div className="text-lg">
-                    <span className="font-semibold">Status:</span>
-                    {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
-                  </div>
-                </div>
-              )}
               {serverStatusQuery.data?.State === 'Started' && (
                 <form onSubmit={handleSignIn} className="flex flex-col gap-y-6">
                   <Input
@@ -189,16 +181,6 @@ const LoginPage = () => {
                     Login
                   </Button>
                 </form>
-              )}
-              {serverStatusQuery.data?.State === 'Failed' && (
-                <div className="flex max-h-80 flex-col items-center justify-center gap-y-2 pb-2">
-                  <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
-                  <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
-                  Check the error message below
-                  <div className="overflow-y-auto text-lg font-semibold break-all">
-                    {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
-                  </div>
-                </div>
               )}
               {serverStatusQuery.data?.State === 'Waiting' && (
                 <div className="flex flex-col gap-y-6">

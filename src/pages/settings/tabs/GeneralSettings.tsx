@@ -16,8 +16,11 @@ import {
   useWebuiThemesQuery,
   useWebuiUpdateCheckQuery,
 } from '@/core/react-query/webui/queries';
+import { clearAction, setAction } from '@/core/slices/serverLifecycle';
+import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
 import { getUiVersion, isDebug } from '@/core/util';
+import useNavigate from '@/hooks/useNavigateVoid';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
@@ -26,6 +29,8 @@ const UI_VERSION = getUiVersion();
 
 const GeneralSettings = () => {
   const { newSettings, updateSetting } = useSettingsContext();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     Logging,
@@ -93,6 +98,30 @@ const GeneralSettings = () => {
     });
   };
 
+  const onConfirmRestart = async () => {
+    dispatch(setAction('restarting'));
+    try {
+      await restartServer(undefined);
+      navigate('/webui/status');
+    } catch (error) {
+      console.error(error);
+      dispatch(clearAction());
+      toast.error('Failed to restart Shoko');
+    }
+  };
+
+  const onConfirmShutdown = async () => {
+    dispatch(setAction('shutting-down'));
+    try {
+      await shutdownServer(undefined);
+      navigate('/webui/status');
+    } catch (error) {
+      console.error(error);
+      dispatch(clearAction());
+      toast.error('Failed to shutdown Shoko');
+    }
+  };
+
   const currentTheme = useMemo(() => (
     themesQuery.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
   ), [themesQuery.data, WebUI_Settings.theme]);
@@ -114,11 +143,7 @@ const GeneralSettings = () => {
                   <Icon path={mdiRestart} size={1} spin={isRestarting} />
                 </Button>
                 <ConfirmationPromptModal
-                  onConfirm={async () => {
-                    await restartServer(undefined)
-                      .then(() => toast.success('Shoko is restarting'))
-                      .catch(() => toast.error('Failed to restart Shoko'));
-                  }}
+                  onConfirm={onConfirmRestart}
                   onClose={() => setShowRestartConfirm(false)}
                   show={showRestartConfirm}
                   confirmButtonType="primary"
@@ -139,11 +164,7 @@ const GeneralSettings = () => {
                   <Icon path={mdiPower} size={1} spin={isShuttingDown} />
                 </Button>
                 <ConfirmationPromptModal
-                  onConfirm={async () => {
-                    await shutdownServer(undefined)
-                      .then(() => toast.success('Shoko is shutting down'))
-                      .catch(() => toast.error('Failed to shutdown Shoko'));
-                  }}
+                  onConfirm={onConfirmShutdown}
                   onClose={() => setShowShutdownConfirm(false)}
                   show={showShutdownConfirm}
                   confirmButtonType="danger"

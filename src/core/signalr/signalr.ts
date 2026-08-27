@@ -74,7 +74,9 @@ const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniD
 
 let restartToastId: number | string | undefined;
 
-const onRestartRequiredUpdate = (state: RestartRequiredType) => {
+const onRestartRequiredUpdate = (getState: () => RootState) => (state: RestartRequiredType) => {
+  // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
+  if (getState().serverLifecycle.action !== 'idle') return;
   if (state.RequiresRestart) {
     if (restartToastId) return;
     restartToastId = toast.info('Restart required!', 'A restart is pending. Please restart the application.', {
@@ -188,24 +190,29 @@ async (action: UnknownAction) => {
       connectionEvents.on('metadata:series.updated', () => handleEvent('SeriesUpdated'));
       connectionEvents.on('metadata:series.removed', () => handleEvent('SeriesUpdated'));
 
-      connectionEvents.on('configuration:connected', onRestartRequiredUpdate);
-      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate);
+      connectionEvents.on('configuration:connected', onRestartRequiredUpdate(getState));
+      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate(getState));
 
-      connectionEvents.onreconnecting(
-        () =>
-          toast.error('SignalR connection lost!', 'Trying to reconnect...', {
-            autoClose: 200000,
-            toastId: 'signalr-reconnecting',
-          }),
-      );
+      connectionEvents.onreconnecting(() => {
+        // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
+        if (getState().serverLifecycle.action !== 'idle') return;
+        toast.error('SignalR connection lost!', 'Trying to reconnect...', {
+          autoClose: 200000,
+          toastId: 'signalr-reconnecting',
+        });
+      });
 
       connectionEvents.onreconnected(() => {
         toast.dismiss('signalr-reconnecting');
+        // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
+        if (getState().serverLifecycle.action !== 'idle') return;
         toast.success('SignalR connection restored!', undefined, { toastId: 'signalr-connected' });
       });
 
       connectionEvents.onclose(() => {
         toast.dismiss('signalr-reconnecting');
+        // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
+        if (getState().serverLifecycle.action !== 'idle') return;
         toast.error(
           'SignalR connection could not be re-established!',
           'Check if your server is running and refresh the page once it has started',
