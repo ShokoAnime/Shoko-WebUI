@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.128",
+      "minServerVersion": "6.0.0-dev.422",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.128/Shoko-WebUI-v2.6.0-dev.128.zip",
+      "checksum": "sha256:f5689e3aeda44174d166c244730089d303cc53de64a1f497878f178358630e0e",
+      "commit": "a8a13e61d77162dba84885ae87c1c86bd5e8a453",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.422** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.422** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat: dedicated server StatusPage for lifecycle states by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1452\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.127...v2.6.0-dev.128\n"
+    },
+    {
       "version": "2.6.0-dev.127",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.127/Shoko-WebUI-v2.6.0-dev.127.zip",
