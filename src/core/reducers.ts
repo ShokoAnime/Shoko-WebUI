@@ -6,6 +6,7 @@ import firstrunReducer from './slices/firstrun';
 import mainpageReducer from './slices/mainpage';
 import miscReducer from './slices/misc';
 import modalsReducer from './slices/modals';
+import serverLifecycleReducer from './slices/serverLifecycle';
 import settingsReducer from './slices/settings';
 import utilitiesReducer from './slices/utilities';
 
@@ -19,6 +20,7 @@ const reducers = combineReducers({
   mainpage: mainpageReducer,
   misc: miscReducer,
   modals: modalsReducer,
+  serverLifecycle: serverLifecycleReducer,
   settings: settingsReducer,
   utilities: utilitiesReducer,
 });

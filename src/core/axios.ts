@@ -96,11 +96,12 @@ const handleResponseError = (error: AxiosError) => {
   // - `apikey` check ensures this fires only while logged in, and therefore at most once per session.
   const status = error.response?.status;
   const url = error.config?.url ?? '';
-  const fullPath = `${error.config?.baseURL ?? ''}${url}`;
+  const fullPath = `${error.config?.baseURL ?? ''}/${url}`;
   if (
     status === 401
     && !AUTH_URL_PATTERN.test(url)
     && fullPath.startsWith('/api')
+    && fullPath !== '/api/v3/Settings'
     && store.getState().apiSession.apikey
   ) {
     store.dispatch({ type: Events.AUTH_LOGOUT });

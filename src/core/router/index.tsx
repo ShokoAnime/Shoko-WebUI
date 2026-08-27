@@ -42,6 +42,7 @@ import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
+import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
@@ -68,6 +69,7 @@ const router = sentryCreateBrowserRouter(
       <Route path="webui" element={<SentryErrorBoundaryWrapper />}>
         <Route path="index.html" element={<Navigate to="/webui" replace />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="status" element={<StatusPage />} />
         <Route path="firstrun" element={<FirstRunPage />}>
           <Route index element={<Navigate to="acknowledgement" replace />} />
           <Route path="acknowledgement" element={<Acknowledgement />} />

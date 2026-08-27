@@ -12,7 +12,10 @@ export const loadState = (): RootState => {
 
     // If the version is the same, we can return the state as is from session storage.
     if (serializedState.apiSession?.version === UI_VERSION) {
-      return serializedState;
+      // serverLifecycle is ephemeral UI intent (restarting/shutting-down) — don't rehydrate it.
+      // Otherwise a reload mid-restart restores stale 'restarting' and traps the user on a stuck StatusPage.
+      const { serverLifecycle: _, ...persistedState } = serializedState;
+      return persistedState as RootState;
     }
 
     // If the version is different, we update the apiSession state to the current version and reset other slices.
@@ -48,7 +51,9 @@ export const saveState = (state: RootState) => {
     if (state.apiSession.rememberUser) {
       globalThis.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
     }
-    globalThis.sessionStorage.setItem('state', JSON.stringify(state));
+    // Don't persist serverLifecycle — ephemeral intent; see loadState above.
+    const { serverLifecycle: _, ...persistedState } = state;
+    globalThis.sessionStorage.setItem('state', JSON.stringify(persistedState));
   } catch (_) { // Ignore write errors.
   }
 };

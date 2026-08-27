@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { type Query, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 
@@ -17,7 +17,9 @@ export const useDefaultUserQuery = () =>
     queryFn: () => axios.get('Init/DefaultUser'),
   });
 
-export const useServerStatusQuery = (refetchInterval = 0) =>
+export const useServerStatusQuery = (
+  refetchInterval: number | false | ((query: Query<ServerStatusType>) => number | false | undefined) = false,
+) =>
   useQuery<ServerStatusType>({
     queryKey: ['init', 'server-status'],
     queryFn: () => axios.get('Init/Status'),
