@@ -21,7 +21,7 @@ import { clearAction, setAction } from '@/core/slices/serverLifecycle';
 import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
 import { getUiVersion, isDebug } from '@/core/util';
-import useNavigate from '@/hooks/useNavigateVoid';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
@@ -36,7 +36,7 @@ const isNetworkError = (error: unknown): boolean => {
 const GeneralSettings = () => {
   const { newSettings, updateSetting } = useSettingsContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const {
     Logging,
