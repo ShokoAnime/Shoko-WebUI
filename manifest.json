@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.129",
+      "minServerVersion": "6.0.0-dev.437",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.129/Shoko-WebUI-v2.6.0-dev.129.zip",
+      "checksum": "sha256:640bb274be6ea00fc207788636a11e8e1258d9580197f09bf4b8b4f7b2d50404",
+      "commit": "be8a18ec635aa90a3d9e1caf25580c4622010411",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.437** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.437** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* Rename `useNavigate` to `useNavigateVoid` (#1453) [no ci] by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1453\n* feat(file): use v3 File AudioLanguages/SubtitleLanguages and separate subtitle section by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1454\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.128...v2.6.0-dev.129\n"
+    },
+    {
       "version": "2.6.0-dev.128",
       "minServerVersion": "6.0.0-dev.422",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.128/Shoko-WebUI-v2.6.0-dev.128.zip",
