@@ -219,6 +219,14 @@ const MediaInfoDetails = ({ file }: { file: FileType }) => {
         </span>
       </div>
       <div className="flex flex-col gap-y-1">
+        <div className="flex justify-between capitalize">
+          <span className="font-semibold">Subtitles</span>
+        </div>
+        <span className="break-all">
+          {mediaInfo.SubtitleInfo || 'N/A'}
+        </span>
+      </div>
+      <div className="flex flex-col gap-y-1">
         <div className="flex break-after-all justify-between capitalize">
           <span className="font-semibold">ED2K</span>
         </div>

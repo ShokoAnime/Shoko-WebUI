@@ -50,6 +50,10 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
             {mediaInfo.AudioInfo.join(' | ')}
           </div>
           <div className="flex">
+            <div className="min-w-37.5 font-semibold">Subtitles</div>
+            {mediaInfo.SubtitleInfo || 'N/A'}
+          </div>
+          <div className="flex">
             <div className="min-w-37.5 font-semibold">Chapters</div>
             {mediaInfo.Chapters ? 'Yes' : 'No'}
           </div>
