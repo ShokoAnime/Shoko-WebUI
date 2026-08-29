@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { map, toNumber } from 'lodash';
+import { toNumber } from 'lodash';
 
 import type { FileType } from '@/core/types/api/file';
 import type { FileInfo } from '@/core/types/models/file';
@@ -36,14 +36,8 @@ const getAudioInfo = (file: FileType) => {
     info.push(file.MediaInfo.Audio[0].Format.Name);
   }
 
-  const audioLanguages = map(file.MediaInfo?.Audio, item => item.LanguageCode).filter(item => !!item);
-  if (audioLanguages && audioLanguages.length > 0) {
-    info.push(`${audioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${audioLanguages.join(', ')})`);
-  }
-
-  const subtitleLanguages = map(file.MediaInfo?.Subtitles, item => item.LanguageCode).filter(item => !!item);
-  if (subtitleLanguages && subtitleLanguages.length > 0) {
-    info.push(`${subtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${subtitleLanguages.join(', ')})`);
+  if (file.AudioLanguages.length > 0) {
+    info.push(`${file.AudioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${file.AudioLanguages.join(', ')})`);
   }
 
   return info;
@@ -53,6 +47,7 @@ const useMediaInfo = (file: FileType): FileInfo =>
   useMemo(() => {
     const videoInfo = getVideoInfo(file);
     const audioInfo = getAudioInfo(file);
+    const subtitleInfo = file.SubtitleLanguages.join(', ');
 
     const absolutePath = file.Locations?.[0]?.AbsolutePath ?? '??';
     const fileName = absolutePath.split(/[/\\]+/).pop();
@@ -75,6 +70,7 @@ const useMediaInfo = (file: FileType): FileInfo =>
       },
       VideoInfo: videoInfo,
       AudioInfo: audioInfo,
+      SubtitleInfo: subtitleInfo,
       Chapters: file.Release?.IsChaptered ?? false,
     };
   }, [file]);

@@ -11,5 +11,6 @@ export type FileInfo = {
   };
   VideoInfo: string[];
   AudioInfo: string[];
+  SubtitleInfo: string;
   Chapters: boolean;
 };

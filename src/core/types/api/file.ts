@@ -28,6 +28,8 @@ export type FileType = {
   Updated: string;
   Imported?: string;
   IsVariation: boolean;
+  AudioLanguages: string[];
+  SubtitleLanguages: string[];
   SeriesIDs?: XRefsType[];
   Release?: ReleaseInfoType;
   MediaInfo?: FileMediaInfoType;
