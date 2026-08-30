@@ -24,7 +24,11 @@ export type RangeFillType = {
 
 export type CrossReferenceType = {
   seriesId: number;
-  episodeId: number;
+  /**
+   * Row 1 may hold a sentinel (AUTO_MATCH/RANGE_FILL) or a concrete ID; rows 2+ are concrete IDs
+   * (0 = unfilled). Auto-match/range fill never coexist with extra rows.
+   */
+  episodeIds: number[];
   episodes: AniDBEpisodeType[];
   rangeFill?: RangeFillType;
 };

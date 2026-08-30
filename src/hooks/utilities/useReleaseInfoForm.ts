@@ -9,7 +9,7 @@ import type { ManualLinkType, RangeFillType, TouchableField } from '@/core/types
 
 type FormState = {
   selectedSeriesId?: number;
-  selectedEpisodeId?: number;
+  selectedEpisodeIds: number[];
   rangeFill?: RangeFillType;
   version: ReleaseInfoType['Version'] | '';
   isChaptered?: ReleaseInfoType['IsChaptered'];
@@ -23,6 +23,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
   const isBulk = selectedLinks.length > 1;
 
   const [formState, setFormState] = useImmer<FormState>({
+    selectedEpisodeIds: [],
     version: 1,
     source: 'Unknown',
     comment: '',
@@ -55,10 +56,16 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
         : findMostCommonShowName(selectedLinks.map(link => detectShow(link.file?.Locations?.[0]?.RelativePath))),
     );
 
-    const hasDifferentEpisodes = isBulk && !allSame(link => link.CrossReferences[0]?.AnidbEpisodeID);
-    const initialEpisodeId = initialSeriesId && !hasDifferentEpisodes
-      ? (first.CrossReferences[0]?.AnidbEpisodeID ?? AUTO_MATCH_EPISODE_ID)
-      : undefined;
+    // Compare the full cross-reference set so pre-filled episode rows only
+    // appear when every selected link shares the same episode links.
+    const xrefSetKey = (release: ReleaseInfoType) => release.CrossReferences.map(xref => xref.AnidbEpisodeID).join('|');
+    const hasDifferentEpisodes = isBulk && !allSame(xrefSetKey);
+    let initialEpisodeIds: number[] = [];
+    if (initialSeriesId && !hasDifferentEpisodes) {
+      initialEpisodeIds = first.CrossReferences.length
+        ? first.CrossReferences.map(xref => xref.AnidbEpisodeID)
+        : [AUTO_MATCH_EPISODE_ID];
+    }
 
     const hasDifferentSource = isBulk && !allSame(link => link.Source);
     const hasDifferentVersion = isBulk && !allSame(link => link.Version);
@@ -75,7 +82,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
     setFormState({
       selectedSeriesId: initialSeriesId,
-      selectedEpisodeId: initialEpisodeId,
+      selectedEpisodeIds: initialEpisodeIds,
       version: hasDifferentVersion ? '' : first.Version,
       isChaptered: first.IsChaptered,
       isCreditless: first.IsCreditless,

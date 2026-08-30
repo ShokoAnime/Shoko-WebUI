@@ -15,6 +15,15 @@ export const RANGE_FILL_EPISODE_ID = -2;
 
 export const isUserEdited = (providerName: string) => providerName.split('+').includes('User');
 
+/**
+ * Splits 0-100% across `total` episodes: N=1 → 0-100, N=2 → 0-50/51-100,
+ * N=3 → 0-33/34-66/67-100.
+ */
+export const getEpisodePercentageRange = (index: number, total: number) => ({
+  PercentageStart: index === 0 ? 0 : Math.floor((index * 100) / total) + 1,
+  PercentageEnd: index === total - 1 ? 100 : Math.floor(((index + 1) * 100) / total),
+});
+
 let lastLinkId = 0;
 const generateLinkId = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
