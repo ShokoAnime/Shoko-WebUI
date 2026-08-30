@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.130",
+      "minServerVersion": "6.0.0-dev.437",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.130/Shoko-WebUI-v2.6.0-dev.130.zip",
+      "checksum": "sha256:a8c70216bfec0818ce09ca32399523b88d9a2cef45e6a83e62fad5fe21070312",
+      "commit": "efb197777664d9abaa74754e2debe2bfb93a7b56",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.437** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.437** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(edit-release-info): multi-episode selection for linked files by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1455\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.129...v2.6.0-dev.130\n"
+    },
+    {
       "version": "2.6.0-dev.129",
       "minServerVersion": "6.0.0-dev.437",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.129/Shoko-WebUI-v2.6.0-dev.129.zip",
