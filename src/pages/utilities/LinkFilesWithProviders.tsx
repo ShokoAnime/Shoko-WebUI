@@ -212,15 +212,18 @@ const LinkFilesWithProviders = () => {
     let unfilledRangeFillCount = 0;
 
     setLinks((draft) => {
-      const applyRelease = (link: ManualLinkType, episodeId: number) => {
+      const applyRelease = (link: ManualLinkType, episodeIds: number[]) => {
         Object.assign(draft[link.id].release, releaseInfo);
-        if (crossReference && episodeId > 0) {
-          draft[link.id].release.CrossReferences = [{
-            AnidbEpisodeID: episodeId,
+        const concreteIds = filter(episodeIds, id => id > 0);
+        if (crossReference && concreteIds.length) {
+          // A file linked to multiple episodes is assumed to cover each of
+          // them in full, so every xref gets the whole 0-100% range
+          draft[link.id].release.CrossReferences = concreteIds.map(id => ({
+            AnidbEpisodeID: id,
             AnidbAnimeID: crossReference.seriesId,
             PercentageStart: 0,
             PercentageEnd: 100,
-          }];
+          }));
           draft[link.id].state = 'ready';
         }
         if (!isUserEdited(draft[link.id].release.ProviderName)) {
@@ -228,43 +231,51 @@ const LinkFilesWithProviders = () => {
         }
       };
 
-      if (crossReference?.episodeId === RANGE_FILL_EPISODE_ID && crossReference.rangeFill) {
+      const firstEpisodeId = crossReference?.episodeIds[0];
+
+      if (firstEpisodeId === RANGE_FILL_EPISODE_ID && crossReference?.rangeFill) {
         const items = filter(crossReference.episodes, ['Type', crossReference.rangeFill.episodeType]);
         const startIndex = findIndex(items, ['EpisodeNumber', crossReference.rangeFill.rangeStart]);
         const queue = startIndex === -1 ? [] : items.slice(startIndex);
         let filled = 0;
         for (const link of selectedRows) {
           const episode = queue[filled];
-          applyRelease(link, episode?.ID ?? 0);
+          applyRelease(link, [episode?.ID ?? 0]);
           if (episode) filled += 1;
         }
         unfilledRangeFillCount = selectedRows.length - filled;
         return;
       }
 
-      let specials = 0;
-      for (const link of selectedRows) {
-        let episodeId = 0;
-        if (crossReference) {
-          const { episodeId: selectedEpisodeId, episodes } = crossReference;
-          episodeId = selectedEpisodeId;
-          if (episodeId === AUTO_MATCH_EPISODE_ID) {
-            const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
-            if (details) {
-              const episodeNumber = details.episodeType === 'Special' && details.episodeStart === 0
-                ? specials += 1
-                : details.episodeStart;
-              episodeId = find(
-                episodes,
-                item => item.Type === details.episodeType && item.EpisodeNumber === episodeNumber,
-              )?.ID ?? 0;
-            }
+      if (crossReference && firstEpisodeId === AUTO_MATCH_EPISODE_ID) {
+        let specials = 0;
+        for (const link of selectedRows) {
+          let episodeId = 0;
+          const details = detectShow(link.file?.Locations?.[0]?.RelativePath);
+          if (details) {
+            const episodeNumber = details.episodeType === 'Special' && details.episodeStart === 0
+              ? specials += 1
+              : details.episodeStart;
+            episodeId = find(
+              crossReference.episodes,
+              item => item.Type === details.episodeType && item.EpisodeNumber === episodeNumber,
+            )?.ID ?? 0;
           }
           if (episodeId <= 0) {
             failedAutoMatchCount += 1;
           }
+          applyRelease(link, [episodeId]);
         }
-        applyRelease(link, episodeId);
+        return;
+      }
+
+      if (crossReference) {
+        const { episodeIds } = crossReference;
+        selectedRows.forEach(link => applyRelease(link, episodeIds));
+      } else {
+        // Release-only save (episode selection untouched): still merge the
+        // patch and append +User, without writing cross-references
+        selectedRows.forEach(link => applyRelease(link, []));
       }
     });
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { mdiInformationOutline, mdiPencilCircleOutline, mdiRefresh } from '@mdi/js';
+import { mdiInformationOutline, mdiMinus, mdiPencilCircleOutline, mdiPlus, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, findIndex, map } from 'lodash';
@@ -28,7 +28,7 @@ import useReleaseInfoForm from '@/hooks/utilities/useReleaseInfoForm';
 import SelectedFilesModal from './SelectedFilesModal';
 import SelectReleaseGroup from './SelectReleaseGroup';
 
-import type { EpisodeTypeValues } from '@/core/types/api/episode';
+import type { AniDBEpisodeType, EpisodeTypeValues } from '@/core/types/api/episode';
 import type { ReleaseGroupType, ReleaseInfoType, ReleaseSourceValues } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 import type {
@@ -110,6 +110,16 @@ const Title = ({ selectedLinks }: { selectedLinks: ManualLinkType[] }) => {
   );
 };
 
+const buildConcreteEpisodeOptions = (episodes: AniDBEpisodeType[], selectedEpisodeIds: number[], rowIdx: number) =>
+  map(episodes, episode => ({
+    label: episode.Title,
+    value: episode.ID,
+    type: episode.Type,
+    number: episode.EpisodeNumber,
+    AirDate: episode.AirDate ?? '',
+    disabled: selectedEpisodeIds.some((episodeId, idx) => idx !== rowIdx && episodeId === episode.ID),
+  }));
+
 const EditReleaseInfoModal = (props: Props) => {
   const { onClose, onSave, selectedLinks, show } = props;
 
@@ -167,14 +177,10 @@ const EditReleaseInfoModal = (props: Props) => {
       type: 'Episode',
       AirDate: '',
     } as const,
-    ...map(episodesQuery.data ?? [], episode => ({
-      label: episode.Title,
-      value: episode.ID,
-      type: episode.Type,
-      number: episode.EpisodeNumber,
-      AirDate: episode.AirDate ?? '',
-    })),
+    ...buildConcreteEpisodeOptions(episodesQuery.data ?? [], formState.selectedEpisodeIds, 0),
   ];
+
+  const episodeRows = formState.selectedEpisodeIds.length ? formState.selectedEpisodeIds : [0];
 
   const seriesName = hasDifferent.series
     ? 'Multiple series selected'
@@ -182,18 +188,21 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const hasSeriesSelection = !!formState.selectedSeriesId || hasDifferent.series;
 
-  const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
+  const applySeries = (seriesId: number) => {
     markTouched('CrossReferences');
     setHasDifferent((draft) => {
       draft.series = false;
     });
+    setFormState((draft) => {
+      draft.selectedSeriesId = seriesId;
+      draft.selectedEpisodeIds = [AUTO_MATCH_EPISODE_ID];
+      draft.rangeFill = undefined;
+    });
+  };
 
+  const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
     if (series.Type !== 'Unknown') {
-      setFormState((draft) => {
-        draft.selectedSeriesId = series.ID;
-        draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
-        draft.rangeFill = undefined;
-      });
+      applySeries(series.ID);
       return;
     }
 
@@ -201,25 +210,31 @@ const EditReleaseInfoModal = (props: Props) => {
     try {
       await refreshSeries({ anidbID: series.ID, force: true, immediate: true });
       const seriesData = await getSeriesAniDBData(series.ID);
-      setFormState((draft) => {
-        draft.selectedSeriesId = seriesData.ID;
-        draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
-        draft.rangeFill = undefined;
-      });
+      applySeries(seriesData.ID);
     } catch (_) {
       toast.error('Failed to get series data!');
     }
     setSeriesUpdating(false);
   };
 
-  const handleEpisodeSelect = (optionValue: number) => {
+  const handleEpisodeSelect = (optionValue: number, rowIdx = 0) => {
     if (!show || !formState.selectedSeriesId) return;
     markTouched('CrossReferences');
+    if (rowIdx > 0) {
+      setFormState((draft) => {
+        draft.selectedEpisodeIds[rowIdx] = optionValue;
+      });
+      return;
+    }
     setHasDifferent((draft) => {
       draft.episodes = false;
     });
     setFormState((draft) => {
-      draft.selectedEpisodeId = optionValue;
+      // Auto-match and range fill apply to the whole file, so they clear
+      // any additional episode rows
+      draft.selectedEpisodeIds = optionValue > 0
+        ? [optionValue, ...draft.selectedEpisodeIds.slice(1)]
+        : [optionValue];
       if (optionValue !== RANGE_FILL_EPISODE_ID) {
         draft.rangeFill = undefined;
       }
@@ -241,8 +256,24 @@ const EditReleaseInfoModal = (props: Props) => {
       draft.episodes = false;
     });
     setFormState((draft) => {
-      draft.selectedEpisodeId = RANGE_FILL_EPISODE_ID;
+      draft.selectedEpisodeIds = [RANGE_FILL_EPISODE_ID];
       draft.rangeFill = { episodeType, rangeStart };
+    });
+  };
+
+  const handleAddEpisodeRow = () => {
+    const firstEpisodeId = formState.selectedEpisodeIds[0];
+    if (firstEpisodeId == null || firstEpisodeId <= 0) return;
+    markTouched('CrossReferences');
+    setFormState((draft) => {
+      draft.selectedEpisodeIds.push(0);
+    });
+  };
+
+  const handleRemoveEpisodeRow = (rowIdx: number) => {
+    markTouched('CrossReferences');
+    setFormState((draft) => {
+      draft.selectedEpisodeIds.splice(rowIdx, 1);
     });
   };
 
@@ -303,7 +334,7 @@ const EditReleaseInfoModal = (props: Props) => {
     }
     setFormState((draft) => {
       draft.selectedSeriesId = undefined;
-      draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
+      draft.selectedEpisodeIds = [AUTO_MATCH_EPISODE_ID];
       draft.rangeFill = undefined;
     });
     setHasDifferent((draft) => {
@@ -325,7 +356,8 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const saveDisabled = !show
     || touchedFields.size === 0
-    || (formState.selectedEpisodeId === RANGE_FILL_EPISODE_ID && !formState.rangeFill);
+    || formState.selectedEpisodeIds.slice(1).some(episodeId => episodeId <= 0)
+    || (formState.selectedEpisodeIds[0] === RANGE_FILL_EPISODE_ID && !formState.rangeFill);
 
   const handleSave = () => {
     if (saveDisabled) return;
@@ -353,11 +385,23 @@ const EditReleaseInfoModal = (props: Props) => {
     setIfTouched('Group', formState.group, true);
 
     if (touchedFields.has('CrossReferences') && formState.selectedSeriesId) {
+      const firstEpisodeId = formState.selectedEpisodeIds[0];
+      let episodeIds: number[];
+      if (firstEpisodeId == null) {
+        // Defensive: every path that marks CrossReferences touched also
+        // fills the first row, so this is unreachable in practice
+        episodeIds = [AUTO_MATCH_EPISODE_ID];
+      } else if (firstEpisodeId > 0) {
+        episodeIds = [...formState.selectedEpisodeIds];
+      } else {
+        episodeIds = [firstEpisodeId];
+      }
+
       crossReference = {
         seriesId: formState.selectedSeriesId,
-        episodeId: formState.selectedEpisodeId ?? AUTO_MATCH_EPISODE_ID,
+        episodeIds,
         episodes: episodesQuery.data ?? [],
-        ...(formState.selectedEpisodeId === RANGE_FILL_EPISODE_ID && formState.rangeFill
+        ...(firstEpisodeId === RANGE_FILL_EPISODE_ID && formState.rangeFill
           ? { rangeFill: formState.rangeFill }
           : {}),
       };
@@ -443,23 +487,51 @@ const EditReleaseInfoModal = (props: Props) => {
                   <Icon path={mdiRefresh} size={1} spin={isRefreshingSeries} className="text-panel-icon-action" />
                 </Button>
               </div>
-              <div className="flex items-center gap-x-2">
-                <div className="grow">
-                  <SelectEpisodeList
-                    options={episodeOptions}
-                    value={formState.selectedEpisodeId ?? 0}
-                    onChange={handleEpisodeSelect}
-                    rowIdx={0}
-                    standalone
-                    disabled={hasDifferent.series}
-                  />
-                </div>
-                {formState.selectedEpisodeId === RANGE_FILL_EPISODE_ID && (
-                  <Button onClick={toggleRangeFill}>
-                    <Icon path={mdiPencilCircleOutline} size={1} className="shrink-0 text-panel-icon-action" />
-                  </Button>
-                )}
-              </div>
+              {map(
+                episodeRows,
+                (rowValue, rowIdx) => (
+                  <div key={`episode-${rowIdx}`} className="flex items-center gap-x-2">
+                    <div className="grow">
+                      <SelectEpisodeList
+                        options={rowIdx === 0
+                          ? episodeOptions
+                          : buildConcreteEpisodeOptions(episodesQuery.data ?? [], formState.selectedEpisodeIds, rowIdx)}
+                        value={rowValue}
+                        onChange={value => handleEpisodeSelect(value, rowIdx)}
+                        rowIdx={rowIdx}
+                        standalone
+                        disabled={hasDifferent.series}
+                      />
+                    </div>
+
+                    {rowValue === RANGE_FILL_EPISODE_ID && (
+                      <Button onClick={toggleRangeFill} disabled={hasDifferent.series}>
+                        <Icon path={mdiPencilCircleOutline} size={1} className="shrink-0 text-panel-icon-action" />
+                      </Button>
+                    )}
+
+                    {rowIdx === 0 && rowValue > 0 && (
+                      <Button
+                        onClick={handleAddEpisodeRow}
+                        tooltip="Add episode"
+                        disabled={hasDifferent.series}
+                      >
+                        <Icon path={mdiPlus} size={1} className="shrink-0 text-panel-icon-action" />
+                      </Button>
+                    )}
+
+                    {rowIdx > 0 && (
+                      <Button
+                        onClick={() => handleRemoveEpisodeRow(rowIdx)}
+                        tooltip="Remove episode"
+                        disabled={hasDifferent.series}
+                      >
+                        <Icon path={mdiMinus} size={1} className="shrink-0 text-panel-icon-action" />
+                      </Button>
+                    )}
+                  </div>
+                ),
+              )}
             </div>
             <div className="flex flex-col gap-y-2">
               <span className="font-semibold">Release Group</span>
