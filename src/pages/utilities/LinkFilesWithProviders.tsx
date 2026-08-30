@@ -270,6 +270,10 @@ const LinkFilesWithProviders = () => {
       if (crossReference) {
         const { episodeIds } = crossReference;
         selectedRows.forEach(link => applyRelease(link, episodeIds));
+      } else {
+        // Release-only save (episode selection untouched): still merge the
+        // patch and append +User, without writing cross-references
+        selectedRows.forEach(link => applyRelease(link, []));
       }
     });
 

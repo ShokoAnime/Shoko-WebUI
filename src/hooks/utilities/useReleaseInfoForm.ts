@@ -58,7 +58,8 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
     // Compare the full cross-reference set so pre-filled episode rows only
     // appear when every selected link shares the same episode links.
-    const xrefSetKey = (release: ReleaseInfoType) => release.CrossReferences.map(xref => xref.AnidbEpisodeID).join('|');
+    const xrefSetKey = (release: ReleaseInfoType) =>
+      release.CrossReferences.map(xref => xref.AnidbEpisodeID).toSorted((idA, idB) => idA - idB).join('|');
     const hasDifferentEpisodes = isBulk && !allSame(xrefSetKey);
     let initialEpisodeIds: number[] = [];
     if (initialSeriesId && !hasDifferentEpisodes) {

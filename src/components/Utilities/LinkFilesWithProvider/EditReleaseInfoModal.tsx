@@ -388,6 +388,8 @@ const EditReleaseInfoModal = (props: Props) => {
       const firstEpisodeId = formState.selectedEpisodeIds[0];
       let episodeIds: number[];
       if (firstEpisodeId == null) {
+        // Defensive: every path that marks CrossReferences touched also
+        // fills the first row, so this is unreachable in practice
         episodeIds = [AUTO_MATCH_EPISODE_ID];
       } else if (firstEpisodeId > 0) {
         episodeIds = [...formState.selectedEpisodeIds];
@@ -488,7 +490,7 @@ const EditReleaseInfoModal = (props: Props) => {
               {map(
                 episodeRows,
                 (rowValue, rowIdx) => (
-                  <div key={`episode-${rowValue}-${rowIdx}`} className="flex items-center gap-x-2">
+                  <div key={`episode-${rowIdx}`} className="flex items-center gap-x-2">
                     <div className="grow">
                       <SelectEpisodeList
                         options={rowIdx === 0
