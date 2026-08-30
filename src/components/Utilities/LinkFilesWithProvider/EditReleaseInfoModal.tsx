@@ -182,18 +182,21 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const hasSeriesSelection = !!formState.selectedSeriesId || hasDifferent.series;
 
-  const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
+  const applySeries = (seriesId: number) => {
     markTouched('CrossReferences');
     setHasDifferent((draft) => {
       draft.series = false;
     });
+    setFormState((draft) => {
+      draft.selectedSeriesId = seriesId;
+      draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
+      draft.rangeFill = undefined;
+    });
+  };
 
+  const handleSeriesSelect = async (series: SeriesAniDBSearchResult) => {
     if (series.Type !== 'Unknown') {
-      setFormState((draft) => {
-        draft.selectedSeriesId = series.ID;
-        draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
-        draft.rangeFill = undefined;
-      });
+      applySeries(series.ID);
       return;
     }
 
@@ -201,11 +204,7 @@ const EditReleaseInfoModal = (props: Props) => {
     try {
       await refreshSeries({ anidbID: series.ID, force: true, immediate: true });
       const seriesData = await getSeriesAniDBData(series.ID);
-      setFormState((draft) => {
-        draft.selectedSeriesId = seriesData.ID;
-        draft.selectedEpisodeId = AUTO_MATCH_EPISODE_ID;
-        draft.rangeFill = undefined;
-      });
+      applySeries(seriesData.ID);
     } catch (_) {
       toast.error('Failed to get series data!');
     }
