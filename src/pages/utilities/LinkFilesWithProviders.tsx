@@ -26,7 +26,6 @@ import createLinksFromFiles, {
   AUTO_MATCH_EPISODE_ID,
   EDITABLE_STATES,
   RANGE_FILL_EPISODE_ID,
-  getEpisodePercentageRange,
   isUserEdited,
 } from '@/core/utilities/releaseInfoHelpers';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -217,10 +216,13 @@ const LinkFilesWithProviders = () => {
         Object.assign(draft[link.id].release, releaseInfo);
         const concreteIds = filter(episodeIds, id => id > 0);
         if (crossReference && concreteIds.length) {
-          draft[link.id].release.CrossReferences = concreteIds.map((id, idx) => ({
+          // A file linked to multiple episodes is assumed to cover each of
+          // them in full, so every xref gets the whole 0-100% range
+          draft[link.id].release.CrossReferences = concreteIds.map(id => ({
             AnidbEpisodeID: id,
             AnidbAnimeID: crossReference.seriesId,
-            ...getEpisodePercentageRange(idx, concreteIds.length),
+            PercentageStart: 0,
+            PercentageEnd: 100,
           }));
           draft[link.id].state = 'ready';
         }
