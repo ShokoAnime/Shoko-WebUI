@@ -180,6 +180,16 @@ try {
       transform: () => null,
     },
     {
+      name: 'trash-anime',
+      // Runs before raws-* because its " - SxxExx - <absolute> - <title> [" anchor is more specific than the
+      // trailing "-Group" the raws rules key on. The (year) is optional: Sonarr's anime format includes it, a
+      // custom rename may drop it.
+      regex:
+        // oxlint-disable-next-line no-useless-escape
+        /^(?<showName>.+?)(?: \((?<year>\d{4})\))? - (?:(?<isSpecial>S00?)|S(?<season>\d+))E\d+(?:-E?\d+)? - (?<episode>\d+(?:-\d+)?) - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+      transform: defaultTransform,
+    },
+    {
       name: 'raws-1',
       regex:
         /^(?<showName>[^\n]+?) (?:(?:- ?)?(?:S(?<season>\d+)E|E?)(?<episode>\d+)(?:v(?<version>\d+))?(?: ?-)? )?(?:\w* )?(?<resolution>((?:[0-9]{3,4})x(?:[0-9]{3,4}))|(?:[0-9]{3,4})p)(?: [^ \n]+)*? ?(?<!DTS|Atmos|Dolby)-(?<releaseGroup>[^ \n]+)(?: \((?<source>[^)]+)\))?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
@@ -194,23 +204,29 @@ try {
     },
     {
       name: 'raws-3',
+      // Requires at least one [tag]/{tag} immediately before the trailing "-Group" so it doesn't grab any name
+      // ending in "-word.ext" (e.g. a romaji title ending "-chuu.mkv"), which then falls through to a later rule.
       regex:
         // oxlint-disable-next-line no-useless-escape
-        /^(?<showName>[^\n]+?)(?:(?:- )?(?:S(?<season>\d+)E|E?)(?<episode>\d+)(?:v(?<version>\d+))?(?: -)? )?(?:[ \.](?:\[[^\]]+\]|{[^}]+})*)*-(?<releaseGroup>[A-Za-z0-9_]+)(?:\.\((?<source>[^)]+)\))?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
-      transform: defaultTransform,
-    },
-    {
-      name: 'trash-anime',
-      regex:
-        // oxlint-disable-next-line no-useless-escape
-        /^(?<showName>.+?(?: \((?<year>\d{4})\))) - (?:(?<isSpecial>S00?)|S\d+)E\d+(?:-E?\d+)? - (?<episode>\d+(?:-\d+)?) - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^(?<showName>[^\n]+?)(?:(?:- )?(?:S(?<season>\d+)E|E?)(?<episode>\d+)(?:v(?<version>\d+))?(?: -)? )?(?:[ \.]?(?:\[[^\]]+\]|{[^}]+}))+[ \.]?-(?<releaseGroup>[A-Za-z0-9_]+)(?:\.\((?<source>[^)]+)\))?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
       name: 'trailing-native-title',
       // Catches releases (e.g. CR) that append a native/romaji title after the codec, which no other rule terminates before.
+      // Works for both space- and dot/underscore-delimited names, consumes an optional year (bare or parenthesised) so it
+      // stays out of the AniDB search seed, and tolerates scene edition tags (REPACK/PROPER/...) before the resolution.
+      // Dot-delimited names with a trailing "-Group" are already claimed by the raws-* rules that run earlier.
       regex:
-        /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?<showName>[^\n]+?(?: \((?<year>(?:19|20)\d{2})\))?)(?:- ?)? S(?<season>\d+)E(?<episode>\d+)(?:v(?<version>\d+))? (?<resolution>\d{3,4}p) .+\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?<showName>[^\n]+?)(?:[\s_.]\(?(?<year>(?:19|20)\d{2})\)?)?(?:[\s_.]?-[\s_.]?)?[\s_.]S(?<season>\d+)E(?<episode>\d+)(?:v(?<version>\d+))?[\s_.](?:(?:repack|proper|real|rerip|internal)\d*[\s_.])*(?<resolution>\d{3,4}p)[\s_.].+\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+      transform: defaultTransform,
+    },
+    {
+      name: 'marker-first',
+      // Some groups (e.g. EMBER) put the SxxExx marker before the title: "[Group] S01E05 - Show Name [1080p].mkv".
+      // Without this the default rule captures the show name as "S01E".
+      regex:
+        /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?S(?<season>\d+)E(?<episode>\d+)(?:v(?<version>\d+))?[\s_.]+(?:-[\s_.]+)?(?<showName>[^[\n]+?)(?:[\s_.]*\((?<year>(?:19|20)\d{2})\))?(?:[\s_.]*(?:\[[^\]]*\]|\([^)]*\)|{[^}]*}))*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
