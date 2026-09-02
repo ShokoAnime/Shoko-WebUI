@@ -183,10 +183,12 @@ try {
       name: 'trash-anime',
       // Runs before raws-* because its " - SxxExx - <absolute> - <title> [" anchor is more specific than the
       // trailing "-Group" the raws rules key on. The (year) is optional: Sonarr's anime format includes it, a
-      // custom rename may drop it.
+      // custom rename may drop it. The season-relative SxxExx number is used, not the trailing absolute one:
+      // the search polls AniDB, which splits a show into per-cour entries numbered from 1 (so "S02E08" -> 8,
+      // not 21). For a single-entry/absolute-numbered show Sonarr keeps season 1, so the two numbers match.
       regex:
         // oxlint-disable-next-line no-useless-escape
-        /^(?<showName>.+?)(?: \((?<year>\d{4})\))? - (?:(?<isSpecial>S00?)|S(?<season>\d+))E\d+(?:-E?\d+)? - (?<episode>\d+(?:-\d+)?) - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^(?<showName>.+?)(?: \((?<year>\d{4})\))? - (?:(?<isSpecial>S00?)|S(?<season>\d+))E(?<episode>\d+(?:-E?\d+)?) - \d+(?:-\d+)? - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
