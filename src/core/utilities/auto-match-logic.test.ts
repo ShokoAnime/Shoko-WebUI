@@ -192,6 +192,58 @@ const cases: MatchCase[] = [
     expected: { showName: 'Some Movie (2019)', episodeStart: 1, episodeEnd: 1 },
   },
 
+  // --- reversed-1: episode number before the title ---
+  {
+    path: '05 - Show Name [1080p].mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Show Name', episodeStart: 5, episodeEnd: 5 },
+  },
+  {
+    path: '05 - Show Name.mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Show Name', episodeStart: 5 },
+  },
+  {
+    path: '[05] - Show Name [1080p].mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Show Name', episodeStart: 5 },
+  },
+  {
+    path: '100 - Long Runner [1080p].mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Long Runner', episodeStart: 100 },
+  },
+  {
+    // 4-digit leading number is a year, not an episode - must not be caught by reversed-1.
+    path: '2001 - A Space Odyssey.mkv',
+    rule: 'fallback',
+    expected: { showName: '2001- A Space Odyssey', episodeStart: 1 },
+  },
+
+  // --- theme-song episode type via defaultTransform (rules with no isThemeSong group) ---
+  {
+    path: 'Show Name S01E05 1080p WEB NCED.mkv',
+    rule: 'trailing-native-title',
+    expected: { showName: 'Show Name', season: 1, episodeStart: 1, episodeType: 'Credits' },
+  },
+  {
+    path: 'Show.Name.S01E05.1080p.WEB.NCED.mkv',
+    rule: 'trailing-native-title',
+    expected: { showName: 'Show Name', season: 1, episodeStart: 1, episodeType: 'Credits' },
+  },
+  {
+    // no theme token in the path - stays a normal episode.
+    path: 'Show Name S01E05 1080p CR WEB-DL AAC H.264  Native Title.mkv',
+    rule: 'trailing-native-title',
+    expected: { showName: 'Show Name', season: 1, episodeStart: 5, episodeType: 'Episode' },
+  },
+  {
+    // a bare "op"/"ed" inside a title word must not trigger the theme block.
+    path: 'Cop Craft - 05 [1080p].mkv',
+    rule: 'default',
+    expected: { showName: 'Cop Craft', episodeStart: 5, episodeType: 'Episode' },
+  },
+
   // --- known gaps: asserted against current output so a change is visible ---
   {
     path: '[Judas] Fairy Tail (2014) 003 Fairy Tactician (1080p HEVC 10bit BluRay) [DUAL-AUDIO] [751BB414].mkv',
@@ -204,12 +256,6 @@ const cases: MatchCase[] = [
     rule: 'fallback',
     expected: { showName: 'Fairy Tail (2014) C19 Ending 4d', episodeStart: 1 },
     knownGap: 'dotless "C19" credit marker not recognised; should be Credits ep 19',
-  },
-  {
-    path: '05 - Show Name [1080p].mkv',
-    rule: 'fallback',
-    expected: { showName: '05- Show Name', episodeStart: 1 },
-    knownGap: 'leading "NN - " not handled by reversed-1 (space before dash); should be ep 5',
   },
 ];
 

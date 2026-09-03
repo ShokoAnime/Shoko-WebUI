@@ -134,6 +134,8 @@ try {
 
       modifiedDetails.episodeStart = episode;
       modifiedDetails.episodeEnd = episode;
+      // Rules without their own isThemeSong group (raws-*, trailing-native-title, ...) still need the type set.
+      modifiedDetails.episodeType = 'Credits';
     }
     if (modifiedDetails.episodeStart === 0) {
       const trailerCheckResult = TrailerCheckRegex.exec(originalDetails.filePath);
@@ -291,8 +293,10 @@ try {
     },
     {
       name: 'reversed-1',
-      // Episode number before the title: "05 - Show Name [tags].ext".
-      regex: /^\[?(?<episode>\d+)\s*-\s*(?<showName>[^[]+])\s*(?:\[[^\]]*\])*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+      // Episode number before the title: "05 - Show Name [tags].ext" / "[05] - Show Name.ext". Capped at 3
+      // digits so a leading 4-digit year ("2001 - A Space Odyssey.mkv") is not read as an episode.
+      regex:
+        /^\[?(?<episode>\d{1,3})\]?\s*-\s*(?<showName>[^[\n]+)\s*(?:\[[^\]]*\])*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     // TODO: Add more rules here.
