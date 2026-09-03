@@ -183,7 +183,8 @@ try {
       name: 'trash-anime',
       // Runs before raws-* because its " - SxxExx - <absolute> - <title> [" anchor is more specific than the
       // trailing "-Group" the raws rules key on. The (year) is optional: Sonarr's anime format includes it, a
-      // custom rename may drop it. The season-relative SxxExx number is used, not the trailing absolute one:
+      // custom rename may drop it, and it stays a bare \d{4} (not (?:19|20)\d{2}) because Sonarr can emit any
+      // 4-digit year here. The season-relative SxxExx number is used, not the trailing absolute one:
       // the search polls AniDB, which splits a show into per-cour entries numbered from 1 (so "S02E08" -> 8,
       // not 21). For a single-entry/absolute-numbered show Sonarr keeps season 1, so the two numbers match.
       regex:
@@ -226,9 +227,9 @@ try {
     {
       name: 'marker-first',
       // Some groups (e.g. EMBER) put the SxxExx marker before the title: "[Group] S01E05 - Show Name [1080p].mkv".
-      // Without this the default rule captures the show name as "S01E".
+      // Without this the default rule captures the show name as "S01E". S00 markers are tagged as specials.
       regex:
-        /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?S(?<season>\d+)E(?<episode>\d+)(?:v(?<version>\d+))?[\s_.]+(?:-[\s_.]+)?(?<showName>[^[\n]+?)(?:[\s_.]*\((?<year>(?:19|20)\d{2})\))?(?:[\s_.]*(?:\[[^\]]*\]|\([^)]*\)|{[^}]*}))*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?:(?<isSpecial>S00?)|S(?<season>\d+))E(?<episode>\d+)(?:v(?<version>\d+))?[\s_.]+(?:-[\s_.]+)?(?<showName>[^[\n]+?)(?:[\s_.]*\((?<year>(?:19|20)\d{2})\))?(?:[\s_.]*(?:\[[^\]]*\]|\([^)]*\)|{[^}]*}))*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
