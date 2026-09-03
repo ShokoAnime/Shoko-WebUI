@@ -293,10 +293,13 @@ try {
     },
     {
       name: 'reversed-1',
-      // Episode number before the title: "05 - Show Name [tags].ext" / "[05] - Show Name.ext". Capped at 3
-      // digits so a leading 4-digit year ("2001 - A Space Odyssey.mkv") is not read as an episode.
+      // Episode number before the title: "05 - Show Name [tags].ext" / "[05] - Show Name.ext" / long-runners
+      // like "1576 - One Piece.mkv" or "2825 - Sazae-san.mkv". Up to 4 digits (Sazae-san / Doraemon are past
+      // 1900, so a 19xx/20xx run can't be excluded as a "year"). Last-resort rule - runs after `default`, so
+      // a name-first release never reaches it; the rare "2001 - A Space Odyssey.mkv" gets episode 2001 but the
+      // show name is still extracted correctly.
       regex:
-        /^\[?(?<episode>\d{1,3})\]?\s*-\s*(?<showName>[^[\n]+)\s*(?:\[[^\]]*\])*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^\[?(?<episode>\d{1,4})\]?\s*-\s*(?<showName>[^[\n]+)\s*(?:\[[^\]]*\])*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     // TODO: Add more rules here.

@@ -214,10 +214,38 @@ const cases: MatchCase[] = [
     expected: { showName: 'Long Runner', episodeStart: 100 },
   },
   {
-    // 4-digit leading number is a year, not an episode - must not be caught by reversed-1.
+    // long-runners with a 4-digit episode number
+    path: '1576 - One Piece.mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'One Piece', episodeStart: 1576 },
+  },
+  {
+    path: '1122 - Detective Conan [1080p].mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Detective Conan', episodeStart: 1122 },
+  },
+  {
+    // Sazae-san / Doraemon run past episode 1900, so a 19xx number is a real episode here.
+    path: '2825 - Sazae-san.mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Sazae-san', episodeStart: 2825 },
+  },
+  {
+    path: '[293] - Boruto Naruto Next Generations.mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'Boruto Naruto Next Generations', episodeStart: 293 },
+  },
+  {
+    // trade-off: a leading year on a movie is read as episode 2001, but the show name is still right.
     path: '2001 - A Space Odyssey.mkv',
+    rule: 'reversed-1',
+    expected: { showName: 'A Space Odyssey', episodeStart: 2001 },
+  },
+  {
+    // 5+ digits is not an episode number.
+    path: '12345 - Nope.mkv',
     rule: 'fallback',
-    expected: { showName: '2001- A Space Odyssey', episodeStart: 1 },
+    expected: {},
   },
 
   // --- theme-song episode type via defaultTransform (rules with no isThemeSong group) ---
