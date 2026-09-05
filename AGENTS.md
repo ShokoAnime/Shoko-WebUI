@@ -4,7 +4,7 @@ React 19 + Vite frontend for the Shoko Anime Management Server.
 
 ## Build & Development
 
-> **Node >=22, pnpm only.** CI uses Node 24 and pnpm 11.
+> **Node >=22, pnpm only.** CI uses Node 24 and pnpm 11. pnpm version is not pinned locally (no `packageManager`/`.npmrc`); `mise.toml` pins Node 24 for local dev.
 
 ```bash
 pnpm install          # Also sets up Husky via the `prepare` script
@@ -40,11 +40,11 @@ pnpm lint           # dprint -> oxlint -> stylelint
   - `axiosV2` — Shoko API v2 (`/api`)
   - `axiosPlex` — Plex endpoints (`/plex`)
   - `axiosExternal` — Unconfigured base for external calls
-  - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`.
-- **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware.
+  - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`. A 401 on an authenticated request dispatches `AUTH_LOGOUT`.
+- **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware. Connects on `MAINPAGE_LOADED` to `/signalr/aggregate` (feed list via query param), authenticates with the apikey, and stops on `AUTH_LOGOUT`. Event handlers invalidate React Query caches and dispatch slice actions.
 - **Redux:** Single-file store at `src/core/store.ts`. Root reducer clears all state on `AUTH_LOGOUT`. Full store persisted to `sessionStorage`; only `apiSession` persisted to `localStorage` (when `rememberUser` is true). Store is throttled to persist at most once per second. Re-exports typed `useDispatch`/`useSelector` — import from `@/core/store`, never from `react-redux` directly.
-- **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/` with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts`.
-- **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`. `version.json` is auto-generated at build time from git hash + package version.
+- **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/`, typically with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts` (subsets are common; shared files live at `src/core/react-query/` top level, e.g. `queryClient.ts`).
+- **Build:** Vite 8 with Rolldown. Base path `/webui/`. Hidden sourcemaps. React Compiler enabled via `@rolldown/plugin-babel`. Sentry plugin requires `SENTRY_AUTH_TOKEN`. `version.json` is auto-generated at build time from git hash + package version. The minimum server version gate is hardcoded in `vite.config.mjs` (`VITE_MIN_SERVER_VERSION`).
 - **Tailwind:** v4 via Vite plugin. Entry point is `src/css/tailwind.css`.
 - **Path alias:** `@/` maps to `src/` (configured in `vite.config.mjs` and `tsconfig.json`).
 
@@ -55,19 +55,19 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 ## Code Style
 
 - **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes (double quotes in JSX), always semicolons.
-- **Linter:** Oxlint (`.oxlintrc.json`). Migrated from ESLint. Uses built-in plugins (typescript, react, import, jsx-a11y) and JS plugins (@tanstack/query, better-tailwindcss, sort-destructure-keys, @stylistic).
+- **Linter:** Oxlint (`.oxlintrc.json`). Migrated from ESLint. Uses built-in plugins (eslint, typescript, react, import) and JS plugins (@tanstack/query, better-tailwindcss, sort-destructure-keys, @stylistic, react-hooks, perfectionist).
 - **TypeScript:** Prefer `type` over `interface`. Prefer `T[]` syntax. Use consistent type imports. Multiline type members use semicolons; single-line members use commas.
 - **Functions:** Arrow-function expressions only (`const Foo = () => ...`). Omit parens for single parameters; require them for block bodies.
-- **Identifiers:** Minimum 3 characters. Exceptions: `cx`, `ID`, `id`, `_`, `__`. Object properties are exempt.
+- **Identifiers:** Minimum 3 characters. Exceptions: `cx`, `ID`, `id`, `to`, `TV`, `_`, `__`. Object properties are exempt.
 - **Unused variables:** Prefix with `_` to suppress `no-unused-vars` (applies to args, vars, and caught errors).
 - **Nullish coalescing:** Use `??` instead of `||`, except for boolean values where `||` is acceptable.
-- **Imports:** Use `@/` alias instead of relative `../` paths. Import order is enforced with blank lines between groups (builtin → external → internal → parent → sibling → index → type), alphabetized within each group. `react*` imports sort first among externals. Named imports/exports are sorted alphabetically (case-sensitive) within each declaration.
+- **Imports:** Use `@/` alias instead of relative `../` paths. Don't hand-order imports — import order is enforced by `perfectionist/sort-imports` and auto-fixed by oxlint (see the Agent lint workflow; write imports in any order and let the fixer sort them).
 - **Destructuring:** Object destructuring keys must be sorted alphabetically.
 - **Restricted imports** (will error if imported directly):
   - `../*` (relative parent imports) → use `@/` alias instead
   - `react-redux`: `useDispatch`, `useSelector` → use `@/core/store`
   - `react-router`: `useNavigate` → use `@/hooks/useNavigateVoid`
-  - `react-toastify`: `toast` → use `@/components/Toast`
+  - `react-toastify`: `toast` → use `@/core/toast`
   - `usehooks-ts`: `useCopyToClipboard` → use `copyToClipboard` from `@/core/util`
 - **State mutations:** `no-param-reassign` allows `sliceState` and `draft*` properties for Immer/Redux.
 - **Console:** Only `console.warn` and `console.error` are allowed.
@@ -76,12 +76,13 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 
 ## Verification & CI
 
-- **No unit/integration tests** are configured. Verification is `pnpm lint`.
+- **No unit/integration tests** are configured. Verification is `pnpm lint` (typecheck: `pnpm tscheck`).
+- **Other CI workflows:** `Release-Dev-Auto.yml` (auto build on `master` push), `Release-Manual.yml`, `Update-Manifest.yml`, CodeQL.
 - **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `dprint fmt`, `oxlint`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
 - **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`.
 - **Agent lint workflow:**
   - After every file edit, run `./node_modules/.bin/dprint fmt <file>` to format just that file.
-  - After completing edits on a file, run `./node_modules/.bin/oxlint <file>` to catch lint errors early — fix them before moving on.
+  - After completing edits on a file, run `./node_modules/.bin/oxlint --fix <file>` to catch lint errors early (auto-fixes import order and other fixable rules) — fix any remaining errors before moving on.
 - **Never skip pre-commit hooks.** Always let Husky run — do not use `--no-verify` or equivalent.
 
 ## Guardrails
@@ -91,6 +92,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - Do not add explicit type annotations where TS inference is sufficient.
 - Treat changes to `src/core/axios.ts`, `src/core/store.ts`, and auth-related logic with extra scrutiny.
 - If you modify files, styles, structures, configurations, or workflows mentioned in this file, update the corresponding `AGENTS.md` sections to keep them accurate.
+- **`@/core/util` is a single file (`src/core/util.ts`), not a directory** — do not confuse with `src/core/utilities/`.
 - **Use `semver` for version comparisons** — hand-rolling version parsing with `Number.parseInt`/`split('.')` silently mishandles pre-release suffixes.
 - **Use `dayjs` for date formatting/manipulation** — never use `new Date()` / `.toLocaleString()` for display. Always import from `@/core/util`: `import { dayjs } from '@/core/util'`. Plugins and locale are pre-configured there.
 - **`lodash`** — before writing custom utility functions for grouping, sorting, filtering, debouncing, throttling, or deep equality, check if lodash already provides it.
