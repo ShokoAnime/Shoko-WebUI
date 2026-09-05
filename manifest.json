@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.131",
+      "minServerVersion": "6.0.0-dev.437",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.131/Shoko-WebUI-v2.6.0-dev.131.zip",
+      "checksum": "sha256:462003366ab2caa4690baef1717905cb2a39f81ed4c5c02a80ffb3e2c3e79abb",
+      "commit": "ae026fee87d2687b2601e642b9f08b848120a65f",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.437** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.437** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: normalize relative path display and managed folder context by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1457\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.130...v2.6.0-dev.131\n"
+    },
+    {
       "version": "2.6.0-dev.130",
       "minServerVersion": "6.0.0-dev.437",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.130/Shoko-WebUI-v2.6.0-dev.130.zip",
