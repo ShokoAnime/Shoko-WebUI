@@ -30,7 +30,11 @@ export { default as dayjs } from 'dayjs';
 
 export * from '@/core/anidbUtils';
 
-/** Shared stale time: ~100 days. Used for relatively static data that rarely changes server-side. */
+/**
+ * Shared stale time: ~100 days. Used for relatively static data that rarely changes server-side.
+ * Must remain finite: unlike `staleTime: Infinity`, a finite value keeps `initialData`
+ * (paired with `initialDataUpdatedAt`) behaving as placeholder data — see useSettingsQuery.
+ */
 export const INFINITE_STALE_TIME = 86400 * 100000;
 
 // Enables immer plugin to support Map and Set
