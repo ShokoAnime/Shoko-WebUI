@@ -20,6 +20,7 @@ import Button from '@/components/Input/Button';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
+import { formatFolderPath } from '@/components/Utilities/constants';
 import ItemCount from '@/components/Utilities/ItemCount';
 import AnimeSelectPanel from '@/components/Utilities/Unrecognized/AnimeSelectPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -29,6 +30,7 @@ import {
   useLinkManyFilesToOneEpisodeMutation,
   useLinkOneFileToManyEpisodesMutation,
 } from '@/core/react-query/file/mutations';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import {
   useDeleteSeriesMutation,
   useGetSeriesAniDBMutation,
@@ -36,7 +38,7 @@ import {
 } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { extractFileNameFromPath, getAnidbAnimeLink } from '@/core/util';
+import { extractFileNameFromPath, getAnidbAnimeLink, getManagedFolderName } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -139,6 +141,7 @@ const LinkFilesTab = () => {
     },
     false,
   );
+  const managedFoldersQuery = useManagedFoldersQuery();
   const anidbEpisodesQuery = useSeriesAniDBEpisodesQuery(
     selectedSeries.ID,
     {
@@ -500,6 +503,7 @@ const LinkFilesTab = () => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
       const { fileName, relativePath } = extractFileNameFromPath(path);
+      const folderName = getManagedFolderName(managedFoldersQuery.data ?? [], file?.Locations?.[0]?.ManagedFolderID);
 
       return (
         <div
@@ -513,7 +517,7 @@ const LinkFilesTab = () => {
           data-tooltip-content={path}
         >
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
-            {relativePath}
+            {formatFolderPath(folderName, relativePath)}
           </span>
           <span className="line-clamp-1">
             {fileName}
@@ -527,6 +531,7 @@ const LinkFilesTab = () => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0]?.RelativePath ?? '<missing file path>';
       const { fileName, relativePath } = extractFileNameFromPath(path);
+      const folderName = getManagedFolderName(managedFoldersQuery.data ?? [], file?.Locations?.[0]?.ManagedFolderID);
       const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div
@@ -542,7 +547,7 @@ const LinkFilesTab = () => {
           data-tooltip-content={path}
         >
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
-            {relativePath}
+            {formatFolderPath(folderName, relativePath)}
           </span>
           <span className="line-clamp-1">
             {fileName}

@@ -33,7 +33,7 @@
     ```bash
     pnpm start
     ```
-    Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    Open [http://localhost:3000/webui/](http://localhost:3000/webui/) to view it in the browser.
 
 ## 🏗️ Architecture
 

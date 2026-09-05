@@ -27,6 +27,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { formatFolderPath } from '@/components/Utilities/constants';
 import AddFilesModal from '@/components/Utilities/Renamer/AddFilesModal';
 import PresetModal from '@/components/Utilities/Renamer/PresetModal';
 import RenamerScript from '@/components/Utilities/Renamer/RenamerScript';
@@ -50,7 +51,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearResults, removeFiles } from '@/core/slices/utilities/renamer';
 import { useDispatch, useSelector } from '@/core/store';
 import toast from '@/core/toast';
-import { extractFileNameFromPath } from '@/core/util';
+import { extractFileNameFromPath, getManagedFolderName } from '@/core/util';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -69,10 +70,7 @@ const getFileColumn = (managedFolders: ManagedFolderType[]) => ({
   item: (file) => {
     const path = file.Locations[0]?.RelativePath ?? '';
     const { fileName, relativePath } = extractFileNameFromPath(path);
-    const managedFolder = find(
-      managedFolders,
-      { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
-    )?.Name ?? '<Unknown>';
+    const managedFolder = getManagedFolderName(managedFolders, file?.Locations[0]?.ManagedFolderID);
     return (
       <div
         className="flex flex-col"
@@ -81,7 +79,7 @@ const getFileColumn = (managedFolders: ManagedFolderType[]) => ({
         data-tooltip-delay-show={500}
       >
         <span className="line-clamp-1 text-sm font-semibold opacity-65">
-          {`${managedFolder} - ${relativePath}`}
+          {formatFolderPath(managedFolder, relativePath)}
         </span>
         <span className="line-clamp-1 break-all">
           {fileName}
@@ -123,10 +121,7 @@ const getResultColumn = (
 
     const path = result.RelativePath ?? '';
     const { fileName, relativePath } = extractFileNameFromPath(path);
-    const managedFolder = find(
-      managedFolders,
-      { ID: result.ManagedFolderID ?? -1 },
-    )?.Name ?? '<Unknown>';
+    const managedFolder = getManagedFolderName(managedFolders, result.ManagedFolderID);
 
     return (
       <div
@@ -136,7 +131,7 @@ const getResultColumn = (
         data-tooltip-delay-show={500}
       >
         <span className="line-clamp-1 text-sm font-semibold opacity-65">
-          {`${managedFolder} - ${relativePath}`}
+          {formatFolderPath(managedFolder, relativePath)}
         </span>
         <span className="line-clamp-1 break-all">
           {fileName}
@@ -183,34 +178,13 @@ const getStatusIcon = (result?: RelocationResultType, noChange = false) => {
 
 const getStatusColumn = (
   renameResults: Record<number, RelocationResultType>,
-  managedFolders: ManagedFolderType[],
-  moveFiles: boolean,
 ) => ({
   id: 'status',
   name: 'Status',
   className: 'w-16',
   item: (file) => {
     const result = renameResults[file.ID];
-    let noChange = false;
-
-    if (result) {
-      const path = file.Locations[0]?.RelativePath ?? '';
-      const { relativePath } = extractFileNameFromPath(path);
-      const managedFolder = find(
-        managedFolders,
-        { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
-      )?.Name ?? '<Unknown>';
-
-      const newPath = result.RelativePath ?? '';
-      const { relativePath: newRelativePath } = extractFileNameFromPath(newPath);
-      const newManagedFolder = find(
-        managedFolders,
-        { ID: result?.ManagedFolderID ?? -1 },
-      )?.Name ?? '<Unknown>';
-
-      noChange = (path === newPath) && (!moveFiles
-        || (managedFolder === newManagedFolder && relativePath === newRelativePath));
-    }
+    const noChange = result?.IsRelocated === false;
 
     return (
       <div className="flex justify-center">
@@ -471,9 +445,9 @@ const Renamer = () => {
     return [
       getFileColumn(managedFolders),
       getResultColumn(relocationResults, managedFolders),
-      getStatusColumn(relocationResults, managedFolders, moveFiles),
+      getStatusColumn(relocationResults),
     ];
-  }, [managedFoldersQuery?.data, moveFiles, relocationResults]);
+  }, [managedFoldersQuery?.data, relocationResults]);
 
   const handleRename = () => {
     if (!selectedPreset || !addedFiles.length) return;

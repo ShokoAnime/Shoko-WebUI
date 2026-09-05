@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import { INFINITE_STALE_TIME } from '@/core/util';
 
 import type { PluginListFilterType } from '@/core/react-query/plugin/types';
 import type { PluginInfoType, PluginPageType, SharedPluginPageType } from '@/core/types/api/plugin';
@@ -17,13 +16,13 @@ export const usePluginPagesQuery = () =>
   useQuery<SharedPluginPageType[]>({
     queryKey: ['plugin', 'pages'],
     queryFn: () => axios.get('Plugin/Pages'),
-    staleTime: INFINITE_STALE_TIME,
+    staleTime: Infinity,
   });
 
 export const usePluginPagesForPluginQuery = (pluginId: string, enabled = true) =>
   useQuery<PluginPageType[]>({
     queryKey: ['plugin', 'pages', pluginId],
     queryFn: () => axios.get(`Plugin/${pluginId}/Pages`),
-    staleTime: INFINITE_STALE_TIME,
+    staleTime: Infinity,
     enabled,
   });
