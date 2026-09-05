@@ -1,4 +1,6 @@
+import { formatFolderPath } from '@/components/Utilities/constants';
 import { extractFileNameFromPath } from '@/core/util';
+import useManagedFolderName from '@/hooks/useManagedFolderName';
 
 import type { ReleaseSourceValues } from '@/core/types/api/file';
 import type { ManualLinkType } from '@/core/types/utilities/link-files-with-providers';
@@ -16,6 +18,7 @@ const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
   const { file } = link;
   const path = file.Locations[0]?.RelativePath ?? '';
   const { fileName, relativePath } = extractFileNameFromPath(path);
+  const folderName = useManagedFolderName(file.Locations[0]?.ManagedFolderID);
 
   return (
     <div className="flex flex-col gap-2 border-y border-panel-border text-sm">
@@ -27,7 +30,7 @@ const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
           data-tooltip-delay-show={500}
         >
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
-            {relativePath}
+            {formatFolderPath(folderName, relativePath)}
           </span>
           <span className="line-clamp-1">
             {fileName}

@@ -1,8 +1,9 @@
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { formatFolderPath } from '@/components/Utilities/constants';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
-import { extractFileNameFromPath } from '@/core/util';
+import { extractFileNameFromPath, getManagedFolderName } from '@/core/util';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { FileType } from '@/core/types/api/file';
@@ -33,9 +34,7 @@ const SelectedFilesModal = ({ files, onClose, show }: Props) => {
           const location = file.Locations[0];
           const path = location?.RelativePath ?? '';
           const { fileName, relativePath } = extractFileNameFromPath(path);
-          const folderName = managedFoldersQuery.data?.find(
-            folder => folder.ID === location?.ManagedFolderID,
-          )?.Name ?? '';
+          const folderName = getManagedFolderName(managedFoldersQuery.data ?? [], location?.ManagedFolderID);
 
           return (
             <div
@@ -46,9 +45,7 @@ const SelectedFilesModal = ({ files, onClose, show }: Props) => {
               data-tooltip-delay-show={200}
             >
               <span className="line-clamp-1 truncate text-xs font-semibold opacity-65">
-                {folderName}
-                &nbsp;-&nbsp;
-                {relativePath}
+                {formatFolderPath(folderName, relativePath)}
               </span>
               <span className="line-clamp-1 truncate text-sm">{fileName ?? `<missing file path for ${file.ID}>`}</span>
             </div>

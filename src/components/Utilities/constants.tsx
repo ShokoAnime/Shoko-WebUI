@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
-import { find } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import { dayjs, extractFileNameFromPath } from '@/core/util';
+import { dayjs, extractFileNameFromPath, getManagedFolderName } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -30,10 +29,7 @@ export const getManagedFolderColumn = (managedFolders: ManagedFolderType[]): Uti
   name: 'Managed Folder',
   className: 'w-46',
   item: (file) => {
-    const managedFolder = find(
-      managedFolders,
-      { ID: file?.Locations[0]?.ManagedFolderID ?? -1 },
-    )?.Name ?? '<Unknown>';
+    const managedFolder = getManagedFolderName(managedFolders, file?.Locations[0]?.ManagedFolderID);
 
     return (
       <div
@@ -48,13 +44,21 @@ export const getManagedFolderColumn = (managedFolders: ManagedFolderType[]): Uti
   },
 });
 
-export const fileNameColumn: UtilityHeaderType<FileType> = {
+/** Standard display label pairing the managed folder name with the folder-relative path. */
+export const formatFolderPath = (folderName: string, relativePath: string) => (
+  folderName ? `${folderName} - ${relativePath}` : relativePath
+);
+
+export const getFileNameColumn = (managedFolders?: ManagedFolderType[]): UtilityHeaderType<FileType> => ({
   id: 'filename',
   name: 'Filename',
   className: 'line-clamp-2 grow basis-0 overflow-hidden',
   item: (file) => {
     const path = file.Locations[0]?.RelativePath ?? '';
     const { fileName, relativePath } = extractFileNameFromPath(path);
+    const folderName = managedFolders
+      ? getManagedFolderName(managedFolders, file?.Locations[0]?.ManagedFolderID)
+      : '';
     return (
       <div
         className="flex flex-col"
@@ -63,7 +67,7 @@ export const fileNameColumn: UtilityHeaderType<FileType> = {
         data-tooltip-delay-show={500}
       >
         <span className="line-clamp-1 text-sm font-semibold opacity-65">
-          {relativePath}
+          {formatFolderPath(folderName, relativePath)}
         </span>
         <span className="line-clamp-1">
           {fileName}
@@ -71,10 +75,10 @@ export const fileNameColumn: UtilityHeaderType<FileType> = {
       </div>
     );
   },
-};
+});
 
 export const staticColumns: UtilityHeaderType<FileType>[] = [
-  fileNameColumn,
+  getFileNameColumn(),
   {
     id: 'crc32',
     name: 'CRC32',

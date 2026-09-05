@@ -5,10 +5,11 @@ import cx from 'classnames';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
+import { formatFolderPath } from '@/components/Utilities/constants';
 import { useDeleteFileLocationMutation } from '@/core/react-query/file/mutations';
-import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { extractFileNameFromPath } from '@/core/util';
+import useManagedFolderName from '@/hooks/useManagedFolderName';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { FileLocationType, FileType } from '@/core/types/api/file';
@@ -20,8 +21,6 @@ type Props = {
 
 const DuplicatesInfo = ({ file, location }: Props) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
-
-  const managedFoldersQuery = useManagedFoldersQuery();
 
   const { mutateAsync: deleteFileLocation } = useDeleteFileLocationMutation();
 
@@ -37,9 +36,7 @@ const DuplicatesInfo = ({ file, location }: Props) => {
 
   const path = location.RelativePath ?? '';
   const { fileName, relativePath } = extractFileNameFromPath(path);
-  const folderName = managedFoldersQuery.data?.find(
-    folder => folder.ID === location.ManagedFolderID,
-  )?.Name ?? '';
+  const folderName = useManagedFolderName(location.ManagedFolderID);
   const isDeleted = !location.AbsolutePath;
 
   return (
@@ -62,9 +59,7 @@ const DuplicatesInfo = ({ file, location }: Props) => {
             data-tooltip-delay-show={500}
           >
             <span className="line-clamp-1 truncate text-sm font-semibold opacity-65">
-              {folderName}
-              &nbsp;-&nbsp;
-              {relativePath}
+              {formatFolderPath(folderName, relativePath)}
             </span>
             <span className="line-clamp-1 truncate">
               {fileName}
@@ -96,9 +91,7 @@ const DuplicatesInfo = ({ file, location }: Props) => {
         Do you want to delete the following file location?
         <div className="flex flex-col gap-1">
           <div className="text-sm opacity-65">
-            {folderName}
-            &nbsp;-&nbsp;
-            {relativePath}
+            {formatFolderPath(folderName, relativePath)}
           </div>
           <div className="text-panel-text-important">
             {fileName}

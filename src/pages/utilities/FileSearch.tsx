@@ -26,7 +26,7 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
-import { staticColumns } from '@/components/Utilities/constants';
+import { getFileNameColumn, staticColumns } from '@/components/Utilities/constants';
 import FilesSummary from '@/components/Utilities/FilesSummary';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -38,6 +38,7 @@ import {
   useRescanFileMutation,
 } from '@/core/react-query/file/mutations';
 import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/queries';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { addFiles } from '@/core/slices/utilities/renamer';
@@ -51,6 +52,7 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
+import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { FileType } from '@/core/types/api/file';
 import type { Updater } from 'use-immer';
 
@@ -363,6 +365,12 @@ const FileSearch = () => {
     pageSize: 50,
   }, debouncedSearch);
   const [files, fileCount] = useFlattenListResult<FileType>(filesQuery.data);
+  const managedFoldersQuery = useManagedFoldersQuery();
+  const columns: UtilityHeaderType<FileType>[] = [
+    getFileNameColumn(managedFoldersQuery.data ?? []),
+    // Assumes the filename column is the first entry of staticColumns; update if staticColumns is reordered
+    ...staticColumns.slice(1),
+  ];
 
   const {
     handleRowSelect,
@@ -428,7 +436,7 @@ const FileSearch = () => {
                 count={fileCount}
                 fetchNextPage={filesQuery.fetchNextPage}
                 handleRowSelect={handleRowSelect}
-                columns={staticColumns}
+                columns={columns}
                 isFetchingNextPage={filesQuery.isFetchingNextPage}
                 rows={files}
                 rowSelection={rowSelection}

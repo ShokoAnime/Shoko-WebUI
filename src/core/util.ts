@@ -7,13 +7,14 @@ import customParseFormatPlugin from 'dayjs/plugin/customParseFormat';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
-import { reduce, toNumber } from 'lodash';
+import { find, reduce, toNumber } from 'lodash';
 
 import toast from '@/core/toast';
 
 import type { CollectionGroupType } from './types/api/collection';
 import type { EpisodeType } from './types/api/episode';
 import type { FileType } from './types/api/file';
+import type { ManagedFolderType } from './types/api/managed-folder';
 import type { SeriesType } from './types/api/series';
 import type { ManualLinkType } from './types/utilities/link-files-with-providers';
 import type { ShokoError } from '@/core/types/api';
@@ -151,10 +152,14 @@ export const handleShiftSelect = (params: {
 /** Root font size in px, read once from the document. */
 export const pxPerRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
 
+/** Standard display label pairing the managed folder name with the folder-relative path. */
+export const getManagedFolderName = (managedFolders: ManagedFolderType[], managedFolderID?: number) =>
+  find(managedFolders, { ID: managedFolderID ?? -1 })?.Name ?? '<Unknown>';
+
 export const extractFileNameFromPath = (path: string) => {
-  const match = /[/\\](?=[^/\\]*$)/g.exec(path);
-  const relativePath = match ? path.substring(0, match.index) : 'Root Level';
-  const fileName = path.split(/[/\\]/g).pop();
+  const parts = path.split(/[/\\]/g);
+  const fileName = parts.pop();
+  const relativePath = parts.filter(Boolean).join('/') || 'Root Level';
   return {
     fileName,
     relativePath,

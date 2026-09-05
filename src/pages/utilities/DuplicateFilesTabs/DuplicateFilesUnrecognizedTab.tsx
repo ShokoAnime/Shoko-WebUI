@@ -6,7 +6,7 @@ import { useToggle } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { fileNameColumn, getManagedFolderColumn } from '@/components/Utilities/constants';
+import { getFileNameColumn, getManagedFolderColumn } from '@/components/Utilities/constants';
 import DuplicateFilesModal from '@/components/Utilities/DuplicateFiles/DuplicateFilesModal';
 import Title from '@/components/Utilities/DuplicateFiles/Title';
 import ItemCount from '@/components/Utilities/ItemCount';
@@ -52,7 +52,7 @@ const DuplicateFilesUnrecognizedTab = () => {
 
   const columns: UtilityHeaderType<FileType>[] = [
     getManagedFolderColumn(managedFolders),
-    fileNameColumn,
+    getFileNameColumn(),
     {
       id: 'duplicate-count',
       name: 'Duplicate Count',
