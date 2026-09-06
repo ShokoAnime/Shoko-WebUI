@@ -206,9 +206,25 @@ describe('detectShow', () => {
       });
     });
 
+    it('keeps the SxxExx range for multi-episode files', () => {
+      expectParsed('Generic Show Title (2020) - S02E05-E06 - 021-022 - The Episode Title [Group].mkv', {
+        episodeEnd: 6,
+        episodeStart: 5,
+        ruleName: 'trash-anime',
+        season: 2,
+      });
+    });
+
     it('flags S00 specials via the isSpecial group -> episodeType Special', () => {
       expectParsed('That Time I Got Reincarnated as a Slime (2018) - S00E01 - 1 - A New Beginning [HorribleSubs].mkv', {
         episodeStart: 1,
+        episodeType: 'Special',
+        ruleName: 'trash-anime',
+      });
+    });
+
+    it('an isSpecial S00 keeps episodeType Special even when the title carries a theme-song token', () => {
+      expectParsed('Generic Show Title (2020) - S00E01 - 12 - NCED [Group].mkv', {
         episodeType: 'Special',
         ruleName: 'trash-anime',
       });

@@ -135,8 +135,12 @@ try {
       modifiedDetails.episodeStart = episode;
       modifiedDetails.episodeEnd = episode;
       // Rules that match theme songs via their own regex (raws-*, trailing-native-title) have no isThemeSong
-      // group, so detectEpisodeType never sees it - set the type here where the theme song is actually detected.
-      modifiedDetails.episodeType = 'Credits';
+      // group, so detectEpisodeType never sees it - set the type here. Only from the plain 'Episode' default,
+      // so a more specific classification (Special from an isSpecial group, etc.) still wins, matching the
+      // isSpecial > isThemeSong precedence in detectEpisodeType.
+      if (modifiedDetails.episodeType === 'Episode') {
+        modifiedDetails.episodeType = 'Credits';
+      }
     }
     if (modifiedDetails.episodeStart === 0) {
       const trailerCheckResult = TrailerCheckRegex.exec(originalDetails.filePath);
@@ -215,10 +219,12 @@ try {
       // Take the episode number from the SxxExx marker, not the trailing absolute number: the search and the
       // cross-reference matcher both poll AniDB, which catalogues a multi-cour show as separate entries each
       // numbered from 1, so "... - S02E08 - 021 - ..." is episode 8, not 21. A single absolute-numbered entry
-      // keeps season 1 in Sonarr, so the two numbers are identical there.
+      // keeps season 1 in Sonarr, so the two numbers are identical there. The E-range stays inside `episode`
+      // (defaultTransform splits it), and `year` is a bare \d{4} - not (?:19|20)\d{2} - because Sonarr can emit
+      // any 4-digit year here.
       regex:
         // oxlint-disable-next-line no-useless-escape
-        /^(?<showName>.+?(?: \((?<year>\d{4})\))) - (?:(?<isSpecial>S00?)|S(?<season>\d+))E(?<episode>\d+)(?:-E?\d+)? - \d+(?:-\d+)? - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^(?<showName>.+?(?: \((?<year>\d{4})\))) - (?:(?<isSpecial>S00?)|S(?<season>\d+))E(?<episode>\d+(?:-E?\d+)?) - \d+(?:-\d+)? - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
