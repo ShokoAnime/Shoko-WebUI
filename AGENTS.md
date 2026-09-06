@@ -32,7 +32,7 @@ pnpm lint           # dprint -> oxlint -> stylelint
 - `src/hooks` – Custom React hooks.
 - `src/css` – Global styles and Tailwind entry.
 - `public/` – Static assets; `version.json` is generated here at build time.
-- `tests/` – Unit tests (Vitest). Top-level directory mirroring `src/` paths (e.g. `tests/core/utilities/filterTree.test.ts`); one test file per covered module; no colocated tests in `src/`. Configured by a standalone `vitest.config.ts` (`node` environment, `globals` off, `@/` alias) — `vite.config.mjs` is never loaded by tests.
+- `tests/` – Unit tests (Vitest). Top-level directory mirroring `src/` paths (e.g. `tests/core/utilities/filterTree.test.ts`); one test file per covered module; no colocated tests in `src/`. Configured by a standalone `vitest.config.mts` (`node` environment, `globals` off, `@/` alias) — `vite.config.mjs` is never loaded by tests.
 
 ## Architecture
 
