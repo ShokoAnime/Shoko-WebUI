@@ -13,7 +13,8 @@
     "typeLiteral.separatorKind.singleLine": "comma"
   },
   "includes": [
-    "src/**"
+    "src/**",
+    "tests/**"
   ],
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.95.15.wasm"

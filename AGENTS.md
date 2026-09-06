@@ -11,6 +11,8 @@ pnpm install          # Also sets up Husky via the `prepare` script
 pnpm start          # Dev server at http://localhost:3000, base /webui/
 pnpm build          # Production build (dist/)
 pnpm build:debug    # Development build
+pnpm test           # Unit tests (Vitest, single run) — also runs in PR CI
+pnpm test:watch     # Unit tests in watch mode
 ```
 
 **Lint chain (runs in this exact order):**
@@ -30,6 +32,7 @@ pnpm lint           # dprint -> oxlint -> stylelint
 - `src/hooks` – Custom React hooks.
 - `src/css` – Global styles and Tailwind entry.
 - `public/` – Static assets; `version.json` is generated here at build time.
+- `tests/` – Unit tests (Vitest). Top-level directory mirroring `src/` paths (e.g. `tests/core/utilities/filterTree.test.ts`); one test file per covered module; no colocated tests in `src/`. Configured by a standalone `vitest.config.ts` (`node` environment, `globals` off, `@/` alias) — `vite.config.mjs` is never loaded by tests.
 
 ## Architecture
 
@@ -54,7 +57,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 
 ## Code Style
 
-- **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` only. Line width 120, single quotes (double quotes in JSX), always semicolons.
+- **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` and `tests/**`. Line width 120, single quotes (double quotes in JSX), always semicolons.
 - **Linter:** Oxlint (`.oxlintrc.json`). Migrated from ESLint. Uses built-in plugins (eslint, typescript, react, import) and JS plugins (@tanstack/query, better-tailwindcss, sort-destructure-keys, @stylistic, react-hooks, perfectionist).
 - **TypeScript:** Prefer `type` over `interface`. Prefer `T[]` syntax. Use consistent type imports. Multiline type members use semicolons; single-line members use commas.
 - **Functions:** Arrow-function expressions only (`const Foo = () => ...`). Omit parens for single parameters; require them for block bodies.
@@ -76,10 +79,10 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 
 ## Verification & CI
 
-- **No unit/integration tests** are configured. Verification is `pnpm lint` (typecheck: `pnpm tscheck`).
+- **Verification is `pnpm test` (Vitest unit tests) + `pnpm lint` (typecheck: `pnpm tscheck`).** Test coverage is deliberately limited to regression protection of high-risk modules (`filterTree.ts`, auto-match logic/regexes); never add coverage tooling or UI/DOM assertions.
 - **Other CI workflows:** `Release-Dev-Auto.yml` (auto build on `master` push), `Release-Manual.yml`, `Update-Manifest.yml`, CodeQL.
 - **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `dprint fmt`, `oxlint`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
-- **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`.
+- **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`, then `pnpm test`.
 - **Agent lint workflow:**
   - After every file edit, run `./node_modules/.bin/dprint fmt <file>` to format just that file.
   - After completing edits on a file, run `./node_modules/.bin/oxlint --fix <file>` to catch lint errors early (auto-fixes import order and other fixable rules) — fix any remaining errors before moving on.
