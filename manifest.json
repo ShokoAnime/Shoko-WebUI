@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.134",
+      "minServerVersion": "6.0.0-dev.437",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.134/Shoko-WebUI-v2.6.0-dev.134.zip",
+      "checksum": "sha256:df0cb990d022b2c53695b9d28c09a6ad22b65325bf9af95508004b397226e42c",
+      "commit": "d9a408fe1a4bf638f94d5388ac278e3ae3cfc40b",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.437** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.437** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix(auto-match): broaden trailing-native-title and related rules by @Foowy in https://github.com/ShokoAnime/Shoko-WebUI/pull/1456\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.133...v2.6.0-dev.134\n"
+    },
+    {
       "version": "2.6.0-dev.133",
       "minServerVersion": "6.0.0-dev.437",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.133/Shoko-WebUI-v2.6.0-dev.133.zip",
