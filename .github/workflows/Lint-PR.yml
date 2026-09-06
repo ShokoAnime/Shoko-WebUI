@@ -21,3 +21,6 @@ jobs:
 
       - name: Lint
         run: pnpm lint --quiet
+
+      - name: Test
+        run: pnpm test

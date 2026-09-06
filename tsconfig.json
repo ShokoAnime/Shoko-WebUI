@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
         "outDir": "./dist/",
-        "rootDir": "./src/",
         "sourceMap": true,
         "strict": false,
         "strictNullChecks": true,
@@ -21,7 +20,8 @@
         }
     },
     "include": [
-        "./src/"
+        "./src/",
+        "./tests/"
     ],
     "exclude": [
         "./node_modules"

@@ -30,7 +30,7 @@
     "typeAware": true,
     "typeCheck": true
   },
-  "ignorePatterns": ["*", "!src/", "!src/**"],
+  "ignorePatterns": ["*", "!src/", "!src/**", "!tests/", "!tests/**"],
   "env": {
     "browser": true,
     "builtin": true,

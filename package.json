@@ -88,7 +88,8 @@
     "stylelint-config-tailwindcss": "^1.0.1",
     "tailwindcss": "^4.3.0",
     "typescript": "6.0.3",
-    "vite": "^8.2.1"
+    "vite": "^8.2.1",
+    "vitest": "^5.0.0"
   },
   "scripts": {
     "oxlint": "oxlint",
@@ -98,6 +99,8 @@
     "stylelint": "stylelint \"src/css/*.css\"",
     "tscheck": "tsc --noEmit",
     "lint": "pnpm dprint && pnpm oxlint && pnpm stylelint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build": "cross-env NODE_ENV=production vite build",
     "build:debug": "cross-env NODE_ENV=development vite build",
     "start": "cross-env NODE_ENV=development vite",
