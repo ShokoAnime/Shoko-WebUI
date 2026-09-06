@@ -53,7 +53,6 @@ import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
-import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
 import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
 import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
 
@@ -94,7 +93,6 @@ const router = sentryCreateBrowserRouter(
             <Route index element={<Navigate to="unrecognized" replace />} />
             <Route path="unrecognized" element={<Navigate to="files" replace />} />
             <Route path="unrecognized/files" element={<UnrecognizedTab />} />
-            <Route path="unrecognized/files/link" element={<LinkFilesTab />} />
 
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />

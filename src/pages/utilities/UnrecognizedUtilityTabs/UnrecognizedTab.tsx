@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  mdiBeta,
   mdiCloseCircleOutline,
   mdiCreation,
   mdiDatabaseSearchOutline,
@@ -8,7 +7,6 @@ import {
   mdiDumpTruck,
   mdiEyeOffOutline,
   mdiFileDocumentEditOutline,
-  mdiLinkVariantPlus,
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
@@ -345,28 +343,11 @@ const UnrecognizedTab = () => {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  tooltip="Manual Link (Legacy)"
-                  className="flex flex-row flex-wrap items-center gap-x-2 rounded-r-none"
-                  onClick={() => navigate('link', { state: { selectedRows } })}
-                >
-                  <Icon path={mdiLinkVariantPlus} size={1} />
-                  <span>Manual Link</span>
-                </Button>
-                <Button
-                  buttonType="primary"
-                  buttonSize="normal"
-                  tooltip="Link With Providers (beta)"
-                  className="group -ml-3 flex flex-row flex-wrap items-center gap-x-2 rounded-l-none border-l-0"
+                  tooltip="Link With Providers"
+                  className="group flex flex-row flex-wrap items-center gap-x-2"
                   onClick={() => navigate('/webui/utilities/link-with-providers', { state: { selectedRows } })}
                 >
-                  <div className="relative">
-                    <Icon path={mdiCreation} size={1} />
-                    <Icon
-                      path={mdiBeta}
-                      size={0.5}
-                      className="absolute -right-1.5 -bottom-1 stroke-button-primary stroke-[8px] transition-[stroke] ease-in-out [paint-order:stroke] group-hover:stroke-button-primary-hover"
-                    />
-                  </div>
+                  <Icon path={mdiCreation} size={1} />
                 </Button>
                 <Button
                   buttonType="primary"

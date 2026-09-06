@@ -8,7 +8,7 @@ Files arrive via React Router `location.state.selectedRows` (`FileType[]`):
 
 | Source | Path | Note |
 |---|---|---|
-| `UnrecognizedTab` | `/webui/utilities/unrecognized/files` | Multi-select, "Link With Providers (beta)" button |
+| `UnrecognizedTab` | `/webui/utilities/unrecognized/files` | Multi-select, "Link With Providers" button |
 | `UnrecognizedFiles` panel | Dashboard | Single-file, per-row button |
 | `FileSearch` | `/webui/utilities/file-search` | "Edit Link" button, multi-select |
 
@@ -31,8 +31,8 @@ src/core/utilities/
 src/core/types/utilities/
   link-files-with-providers.ts    ManualLinkType, ManualLinkProviderType, LinkStateType, CrossReferenceType, RangeFillType, TouchableField
 
-src/components/Utilities/Unrecognized/
-  AnimeSelectPanel.tsx           Shared AniDB series search panel (modal + LinkFilesTab)
+src/components/Utilities/
+  AnimeSelectPanel.tsx           AniDB series search panel (modal)
   RangeFillModal.tsx             Range fill options modal (episode type + starting number)
 
   LinkFilesWithProvider/
@@ -195,7 +195,7 @@ Returns whether `User` is one of the providers in the `+`-joined `ProviderName` 
 
 Opened from the Menu's "Edit Release Info" action (`E`) for the selected links. Two-step flow:
 
-1. **Series search** — a shared `AnimeSelectPanel` (debounced AniDB search) when no series is selected.
+1. **Series search** — an `AnimeSelectPanel` (debounced AniDB search) when no series is selected.
 2. **Review form** — once a series is chosen (or when bulk-selecting mixed series), shows series + episode selection and the release fields. The release fields and the Save button render only in this state (`hasSeriesSelection`: a series is selected, or the bulk selection spans multiple series); with no series selected the modal shows only the search panel, so release metadata cannot be edited.
 
 The header shows the selected file count alongside an info button (`mdiInformationOutline`). For a single file the button's tooltip is the filename; for multiple files it opens a nested `SelectedFilesModal` (tooltip "Show files"). The modal lists each file's managed-folder name, parent directory (or `Root Level`), and filename, with the full `RelativePath` in a hover tooltip.

@@ -11,8 +11,6 @@ import type {
   DeleteFileRequestType,
   DeleteFilesRequestType,
   IgnoreFileRequestType,
-  LinkManyFilesToOneEpisodeRequestType,
-  LinkOneFileToManyEpisodesRequestType,
   MarkVariationRequestType,
 } from '@/core/react-query/file/types';
 import type { ListResultType } from '@/core/types/api';
@@ -85,17 +83,6 @@ export const useIgnoreFileMutation = () =>
     mutationFn: ({ fileId, ignore }: IgnoreFileRequestType) =>
       axios.put(`File/${fileId}/Ignore`, undefined, { params: { value: ignore } }),
     onSuccess: () => invalidateQueries(['files']),
-  });
-
-export const useLinkOneFileToManyEpisodesMutation = () =>
-  useMutation({
-    mutationFn: ({ episodeIDs, fileId }: LinkOneFileToManyEpisodesRequestType) =>
-      axios.post(`File/${fileId}/Link`, { episodeIDs }),
-  });
-
-export const useLinkManyFilesToOneEpisodeMutation = () =>
-  useMutation({
-    mutationFn: (data: LinkManyFilesToOneEpisodeRequestType) => axios.post('File/Link', data),
   });
 
 export const useMarkVariationMutation = () =>
