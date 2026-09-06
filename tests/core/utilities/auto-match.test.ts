@@ -192,14 +192,39 @@ describe('detectShow', () => {
         // extension; a plain trailing "[HorribleSubs]" is not captured.
         releaseGroup: null,
         ruleName: 'trash-anime',
-        season: null,
+        season: 1,
         showName: 'That Time I Got Reincarnated as a Slime (2018)',
+      });
+    });
+
+    it('takes the episode number from the SxxExx marker, not the trailing absolute number', () => {
+      expectParsed('Generic Show Title (2020) - S02E08 - 021 - The Episode Title [Group].mkv', {
+        episodeEnd: 8,
+        episodeStart: 8,
+        ruleName: 'trash-anime',
+        season: 2,
+      });
+    });
+
+    it('keeps the SxxExx range for multi-episode files', () => {
+      expectParsed('Generic Show Title (2020) - S02E05-E06 - 021-022 - The Episode Title [Group].mkv', {
+        episodeEnd: 6,
+        episodeStart: 5,
+        ruleName: 'trash-anime',
+        season: 2,
       });
     });
 
     it('flags S00 specials via the isSpecial group -> episodeType Special', () => {
       expectParsed('That Time I Got Reincarnated as a Slime (2018) - S00E01 - 1 - A New Beginning [HorribleSubs].mkv', {
         episodeStart: 1,
+        episodeType: 'Special',
+        ruleName: 'trash-anime',
+      });
+    });
+
+    it('an isSpecial S00 keeps episodeType Special even when the title carries a theme-song token', () => {
+      expectParsed('Generic Show Title (2020) - S00E01 - 12 - NCED [Group].mkv', {
         episodeType: 'Special',
         ruleName: 'trash-anime',
       });
@@ -400,25 +425,11 @@ describe('detectShow', () => {
   });
 
   describe('reversed-1', () => {
-    // APPARENT BUG: the capture group is written `(?<showName>[^[]+])` — the
-    // stray `]` after the `+` is a REQUIRED literal, so showName must end with
-    // a literal "]". Realistic "NN - Title.ext" names therefore never match
-    // this rule; they fall all the way through to `fallback`.
-    it('only matches when the title is followed by a stray literal "]"', () => {
-      expectParsed('01 - Show Name].mkv', {
+    it('parses "NN - Title [res].ext" names', () => {
+      expectParsed('01 - Generic Show Title [1080p].mkv', {
         episodeStart: 1,
         ruleName: 'reversed-1',
-        showName: 'Show Name]',
-      });
-    });
-
-    it('realistic "NN - Title [res].ext" names are handled by `fallback` instead (see discrepancy comment)', () => {
-      expectParsed('01 - Cowboy Bebop [1080p].mkv', {
-        episodeStart: 1,
-        ruleName: 'fallback',
-        // quirk: fallback parses "01 " as the show name and "Cowboy Bebop" as
-        // the episode name, which defaultTransform re-stitches to "01- Cowboy Bebop"
-        showName: '01- Cowboy Bebop',
+        showName: 'Generic Show Title',
       });
     });
   });
@@ -517,6 +528,13 @@ describe('detectShow — defaultTransform effects (module-private, asserted thro
       episodeType: 'Credits',
       ruleName: 'default',
       showName: 'Show Name NC',
+    });
+  });
+
+  it('theme song matched by a rule without an isThemeSong group (raws-2) still gets episodeType Credits', () => {
+    expectParsed('Show.Name.S01E01.NCED.1080p.WEB.h264-Group.mkv', {
+      episodeType: 'Credits',
+      ruleName: 'raws-2',
     });
   });
 

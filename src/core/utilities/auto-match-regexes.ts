@@ -134,6 +134,13 @@ try {
 
       modifiedDetails.episodeStart = episode;
       modifiedDetails.episodeEnd = episode;
+      // Rules that match theme songs via their own regex (raws-*, trailing-native-title) have no isThemeSong
+      // group, so detectEpisodeType never sees it - set the type here. Only from the plain 'Episode' default,
+      // so a more specific classification (Special from an isSpecial group, etc.) still wins, matching the
+      // isSpecial > isThemeSong precedence in detectEpisodeType.
+      if (modifiedDetails.episodeType === 'Episode') {
+        modifiedDetails.episodeType = 'Credits';
+      }
     }
     if (modifiedDetails.episodeStart === 0) {
       const trailerCheckResult = TrailerCheckRegex.exec(originalDetails.filePath);
@@ -171,6 +178,14 @@ try {
     return modifiedDetails;
   };
 
+  // Ordered, first-match-wins rule set, consumed only by detectShow() in ./auto-match-logic.ts: it tries each
+  // rule's `regex` in array order and uses the FIRST that matches, so position IS precedence - a new rule in
+  // the wrong slot silently steals matches from, or loses them to, an adjacent rule. Every match produces the
+  // same shape (showName / season / episodeStart+episodeEnd / episodeType / releaseGroup / version); callers
+  // use it only to seed the AniDB series search and auto-fill episode links, with no per-rule routing.
+  // `transform` returns the details to accept, `null` to abandon detection entirely, `false` to skip this rule
+  // but keep trying later ones. Rough order: specific anchored shapes, then the greedy `default`, niche shapes,
+  // then `fallback` (same as `default` with the episode number optional) last.
   PathMatchRuleSet.push(
     {
       name: 'anti-timestamp',
@@ -201,9 +216,15 @@ try {
     },
     {
       name: 'trash-anime',
+      // Take the episode number from the SxxExx marker, not the trailing absolute number: the search and the
+      // cross-reference matcher both poll AniDB, which catalogues a multi-cour show as separate entries each
+      // numbered from 1, so "... - S02E08 - 021 - ..." is episode 8, not 21. A single absolute-numbered entry
+      // keeps season 1 in Sonarr, so the two numbers are identical there. The E-range stays inside `episode`
+      // (defaultTransform splits it), and `year` is a bare \d{4} - not (?:19|20)\d{2} - because Sonarr can emit
+      // any 4-digit year here.
       regex:
         // oxlint-disable-next-line no-useless-escape
-        /^(?<showName>.+?(?: \((?<year>\d{4})\))) - (?:(?<isSpecial>S00?)|S\d+)E\d+(?:-E?\d+)? - (?<episode>\d+(?:-\d+)?) - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+        /^(?<showName>.+?(?: \((?<year>\d{4})\))) - (?:(?<isSpecial>S00?)|S(?<season>\d+))E(?<episode>\d+(?:-E?\d+)?) - \d+(?:-\d+)? - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
@@ -245,7 +266,9 @@ try {
     },
     {
       name: 'reversed-1',
-      regex: /^\[?(?<episode>\d+)\s*-\s*(?<showName>[^[]+])\s*(?:\[[^\]]*\])*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+      // The show-name class had a stray `]` (`[^[]+]`), which required the name to end with a literal `]`, so
+      // plain "05 - Show Name [1080p].mkv" never matched and fell through to `fallback` as "05- Show Name".
+      regex: /^\[?(?<episode>\d+)\s*-\s*(?<showName>[^[\n]+)\s*(?:\[[^\]]*\])*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     // TODO: Add more rules here.
