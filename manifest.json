@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.132",
+      "minServerVersion": "6.0.0-dev.437",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.132/Shoko-WebUI-v2.6.0-dev.132.zip",
+      "checksum": "sha256:350bcbb9a91bb0acfb43bef6362d665796ffaeddeb722970abbd1d7a4294fbc5",
+      "commit": "7052e6d2e009336b5e86c7c1460d50c9e28777dc",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.437** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.437** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(test): add Vitest unit tests for filterTree and auto-match logic by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1459\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.131...v2.6.0-dev.132\n"
+    },
+    {
       "version": "2.6.0-dev.131",
       "minServerVersion": "6.0.0-dev.437",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.131/Shoko-WebUI-v2.6.0-dev.131.zip",
