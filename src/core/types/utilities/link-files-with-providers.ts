@@ -38,6 +38,7 @@ export type TouchableField =
   | 'CrossReferences'
   | 'Group'
   | 'IsChaptered'
+  | 'IsCensored'
   | 'IsCreditless'
   | 'Source'
   | 'Version';
