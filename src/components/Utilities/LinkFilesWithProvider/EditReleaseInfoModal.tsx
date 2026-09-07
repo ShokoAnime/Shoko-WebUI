@@ -314,6 +314,16 @@ const EditReleaseInfoModal = (props: Props) => {
     });
   };
 
+  const handleCensoredChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markTouched('IsCensored');
+    setHasDifferent((draft) => {
+      draft.censored = false;
+    });
+    setFormState((draft) => {
+      draft.isCensored = !event.target.checked;
+    });
+  };
+
   const handleSourceChange = (event: ChangeEvent<HTMLSelectElement>) => {
     markTouched('Source');
     setFormState((draft) => {
@@ -377,6 +387,7 @@ const EditReleaseInfoModal = (props: Props) => {
 
     setIfTouched('Version', formState.version === '' ? undefined : formState.version);
     setIfTouched('IsChaptered', formState.isChaptered);
+    setIfTouched('IsCensored', formState.isCensored);
     setIfTouched('IsCreditless', formState.isCreditless);
     setIfTouched('Source', formState.source === '' ? undefined : formState.source);
     // Comment and Group can be cleared: write undefined through so it is
@@ -447,7 +458,7 @@ const EditReleaseInfoModal = (props: Props) => {
         </div>
       }
       noPadding
-      className="h-172"
+      className="h-188"
     >
       <div className="flex grow flex-col gap-y-4 p-6">
         {!formState.selectedSeriesId && !hasDifferent.series && (
@@ -577,6 +588,15 @@ const EditReleaseInfoModal = (props: Props) => {
                 isChecked={!hasDifferent.creditless && !!formState.isCreditless}
                 indeterminate={hasDifferent.creditless}
                 onChange={handleCreditlessChange}
+                justify
+              />
+
+              <Checkbox
+                id="release-censored"
+                label="Uncensored"
+                isChecked={!hasDifferent.censored && formState.isCensored === false}
+                indeterminate={hasDifferent.censored}
+                onChange={handleCensoredChange}
                 justify
               />
 

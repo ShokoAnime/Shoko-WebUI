@@ -13,6 +13,7 @@ type FormState = {
   rangeFill?: RangeFillType;
   version: ReleaseInfoType['Version'] | '';
   isChaptered?: ReleaseInfoType['IsChaptered'];
+  isCensored?: ReleaseInfoType['IsCensored'];
   isCreditless?: ReleaseInfoType['IsCreditless'];
   source: ReleaseInfoType['Source'] | '';
   comment: ReleaseInfoType['Comment'];
@@ -31,6 +32,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
   const [touchedFields, setTouchedFields] = useImmer<Set<TouchableField>>(new Set());
   const [hasDifferent, setHasDifferent] = useImmer({
     chaptered: false,
+    censored: false,
     creditless: false,
     episodes: false,
     group: false,
@@ -75,6 +77,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
     setHasDifferent({
       chaptered: isBulk && !allSame(link => link.IsChaptered),
+      censored: isBulk && !allSame(link => link.IsCensored),
       creditless: isBulk && !allSame(link => link.IsCreditless),
       episodes: hasDifferentEpisodes,
       group: hasDifferentGroup,
@@ -86,6 +89,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
       selectedEpisodeIds: initialEpisodeIds,
       version: hasDifferentVersion ? '' : first.Version,
       isChaptered: first.IsChaptered,
+      isCensored: first.IsCensored,
       isCreditless: first.IsCreditless,
       source: hasDifferentSource ? '' : first.Source,
       comment: hasDifferentComment ? '' : (first.Comment ?? ''),
