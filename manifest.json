@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.135",
+      "minServerVersion": "6.0.0-dev.437",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.135/Shoko-WebUI-v2.6.0-dev.135.zip",
+      "checksum": "sha256:a088c3c8d2a35e067329a5bbb0057168f1545b5746fdd590ed7726fe1a25605e",
+      "commit": "9c776ea49b481270caa5824d3321a28d5cfb3e09",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.437** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.437** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(edit-release-info): add Uncensored checkbox by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1461\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.134...v2.6.0-dev.135\n"
+    },
+    {
       "version": "2.6.0-dev.134",
       "minServerVersion": "6.0.0-dev.437",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.134/Shoko-WebUI-v2.6.0-dev.134.zip",
