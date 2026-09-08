@@ -35,16 +35,40 @@ const InputSmall = (props: Props) => {
     value,
   } = props;
 
+  const defineOwn = (target: object, name: string, ownValue: unknown) => {
+    Object.defineProperty(target, name, { value: ownValue, writable: true, enumerable: true, configurable: true });
+  };
+
+  const withValue = (event: ChangeEvent<HTMLInputElement>, nextValue: string) => {
+    // Prototype-preserving clone of the DOM target; own properties are defined (not
+    // assigned) so the accessors on the prototype chain (React's value tracker,
+    // native valueAsNumber) are shadowed instead of invoked ("Illegal invocation").
+    const target = Object.create(event.target) as HTMLInputElement;
+    defineOwn(target, 'value', nextValue);
+    defineOwn(target, 'valueAsNumber', nextValue === '' ? Number.NaN : Number(nextValue));
+
+    return { ...event, target } as ChangeEvent<HTMLInputElement>;
+  };
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (type === 'number' && max && event.target.valueAsNumber > max) {
-      toast.info(`Value cannot be greater than ${max}!`);
-
-      const newEvent = { ...event };
-      newEvent.target.value = max.toString();
-      newEvent.target.valueAsNumber = max;
-
-      onChange(newEvent);
+    if (type !== 'number') {
+      onChange(event);
       return;
+    }
+
+    const { valueAsNumber } = event.target;
+    if (Number.isFinite(valueAsNumber)) {
+      if (max !== undefined && valueAsNumber > max) {
+        toast.info(`Value cannot be greater than ${max}!`);
+        onChange(withValue(event, max.toString()));
+        return;
+      }
+
+      if (min !== undefined && valueAsNumber < min) {
+        toast.info(`Value cannot be less than ${min}!`);
+        onChange(withValue(event, min.toString()));
+        return;
+      }
     }
 
     onChange(event);
