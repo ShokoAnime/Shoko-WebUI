@@ -69,8 +69,14 @@ jobs:
           runtime: node@24
           cache: true
 
+      - name: Format Check
+        run: pnpm dprint
+
       - name: Lint
-        run: pnpm lint --quiet
+        run: pnpm oxlint
+
+      - name: Stylelint
+        run: pnpm stylelint
 
       - name: Update version in package.json
         run: pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
@@ -105,7 +111,7 @@ jobs:
   update-manifest:
     needs: release
     if: success()
-    uses: ./.github/workflows/Update-Manifest.yml
+    uses: ./.github/workflows/update-manifest.yml
     with:
       version: ${{ needs.release.outputs.version }}
       prerelease: ${{ fromJSON(needs.release.outputs.prerelease) }}

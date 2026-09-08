@@ -100,7 +100,7 @@ jobs:
   update-manifest:
     needs: release-dev-auto
     if: success()
-    uses: ./.github/workflows/Update-Manifest.yml
+    uses: ./.github/workflows/update-manifest.yml
     with:
       version: ${{ needs.release-dev-auto.outputs.version_tag }}
       prerelease: true
