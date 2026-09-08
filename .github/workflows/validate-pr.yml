@@ -1,12 +1,12 @@
-name: Lint-PR
+name: Validate-PR
 on:
   pull_request:
     types: [opened, synchronize]
 
 jobs:
-  lint-and-build:
+  validate-pr:
     runs-on: ubuntu-latest
-    name: Lint check PR
+    name: Validate PR
 
     steps:
       - name: Checkout
@@ -19,8 +19,14 @@ jobs:
           runtime: node@24
           cache: true
 
+      - name: Format Check
+        run: pnpm dprint
+
       - name: Lint
-        run: pnpm lint --quiet
+        run: pnpm oxlint
+
+      - name: Stylelint
+        run: pnpm stylelint
 
       - name: Test
         run: pnpm test

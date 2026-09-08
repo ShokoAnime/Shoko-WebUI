@@ -80,9 +80,9 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 ## Verification & CI
 
 - **Verification is `pnpm test` (Vitest unit tests) + `pnpm lint` (typecheck: `pnpm tscheck`).** Test coverage is deliberately limited to regression protection of high-risk modules (`filterTree.ts`, auto-match logic/regexes); never add coverage tooling or UI/DOM assertions.
-- **Other CI workflows:** `Release-Dev-Auto.yml` (auto build on `master` push), `Release-Manual.yml`, `Update-Manifest.yml`, CodeQL.
+- **Other CI workflows:** `release-dev-auto.yml` (auto build on `master` push), `release-manual.yml`, `update-manifest.yml`, CodeQL.
 - **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `dprint fmt`, `oxlint`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
-- **PR CI:** `.github/workflows/Lint-PR.yml` runs `pnpm lint --quiet`, then `pnpm test`.
+- **PR CI:** `.github/workflows/validate-pr.yml` runs `pnpm lint --quiet`, then `pnpm test`.
 - **Agent lint workflow:**
   - After every file edit, run `./node_modules/.bin/dprint fmt <file>` to format just that file.
   - After completing edits on a file, run `./node_modules/.bin/oxlint --fix <file>` to catch lint errors early (auto-fixes import order and other fixable rules) — fix any remaining errors before moving on.
