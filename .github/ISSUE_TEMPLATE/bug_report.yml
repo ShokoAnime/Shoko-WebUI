@@ -1,0 +1,83 @@
+name: 🐛 Bug Report
+description: Something in the Web UI is broken or misbehaving.
+labels: []
+title: '[Bug] '
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      description: Issues that fail these checks may be closed without review.
+      options:
+        - label: I'm using the latest Stable or Daily version of Shoko Server.
+          required: true
+        - label: I'm using the correct Web UI version for my server (Stable Server → Stable WebUI, Daily Server → Daily WebUI).
+          required: true
+        - label: I've searched this repository for a similar issue.
+          required: true
+
+  - type: input
+    id: server-version
+    attributes:
+      label: Shoko Server Version
+      description: Shown in Settings → General (e.g. `5.3.3.0`). If the Web UI crashes before you can reach Settings, the versions are also shown on the crash page.
+      placeholder: '5.3.3.0'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: server-channel
+    attributes:
+      label: Server Channel
+      options:
+        - Stable
+        - Daily
+    validations:
+      required: true
+
+  - type: input
+    id: webui-version
+    attributes:
+      label: Web UI Version
+      description: Shown in Settings → General, next to the server version (e.g. `2.5.11`); also visible on the crash page.
+      placeholder: '2.5.11'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: webui-channel
+    attributes:
+      label: Web UI Channel
+      options:
+        - Stable
+        - Daily
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        Numbered steps starting from a fresh page load. Example:
+        1. Open `WebUI → Collection`
+        2. Click `...`
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots
+      description: Screenshots of the error, including the browser toast if one appears.
+    validations:
+      required: false

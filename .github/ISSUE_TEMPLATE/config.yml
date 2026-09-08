@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Shoko Discord
+    url: https://discord.gg/vpeHDsg
+    about: For support questions and general discussion, please use Discord instead of opening an issue.
+  - name: Shoko Server Issues
+    url: https://github.com/ShokoAnime/ShokoServer/issues
+    about: If the problem only appears server-side (importing, AniDB, renaming), report it on ShokoServer instead.

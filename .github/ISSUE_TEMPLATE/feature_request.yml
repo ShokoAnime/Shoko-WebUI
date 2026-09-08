@@ -1,0 +1,30 @@
+name: ✨ Feature Request
+description: Suggest a new feature or an improvement to an existing one.
+labels: []
+title: '[Feature Request] '
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I've searched this repository for a similar feature request.
+          required: true
+        - label: This request is not related to allowing Shoko to download anime episodes or rip them from streaming sites.
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: What do you want to see, and what problem does it solve? Include the relevant page/section of the Web UI (e.g. `Collection`, `Settings → Import`).
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples / Mockups
+      description: Mockups, screenshots from other apps, or a concrete example of the behavior you'd expect. Delete this section if not applicable.
+    validations:
+      required: false
