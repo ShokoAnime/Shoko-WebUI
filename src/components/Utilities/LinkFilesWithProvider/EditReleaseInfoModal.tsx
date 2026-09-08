@@ -431,7 +431,7 @@ const EditReleaseInfoModal = (props: Props) => {
     },
     { scopes: 'modal' },
   );
-  useHotkeys('r', () => handleEpisodeSelect(RANGE_FILL_EPISODE_ID), { scopes: 'modal' });
+  useHotkeys('r', () => handleEpisodeSelect(RANGE_FILL_EPISODE_ID), { scopes: 'modal', preventDefault: true });
   useHotkeys('enter', handleSave, { scopes: 'modal' });
 
   return (
