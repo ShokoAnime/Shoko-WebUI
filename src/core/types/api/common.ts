@@ -37,12 +37,6 @@ export type RatingType = {
   Type: 'Permanent' | 'Temporary';
 };
 
-export type LogLineType = {
-  TimeStamp: string;
-  Message: string;
-  Level: string;
-};
-
 export type DataSourceValues =
   | 'Plugin'
   | 'LocallyGenerated'
