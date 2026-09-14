@@ -90,10 +90,20 @@ export type SeriesTitleType = {
   Type: string;
 };
 
+export type SeriesLinkTypeValues =
+  | 'Website'
+  | 'Streaming'
+  | 'Metadata'
+  | 'CrossReference'
+  | 'Social'
+  | 'Trailer';
+
 export type SeriesLinkType = {
-  Type: string;
+  Type: SeriesLinkTypeValues;
   Name: string;
   URL: string;
+  /** Language/region code for per-region links, eg. AniList streaming links. */
+  LanguageCode?: string | null;
 };
 
 export type SeriesSizesType = {
