@@ -18,6 +18,7 @@ import { useHideEpisodeMutation, useWatchEpisodeMutation } from '@/core/react-qu
 import { useEpisodeFilesQuery } from '@/core/react-query/episode/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
+import EditEpisodeTitleModal from './EditEpisodeTitleModal';
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
 
@@ -90,6 +91,7 @@ const EpisodeSummary = (
   const { backdrop } = useOutletContext<SeriesContextType>();
   const thumbnail = useEpisodeThumbnail(episode, backdrop);
   const [open, toggleOpen] = useToggle(false);
+  const [titleModalOpen, toggleTitleModalOpen] = useToggle(false);
   const episodeId = episode.IDs.ID ?? 0;
 
   const episodeFilesQuery = useEpisodeFilesQuery(
@@ -158,8 +160,15 @@ const EpisodeSummary = (
             </div>
           </div>
         </BackgroundImagePlaceholderDiv>
-        <EpisodeDetails episode={episode} />
+        <EpisodeDetails episode={episode} onEditTitle={toggleTitleModalOpen} />
       </div>
+      <EditEpisodeTitleModal
+        show={titleModalOpen}
+        onRequestClose={toggleTitleModalOpen}
+        episode={episode}
+        seriesId={seriesId}
+        nextUp={nextUp}
+      />
       {anidbSeriesId && episode.Size > 0 && (
         <>
           <div

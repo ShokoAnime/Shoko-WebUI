@@ -1,7 +1,15 @@
-import { mdiCalendarMonthOutline, mdiClipboardOutline, mdiClockOutline, mdiOpenInNew, mdiStarHalfFull } from '@mdi/js';
+import {
+  mdiCalendarMonthOutline,
+  mdiClipboardOutline,
+  mdiClockOutline,
+  mdiOpenInNew,
+  mdiPencilCircleOutline,
+  mdiStarHalfFull,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 
+import Button from '@/components/Input/Button';
 import { convertTimeSpanToMs, copyToClipboard, dayjs, getAnidbEpisodeLink } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -16,7 +24,7 @@ const handleCopyToClipboard = (id: string) => {
   copyToClipboard(id, 'Shoko Episode ID').catch(console.error);
 };
 
-const EpisodeDetails = ({ episode }: { episode: EpisodeType }) => (
+const EpisodeDetails = ({ episode, onEditTitle }: { episode: EpisodeType, onEditTitle?: () => void }) => (
   <div className="flex max-h-52 grow flex-col gap-y-4 overflow-hidden">
     <div className="flex justify-between font-semibold">
       <div className="opacity-65">
@@ -33,8 +41,13 @@ const EpisodeDetails = ({ episode }: { episode: EpisodeType }) => (
       )}
     </div>
 
-    <div className="-mt-4 text-xl font-semibold">
+    <div className="-mt-4 flex items-center gap-x-2 text-xl font-semibold">
       {episode.Name}
+      {onEditTitle && (
+        <Button onClick={onEditTitle} tooltip="Edit Title">
+          <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={0.8} />
+        </Button>
+      )}
     </div>
 
     <div className="flex flex-wrap items-center gap-x-3 text-sm font-semibold">

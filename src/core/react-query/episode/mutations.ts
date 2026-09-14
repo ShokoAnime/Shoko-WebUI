@@ -36,6 +36,23 @@ export const useHideEpisodeMutation = (seriesId?: number, nextUp = false) =>
     },
   });
 
+export const useOverrideEpisodeTitleMutation = (episodeId: number, seriesId?: number, nextUp = false) =>
+  useMutation({
+    mutationFn: (Title: string) => axios.post(`Episode/${episodeId}/OverrideTitle`, { Title }),
+    onSuccess: () => {
+      if (!seriesId) return;
+
+      invalidateQueries(['series', seriesId, 'data']);
+
+      if (nextUp) {
+        invalidateQueries(['series', seriesId, 'next-up']);
+        return;
+      }
+
+      invalidateQueries(['series', seriesId, 'episodes']);
+    },
+  });
+
 export const useWatchEpisodeMutation = (seriesId: number, pageNumber?: number, nextUp = false) =>
   useMutation({
     mutationFn: ({ episodeId, watched }: WatchEpisodeRequestType) =>
