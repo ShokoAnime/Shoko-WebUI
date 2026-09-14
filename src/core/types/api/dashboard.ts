@@ -41,7 +41,14 @@ export type DashboardEpisodeDetailsType = {
   Title: string;
   Number: number;
   Type: EpisodeTypeValues;
+  /** UTC calendar day of the broadcast (`YYYY-MM-DD`) when the time is known, otherwise the AniDB air date. */
   AirDate: string | null;
+  /** ISO UTC datetime; midnight UTC on `AirDate` when no broadcast time is known. */
+  AiredAt: string | null;
+  /** `AiredAt` carries a real broadcast time (from AniList, or estimated). */
+  HasAirTime: boolean;
+  /** The broadcast time is an estimate learned from the series' other episodes. */
+  IsAirTimeEstimated: boolean;
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;

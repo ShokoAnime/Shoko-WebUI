@@ -46,6 +46,7 @@ import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
+import Calendar from '@/pages/utilities/Calendar';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
@@ -108,6 +109,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />
             <Route path="link-with-providers" element={<LinkFilesWithProviders />} />
+            <Route path="calendar" element={<Calendar />} />
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
