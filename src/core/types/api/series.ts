@@ -173,7 +173,12 @@ export type SeriesRolePerson = {
 };
 
 export type SeriesCast = {
-  Language: string;
+  /**
+   * Language code of the role, eg. `ja`, `en`. AniDB and TMDB roles report
+   * the work's original language, AniList roles report the language the
+   * voice actor or dub staff member performs in. Omitted when unknown.
+   */
+  Language?: string;
   Staff: SeriesRolePerson;
   Character?: SeriesRolePerson;
   RoleName: string;
