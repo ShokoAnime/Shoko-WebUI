@@ -1,21 +1,24 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { mdiLoading, mdiTextSearch } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { debounce } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import { useLogsSearchQuery } from '@/core/react-query/logging/queries';
+import useVirtualizerScrollRectWorkaround from '@/hooks/useVirtualizerScrollRectWorkaround';
 import LogRow from '@/pages/logs/LogRow';
 
 import type { LogLevelType } from '@/core/react-query/logging/types';
 
-// DSL prefixes the server understands (c: contains, =: equals, ^: starts, $: ends, ~: fuzzy, *: regex,
-// with ! negate and # case-insensitive modifiers). A bare value is shorthand for "c:" (case-sensitive
-// contains), so we make it case-insensitive by default unless the user typed DSL themselves.
-const hasDslPrefix = (value: string) => /^[c=^$~*!#]+:/.test(value);
+// DSL grammar the server accepts (LogService.TryParseLogFilterDsl): a mode char first — c: contains,
+// =: equals, ^: starts, $: ends, ~: fuzzy, *: regex — optionally followed by at most one ! (negate)
+// and one # (case-insensitive) in either order, then ':'. ! and # are modifiers, never prefixes on
+// their own (e.g. "!c:foo" or "#:foo" are server-side 400s). A bare value is shorthand for "c:"
+// (case-sensitive contains), so we make it case-insensitive by default unless the user typed valid
+// DSL themselves; anything else gets wrapped as a literal.
+const hasDslPrefix = (value: string) => /^[c=^$~*](?:!#|#!|!|#)?:/.test(value);
 
-const toServerSearch = (value: string) => (hasDslPrefix(value) ? value : `c#:${value}`);
+const toServerSearch = (value: string) => (!value || hasDslPrefix(value) ? value : `c#:${value}`);
 
 type Props = {
   activeLevels: Set<LogLevelType>;
@@ -26,25 +29,16 @@ type Props = {
 const LogSearchView = ({ activeLevels, onClearFilters, search }: Props) => {
   const serverSearch = toServerSearch(search);
 
-  const { data, fetchNextPage, isFetching, isFetchingNextPage, isPending } = useLogsSearchQuery({
+  const { data, fetchNextPage, isFetching, isFetchingNextPage } = useLogsSearchQuery({
     search: serverSearch,
     levels: activeLevels,
   });
 
   const logEntries = data?.pages.flatMap(page => page.Entries) ?? [];
 
-  const hasMore = data?.pages[data.pages.length - 1]?.NextOffset !== null;
+  const hasMore = data?.pages[data.pages.length - 1]?.NextOffset != null;
 
-  const searching = isPending || isFetchingNextPage || (isFetching && !isFetchingNextPage && logEntries.length === 0);
-
-  const fetchNextPageDebounced = useMemo(
-    () =>
-      debounce(() => {
-        if (!hasMore || isFetchingNextPage) return;
-        fetchNextPage().catch(console.error);
-      }, 50),
-    [hasMore, isFetchingNextPage, fetchNextPage],
-  );
+  const searching = isFetching && logEntries.length === 0;
 
   const parentRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
@@ -54,12 +48,18 @@ const LogSearchView = ({ activeLevels, onClearFilters, search }: Props) => {
     useFlushSync: false,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
-  // Magic code stolen from https://github.com/TanStack/virtual/issues/634
-  // Fixes autoscroll issue in firefox
-  // and now apparently chrome too
-  if (parentRef.current) {
-    rowVirtualizer.scrollRect = { height: parentRef.current.clientHeight, width: parentRef.current.clientWidth };
-  }
+
+  // Trigger the next page fetch from an effect on the trailing virtual row instead of a
+  // render-phase side effect; fetchNextPage has stable identity so no debounce is needed.
+  const lastVirtualItem = virtualItems[virtualItems.length - 1];
+  const lastVirtualIndex = lastVirtualItem?.index;
+  useEffect(() => {
+    if (lastVirtualIndex === logEntries.length && hasMore && !isFetchingNextPage) {
+      fetchNextPage().catch(console.error);
+    }
+  }, [lastVirtualIndex, hasMore, isFetchingNextPage, fetchNextPage, logEntries.length]);
+
+  useVirtualizerScrollRectWorkaround(rowVirtualizer, parentRef);
 
   return (
     <div
@@ -96,9 +96,6 @@ const LogSearchView = ({ activeLevels, onClearFilters, search }: Props) => {
               style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
             >
               {virtualItems.map((virtualRow) => {
-                const isLoadMoreTrigger = virtualRow.index === logEntries.length;
-                if (isLoadMoreTrigger && !isFetchingNextPage) fetchNextPageDebounced();
-
                 const event = logEntries[virtualRow.index];
 
                 if (!event) {

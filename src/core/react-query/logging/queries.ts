@@ -5,15 +5,10 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import queryClient from '@/core/react-query/queryClient';
 import { useSelector } from '@/core/store';
-import { dayjs } from '@/core/util';
 
 import type { LogEventType, LogReadResultType, LogsSearchParamsType } from '@/core/react-query/logging/types';
 
 const logsQueryKey = ['logs'];
-
-export const formatStamp = (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-const formatTimestamps = (lines: LogEventType[]): LogEventType[] =>
-  lines.map<LogEventType>(item => ({ ...item, TimeStamp: formatStamp(item.TimeStamp) }));
 
 const useLogsSubscription = () => {
   const apikey = useSelector(state => state.apiSession.apikey);
@@ -43,20 +38,20 @@ const useLogsSubscription = () => {
     connectionLog.on(
       'GetBacklog',
       (lines: LogEventType[]) => {
-        queryClient.setQueryData(logsQueryKey, (oldData: LogEventType[] | undefined) => {
-          const newData = formatTimestamps(lines);
-          return oldData ? [...oldData, ...newData] : newData;
-        });
+        queryClient.setQueryData(
+          logsQueryKey,
+          (oldData: LogEventType[] | undefined) => (oldData ? [...oldData, ...lines] : lines),
+        );
       },
     );
 
     connectionLog.on(
       'Log',
       (line: LogEventType) => {
-        queryClient.setQueryData(logsQueryKey, (oldData: LogEventType[] | undefined) => {
-          const newData = { ...line, TimeStamp: formatStamp(line.TimeStamp) };
-          return oldData ? [...oldData, newData] : [newData];
-        });
+        queryClient.setQueryData(
+          logsQueryKey,
+          (oldData: LogEventType[] | undefined) => (oldData ? [...oldData, line] : [line]),
+        );
       },
     );
 
@@ -79,9 +74,12 @@ export const useLogsQuery = () => {
   });
 };
 
-export const useLogsSearchQuery = ({ levels, search }: LogsSearchParamsType) =>
-  useInfiniteQuery<LogReadResultType>({
-    queryKey: ['logs', 'search', { search, levels }],
+export const useLogsSearchQuery = ({ levels, search }: LogsSearchParamsType) => {
+  // Sets serialize to {} in the query key hash, so derive a stable, content-sensitive string instead.
+  // Sorted so any chip-toggle order produces the same key.
+  const levelKey = [...levels].sort().join(',');
+  return useInfiniteQuery<LogReadResultType>({
+    queryKey: ['logs', 'search', { search, levels: levelKey }],
     queryFn: ({ pageParam }) =>
       axios.get('Logging/Range/Read', {
         params: {
@@ -89,10 +87,11 @@ export const useLogsSearchQuery = ({ levels, search }: LogsSearchParamsType) =>
           limit: 100,
           descending: true,
           // Server expects a comma-separated list of LogLevel names; omitted params are inactive filters.
-          level: levels.size > 0 ? [...levels].join(',') : undefined,
-          message: search,
+          level: levelKey || undefined,
+          message: search || undefined,
         },
       }),
     getNextPageParam: lastPage => lastPage.NextOffset,
     initialPageParam: 0,
   });
+};

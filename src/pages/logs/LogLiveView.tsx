@@ -1,46 +1,35 @@
 import { useEffect, useRef } from 'react';
-import { mdiLoading, mdiTextSearch } from '@mdi/js';
+import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { throttle } from 'lodash';
 
-import Button from '@/components/Input/Button';
+import useVirtualizerScrollRectWorkaround from '@/hooks/useVirtualizerScrollRectWorkaround';
 import LogRow from '@/pages/logs/LogRow';
 
-import type { LogEventType, LogLevelType } from '@/core/react-query/logging/types';
+import type { LogEventType } from '@/core/react-query/logging/types';
 
 type Props = {
-  activeLevels: Set<LogLevelType>;
   logLines: LogEventType[];
-  onClearFilters: () => void;
   scrollToBottom: boolean;
   setScrollToBottom: (value: boolean) => void;
 };
 
-const LogLiveView = ({ activeLevels, logLines, onClearFilters, scrollToBottom, setScrollToBottom }: Props) => {
-  const visibleLines = activeLevels.size === 0
-    ? logLines
-    : logLines.filter(line => activeLevels.has(line.Level));
-
+const LogLiveView = ({ logLines, scrollToBottom, setScrollToBottom }: Props) => {
   const parentRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
-    count: visibleLines.length,
+    count: logLines.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 36,
     useFlushSync: false,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
-  // Magic code stolen from https://github.com/TanStack/virtual/issues/634
-  // Fixes autoscroll issue in firefox
-  // and now apparently chrome too
-  if (parentRef.current) {
-    rowVirtualizer.scrollRect = { height: parentRef.current.clientHeight, width: parentRef.current.clientWidth };
-  }
+  useVirtualizerScrollRectWorkaround(rowVirtualizer, parentRef);
 
   useEffect(() => {
-    if (!scrollToBottom || visibleLines.length === 0) return;
-    rowVirtualizer.scrollToIndex(visibleLines.length - 1);
-  }, [visibleLines, scrollToBottom, rowVirtualizer]);
+    if (!scrollToBottom || logLines.length === 0) return;
+    rowVirtualizer.scrollToIndex(logLines.length - 1);
+  }, [logLines, scrollToBottom, rowVirtualizer]);
 
   // Taken from ChatGPT...
   // Disables auto scroll when user scrolls up
@@ -72,18 +61,7 @@ const LogLiveView = ({ activeLevels, logLines, onClearFilters, scrollToBottom, s
         </div>
       )}
 
-      {logLines.length > 0 && visibleLines.length === 0 && (
-        <div className="flex h-full flex-col items-center justify-center gap-y-2 text-panel-text">
-          <Icon path={mdiTextSearch} size={2} className="opacity-50" />
-          <div className="font-semibold">No log messages match</div>
-          <div className="text-sm opacity-65">Adjust the level filters or clear them.</div>
-          <Button buttonType="primary" buttonSize="small" className="mt-2" onClick={onClearFilters}>
-            Clear filters
-          </Button>
-        </div>
-      )}
-
-      {visibleLines.length > 0 && (
+      {logLines.length > 0 && (
         <div
           className="relative w-full"
           style={{ height: rowVirtualizer.getTotalSize() }}
@@ -96,7 +74,7 @@ const LogLiveView = ({ activeLevels, logLines, onClearFilters, scrollToBottom, s
               <LogRow
                 key={virtualRow.key}
                 dataIndex={virtualRow.index}
-                event={visibleLines[virtualRow.index]}
+                event={logLines[virtualRow.index]}
                 measureRef={rowVirtualizer.measureElement}
               />
             ))}

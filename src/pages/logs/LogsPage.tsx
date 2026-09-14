@@ -26,9 +26,10 @@ const LogsPage = () => {
   const [debouncedSearch] = useDebounceValue(search.trim(), 250);
   const [activeLevels, setActiveLevels] = useImmer<Set<LogLevelType>>(new Set());
 
-  // Live mode shows the SignalR tail; any debounced search text switches to server-side search
-  const searchMode = debouncedSearch !== '';
-  const filtersActive = search !== '' || activeLevels.size > 0;
+  // Live mode shows the SignalR tail; any active filter (debounced search text or level chips)
+  // switches to server-side search over the full history. A future mode toggle could let the
+  // level chips and/or search text filter the live tail client-side instead, if needed.
+  const filtersActive = debouncedSearch !== '' || activeLevels.size > 0;
 
   const toggleLevel = (level: LogLevelType) => {
     setActiveLevels((draft) => {
@@ -55,7 +56,7 @@ const LogsPage = () => {
               Logs
             </div>
             <div className="text-sm opacity-65">
-              {searchMode
+              {filtersActive
                 ? 'Searching the full log history on the server'
                 : `${formatThousand(logLines.length)} lines in the live tail`}
             </div>
@@ -95,7 +96,7 @@ const LogsPage = () => {
               icon={mdiArrowVerticalLock}
               buttonType="secondary"
               buttonSize="normal"
-              disabled={searchMode}
+              disabled={filtersActive}
               className={cx(scrollToBottom ? 'text-panel-icon-action' : 'text-panel-text!')}
               onClick={() => setScrollToBottom(prev => !prev)}
               tooltip={`${scrollToBottom ? 'Disable' : 'Enable'} scroll to bottom`}
@@ -104,7 +105,7 @@ const LogsPage = () => {
         </div>
 
         <div className="flex grow rounded-lg border border-panel-border bg-panel-background p-6">
-          {searchMode
+          {filtersActive
             ? (
               <LogSearchView
                 search={debouncedSearch}
@@ -115,10 +116,8 @@ const LogsPage = () => {
             : (
               <LogLiveView
                 logLines={logLines}
-                activeLevels={activeLevels}
                 scrollToBottom={scrollToBottom}
                 setScrollToBottom={setScrollToBottom}
-                onClearFilters={clearFilters}
               />
             )}
         </div>
