@@ -5,6 +5,7 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useOverrideEpisodeTitleMutation } from '@/core/react-query/episode/mutations';
+import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -29,18 +30,30 @@ const EditEpisodeTitleModal = ({ episode, nextUp, onRequestClose, seriesId, show
 
   const handleSave = () => {
     if (isPending) return;
-    overrideTitle(title, { onSuccess: onRequestClose });
+    overrideTitle(title, {
+      onSuccess: () => {
+        toast.success('Episode title updated successfully!');
+        onRequestClose();
+      },
+      onError: () => toast.error('Episode title could not be updated!'),
+    });
   };
 
   const handleReset = () => {
     if (isPending) return;
-    overrideTitle('', { onSuccess: onRequestClose });
+    overrideTitle('', {
+      onSuccess: () => {
+        toast.success('Episode title reset to default!');
+        onRequestClose();
+      },
+      onError: () => toast.error('Episode title could not be reset!'),
+    });
   };
 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
-  useHotkeys('escape', onRequestClose, { scopes: 'modal' });
-  useHotkeys('enter', handleSave, { scopes: 'modal' });
+  useHotkeys('escape', () => !isPending && onRequestClose(), { scopes: 'modal' });
+  useHotkeys('enter', handleSave, { scopes: 'modal', enableOnFormTags: true });
 
   return (
     <ModalPanel
