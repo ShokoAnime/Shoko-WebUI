@@ -10,6 +10,7 @@ import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
+import AnilistLinking from '@/pages/collection/series/AnilistLinking';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
 import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
 import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
@@ -33,6 +34,7 @@ import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
+import AnilistSettings from '@/pages/settings/tabs/AnilistSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
@@ -44,6 +46,7 @@ import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
+import Calendar from '@/pages/utilities/Calendar';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
@@ -106,6 +109,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />
             <Route path="link-with-providers" element={<LinkFilesWithProviders />} />
+            <Route path="calendar" element={<Calendar />} />
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
@@ -124,6 +128,7 @@ const router = sentryCreateBrowserRouter(
               <Route path="tags" element={<SeriesTags />} />
             </Route>
             <Route path="series/:seriesId/tmdb-linking" element={<TmdbLinking />} />
+            <Route path="series/:seriesId/anilist-linking" element={<AnilistLinking />} />
           </Route>
           <Route path="settings" element={<SettingsPage />}>
             <Route index element={<Navigate to="general" replace />} />
@@ -132,6 +137,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="tmdb" element={<TmdbSettings />} />
+            <Route path="anilist" element={<AnilistSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="plugin-management">

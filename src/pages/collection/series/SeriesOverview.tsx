@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useOutletContext } from 'react-router';
-import { mdiEarth, mdiOpenInNew } from '@mdi/js';
+import { mdiEarth, mdiMoviePlayOutline, mdiOpenInNew, mdiShareVariantOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { flatMap, get, map, round } from 'lodash';
@@ -20,10 +20,16 @@ import {
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
-import type { SeriesCast } from '@/core/types/api/series';
+import type { SeriesCast, SeriesLinkTypeValues } from '@/core/types/api/series';
 
 // Links
-const MetadataLinks = ['AniDB', 'TMDB'] as const;
+const MetadataLinks = ['AniDB', 'TMDB', 'AniList'] as const;
+
+// Icons for the link types that are not a plain website; everything else keeps the globe.
+const linkTypeIcons: Partial<Record<SeriesLinkTypeValues, string>> = {
+  Social: mdiShareVariantOutline,
+  Trailer: mdiMoviePlayOutline,
+};
 
 const SeriesOverview = () => {
   const { series } = useOutletContext<SeriesContextType>();
@@ -105,7 +111,22 @@ const SeriesOverview = () => {
                     ];
                   }
 
-                  // Site is not TMDB, so it's either a single ID or an array of IDs
+                  if (site === 'AniList') {
+                    const anilistIds = series.IDs.AniList;
+                    if (anilistIds.length === 0) {
+                      return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
+                    }
+
+                    return [
+                      ...anilistIds.map(id => (
+                        <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
+                      )),
+                      /* Show row to add new AniList links */
+                      <SeriesMetadata key="AniList-add-new" site="AniList" seriesId={series.IDs.ID} />,
+                    ];
+                  }
+
+                  // Site is not TMDB or AniList, so it's either a single ID or an array of IDs
                   const idOrIds = series?.IDs[site] ?? [0];
                   const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
                   if (linkIds.length === 0) linkIds.push(0);
@@ -125,19 +146,28 @@ const SeriesOverview = () => {
               >
                 {series.Links.map(link => (
                   <a
-                    className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left text-base! font-normal! text-panel-icon-action hover:bg-panel-toggle-background-hover"
-                    key={link.URL}
+                    className="flex w-full items-center gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left text-base! font-normal! text-panel-icon-action hover:bg-panel-toggle-background-hover"
+                    key={`${link.Type}-${link.LanguageCode ?? ''}-${link.URL}`}
                     href={link.URL}
                     rel="noopener noreferrer"
                     target="_blank"
                   >
                     <Icon
                       className="text-panel-icon"
-                      path={mdiEarth}
+                      path={linkTypeIcons[link.Type] ?? mdiEarth}
                       size={1}
                     />
 
                     {link.Name}
+                    {link.LanguageCode && (
+                      <span
+                        className="rounded-md border border-panel-border bg-panel-background-alt px-2 text-xs font-semibold text-panel-text uppercase"
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content="Region"
+                      >
+                        {link.LanguageCode}
+                      </span>
+                    )}
                     <Icon
                       className="text-panel-icon-action"
                       path={mdiOpenInNew}

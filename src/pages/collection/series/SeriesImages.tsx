@@ -32,12 +32,14 @@ import type { ImageTabType } from '@/core/types/api/image';
 const tabToImageTypeMap: Record<ImageTabType, ImageEntityValues> = {
   Posters: 'Primary',
   Backdrops: 'Backdrop',
+  Banners: 'Banner',
   Logos: 'Logo',
 };
 
 const tabStates = [
   { value: 'Posters' as const },
   { value: 'Backdrops' as const },
+  { value: 'Banners' as const },
   { value: 'Logos' as const },
 ];
 
@@ -51,6 +53,7 @@ const InfoLine = ({ title, value }: { title: string, value: string }) => (
 const imageItemSize: Record<ImageTabType, { height: number, width: number }> = {
   Posters: { width: 13, height: 19.5 },
   Backdrops: { width: 27, height: 16 },
+  Banners: { width: 38, height: 8 }, // Wide strips, eg. AniList banners are 1900x400 (4.75:1).
   Logos: { width: 15, height: 15 },
 };
 

@@ -28,6 +28,7 @@ export type SeriesIDsType = {
   ParentGroup: number;
   TopLevelGroup: number;
   AniDB: number;
+  AniList: number[];
   MAL: number[];
   TMDB: {
     Movie: number[];
@@ -89,10 +90,20 @@ export type SeriesTitleType = {
   Type: string;
 };
 
+export type SeriesLinkTypeValues =
+  | 'Website'
+  | 'Streaming'
+  | 'Metadata'
+  | 'CrossReference'
+  | 'Social'
+  | 'Trailer';
+
 export type SeriesLinkType = {
-  Type: string;
+  Type: SeriesLinkTypeValues;
   Name: string;
   URL: string;
+  /** Language/region code for per-region links, eg. AniList streaming links. */
+  LanguageCode?: string | null;
 };
 
 export type SeriesSizesType = {
@@ -172,7 +183,12 @@ export type SeriesRolePerson = {
 };
 
 export type SeriesCast = {
-  Language: string;
+  /**
+   * Language code of the role, eg. `ja`, `en`. AniDB and TMDB roles report
+   * the work's original language, AniList roles report the language the
+   * voice actor or dub staff member performs in. Omitted when unknown.
+   */
+  Language?: string;
   Staff: SeriesRolePerson;
   Character?: SeriesRolePerson;
   RoleName: string;
