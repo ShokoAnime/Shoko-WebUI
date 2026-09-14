@@ -104,6 +104,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **`format-thousands` → `formatThousand` from `@/core/util`** — use for number formatting with thousands separators. Do not use `.toLocaleString()` or string concatenation.
 - **`fast-json-patch`** — use for JSON Patch (RFC 6902) operations. Do not write custom diff/patch logic for API settings updates.
 - **`classnames` (imported as `cx`)** — use for conditional CSS class joining. Do not construct class strings with template literals or string concatenation.
+- **Modal hotkeys (`react-hotkeys-hook`):** guard `useHotkeys('escape', ...)` with the same pending/loading check used for `ModalPanel`'s `onRequestClose` — otherwise Escape can close a modal mid-save. Add `enableOnFormTags: true` to `useHotkeys('enter', ...)` when the modal has a focused text input, or the shortcut silently never fires (the library ignores form-tag targets by default).
 
 
 ## Specifications
