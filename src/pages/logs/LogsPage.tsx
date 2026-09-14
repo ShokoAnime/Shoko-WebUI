@@ -1,79 +1,102 @@
-import { useEffect, useRef, useState } from 'react';
-import { mdiArrowVerticalLock, mdiLoading } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useState } from 'react';
+import { mdiArrowVerticalLock, mdiFilterRemoveOutline, mdiMagnify } from '@mdi/js';
 import cx from 'classnames';
-import { throttle } from 'lodash';
+import { useImmer } from 'use-immer';
+import { useDebounceValue } from 'usehooks-ts';
 
+import Button from '@/components/Input/Button';
 import IconButton from '@/components/Input/IconButton';
-import { useLogsQuery } from '@/core/react-query/logs/queries';
+import Input from '@/components/Input/Input';
+import { useLogsQuery } from '@/core/react-query/logging/queries';
+import { formatThousand } from '@/core/util';
+import LogLevelChip from '@/pages/logs/LogLevelChip';
+import LogLiveView from '@/pages/logs/LogLiveView';
+import LogSearchView from '@/pages/logs/LogSearchView';
+
+import type { LogLevelType } from '@/core/react-query/logging/types';
+
+// `None` is MEL enum completeness only — the server never emits it, so it's not
+// offered as a filter here.
+const logLevels: LogLevelType[] = ['Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical'];
 
 const LogsPage = () => {
   const logLines = useLogsQuery().data;
   const [scrollToBottom, setScrollToBottom] = useState(true);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounceValue(search.trim(), 250);
+  const [activeLevels, setActiveLevels] = useImmer<Set<LogLevelType>>(new Set());
 
-  const parentRef = useRef<HTMLDivElement>(null);
-  const rowVirtualizer = useVirtualizer({
-    count: logLines.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 34,
-  });
-  const virtualItems = rowVirtualizer.getVirtualItems();
-  // Magic code stolen from https://github.com/TanStack/virtual/issues/634
-  // Fixes autoscroll issue in firefox
-  // and now apparently chrome too
-  if (parentRef.current) {
-    rowVirtualizer.scrollRect = { height: parentRef.current.clientHeight, width: parentRef.current.clientWidth };
-  }
+  // Live mode shows the SignalR tail; any debounced search text switches to server-side search
+  const searchMode = debouncedSearch !== '';
+  const filtersActive = search !== '' || activeLevels.size > 0;
 
-  useEffect(() => {
-    if (!rowVirtualizer || !scrollToBottom || logLines.length === 0) return;
-    rowVirtualizer.scrollToIndex(logLines.length - 1);
-  }, [logLines, scrollToBottom, rowVirtualizer]);
+  const toggleLevel = (level: LogLevelType) => {
+    setActiveLevels((draft) => {
+      if (draft.has(level)) {
+        draft.delete(level);
+      } else {
+        draft.add(level);
+      }
+    });
+  };
 
-  // Taken from ChatGPT...
-  // Disables auto scroll when user scrolls up
-  const checkScrollDirection = useRef(
-    throttle(() => {
-      if (!parentRef.current) return;
-      const currentScroll = parentRef.current.scrollTop;
-
-      setTimeout(() => {
-        if (parentRef.current && parentRef.current.scrollTop < currentScroll) setScrollToBottom(false);
-      }, 50);
-    }, 1000),
-  ).current;
-
-  // This exists because the value of scrollToBottom won't change inside checkScrollDirection
-  const handleScroll = () => {
-    if (scrollToBottom) checkScrollDirection();
+  const clearFilters = () => {
+    setSearch('');
+    setActiveLevels(new Set());
   };
 
   return (
     <>
       <title>Logs | Shoko</title>
       <div className="flex grow flex-col gap-y-6">
-        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
-          <div className="text-xl font-semibold">Logs</div>
-          <div className="flex gap-x-2">
-            {/* TODO: Disabled until functionality is implemented */}
-            {/* <Input */}
-            {/*   id="search" */}
-            {/*   onChange={event => setSearch(event.target.value)} */}
-            {/*   type="text" */}
-            {/*   value={search} */}
-            {/*   placeholder="Search Logs..." */}
-            {/*   startIcon={mdiMagnify} */}
-            {/*   className="w-80" */}
-            {/*   disabled */}
-            {/* /> */}
-            {/* <IconButton icon={mdiFilterOutline} buttonType="secondary" buttonSize="normal" tooltip="Filter"/> */}
-            {/* <IconButton icon={mdiCogOutline} buttonType="secondary" buttonSize="normal" tooltip="Settings"/> */}
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-panel-border bg-panel-background p-6">
+          <div className="flex flex-col">
+            <div className="text-xl font-semibold">
+              Logs
+            </div>
+            <div className="text-sm opacity-65">
+              {searchMode
+                ? 'Searching the full log history on the server'
+                : `${formatThousand(logLines.length)} lines in the live tail`}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1">
+              {logLevels.map(level => (
+                <Button
+                  key={level}
+                  onClick={() => toggleLevel(level)}
+                  tooltip={`${activeLevels.has(level) ? 'Hide' : 'Show'} ${level} logs`}
+                >
+                  <LogLevelChip level={level} active={activeLevels.has(level)} />
+                </Button>
+              ))}
+            </div>
+
+            <Input
+              id="search"
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+              inputClassName="py-2!"
+            />
+            <IconButton
+              icon={mdiFilterRemoveOutline}
+              buttonType="secondary"
+              buttonSize="normal"
+              disabled={!filtersActive}
+              onClick={clearFilters}
+              tooltip="Clear filters"
+            />
             <IconButton
               icon={mdiArrowVerticalLock}
               buttonType="secondary"
               buttonSize="normal"
-              className={cx(scrollToBottom ? 'text-panel-text-primary' : 'text-panel-text!')}
+              disabled={searchMode}
+              className={cx(scrollToBottom ? 'text-panel-icon-action' : 'text-panel-text!')}
               onClick={() => setScrollToBottom(prev => !prev)}
               tooltip={`${scrollToBottom ? 'Disable' : 'Enable'} scroll to bottom`}
             />
@@ -81,45 +104,23 @@ const LogsPage = () => {
         </div>
 
         <div className="flex grow rounded-lg border border-panel-border bg-panel-background p-6">
-          <div
-            className="w-full overflow-y-auto rounded-lg border-16 border-panel-input bg-panel-input contain-strict"
-            ref={parentRef}
-            onScroll={handleScroll}
-          >
-            {logLines.length === 0
-              ? (
-                <div className="flex h-full items-center justify-center text-panel-text-primary">
-                  <Icon path={mdiLoading} size={4} spin />
-                </div>
-              )
-              : (
-                <div
-                  className="relative w-full"
-                  style={{ height: rowVirtualizer.getTotalSize() }}
-                >
-                  <div
-                    className="absolute inset-x-4 top-0"
-                    style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
-                  >
-                    {virtualItems.map((virtualRow) => {
-                      const row = logLines[virtualRow.index];
-                      return (
-                        <div
-                          className="flex gap-x-6 pt-2"
-                          key={virtualRow.key}
-                          data-index={virtualRow.index}
-                          ref={rowVirtualizer.measureElement}
-                        >
-                          <div className="w-44 shrink-0 opacity-65">{row.TimeStamp}</div>
-                          <div className="w-32 shrink-0 overflow-hidden whitespace-nowrap">{row.Level}</div>
-                          <div className="break-all">{row.Message}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-          </div>
+          {searchMode
+            ? (
+              <LogSearchView
+                search={debouncedSearch}
+                activeLevels={activeLevels}
+                onClearFilters={clearFilters}
+              />
+            )
+            : (
+              <LogLiveView
+                logLines={logLines}
+                activeLevels={activeLevels}
+                scrollToBottom={scrollToBottom}
+                setScrollToBottom={setScrollToBottom}
+                onClearFilters={clearFilters}
+              />
+            )}
         </div>
       </div>
     </>
