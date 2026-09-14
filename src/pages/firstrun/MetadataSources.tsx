@@ -11,6 +11,7 @@ import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
+import AnilistTab from './MetadataSourcesTabs/AnilistTab';
 import TMDBTab from './MetadataSourcesTabs/TMDBTab';
 
 const TabButton = (
@@ -44,6 +45,8 @@ const TabContent = ({ tab }: { tab: string }) => {
       return <AniDBTab />;
     case 'moviedb':
       return <TMDBTab />;
+    case 'anilist':
+      return <AnilistTab />;
     default:
       return <AniDBTab />;
   }
@@ -87,6 +90,13 @@ const MetadataSources = () => {
             setActiveTab={setActiveTab}
             tabKey="moviedb"
             title="TMDB"
+          />
+          |
+          <TabButton
+            active={activeTab === 'anilist'}
+            setActiveTab={setActiveTab}
+            tabKey="anilist"
+            title="AniList"
           />
         </div>
         <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">

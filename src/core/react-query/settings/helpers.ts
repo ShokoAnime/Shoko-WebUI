@@ -287,6 +287,9 @@ export const initialSettings: SettingsType = {
       tmdb: {
         includeRestricted: false,
       },
+      anilist: {
+        includeRestricted: false,
+      },
       anidb: {
         filterDescription: false,
       },
@@ -381,6 +384,23 @@ export const initialSettings: SettingsType = {
     MaxAutoStaffImages: 10,
     AutoDownloadStudioImages: true,
     UserApiKey: null,
+  },
+  Anilist: {
+    AutoLink: false,
+    AutoLinkRestricted: true,
+    ConsiderExistingOtherLinks: false,
+    AutoDownloadStaff: false,
+    AutoDownloadCharacters: false,
+    ImageCdnUrl: null,
+    AutoDownloadPosters: true,
+    AutoDownloadBanners: true,
+    AutoDownloadStudios: false,
+    AutoSearchCandidateCount: 5,
+    AutoPurgeUnlinkedAfterDays: 14,
+    RateLimit: {
+      MaxRequestsPerWindow: 1,
+      WindowDurationMs: 4000,
+    },
   },
   Language: {
     UseSynonyms: false,

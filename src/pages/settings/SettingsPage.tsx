@@ -25,6 +25,7 @@ const items = [
   { name: 'Hashing & Release', path: 'hashing-release' },
   { name: 'AniDB', path: 'anidb' },
   { name: 'TMDB', path: 'tmdb' },
+  { name: 'AniList', path: 'anilist' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
   { name: 'Plugin Management', path: 'plugin-management' },

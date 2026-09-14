@@ -23,7 +23,7 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
 // Links
-const MetadataLinks = ['AniDB', 'TMDB'] as const;
+const MetadataLinks = ['AniDB', 'TMDB', 'AniList'] as const;
 
 const SeriesOverview = () => {
   const { series } = useOutletContext<SeriesContextType>();
@@ -105,7 +105,22 @@ const SeriesOverview = () => {
                     ];
                   }
 
-                  // Site is not TMDB, so it's either a single ID or an array of IDs
+                  if (site === 'AniList') {
+                    const anilistIds = series.IDs.AniList;
+                    if (anilistIds.length === 0) {
+                      return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
+                    }
+
+                    return [
+                      ...anilistIds.map(id => (
+                        <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
+                      )),
+                      /* Show row to add new AniList links */
+                      <SeriesMetadata key="AniList-add-new" site="AniList" seriesId={series.IDs.ID} />,
+                    ];
+                  }
+
+                  // Site is not TMDB or AniList, so it's either a single ID or an array of IDs
                   const idOrIds = series?.IDs[site] ?? [0];
                   const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
                   if (linkIds.length === 0) linkIds.push(0);
