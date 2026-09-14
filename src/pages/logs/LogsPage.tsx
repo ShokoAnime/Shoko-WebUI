@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { mdiArrowVerticalLock, mdiFilterRemoveOutline, mdiMagnify } from '@mdi/js';
+import { mdiArrowVerticalLock, mdiDownload, mdiFilterRemoveOutline, mdiMagnify } from '@mdi/js';
 import cx from 'classnames';
 import { useImmer } from 'use-immer';
 import { useDebounceValue } from 'usehooks-ts';
@@ -7,7 +7,10 @@ import { useDebounceValue } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import IconButton from '@/components/Input/IconButton';
 import Input from '@/components/Input/Input';
+import { toServerSearch } from '@/core/react-query/logging/helpers';
+import { useLogsDownloadMutation } from '@/core/react-query/logging/mutations';
 import { useLogsQuery } from '@/core/react-query/logging/queries';
+import toast from '@/core/toast';
 import { formatThousand } from '@/core/util';
 import LogLevelChip from '@/pages/logs/LogLevelChip';
 import LogLiveView from '@/pages/logs/LogLiveView';
@@ -21,6 +24,8 @@ const logLevels: LogLevelType[] = ['Trace', 'Debug', 'Information', 'Warning', '
 
 const LogsPage = () => {
   const logLines = useLogsQuery().data;
+  const { isPending: isDownloading, mutate: downloadLogs } = useLogsDownloadMutation();
+
   const [scrollToBottom, setScrollToBottom] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search.trim(), 250);
@@ -44,6 +49,15 @@ const LogsPage = () => {
   const clearFilters = () => {
     setSearch('');
     setActiveLevels(new Set());
+  };
+
+  const handleDownload = () => {
+    downloadLogs({
+      levels: activeLevels,
+      search: toServerSearch(debouncedSearch),
+    }, {
+      onError: () => toast.error('Failed to download logs.'),
+    });
   };
 
   return (
@@ -91,6 +105,14 @@ const LogsPage = () => {
               disabled={!filtersActive}
               onClick={clearFilters}
               tooltip="Clear filters"
+            />
+            <IconButton
+              icon={mdiDownload}
+              buttonType="secondary"
+              buttonSize="normal"
+              loading={isDownloading}
+              onClick={handleDownload}
+              tooltip="Download logs"
             />
             <IconButton
               icon={mdiArrowVerticalLock}

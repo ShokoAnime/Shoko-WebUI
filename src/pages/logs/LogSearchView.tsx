@@ -4,21 +4,12 @@ import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import Button from '@/components/Input/Button';
+import { toServerSearch } from '@/core/react-query/logging/helpers';
 import { useLogsSearchQuery } from '@/core/react-query/logging/queries';
 import useVirtualizerScrollRectWorkaround from '@/hooks/useVirtualizerScrollRectWorkaround';
 import LogRow from '@/pages/logs/LogRow';
 
 import type { LogLevelType } from '@/core/react-query/logging/types';
-
-// DSL grammar the server accepts (LogService.TryParseLogFilterDsl): a mode char first — c: contains,
-// =: equals, ^: starts, $: ends, ~: fuzzy, *: regex — optionally followed by at most one ! (negate)
-// and one # (case-insensitive) in either order, then ':'. ! and # are modifiers, never prefixes on
-// their own (e.g. "!c:foo" or "#:foo" are server-side 400s). A bare value is shorthand for "c:"
-// (case-sensitive contains), so we make it case-insensitive by default unless the user typed valid
-// DSL themselves; anything else gets wrapped as a literal.
-const hasDslPrefix = (value: string) => /^[c=^$~*](?:!#|#!|!|#)?:/.test(value);
-
-const toServerSearch = (value: string) => (!value || hasDslPrefix(value) ? value : `c#:${value}`);
 
 type Props = {
   activeLevels: Set<LogLevelType>;

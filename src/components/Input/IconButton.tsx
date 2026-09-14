@@ -11,6 +11,7 @@ type IconButtonProps = {
   icon: string;
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
   onClick: MouseEventHandler<HTMLButtonElement>;
   buttonType: ButtonType;
   buttonSize: SizeType;
@@ -18,7 +19,7 @@ type IconButtonProps = {
 };
 
 const IconButton = (
-  { buttonSize, buttonType, className, disabled, icon, onClick, tooltip }: IconButtonProps,
+  { buttonSize, buttonType, className, disabled, icon, loading, onClick, tooltip }: IconButtonProps,
 ) => (
   <Button
     className={cx(
@@ -26,11 +27,11 @@ const IconButton = (
       className,
       buttonTypeClasses[buttonType],
       buttonSizeClasses[buttonSize],
-      !disabled && 'cursor-pointer',
     )}
     onClick={onClick}
     tooltip={tooltip}
     disabled={disabled}
+    loading={loading}
   >
     <Icon path={icon} size={1} />
   </Button>
