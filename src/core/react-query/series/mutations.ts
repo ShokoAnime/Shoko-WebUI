@@ -121,6 +121,25 @@ export const useUpdateSeriesTMDBImagesMutation = (seriesId: number) =>
     onSuccess: () => toast.success('TMDB image download queued!'),
   });
 
+export const useAutoSearchAnilistMatchMutation = (seriesId: number) =>
+  useMutation({
+    mutationFn: () => axios.post(`Series/${seriesId}/Anilist/Action/AutoSearch`),
+    onSuccess: () => toast.success('AniList auto-search queued!'),
+  });
+
+export const useRefreshSeriesAnilistInfoMutation = (seriesId: number) =>
+  useMutation({
+    mutationFn: () => axios.post(`Series/${seriesId}/Anilist/Anime/Action/Refresh`, {}),
+    onSuccess: () => toast.success('AniList refresh queued!'),
+  });
+
+export const useUpdateSeriesAnilistImagesMutation = (seriesId: number) =>
+  useMutation({
+    mutationFn: ({ force = false }: { force?: boolean }) =>
+      axios.post(`Series/${seriesId}/Anilist/Anime/Action/DownloadImages`, { force }),
+    onSuccess: () => toast.success('AniList image download queued!'),
+  });
+
 export const useRelocateSeriesFilesMutation = (seriesId: number) =>
   useMutation({
     mutationFn: () => axios.post(`Series/${seriesId}/File/Relocate`),

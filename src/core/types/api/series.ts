@@ -28,6 +28,7 @@ export type SeriesIDsType = {
   ParentGroup: number;
   TopLevelGroup: number;
   AniDB: number;
+  AniList: number[];
   MAL: number[];
   TMDB: {
     Movie: number[];
