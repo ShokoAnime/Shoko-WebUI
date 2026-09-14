@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { throttle } from 'lodash';
 
 import useVirtualizerScrollRectWorkaround from '@/hooks/useVirtualizerScrollRectWorkaround';
 import LogRow from '@/pages/logs/LogRow';
@@ -31,22 +30,14 @@ const LogLiveView = ({ logLines, scrollToBottom, setScrollToBottom }: Props) => 
     rowVirtualizer.scrollToIndex(logLines.length - 1);
   }, [logLines, scrollToBottom, rowVirtualizer]);
 
-  // Taken from ChatGPT...
-  // Disables auto scroll when user scrolls up
-  const checkScrollDirection = useRef(
-    throttle(() => {
-      if (!parentRef.current) return;
-      const currentScroll = parentRef.current.scrollTop;
-
-      setTimeout(() => {
-        if (parentRef.current && parentRef.current.scrollTop < currentScroll) setScrollToBottom(false);
-      }, 50);
-    }, 1000),
-  ).current;
-
-  // This exists because the value of scrollToBottom won't change inside checkScrollDirection
+  // Disables auto scroll when the user scrolls up. While locked, the only way the
+  // container stops being at the bottom is a user scroll — the programmatic
+  // scrollToIndex always lands at the bottom, and the virtualizer's measurement
+  // corrections keep it there.
   const handleScroll = () => {
-    if (scrollToBottom) checkScrollDirection();
+    const container = parentRef.current;
+    if (!scrollToBottom || !container) return;
+    if (container.scrollHeight - container.scrollTop - container.clientHeight > 1) setScrollToBottom(false);
   };
 
   return (
