@@ -16,6 +16,10 @@ const getAbbreviation = (rating?: MatchRatingValues) => {
       return ['~T', 'Approx. Title'];
     case 'DateKindaMatches':
       return ['~D', 'Approx. Date'];
+    case 'DateAndNumberMatches':
+      return ['DN', 'Date & Number'];
+    case 'DateOffsetMatches':
+      return ['~DO', 'Date Offset'];
     case 'UserVerified':
       return ['UO', 'User Override'];
     case 'FirstAvailable':
@@ -37,9 +41,10 @@ const MatchRating = ({ isDisabled, isOdd, rating }: Props) => (
       'flex w-16 items-center justify-center rounded-md border border-panel-border text-button-primary-text',
       {
         'bg-panel-text-important': rating === 'DateAndTitleMatches'
-          || rating === 'TitleMatches',
+          || rating === 'TitleMatches' || rating === 'DateAndNumberMatches',
         'bg-panel-text-warning': rating === 'DateMatches' || rating === 'TitleKindaMatches'
-          || rating === 'DateAndTitleKindaMatches' || rating === 'DateKindaMatches',
+          || rating === 'DateAndTitleKindaMatches' || rating === 'DateKindaMatches'
+          || rating === 'DateOffsetMatches',
         'bg-panel-text-primary': rating === 'UserVerified',
         'bg-panel-text-danger': rating === 'FirstAvailable',
         'bg-panel-background': (!rating || rating === 'None') && !isOdd,
