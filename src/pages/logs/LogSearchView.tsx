@@ -29,20 +29,18 @@ type Props = {
 const LogSearchView = ({ activeLevels, onClearFilters, search }: Props) => {
   const serverSearch = toServerSearch(search);
 
-  const { data, fetchNextPage, isFetching, isFetchingNextPage } = useLogsSearchQuery({
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } = useLogsSearchQuery({
     search: serverSearch,
     levels: activeLevels,
   });
 
   const logEntries = data?.pages.flatMap(page => page.Entries) ?? [];
 
-  const hasMore = data?.pages[data.pages.length - 1]?.NextOffset != null;
-
   const searching = isFetching && logEntries.length === 0;
 
   const parentRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
-    count: logEntries.length + (hasMore ? 1 : 0),
+    count: logEntries.length + (hasNextPage ? 1 : 0),
     getScrollElement: () => parentRef.current,
     estimateSize: () => 36,
     useFlushSync: false,
@@ -54,10 +52,10 @@ const LogSearchView = ({ activeLevels, onClearFilters, search }: Props) => {
   const lastVirtualItem = virtualItems[virtualItems.length - 1];
   const lastVirtualIndex = lastVirtualItem?.index;
   useEffect(() => {
-    if (lastVirtualIndex === logEntries.length && hasMore && !isFetchingNextPage) {
+    if (lastVirtualIndex === logEntries.length && hasNextPage && !isFetchingNextPage) {
       fetchNextPage().catch(console.error);
     }
-  }, [lastVirtualIndex, hasMore, isFetchingNextPage, fetchNextPage, logEntries.length]);
+  }, [lastVirtualIndex, hasNextPage, isFetchingNextPage, fetchNextPage, logEntries.length]);
 
   useVirtualizerScrollRectWorkaround(rowVirtualizer, parentRef);
 

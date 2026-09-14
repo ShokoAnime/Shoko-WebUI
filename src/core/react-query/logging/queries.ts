@@ -85,13 +85,13 @@ export const useLogsSearchQuery = ({ levels, search }: LogsSearchParamsType) => 
         params: {
           offset: pageParam,
           limit: 100,
-          descending: true,
+          descending: false,
           // Server expects a comma-separated list of LogLevel names; omitted params are inactive filters.
           level: levelKey || undefined,
           message: search || undefined,
         },
       }),
-    getNextPageParam: lastPage => lastPage.NextOffset,
+    getNextPageParam: lastPage => lastPage.NextOffset ?? undefined,
     initialPageParam: 0,
   });
 };
