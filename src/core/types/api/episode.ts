@@ -17,6 +17,7 @@ export type EpisodeType = {
     Movies: TmdbMovieType[];
   };
   IsHidden: boolean;
+  HasCustomName: boolean;
   Files?: FileType[];
 };
 
