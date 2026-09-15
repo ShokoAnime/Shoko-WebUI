@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiFileExportOutline, mdiFileImportOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { produce } from 'immer';
 
 import TmdbExportModal from '@/components/Dialogs/TmdbExportModal';
 import TmdbImportModal from '@/components/Dialogs/TmdbImportModal';
 import Button from '@/components/Input/Button';
+import InputSmall from '@/components/Input/InputSmall';
 import TMDBDownloadSettings from '@/components/Settings/MetadataSitesSettings/TMDBDownloadSettings';
 import TMDBImageLanguageSettings from '@/components/Settings/MetadataSitesSettings/TMDBImageLanguageSettings';
 import TMDBSettings from '@/components/Settings/MetadataSitesSettings/TMDBSettings';
@@ -15,6 +18,14 @@ const TmdbSettings = () => {
 
   const [showExportModal, setShowExportModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+
+  const handleUserApiKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // The server only falls back to the built-in API key when this is null; an empty string would be used as the key.
+    const value = event.target.value.trim() === '' ? null : event.target.value;
+    setNewSettings(produce(newSettings, (draftState) => {
+      draftState.TMDB.UserApiKey = value;
+    }));
+  };
 
   return (
     <>
@@ -50,6 +61,28 @@ const TmdbSettings = () => {
         <div className="flex items-center font-semibold">TMDB Image Language Options</div>
         <div className="flex flex-col gap-y-1">
           <TMDBImageLanguageSettings newSettings={newSettings} setNewSettings={setNewSettings} />
+        </div>
+      </div>
+
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="flex items-center font-semibold">TMDB API Options</div>
+        <div className="flex flex-col gap-y-1">
+          <div className="flex justify-between">
+            API Key
+            <InputSmall
+              id="TMDB_UserApiKey"
+              value={newSettings.TMDB.UserApiKey ?? ''}
+              type="password"
+              autoComplete="new-password"
+              onChange={handleUserApiKeyChange}
+              className="w-60 px-3 py-1"
+            />
+          </div>
+          <div className="text-xs opacity-65">
+            Optional. Use your own TMDB API key instead of the one included in official builds.
+          </div>
         </div>
       </div>
 
