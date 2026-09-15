@@ -7,11 +7,12 @@ import { keys, map, remove } from 'lodash';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { addNoLanguageOption } from '@/core/react-query/settings/helpers';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery, useSupportedLanguagesQuery } from '@/core/react-query/settings/queries';
 
 type Props = {
-  type: 'Series' | 'Episode' | 'Description' | null;
+  type: 'Series' | 'Episode' | 'Description' | 'Image' | null;
   onClose: () => void;
 };
 
@@ -19,7 +20,10 @@ const LanguagesModal = ({ onClose, type }: Props) => {
   const settings = useSettingsQuery().data;
 
   const languagesQuery = useSupportedLanguagesQuery();
-  const languageDescription = useMemo(() => languagesQuery.data ?? {}, [languagesQuery.data]);
+  const languageDescription = useMemo(
+    () => (type === 'Image' ? addNoLanguageOption(languagesQuery.data ?? {}) : languagesQuery.data ?? {}),
+    [languagesQuery.data, type],
+  );
 
   const LanguagePreference = useMemo(
     () => {
@@ -28,6 +32,8 @@ const LanguagesModal = ({ onClose, type }: Props) => {
           return settings.Language.EpisodeTitleLanguageOrder;
         case 'Description':
           return settings.Language.DescriptionLanguageOrder;
+        case 'Image':
+          return settings.TMDB.ImageLanguageOrder;
         default:
           return settings.Language.SeriesTitleLanguageOrder;
       }
@@ -39,6 +45,19 @@ const LanguagesModal = ({ onClose, type }: Props) => {
   const [languages, setLanguages] = useState([] as string[]);
 
   const handleSave = () => {
+    if (type === 'Image') {
+      patchSettings({
+        ...settings,
+        TMDB: {
+          ...settings.TMDB,
+          ImageLanguageOrder: languages,
+        },
+      }, {
+        onSuccess: onClose,
+      });
+      return;
+    }
+
     let preferenceType = 'SeriesTitleLanguageOrder';
     if (type === 'Episode') {
       preferenceType = 'EpisodeTitleLanguageOrder';
@@ -99,7 +118,12 @@ const LanguagesModal = ({ onClose, type }: Props) => {
       )}
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Discard</Button>
-        <Button onClick={handleSave} buttonType="primary" className="px-5 py-2" disabled={languages.length === 0}>
+        <Button
+          onClick={handleSave}
+          buttonType="primary"
+          className="px-5 py-2"
+          disabled={languages.length === 0 && type !== 'Image'}
+        >
           Save
         </Button>
       </div>
