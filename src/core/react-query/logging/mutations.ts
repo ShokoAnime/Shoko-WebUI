@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import { dayjs } from '@/core/util';
+import { dayjs, downloadBlob } from '@/core/util';
 
 import type { LogsSearchParamsType } from '@/core/react-query/logging/types';
 
@@ -28,16 +28,6 @@ export const useLogsDownloadMutation = () =>
       // The shared axios instance unwraps response.data in an interceptor, so the
       // Content-Disposition header (and its server-side filename) is not reachable;
       // derive a local filename instead.
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `shoko-logs-${dayjs().format('YYYY-MM-DD_HH-mm-ss')}.txt`;
-      // Firefox requires the anchor to be in the DOM for `download` to take effect,
-      // and revoking the URL immediately after click() can cancel the download in
-      // Firefox/Safari before it starts — defer the revoke.
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 0);
+      downloadBlob(blob, `shoko-logs-${dayjs().format('YYYY-MM-DD_HH-mm-ss')}.txt`);
     },
   });

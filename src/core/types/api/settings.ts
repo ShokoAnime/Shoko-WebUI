@@ -102,6 +102,15 @@ export type SettingsTMDBType = {
   DownloadAllOverviews: boolean;
 
   /**
+   * Image language preference order. Images in other languages are not
+   * downloaded, unless the list is empty. `none` matches images without a
+   * language, and `x-main` matches the main language of the TMDB entity.
+   *
+   * @default ['none', 'x-main', 'en']
+   */
+  ImageLanguageOrder: string[];
+
+  /**
    * Automagically download crew and cast for movies and tv shows in the
    * local collection.
    *

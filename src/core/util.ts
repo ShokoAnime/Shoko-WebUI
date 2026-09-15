@@ -160,6 +160,21 @@ export const pxPerRem = parseFloat(getComputedStyle(document.documentElement).fo
 export const getManagedFolderName = (managedFolders: ManagedFolderType[], managedFolderID?: number) =>
   find(managedFolders, { ID: managedFolderID ?? -1 })?.Name ?? '<Unknown>';
 
+/** Saves a blob to the user's device under the given file name. */
+export const downloadBlob = (blob: Blob, fileName: string) => {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = fileName;
+  // Firefox requires the anchor to be in the DOM for `download` to take effect,
+  // and revoking the URL immediately after click() can cancel the download in
+  // Firefox/Safari before it starts — defer the revoke.
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+};
+
 export const extractFileNameFromPath = (path: string) => {
   const parts = path.split(/[/\\]/g);
   const fileName = parts.pop();

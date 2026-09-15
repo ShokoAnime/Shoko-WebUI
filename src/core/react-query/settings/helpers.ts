@@ -1,4 +1,4 @@
-import { merge, toNumber } from 'lodash';
+import { isEmpty, merge, toNumber } from 'lodash';
 
 import { webuiSettingsPatches } from '@/core/patches';
 
@@ -356,6 +356,7 @@ export const initialSettings: SettingsType = {
     AutoLinkRestricted: false,
     DownloadAllTitles: false,
     DownloadAllOverviews: false,
+    ImageLanguageOrder: ['none', 'x-main', 'en'],
     AutoDownloadCrewAndCast: false,
     AutoDownloadCollections: false,
     AutoDownloadAlternateOrdering: false,
@@ -493,5 +494,18 @@ export const transformSupportedLanguages = (response: SupportedLanguagesResponse
   return {
     'x-main': mainLanguage,
     ...languages,
+  };
+};
+
+// TMDB images can have no language (e.g. textless posters), which the server stores as "none". It is not one of
+// the supported naming languages, so add it after "x-main" for the image language preference.
+export const addNoLanguageOption = (languages: Record<string, string>): Record<string, string> => {
+  if (isEmpty(languages)) return languages;
+
+  const { 'x-main': mainLanguage, ...otherLanguages } = languages;
+  return {
+    'x-main': mainLanguage,
+    none: 'No Language (none)',
+    ...otherLanguages,
   };
 };
