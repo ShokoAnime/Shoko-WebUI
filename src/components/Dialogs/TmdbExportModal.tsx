@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
@@ -9,7 +8,6 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useTmdbExportXrefsMutation } from '@/core/react-query/tmdb/mutations';
-import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { TmdbCrossReferenceSectionType } from '@/core/react-query/tmdb/types';
@@ -32,9 +30,9 @@ const sections: { label: string, value: TmdbCrossReferenceSectionType }[] = [
 const filters: { label: string, value: FilterKeyType, min: number }[] = [
   { label: 'AniDB Anime ID', value: 'AnidbAnimeID', min: 1 },
   { label: 'AniDB Episode ID', value: 'AnidbEpisodeID', min: 1 },
-  { label: 'TMDB Movie ID', value: 'TmdbMovieID', min: 1 },
   { label: 'TMDB Show ID', value: 'TmdbShowID', min: 1 },
   { label: 'TMDB Episode ID', value: 'TmdbEpisodeID', min: 0 },
+  { label: 'TMDB Movie ID', value: 'TmdbMovieID', min: 1 },
 ];
 
 type ExportOptionsType = {
@@ -59,12 +57,6 @@ const defaultOptions: ExportOptionsType = {
   },
 };
 
-const parseFilter = (value: string, min: number) => {
-  if (value === '') return undefined;
-  const parsed = toNumber(value);
-  return Number.isInteger(parsed) && parsed >= min ? parsed : Number.NaN;
-};
-
 const TmdbExportModal = ({ onClose, show }: Props) => {
   const { isPending, mutate: exportXrefs } = useTmdbExportXrefsMutation();
 
@@ -74,11 +66,7 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
     if (!show) setOptions(defaultOptions);
   }, [setOptions, show]);
 
-  const parsedFilters = Object.fromEntries(
-    filters.map(({ min, value }) => [value, parseFilter(options.filters[value], min)]),
-  ) as Record<FilterKeyType, number | undefined>;
-  const hasInvalidFilter = Object.values(parsedFilters).some(value => Number.isNaN(value));
-  const canExport = options.SectionSet.length > 0 && !hasInvalidFilter && !isPending;
+  const canExport = options.SectionSet.length > 0 && !isPending;
 
   const handleClose = () => {
     if (!isPending) onClose();
@@ -86,9 +74,10 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
 
   const handleSectionToggle = (section: TmdbCrossReferenceSectionType, checked: boolean) => {
     setOptions((draft) => {
-      draft.SectionSet = checked
-        ? sections.map(({ value }) => value).filter(value => value === section || draft.SectionSet.includes(value))
+      const next = checked
+        ? [...draft.SectionSet, section]
         : draft.SectionSet.filter(value => value !== section);
+      draft.SectionSet = sections.map(({ value }) => value).filter(value => next.includes(value));
     });
   };
 
@@ -99,17 +88,15 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
       Automatic: options.Automatic,
       WithEpisodes: options.WithEpisodes,
       IncludeComments: options.IncludeComments,
-      ...parsedFilters,
+      ...Object.fromEntries(
+        filters
+          .filter(({ value }) => options.filters[value] !== '')
+          .map(({ value }) => [value, Number(options.filters[value])]),
+      ),
     }, {
       onSuccess: ({ isEmpty }) => {
-        if (isEmpty) {
-          toast.info('Nothing to export', 'No cross-references matched the selected options.');
-          return;
-        }
-        toast.success('TMDB cross-references exported!');
-        onClose();
+        if (!isEmpty) onClose();
       },
-      onError: () => toast.error('Failed to export TMDB cross-references!'),
     });
   };
 
@@ -228,7 +215,7 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
         <div className="text-xs opacity-65">
           Only export links matching all of the given IDs. Each ID only filters the sections that contain it.
         </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-1">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           {filters.map(({ label, min, value }) => (
             <div key={value} className="flex items-center justify-between">
               {label}
@@ -236,7 +223,6 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
                 id={`tmdb-export-filter-${value}`}
                 type="number"
                 min={min}
-                placeholder="Any"
                 value={options.filters[value]}
                 onChange={event =>
                   setOptions((draft) => {
@@ -247,7 +233,6 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
             </div>
           ))}
         </div>
-        {hasInvalidFilter && <div className="text-xs text-panel-text-danger">IDs must be whole numbers.</div>}
       </div>
     </ModalPanel>
   );

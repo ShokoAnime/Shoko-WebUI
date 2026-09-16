@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { mdiFileExportOutline, mdiFileImportOutline } from '@mdi/js';
+import { mdiExport, mdiImport } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import TmdbExportModal from '@/components/Dialogs/TmdbExportModal';
@@ -66,7 +66,7 @@ const TmdbSettings = () => {
               onClick={() => setShowExportModal(true)}
               tooltip="Export AniDB/TMDB cross-references to a CSV file"
             >
-              <Icon path={mdiFileExportOutline} size={0.85} />
+              <Icon path={mdiExport} size={0.85} />
               <span>Export</span>
             </Button>
             <Button
@@ -76,7 +76,7 @@ const TmdbSettings = () => {
               onClick={() => setShowImportModal(true)}
               tooltip="Import AniDB/TMDB cross-references from a CSV file"
             >
-              <Icon path={mdiFileImportOutline} size={0.85} />
+              <Icon path={mdiImport} size={0.85} />
               <span>Import</span>
             </Button>
           </div>

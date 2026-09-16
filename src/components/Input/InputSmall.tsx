@@ -16,10 +16,13 @@ type Props = {
   suffixes?: ReactNode;
   min?: number;
   max?: number;
+  // Number inputs are integer-only by default; set this to allow decimal values.
+  allowFloat?: boolean;
 };
 
 const InputSmall = (props: Props) => {
   const {
+    allowFloat,
     autoComplete,
     autoFocus,
     className,
@@ -57,21 +60,27 @@ const InputSmall = (props: Props) => {
     }
 
     const { valueAsNumber } = event.target;
-    if (Number.isFinite(valueAsNumber)) {
-      if (max !== undefined && valueAsNumber > max) {
-        toast.info(`Value cannot be greater than ${max}!`);
-        onChange(withValue(event, max.toString()));
-        return;
-      }
-
-      if (min !== undefined && valueAsNumber < min) {
-        toast.info(`Value cannot be less than ${min}!`);
-        onChange(withValue(event, min.toString()));
-        return;
-      }
+    if (!Number.isFinite(valueAsNumber)) {
+      onChange(event);
+      return;
     }
 
-    onChange(event);
+    // Trim decimals to keep number inputs integer-only; callers can opt out with allowFloat.
+    const nextValue = allowFloat ? valueAsNumber : Math.trunc(valueAsNumber);
+
+    if (max !== undefined && nextValue > max) {
+      toast.info(`Value cannot be greater than ${max}!`);
+      onChange(withValue(event, max.toString()));
+      return;
+    }
+
+    if (min !== undefined && nextValue < min) {
+      toast.info(`Value cannot be less than ${min}!`);
+      onChange(withValue(event, min.toString()));
+      return;
+    }
+
+    onChange(nextValue === valueAsNumber ? event : withValue(event, nextValue.toString()));
   };
 
   return (

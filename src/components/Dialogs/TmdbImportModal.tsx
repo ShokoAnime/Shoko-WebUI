@@ -84,13 +84,7 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
 
   const handleImport = () => {
     if (!file || isPending) return;
-    importXrefs({ file, ...options }, {
-      onSuccess: () => {
-        toast.success('TMDB cross-references imported!');
-        onClose();
-      },
-      onError: () => toast.error('Failed to import TMDB cross-references!'),
-    });
+    importXrefs({ file, ...options }, { onSuccess: onClose });
   };
 
   useToggleModalKeybinds(show, 'modal');
@@ -181,7 +175,11 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
                   draft[key] = event.target.checked;
                 })}
             />
-            <div className="text-xs opacity-65">{description}</div>
+            <div
+              className={cx('text-xs', key === 'removeExisting' ? 'text-panel-text-danger' : 'opacity-65')}
+            >
+              {description}
+            </div>
           </div>
         ))}
       </div>
