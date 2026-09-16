@@ -488,12 +488,10 @@ export const transformSupportedLanguages = (response: SupportedLanguagesResponse
     {} as Record<string, string>,
   );
 
-  const mainLanguage = languages['x-main'];
-  delete languages['x-main'];
-
+  const { 'x-main': mainLanguage, ...otherLanguages } = languages;
   return {
-    'x-main': mainLanguage,
-    ...languages,
+    'x-main': mainLanguage ?? 'Main (x-main)',
+    ...otherLanguages,
   };
 };
 
@@ -504,7 +502,7 @@ export const addNoLanguageOption = (languages: Record<string, string>): Record<s
 
   const { 'x-main': mainLanguage, ...otherLanguages } = languages;
   return {
-    'x-main': mainLanguage,
+    'x-main': mainLanguage ?? 'Main (x-main)',
     none: 'No Language (none)',
     ...otherLanguages,
   };

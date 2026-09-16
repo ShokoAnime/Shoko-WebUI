@@ -45,6 +45,7 @@ const DynamicField = ({ onChange, propertyName, propertySchema, value }: Props) 
         <div className="flex items-center justify-between">
           {label}
           <InputSmall
+            allowFloat={jsonType === 'number'}
             id={`dynamic-${propertyName}`}
             max={propertySchema.maximum}
             min={propertySchema.minimum}
