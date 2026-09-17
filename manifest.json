@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.141",
+      "minServerVersion": "6.0.0-dev.470",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.141/Shoko-WebUI-v2.6.0-dev.141.zip",
+      "checksum": "sha256:2df4085dd6e2d0eb5162aa9cba01fa5746633e6d04063f00fee6e72f75a3f9cb",
+      "commit": "8f6d1f2193512f1ab3c85a3b878c3dfcba2f2c99",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.470** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.470** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix(anidb): use string enum values for MyList_StorageState and MyList_DeleteType by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1470\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.140...v2.6.0-dev.141\n"
+    },
+    {
       "version": "2.6.0-dev.140",
       "minServerVersion": "6.0.0-dev.470",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.140/Shoko-WebUI-v2.6.0-dev.140.zip",
