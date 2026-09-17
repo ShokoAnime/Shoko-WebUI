@@ -36,10 +36,15 @@ export type SettingsAnidbDownloadType = {
   MaxRelationDepth: number;
 };
 
-// Delete, DeleteLocalOnly, MarkDeleted, MarkExternalStorage, MarkUnknown, MarkDisk
-export type MyListDeleteType = 0 | 1 | 2 | 3 | 4 | 5;
-// Unknown, HDD, Disk, Deleted, Remote
-export type MyListStorageState = 0 | 1 | 2 | 3 | 4;
+export type MyListDeleteType =
+  | 'Delete'
+  | 'DeleteLocalOnly'
+  | 'MarkDeleted'
+  | 'MarkExternalStorage'
+  | 'MarkUnknown'
+  | 'MarkDisk';
+
+export type MyListStorageState = 'Unknown' | 'HDD' | 'Disk' | 'Deleted' | 'Remote';
 
 export type SettingsAnidbMylistType = {
   MyList_AddFiles: boolean;

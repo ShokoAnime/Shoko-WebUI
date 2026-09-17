@@ -202,11 +202,11 @@ const AniDBSettings = () => {
               value={MyList_StorageState}
               onChange={event => updateSetting('AniDb', 'MyList_StorageState', event.target.value)}
             >
-              <option value={0}>Unknown</option>
-              <option value={1}>HDD</option>
-              <option value={2}>Disk</option>
-              <option value={3}>Deleted</option>
-              <option value={4}>Remote</option>
+              <option value="Unknown">Unknown</option>
+              <option value="HDD">HDD</option>
+              <option value="Disk">Disk</option>
+              <option value="Deleted">Deleted</option>
+              <option value="Remote">Remote</option>
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">
@@ -216,12 +216,12 @@ const AniDBSettings = () => {
               value={MyList_DeleteType}
               onChange={event => updateSetting('AniDb', 'MyList_DeleteType', event.target.value)}
             >
-              <option value={0}>Delete File (AniDB)</option>
-              <option value={1}>Delete File (Local)</option>
-              <option value={2}>Mark Deleted</option>
-              <option value={3}>Mark External (CD/DVD)</option>
-              <option value={4}>Mark Unknown</option>
-              <option value={5}>DVD/BD</option>
+              <option value="Delete">Delete File (AniDB)</option>
+              <option value="DeleteLocalOnly">Delete File (Local)</option>
+              <option value="MarkDeleted">Mark Deleted</option>
+              <option value="MarkExternalStorage">Mark External (CD/DVD)</option>
+              <option value="MarkUnknown">Mark Unknown</option>
+              <option value="MarkDisk">DVD/BD</option>
             </SelectSmall>
           </div>
         </div>
