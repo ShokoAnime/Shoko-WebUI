@@ -130,11 +130,11 @@ const AniDBTab = ({ setStatus }: Props) => {
           value={MyList_StorageState}
           onChange={handleInputChange}
         >
-          <option value={0}>Unknown</option>
-          <option value={1}>HDD</option>
-          <option value={2}>Disk</option>
-          <option value={3}>Deleted</option>
-          <option value={4}>Remote</option>
+          <option value="Unknown">Unknown</option>
+          <option value="HDD">HDD</option>
+          <option value="Disk">Disk</option>
+          <option value="Deleted">Deleted</option>
+          <option value="Remote">Remote</option>
         </SelectSmall>
         <SelectSmall
           label="Delete Action"
@@ -142,12 +142,12 @@ const AniDBTab = ({ setStatus }: Props) => {
           value={MyList_DeleteType}
           onChange={handleInputChange}
         >
-          <option value={0}>Delete File (AniDB)</option>
-          <option value={1}>Delete File (Local)</option>
-          <option value={2}>Mark Deleted</option>
-          <option value={3}>Mark External (CD/DVD)</option>
-          <option value={4}>Mark Unknown</option>
-          <option value={5}>DVD/BD</option>
+          <option value="Delete">Delete File (AniDB)</option>
+          <option value="DeleteLocalOnly">Delete File (Local)</option>
+          <option value="MarkDeleted">Mark Deleted</option>
+          <option value="MarkExternalStorage">Mark External (CD/DVD)</option>
+          <option value="MarkUnknown">Mark Unknown</option>
+          <option value="MarkDisk">DVD/BD</option>
         </SelectSmall>
       </div>
 
