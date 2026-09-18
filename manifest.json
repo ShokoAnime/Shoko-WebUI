@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.142",
+      "minServerVersion": "6.0.0-dev.470",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.142/Shoko-WebUI-v2.6.0-dev.142.zip",
+      "checksum": "sha256:3e24cce86f19ccb516c5799fbf71e9c284143d5916100d4b91c001737d02aa01",
+      "commit": "56b9cd627780bec8ebd34d4045f28d37d972cc7b",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.470** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.470** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* chore(deps): update dependencies and resolve linter errors by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1471\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.141...v2.6.0-dev.142\n"
+    },
+    {
       "version": "2.6.0-dev.141",
       "minServerVersion": "6.0.0-dev.470",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.141/Shoko-WebUI-v2.6.0-dev.141.zip",
