@@ -76,6 +76,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **Console:** Only `console.warn` and `console.error` are allowed.
 - **Control flow:** `for-of` and `for-in` loops are allowed (`no-restricted-syntax` is disabled).
 - **React components:** Nested components are allowed when passed as props.
+- **Syncing state with server/query data:** `useEffect(() => setState(value), [value])` sync trips `react/no-deriving-state-in-effects` (inline suppression not viable). Prefer, in order: derive at render (pair with an optimistic `queryClient.setQueryData(['settings'], ...)` for instant toggles), key-remount, or `useSyncedState` (`@/hooks/useSyncedState`) — a draft that re-initializes from the source during render (`Object.is` compare; `getResetValue` when the reset differs from the source). `useEffect` sync is a last resort.
 
 ## Verification & CI
 

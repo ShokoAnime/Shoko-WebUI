@@ -20,8 +20,8 @@ const useTableSearchSortCriteria = (defaultSortCriteria: FileSortOrderValue) => 
     setSearch(event.target.value);
   };
 
-  // Reset search sort criteria if search is cleared
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- reset the saved criteria once the debounced search is cleared
     if (searchSortCriteria && !debouncedSearch) setSearchSortCriteria(undefined);
   }, [debouncedSearch, searchSortCriteria]);
 

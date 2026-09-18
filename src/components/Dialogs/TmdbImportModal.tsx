@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { DragEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { mdiFileDelimitedOutline } from '@mdi/js';
@@ -55,13 +55,6 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
   const [isDragging, setIsDragging] = useState(false);
   const [options, setOptions] = useImmer(defaultOptions);
 
-  useEffect(() => {
-    if (show) return;
-    setFile(null);
-    setIsDragging(false);
-    setOptions(defaultOptions);
-  }, [setOptions, show]);
-
   const selectFile = (selectedFile?: File) => {
     if (!selectedFile) return;
     if (!selectedFile.name.toLowerCase().endsWith('.csv')) {
@@ -95,6 +88,11 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={handleClose}
+      onAfterOpen={() => {
+        setFile(null);
+        setIsDragging(false);
+        setOptions(defaultOptions);
+      }}
       size="sm"
       header="Import TMDB Cross-References"
       footer={

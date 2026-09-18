@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { produce } from 'immer';
 
@@ -7,7 +6,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { useDispatch } from '@/core/store';
+import useSyncedState from '@/hooks/useSyncedState';
 
 type Props = {
   show: boolean;
@@ -15,16 +14,12 @@ type Props = {
 };
 
 const DisplaySettingsModal = ({ onClose, show }: Props) => {
-  const dispatch = useDispatch();
-
   const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const [newSettings, setNewSettings] = useState(settings);
-
-  useEffect(() => {
-    setNewSettings(settings);
-  }, [dispatch, settings]);
+  // Draft re-syncs to the server value when the settings query refetches (initial load and after
+  // each save), while preserving in-progress edits between saves.
+  const [newSettings, setNewSettings] = useSyncedState(settings);
 
   const {
     anidb: anidbSettings,

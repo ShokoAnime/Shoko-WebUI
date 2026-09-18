@@ -61,6 +61,7 @@ const CollectionView = (props: Props) => {
     return [tempItemsPerRow, tempCount];
   }, [gridContainerBounds.width, itemGap, itemWidth, total]);
 
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count,
     getScrollElement: () => scrollRef.current,

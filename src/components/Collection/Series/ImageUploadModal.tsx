@@ -48,13 +48,6 @@ const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadMod
     setPreviewUrl(URL.createObjectURL(selectedFile));
   };
 
-  useEffect(() => {
-    if (!show) {
-      setFile(null);
-      setPreviewUrl(null);
-    }
-  }, [show]);
-
   useEffect(() => () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
   }, [previewUrl]);
@@ -88,6 +81,10 @@ const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadMod
     <ModalPanel
       show={show}
       onRequestClose={isPending ? undefined : onClose}
+      onAfterOpen={() => {
+        setFile(null);
+        setPreviewUrl(null);
+      }}
       size="md"
       header={`Upload ${imageLabel}`}
       footer={

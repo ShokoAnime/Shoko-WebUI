@@ -50,6 +50,7 @@ const BackgroundImagePlaceholderDiv = (props: Props) => {
   const [backgroundImage, setBackgroundImage] = useState<HTMLImageElement | null>(() => new Image());
 
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- reset the loaded image when the source or its metadata changes
     setBackgroundImage(null);
     if (!imageSource) {
       let imageErrorText = '';

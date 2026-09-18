@@ -91,6 +91,7 @@ const Series = () => {
   const [backdrop, setBackdrop] = useState<ImageLinkType>();
   useEffect(() => {
     if (!showRandomBackdrop) {
+      // oxlint-disable-next-line react/set-state-in-effect -- fall back to the first backdrop when random backdrops are disabled
       setBackdrop(series.Images?.Backdrops?.[0]);
       return;
     }

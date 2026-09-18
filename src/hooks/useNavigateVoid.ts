@@ -1,4 +1,4 @@
-// oxlint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports -- this hook is the sanctioned wrapper around react-router's useNavigate
 import { useNavigate } from 'react-router';
 import type { NavigateOptions, To } from 'react-router';
 

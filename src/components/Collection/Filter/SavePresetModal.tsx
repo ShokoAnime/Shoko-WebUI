@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -29,12 +29,6 @@ const SavePresetModal = ({ filterCondition, onClose, show }: Props) => {
 
   const directoryFilters = filtersQuery.data?.List.filter(filter => filter.IsDirectory) ?? [];
 
-  useLayoutEffect(() => {
-    if (show) return;
-    setName('');
-    setParentFilter(-1);
-  }, [show]);
-
   const handleSave = () => {
     createFilter({
       Name: name,
@@ -49,7 +43,16 @@ const SavePresetModal = ({ filterCondition, onClose, show }: Props) => {
   };
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} header="Save Preset" size="sm">
+    <ModalPanel
+      show={show}
+      onRequestClose={onClose}
+      onAfterOpen={() => {
+        setName('');
+        setParentFilter(-1);
+      }}
+      header="Save Preset"
+      size="sm"
+    >
       <Input
         id="name"
         label="Name"

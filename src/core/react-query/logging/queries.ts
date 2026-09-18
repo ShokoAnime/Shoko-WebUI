@@ -16,7 +16,7 @@ const useLogsSubscription = () => {
   useEffect(() => {
     const connectionLogHub = '/signalr/logging';
     const protocol = new JsonHubProtocol();
-    // oxlint-disable-next-line no-bitwise
+    // oxlint-disable-next-line no-bitwise -- allow the transport to fall back to LongPolling if it needs to
     const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
     const options = {
       transport,

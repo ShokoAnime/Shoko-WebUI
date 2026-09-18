@@ -30,6 +30,7 @@ const TagList = (
   { selectTag, unusedValues }: { selectTag: (name: string, select: boolean) => () => void, unusedValues: TagType[] },
 ) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count: unusedValues.length,
     getScrollElement: () => scrollRef.current,

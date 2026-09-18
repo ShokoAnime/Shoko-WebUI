@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import AvatarEditor, { useAvatarEditor } from 'react-avatar-editor';
 import { mdiImageMinusOutline, mdiImagePlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -26,10 +26,6 @@ const AvatarEditorModal = (props: Props) => {
     onClose();
   };
 
-  useEffect(() => {
-    if (show) setScale(1);
-  }, [show]);
-
   const handleSave = () => {
     const canvas = imageEditor.getImageScaledToCanvas();
     if (!canvas) return;
@@ -44,6 +40,7 @@ const AvatarEditorModal = (props: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      onAfterOpen={() => setScale(1)}
       size="sm"
       header="Avatar"
     >
@@ -55,6 +52,9 @@ const AvatarEditorModal = (props: Props) => {
           borderRadius={9999}
           scale={scale}
           onLoadFailure={onLoadFailure}
+          // Attaching the editor ref during render is the documented API of
+          // react-avatar-editor's useAvatarEditor hook.
+          // oxlint-disable-next-line react/refs -- ref comes from react-avatar-editor's useAvatarEditor API
           ref={imageEditor.ref}
         />
       </div>

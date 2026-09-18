@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -21,8 +21,6 @@ type Props = {
   type: ModalType;
 };
 
-const getModalComponent = (type: ModalType) => (type === 'multivalue' ? MultiValueCriteriaModal : TagCriteriaModal);
-
 const ParameterList = ({ match, value }: { match: 'And' | 'Or', value: string }) => (
   <div className="line-clamp-2">
     <span className="pr-2 text-panel-text-important">{match === 'Or' ? 'In:' : 'All:'}</span>
@@ -30,10 +28,41 @@ const ParameterList = ({ match, value }: { match: 'And' | 'Or', value: string })
   </div>
 );
 
+type ModalProps = {
+  catalogEntry: FilterExpression;
+  node: LeafNode;
+  onClose: () => void;
+  onRemove: () => void;
+  show: boolean;
+  type: ModalType;
+};
+
+const CriteriaModal = ({ catalogEntry, node, onClose, onRemove, show, type }: ModalProps) => (
+  type === 'multivalue'
+    ? (
+      <MultiValueCriteriaModal
+        catalogEntry={catalogEntry}
+        node={node}
+        show={show}
+        onClose={onClose}
+        onRemove={onRemove}
+      />
+    )
+    : (
+      <TagCriteriaModal
+        catalogEntry={catalogEntry}
+        node={node}
+        show={show}
+        onClose={onClose}
+        onRemove={onRemove}
+      />
+    )
+);
+
 const Criteria = (
   { catalogEntry, node, onRemove, onToggleNegate, parameterExists, transformedParameter, type }: Props,
 ) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(!parameterExists);
 
   const openModal = () => {
     setShowModal(true);
@@ -43,12 +72,6 @@ const Criteria = (
     setShowModal(false);
   };
 
-  useEffect(() => {
-    if (parameterExists) return;
-    setShowModal(true);
-  }, [parameterExists]);
-
-  const Modal = useMemo(() => getModalComponent(type), [type]);
   const match = node.value.kind === 'multi' || node.value.kind === 'multiPair' ? node.value.match : 'Or';
 
   return (
@@ -95,12 +118,13 @@ const Criteria = (
             : transformedParameter}
         </div>
       </div>
-      <Modal
+      <CriteriaModal
         catalogEntry={catalogEntry}
         node={node}
         show={showModal}
         onClose={closeModal}
         onRemove={onRemove}
+        type={type}
       />
     </>
   );

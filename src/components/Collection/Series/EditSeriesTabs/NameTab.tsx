@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
 import { useToggle } from 'usehooks-ts';
@@ -6,36 +5,35 @@ import { useToggle } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import { useOverrideSeriesTitleMutation } from '@/core/react-query/series/mutations';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
+import useSyncedState from '@/hooks/useSyncedState';
+
+import type { EndIcon } from '@/components/Input/Input';
 
 type Props = {
   seriesId: number;
 };
 
 const NameTab = ({ seriesId }: Props) => {
-  const [name, setName] = useState('');
   const [nameEditable, toggleNameEditable] = useToggle(true);
 
   const { data: seriesData, isError, isFetching, isSuccess } = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
 
+  const [name, setName] = useSyncedState(seriesData?.Name ?? '');
+
   const { mutate: overrideTitle } = useOverrideSeriesTitleMutation(seriesId);
 
-  useEffect(() => {
-    setName(seriesData?.Name ?? '');
-  }, [seriesData?.Name]);
-
-  const nameInputIcons = useMemo(() => {
-    if (!nameEditable || isFetching) {
-      return [{
+  let nameInputIcons: EndIcon[] = [];
+  if (!nameEditable || isFetching) {
+    nameInputIcons = [
+      {
         icon: mdiPencilCircleOutline,
         className: 'text-panel-text-primary',
         onClick: toggleNameEditable,
         tooltip: 'Edit name',
-      }];
-    }
-
-    if (!isSuccess) return [];
-
-    return [
+      },
+    ];
+  } else if (isSuccess) {
+    nameInputIcons = [
       {
         icon: mdiCloseCircleOutline,
         className: 'text-panel-text-danger',
@@ -55,15 +53,7 @@ const NameTab = ({ seriesId }: Props) => {
         tooltip: 'Save name',
       },
     ];
-  }, [
-    isFetching,
-    isSuccess,
-    name,
-    nameEditable,
-    overrideTitle,
-    seriesData?.Name,
-    toggleNameEditable,
-  ]);
+  }
 
   return (
     <div className="flex h-full flex-col">

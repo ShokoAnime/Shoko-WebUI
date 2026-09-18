@@ -17,7 +17,7 @@ import type { FormSchemaType, PropertySchemaType } from '@/core/types/api/config
 // Convert a JSON Pointer path (#/definitions/X) into a lodash dot-path
 // (definitions.X), then pull the value from the schema tree.
 const resolveRef = (root: FormSchemaType, path: string): PropertySchemaType | undefined =>
-  // oxlint-disable-next-line typescript/no-unsafe-return
+  // oxlint-disable-next-line typescript/no-unsafe-return -- lodash get() returns any for a dynamically built dot-path
   get(root, path.substring(2).replace(/\//g, '.'));
 
 // Merge type information from a $ref target into a property, keeping the

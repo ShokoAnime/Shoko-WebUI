@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import cx from 'classnames';
 import { trim } from 'lodash';
 
@@ -19,8 +18,45 @@ const CleanMultiEmptyLinesRegex = /\n{2,}/g;
 
 const CleanMultiSpacesRegex = /\s{2,}/g;
 
-const LinkRegex =
-  /(?<url>http:\/\/anidb\.net\/(?<type>ch|co|cr|[feast]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
+const cleanAniDbDescription = (dirtyText: string, filterDescription: boolean | undefined) => {
+  let cleanedText: string;
+  if (filterDescription) {
+    cleanedText = dirtyText
+      .replaceAll(CleanInfoLinesRegex, '')
+      .replaceAll(CleanMiscLinesRegex, '')
+      .replaceAll(CleanBBCodeContentsRegex, '')
+      .replaceAll(CleanBBCodeTagsRegex, '')
+      .replaceAll(CleanMultiEmptyLinesRegex, '\n')
+      .replaceAll(CleanMultiSpacesRegex, ' ');
+  } else {
+    cleanedText = dirtyText
+      .replaceAll(CleanBBCodeTagsRegex, '')
+      .replaceAll(CleanMultiEmptyLinesRegex, '\n')
+      .replaceAll(CleanMultiSpacesRegex, ' ');
+  }
+
+  const lines: string[] = [];
+  let prevPos = 0;
+  let pos = 0;
+  // Local to each call so the exec loop's lastIndex bookkeeping never leaks across renders.
+  const linkRegex =
+    /(?<url>http:\/\/anidb\.net\/(?<type>ch|co|cr|[feast]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
+  let link = linkRegex.exec(cleanedText);
+  while (link !== null) {
+    pos = link.index;
+    lines.push(cleanedText.substring(prevPos, pos));
+    prevPos = pos + link[0].length;
+    lines.push(
+      link.groups!.text,
+    );
+    link = linkRegex.exec(cleanedText);
+  }
+
+  if (prevPos < cleanedText.length) {
+    lines.push(cleanedText.substring(prevPos));
+  }
+  return trim(lines.join(''), '\n ');
+};
 
 type Props = {
   className?: string;
@@ -32,43 +68,7 @@ const CleanDescription = ({ altText, className, text }: Props) => {
   const settings = useSettingsQuery().data;
   const filterDescription = settings?.WebUI_Settings.collection.anidb.filterDescription;
 
-  const modifiedText = useMemo(() => {
-    let cleanedText: string;
-    if (filterDescription) {
-      cleanedText = text
-        .replaceAll(CleanInfoLinesRegex, '')
-        .replaceAll(CleanMiscLinesRegex, '')
-        .replaceAll(CleanBBCodeContentsRegex, '')
-        .replaceAll(CleanBBCodeTagsRegex, '')
-        .replaceAll(CleanMultiEmptyLinesRegex, '\n')
-        .replaceAll(CleanMultiSpacesRegex, ' ');
-    } else {
-      cleanedText = text
-        .replaceAll(CleanBBCodeTagsRegex, '')
-        .replaceAll(CleanMultiEmptyLinesRegex, '\n')
-        .replaceAll(CleanMultiSpacesRegex, ' ');
-    }
-
-    const lines: string[] = [];
-    let prevPos = 0;
-    let pos = 0;
-    let link = LinkRegex.exec(cleanedText);
-    while (link !== null) {
-      pos = link.index;
-      lines.push(cleanedText.substring(prevPos, pos));
-      prevPos = pos + link[0].length;
-      lines.push(
-        link.groups!.text,
-      );
-      link = LinkRegex.exec(cleanedText);
-    }
-
-    if (prevPos < cleanedText.length) {
-      lines.push(cleanedText.substring(prevPos));
-    }
-    LinkRegex.lastIndex = 0;
-    return trim(lines.join(''), '\n ');
-  }, [text, filterDescription]);
+  const modifiedText = cleanAniDbDescription(text, filterDescription);
 
   // Fallback to alt text if modified text is empty
   if (modifiedText === '') {

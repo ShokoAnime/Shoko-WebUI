@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-// oxlint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports -- this module is the sanctioned re-export point for react-toastify
 import { toast } from 'react-toastify';
 import type { ToastOptions } from 'react-toastify';
 import { mdiAlertCircleOutline, mdiCheckboxMarkedCircleOutline, mdiInformationOutline } from '@mdi/js';

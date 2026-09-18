@@ -25,6 +25,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import toast from '@/core/toast';
 import useSettingsContext from '@/hooks/useSettingsContext';
+import useSyncedState from '@/hooks/useSyncedState';
 
 const PlexLinkButton = () => {
   const settings = useSettingsQuery().data;
@@ -70,6 +71,7 @@ const PlexLinkButton = () => {
 
   useEffect(() => {
     if (isAuthenticated.data) {
+      // oxlint-disable-next-line react/set-state-in-effect -- stop polling once Plex is authenticated
       setPlexPollingInterval(0);
       toast.dismiss('plex-status');
     }
@@ -120,18 +122,13 @@ const PlexSettings = () => {
   const { newSettings } = useSettingsContext();
   const { Plex: plexSettings } = newSettings;
 
-  const [serverId, setServerId] = useState('');
+  const [serverId, setServerId] = useSyncedState(plexSettings.Server ?? '');
 
   const isAuthenticated = usePlexStatusQuery().data ?? false;
   const serversQuery = usePlexServersQuery(isAuthenticated);
   const librariesQuery = usePlexLibrariesQuery(isAuthenticated && serversQuery.isSuccess && !!plexSettings.Server);
   const { mutate: changeServer } = useChangePlexServerMutation();
   const { isPending: changeLibraryPending, mutate: changeLibraries } = useChangePlexLibrariesMutation();
-
-  useEffect(() => {
-    if (plexSettings.Server) setServerId(plexSettings.Server);
-    else setServerId('');
-  }, [plexSettings.Server]);
 
   const handleServerChange = (event: ChangeEvent<HTMLSelectElement>) => {
     // Optimistic update

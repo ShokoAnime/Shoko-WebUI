@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useToggle } from 'usehooks-ts';
 
@@ -85,18 +85,16 @@ const AddUserModal = (props: AddUserModalProps) => {
     if (event.key === 'Enter') handleSave();
   };
 
-  useLayoutEffect(() => {
-    if (!show) return;
-    setUsername('');
-    setPassword1('');
-    setPassword2('');
-    setLogoutOthers(false);
-  }, [show, setLogoutOthers]);
-
   return (
     <ModalPanel
       show={show}
       onRequestClose={handleClose}
+      onAfterOpen={() => {
+        setUsername('');
+        setPassword1('');
+        setPassword2('');
+        setLogoutOthers(false);
+      }}
       size="sm"
       header={isExisting ? 'Change Password' : 'Add User'}
     >

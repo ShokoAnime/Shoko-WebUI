@@ -129,6 +129,7 @@ const TmdbLinking = () => {
     return 60 * (linkOverrides[episode.IDs.AniDB]?.length || 1);
   };
 
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
     getScrollElement: () => scrollRef.current,

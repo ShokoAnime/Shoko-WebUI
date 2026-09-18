@@ -118,7 +118,7 @@ export const useTmdbBulkEpisodesQuery = (data: TmdbBulkRequestType, enabled = tr
     if (!query.data) return;
     queryClient.setQueryData(
       ['series', 'tmdb', 'episode', 'bulk', 'all'],
-      (oldData: TmdbEpisodeType[]) => [...oldData, ...query.data],
+      (oldData: TmdbEpisodeType[] | undefined) => [...(oldData ?? []), ...query.data],
     );
   }, [query.data]);
 
@@ -130,8 +130,7 @@ export const useTmdbBulkEpisodesQuery = (data: TmdbBulkRequestType, enabled = tr
   });
 
   return {
-    // oxlint-disable-next-line @tanstack/query/no-rest-destructuring
-    ...bulkEpisodesQuery,
+    data: bulkEpisodesQuery.data,
     isSuccess: query.isSuccess,
     isPending: query.isPending,
     isFetching: query.isFetching,

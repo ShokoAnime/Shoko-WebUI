@@ -78,11 +78,10 @@ const addApiBreadcrumb = (
   });
 };
 
-// The type of response.data depends on the endpoint called. It has to be any.
 // We are only adding this interceptor so that we don't have to get response.data every time we call axios from react-query
 const unwrapResponse = (response: AxiosResponse) => {
   addApiBreadcrumb(response.config, response.data, response.status, 'info');
-  // oxlint-disable-next-line typescript/no-unsafe-return
+  // oxlint-disable-next-line typescript/no-unsafe-return -- the type of response.data depends on the endpoint, so it has to be any
   return response.data;
 };
 
@@ -113,5 +112,5 @@ const handleResponseError = (error: AxiosError) => {
 axios.interceptors.response.use(unwrapResponse, handleResponseError);
 axiosV2.interceptors.response.use(unwrapResponse, handleResponseError);
 axiosPlex.interceptors.response.use(unwrapResponse, handleResponseError);
-// oxlint-disable-next-line typescript/no-unsafe-return
+// oxlint-disable-next-line typescript/no-unsafe-return -- same as unwrapResponse: the type of response.data depends on the endpoint
 axiosExternal.interceptors.response.use(response => response.data);

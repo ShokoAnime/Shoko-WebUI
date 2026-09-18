@@ -39,6 +39,7 @@ const SeriesVirtualizer = (
   { data, dataSize, fetchNext }: { data: SeriesType[], dataSize: number, fetchNext: () => void },
 ) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count: dataSize,
     getScrollElement: () => scrollRef.current,

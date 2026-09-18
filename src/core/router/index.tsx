@@ -1,6 +1,7 @@
 /* global globalThis */
 import { useEffect, useRef, useState } from 'react';
-import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router';
+import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from 'react-router';
+import { RouterProvider } from 'react-router/dom';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';

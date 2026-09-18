@@ -203,14 +203,14 @@ try {
     {
       name: 'raws-2',
       regex:
-        // oxlint-disable-next-line no-useless-escape
+        // oxlint-disable-next-line no-useless-escape -- escapes preserved for parity with the upstream Sonarr regex
         /^(?<showName>[^\n]+?)\.(?:-\.)?(?:S(?<season>\d+)E|E(?:p(?:isode)?\.?)?|(?<=(?<!\d)\.))(?<episode>\d+(?!\.(?:0|S\d+|E(?:p(?:isode)?\.?)?\d+)))(?:\.-)?(?:\.[^\.\n]+)*?-(?<releaseGroup>[^\.\n]+)(?:\.\((?<source>[^)]+)\))?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
     {
       name: 'raws-3',
       regex:
-        // oxlint-disable-next-line no-useless-escape
+        // oxlint-disable-next-line no-useless-escape -- escapes preserved for parity with the upstream Sonarr regex
         /^(?<showName>[^\n]+?)(?:(?:- )?(?:S(?<season>\d+)E|E?)(?<episode>\d+)(?:v(?<version>\d+))?(?: -)? )?(?:[ \.](?:\[[^\]]+\]|{[^}]+})*)*-(?<releaseGroup>[A-Za-z0-9_]+)(?:\.\((?<source>[^)]+)\))?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
@@ -223,7 +223,7 @@ try {
       // (defaultTransform splits it), and `year` is a bare \d{4} - not (?:19|20)\d{2} - because Sonarr can emit
       // any 4-digit year here.
       regex:
-        // oxlint-disable-next-line no-useless-escape
+        // oxlint-disable-next-line no-useless-escape -- escapes preserved for parity with the upstream Sonarr regex
         /^(?<showName>.+?(?: \((?<year>\d{4})\))) - (?:(?<isSpecial>S00?)|S(?<season>\d+))E(?<episode>\d+(?:-E?\d+)?) - \d+(?:-\d+)? - (?<episodeName>.+?(?=\[)).*?(?:-(?<releaseGroup>[^\[\] ]+))?\s*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
@@ -237,7 +237,7 @@ try {
     {
       name: 'default',
       regex:
-        // oxlint-disable-next-line no-useless-escape
+        // oxlint-disable-next-line no-useless-escape -- escapes preserved for parity with the upstream Sonarr regex
         /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?<showName>(?<isMovie2>gekijouban[\s_.]+)?(?:[a-z]+[\s_\.]+\d+(?=[\s_\.]*(?:-+[\s_\.]*)[a-z]+))?.+?(?<!\d)(?:[\s_\.]*\(part[\s_\.]*[ivx]+\))?(?<isMovie>[\s_\.]*(?:[-!+]+[\s_\.]*)?(?:the[\s_\.]+)?movie)?(?:[\s_\.]*\(part[\s_\.]*[ivx]+\))?(?:[\s_\.]*\((?<year>(?:19|20)\d{2})\))?)(?<isTrailer>[\s_\.]*(?:character[\s_\.]*)?(?:cm|pv|menu))?[\s_\.]*(?:-+[\s_\.]*)?(?:(?:(?<isThemeSong>(?<![a-z])(?:nc)?(?:ed|op)[\s_\.]*))|(?<isSpecial>sp(?:ecial)?|s(?=\d+(?<!e)))|(?<isOVA>ova)(?:[\s_\.]+(?:[_-]+[\s_\.]*)?e|(?=e))|s(?:eason)?(?<season>\d+)(?:[\s_\.]+(?:[_-]+\.*)?e?|(?=e))|)(?:(?<!part[\s_\.]*)(?:(?<![a-z])e(?:ps?|pisodes?)?[\s_\.]*)?(?<episode>\d+(?:(?!-\d+p)-+E?\d+?|\.5)?|(?<=(?:ed|op)\s*)\d+\.\d+)(?:[\s:\.]*end)?)(?:[\s:\.]*v(?<version>\d{1,2}))?(?:[\s_\.]*-+(?:[\s_\.]+(?<episodeName>(?!\d)[^([{\n]*?))?)?(?:[\s_\.]+(?:[\s_\.]+)?)?(?:[\s_.]*(?:\([^)]*\)|\[[^\]]*\]|{[^}]*}|[([{]+[^)\]}\n]*[)\]}]+|(?:(?<![a-z])(?:jpn?|jap(?:anese)?|en|eng(?:lish)?|es|(?:spa(?:nish)?|de|ger(?:man)?)|\d{3,4}[pi](?:-+hi\w*)?|(?:[uf]?hd|sd)|\d{3,4}x\d{3,4}|dual[\s_\.-]*audio|(?:www|web|bd|dvd|ld|blu[\s_\.-]*ray)(?:[\s_\.-]*(?:rip|dl))?|dl|rip|(?:av1|hevc|[hx]26[45])(?:-[a-z0-9]{1,6})?|(?:dolby(?:[\s_\.-]*(?:atmos|vision))?|dts|opus|e?ac3|aac|flac|dovi)(?:[\s\._]*[257]\.[0124](?:[_.-]+\w{1,6})?)?|(?:\w{2,3}[\s_\.-]*)?(?:sub(?:title)?s?|dub)|(?:un)?cen(?:\.|sored)?)[\s_\.]*){1,20})){0,20}[\s_\.]*(?:-[a-zA-Z0-9]+?)?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },
@@ -275,7 +275,7 @@ try {
     {
       name: 'fallback',
       regex:
-        // oxlint-disable-next-line no-useless-escape
+        // oxlint-disable-next-line no-useless-escape -- escapes preserved for parity with the upstream Sonarr regex
         /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?<showName>(?<isMovie2>gekijouban[\s_.]+)?(?:[a-z]+[\s_\.]+\d+(?=[\s_\.]*(?:-+[\s_\.]*)[a-z]+))?.+?(?<!\d)(?:[\s_\.]*\(part[\s_\.]*[ivx]+\))?(?<isMovie>[\s_\.]*(?:[-!+]+[\s_\.]*)?(?:the[\s_\.]+)?movie)?(?:[\s_\.]*\(part[\s_\.]*[ivx]+\))?(?:[\s_\.]*\((?<year>(?:19|20)\d{2})\))?)(?<isTrailer>[\s_\.]*(?:character[\s_\.]*)?(?:cm|pv|menu))?[\s_\.]*(?:-+[\s_\.]*)?(?:(?:(?<isThemeSong>(?<![a-z])(?:nc)?(?:ed|op)[\s_\.]*))|(?<isSpecial>sp(?:ecial)?|s(?=\d+(?<!e)))|(?<isOVA>ova)(?:[\s_\.]+(?:[_-]+[\s_\.]*)?e|(?=e))|s(?:eason)?(?<season>\d+)(?:[\s_\.]+(?:[_-]+\.*)?e?|(?=e))|)(?:(?<!part[\s_\.]*)(?:(?<![a-z])e(?:ps?|pisodes?)?[\s_\.]*)?(?<episode>\d+(?:(?!-\d+p)-+E?\d+?|\.5)?|(?<=(?:ed|op)\s*)\d+\.\d+)?(?:[\s:\.]*end)?)(?:[\s:\.]*v(?<version>\d{1,2}))?(?:[\s_\.]*-+(?:[\s_\.]+(?<episodeName>(?!\d)[^([{\n]*?))?)?(?:[\s_\.]+(?:[\s_\.]+)?)?(?:[\s_.]*(?:\([^)]*\)|\[[^\]]*\]|{[^}]*}|[([{]+[^)\]}\n]*[)\]}]+|(?:(?<![a-z])(?:jpn?|jap(?:anese)?|en|eng(?:lish)?|es|(?:spa(?:nish)?|de|ger(?:man)?)|\d{3,4}[pi](?:-+hi\w*)?|(?:[uf]?hd|sd)|\d{3,4}x\d{3,4}|dual[\s_\.-]*audio|(?:www|web|bd|dvd|ld|blu[\s_\.-]*ray)(?:[\s_\.-]*(?:rip|dl))?|dl|rip|(?:av1|hevc|[hx]26[45])(?:-[a-z0-9]{1,6})?|(?:dolby(?:[\s_\.-]*(?:atmos|vision))?|dts|opus|e?ac3|aac|flac|dovi)(?:[\s\._]*[257]\.[0124](?:[_.-]+\w{1,6})?)?|(?:\w{2,3}[\s_\.-]*)?(?:sub(?:title)?s?|dub)|(?:un)?cen(?:\.|sored)?)[\s_\.]*){1,20})){0,20}[\s_\.]*(?:-[a-zA-Z0-9]+?)?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
       transform: defaultTransform,
     },

@@ -56,6 +56,7 @@ const EpisodeSelect = (props: Props) => {
   };
 
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const rowVirtualizer = useVirtualizer({
     count: episodeCount + 1,
     getScrollElement: () => scrollElement,
@@ -95,7 +96,7 @@ const EpisodeSelect = (props: Props) => {
         {({ open }) => (
           <>
             <div className="w-8 shrink-0">
-              {/* oxlint-disable-next-line no-nested-ternary */}
+              {/* oxlint-disable-next-line no-nested-ternary -- nested ternary keeps the season label short and readable */}
               {tmdbEpisode?.SeasonNumber != null
                 ? (tmdbEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(tmdbEpisode.SeasonNumber)}`)
                 : 'XX'}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useOutletContext } from 'react-router';
 import { mdiLoading, mdiTagTextOutline } from '@mdi/js';
@@ -85,42 +85,35 @@ const SeriesTags = () => {
 
   const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(series.IDs.ID, { filter: 1 });
 
-  const filteredTags = useMemo(
-    () =>
-      tagsQueryData?.filter((
-        { Description, IsSpoiler, Name, Source },
-      ) => (
-        !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
-        && ((debouncedSearch === '')
-          || [Name, Description].some(str => cleanString(str).includes(debouncedSearch)))
-      )).sort((tagA, tagB) => (sort ? tagA.Name.localeCompare(tagB.Name) : 0)),
-    [debouncedSearch, showSpoilers, sort, tagSourceFilter, tagsQueryData],
-  );
+  const filteredTags = tagsQueryData?.filter((
+    { Description, IsSpoiler, Name, Source },
+  ) => (
+    !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
+    && ((debouncedSearch === '')
+      || [Name, Description].some(str => cleanString(str).includes(debouncedSearch)))
+  )).sort((tagA, tagB) => (sort ? tagA.Name.localeCompare(tagB.Name) : 0));
 
-  const header = useMemo(
-    () => (
-      <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-5">
-        <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
-          <span>Tags</span>
-          <span className="hidden px-2 2xl:inline">|</span>
-          <span>
-            {(debouncedSearch !== '' || tagSourceFilter.size > 0 || showSpoilers) && (
-              <>
-                <span className="pr-2 text-panel-text-important">
-                  {filteredTags?.length}
-                </span>
-                of&nbsp;
-              </>
-            )}
-            <span className="pr-2 text-panel-text-important">
-              {isSuccess ? tagsQueryData.length : '-'}
-            </span>
-            Tags Listed
+  const header = (
+    <div className="flex h-24.5 items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-5">
+      <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
+        <span>Tags</span>
+        <span className="hidden px-2 2xl:inline">|</span>
+        <span>
+          {(debouncedSearch !== '' || tagSourceFilter.size > 0 || showSpoilers) && (
+            <>
+              <span className="pr-2 text-panel-text-important">
+                {filteredTags?.length}
+              </span>
+              of&nbsp;
+            </>
+          )}
+          <span className="pr-2 text-panel-text-important">
+            {isSuccess ? tagsQueryData.length : '-'}
           </span>
-        </div>
+          Tags Listed
+        </span>
       </div>
-    ),
-    [debouncedSearch, filteredTags?.length, isSuccess, showSpoilers, tagSourceFilter.size, tagsQueryData?.length],
+    </div>
   );
 
   const onTagSelection = (tag: TagType) => {

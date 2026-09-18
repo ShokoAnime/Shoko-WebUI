@@ -40,6 +40,7 @@ const SeriesTopPanel = ({ series }: { series: SeriesType }) => {
 
   useEffect(() => {
     if (!showRandomPoster) {
+      // oxlint-disable-next-line react/set-state-in-effect -- fall back to the main poster when random posters are disabled
       setPoster(mainPoster);
       return;
     }

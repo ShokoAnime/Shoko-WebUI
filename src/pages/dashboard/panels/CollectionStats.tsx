@@ -25,7 +25,7 @@ const Item = (
       <div className="grow">
         {title}
       </div>
-      {/* oxlint-disable-next-line no-nested-ternary */}
+      {/* oxlint-disable-next-line no-nested-ternary -- nested ternary picks between linked, filtered and plain display */}
       {link
         ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link>
         : filter

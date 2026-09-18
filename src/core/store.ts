@@ -1,4 +1,4 @@
-// oxlint-disable-next-line no-restricted-imports
+// oxlint-disable-next-line no-restricted-imports -- this module is the sanctioned re-export point for the redux hooks
 import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
@@ -6,19 +6,18 @@ import { throttle } from 'lodash';
 
 import Events from './events';
 import { clearApiSession, clearSessionStorage, loadState, saveState } from './localStorage';
-// oxlint-disable-next-line import/no-rename-default
-import combinedReducer from './reducers';
+import reducers from './reducers';
 import signalRMiddleware from './signalr/signalr';
 
 import type { UnknownAction } from 'redux';
 
-const rootReducer = (state: ReturnType<typeof combinedReducer>, action: UnknownAction) => {
+const rootReducer = (state: ReturnType<typeof reducers>, action: UnknownAction) => {
   if (action.type === Events.AUTH_LOGOUT) { // check for action type
     clearApiSession();
     clearSessionStorage();
-    return combinedReducer(undefined, action);
+    return reducers(undefined, action);
   }
-  return combinedReducer(state, action);
+  return reducers(state, action);
 };
 
 export type RootState = ReturnType<typeof rootReducer>;

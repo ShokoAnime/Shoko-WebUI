@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -29,20 +29,12 @@ const PresetModal = (props: Props) => {
   } = props;
   const providers = useRelocationProvidersQuery(show && !rename).data;
 
-  const [presetName, setPresetName] = useState('');
-  const [selectedProvider, setSelectedProvider] = useState('na');
+  const [presetName, setPresetName] = useState(rename ? preset?.Name ?? '' : '');
+  const [pickedProvider, setPickedProvider] = useState<string | undefined>();
 
-  useEffect(() => {
-    if (!preset) return;
-
-    if (rename) {
-      setPresetName(preset.Name);
-      setSelectedProvider(preset.ProviderID);
-    } else {
-      setPresetName('');
-      setSelectedProvider(providers?.[0]?.ID ?? 'na');
-    }
-  }, [preset, rename, providers]);
+  const selectedProvider = rename
+    ? preset?.ProviderID ?? 'na'
+    : pickedProvider ?? providers?.[0]?.ID ?? 'na';
 
   const { isPending: isCreatePresetPending, mutate: createPreset } = useCreateRelocationPresetMutation();
   const { isPending: isUpdatePresetPending, mutate: updatePreset } = useUpdateRelocationPresetMutation();
@@ -84,7 +76,7 @@ const PresetModal = (props: Props) => {
         label="Provider"
         id="provider"
         value={selectedProvider}
-        onChange={event => setSelectedProvider(event.target.value)}
+        onChange={event => setPickedProvider(event.target.value)}
         disabled={rename}
       >
         {providers?.map(provider => (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { ChangeEvent } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
@@ -7,6 +7,7 @@ import { useToggle } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import { usePatchGroupMutation } from '@/core/react-query/group/mutations';
 import { useGroupQuery, useGroupSeriesQuery } from '@/core/react-query/group/queries';
+import useSyncedState from '@/hooks/useSyncedState';
 
 type Props = {
   groupId: number;
@@ -26,10 +27,7 @@ const NameTab = ({ groupId }: Props) => {
     isSuccess: seriesSuccess,
   } = useGroupSeriesQuery(groupId);
 
-  const [groupName, setGroupName] = useState(groupData?.Name ?? '');
-  useEffect(() => {
-    setGroupName(groupData?.Name ?? '');
-  }, [groupData?.Name]);
+  const [groupName, setGroupName] = useSyncedState(groupData?.Name ?? '');
 
   const [nameEditable, toggleNameEditable] = useToggle(false);
 
@@ -57,7 +55,7 @@ const NameTab = ({ groupId }: Props) => {
   const resetName = useCallback(() => {
     toggleNameEditable();
     setGroupName(groupData?.Name ?? '');
-  }, [groupData?.Name, toggleNameEditable]);
+  }, [groupData?.Name, setGroupName, toggleNameEditable]);
 
   const nameInputIcons = useMemo(() => {
     if (!nameEditable || groupFetching || seriesFetching) {

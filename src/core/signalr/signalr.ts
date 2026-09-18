@@ -126,7 +126,7 @@ const startSignalRConnection = (connection: HubConnection) =>
 
 const signalRMiddleware: Middleware<object, RootState> = ({
   dispatch,
-  // oxlint-disable-next-line typescript/unbound-method
+  // oxlint-disable-next-line typescript/unbound-method -- getState comes from the middleware API and is called unbound by design
   getState,
 }) =>
 next =>
@@ -141,8 +141,7 @@ async (action: UnknownAction) => {
 
       const protocol = new JsonHubProtocol();
 
-      // let transport to fall back to to LongPolling if it needs to
-      // oxlint-disable-next-line no-bitwise
+      // oxlint-disable-next-line no-bitwise -- allow the transport to fall back to LongPolling if it needs to
       const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
 
       const options = {

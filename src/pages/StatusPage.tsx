@@ -155,6 +155,7 @@ const StatusPage = () => {
   const startupMessage = serverStatusQuery.data?.StartupMessage;
   const isDatabaseBlocked = serverStatusQuery.data?.DatabaseBlocked?.Blocked ?? false;
   const blockedReason = serverStatusQuery.data?.DatabaseBlocked?.Reason;
+  const { dataUpdatedAt } = serverStatusQuery;
   const canRestart = serverStatusQuery.data?.CanRestart ?? false;
   const hasFailedMessage = !!startupMessage || isDatabaseBlocked;
 
@@ -174,11 +175,10 @@ const StatusPage = () => {
 
   const icon = variantIconMap[variant];
 
-  // Counts completed poll cycles that settled on error; a successful cycle resets it.
-  // Used for the shutdown Phase A -> B transition (2 *consecutive* failures).
   useEffect(() => {
     if (serverStatusQuery.fetchStatus !== 'idle') return;
     if (serverStatusQuery.isError) {
+      // oxlint-disable-next-line react/set-state-in-effect -- counts consecutive failed polls; a successful poll resets it (drives the shutdown Phase A -> B transition)
       setConsecutiveErrors(prev => prev + 1);
     } else {
       setConsecutiveErrors(0);
@@ -187,6 +187,7 @@ const StatusPage = () => {
 
   useEffect(() => {
     if (variant === 'offline') {
+      // oxlint-disable-next-line react/set-state-in-effect -- record when the offline state began so downtime can be shown
       if (offlineStartedAt === null) setOfflineStartedAt(Date.now());
     } else if (offlineStartedAt !== null) {
       setOfflineStartedAt(null);
@@ -206,7 +207,6 @@ const StatusPage = () => {
       if (currentState) sawDisruptionRef.current = true;
       return;
     }
-    const { dataUpdatedAt } = serverStatusQuery;
     const justRecovered = sawDisruptionRef.current && dataUpdatedAt > lastSeenStartedAtRef.current;
     const freshIdle = lifecycle.action === 'idle' && Date.now() - dataUpdatedAt < STATUS_FRESH_MS;
     lastSeenStartedAtRef.current = dataUpdatedAt;
@@ -217,13 +217,13 @@ const StatusPage = () => {
     }
   }, [
     apikey,
+    dataUpdatedAt,
     dispatch,
     lifecycle.action,
     navigate,
     queryClient,
     searchParams,
     serverStatusQuery.data?.State,
-    serverStatusQuery.dataUpdatedAt,
     serverStatusQuery.isError,
   ]);
 
