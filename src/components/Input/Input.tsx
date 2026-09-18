@@ -6,7 +6,7 @@ import cx from 'classnames';
 import useAutoFocusRef from '@/hooks/useAutoFocusRef';
 import useBodyVisibleContext from '@/hooks/useBodyVisibleContext';
 
-type EndIcon = {
+export type EndIcon = {
   icon: string;
   className?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;

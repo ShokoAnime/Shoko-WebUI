@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -20,11 +20,6 @@ const RepositoryModal = ({ onClose, show }: Props) => {
     setName('');
     setUrl('');
   };
-
-  useEffect(() => {
-    if (!show) return;
-    reset();
-  }, [show]);
 
   const isSubmitDisabled = !name.trim() || !url.trim();
 
@@ -55,6 +50,7 @@ const RepositoryModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      onAfterOpen={reset}
       size="sm"
       header="Add Repository"
     >

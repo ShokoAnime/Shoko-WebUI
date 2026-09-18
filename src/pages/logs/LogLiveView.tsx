@@ -16,6 +16,7 @@ type Props = {
 
 const LogLiveView = ({ logLines, scrollToBottom, setScrollToBottom }: Props) => {
   const parentRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const rowVirtualizer = useVirtualizer({
     count: logLines.length,
     getScrollElement: () => parentRef.current,

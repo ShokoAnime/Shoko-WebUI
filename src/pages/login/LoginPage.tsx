@@ -28,37 +28,30 @@ const LoginPage = () => {
   const [loginError, setLoginError] = useState(false);
   const [rememberUser, setRememberUser] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(500);
-  const [{ imageUrl, seriesId, seriesName }, setLoginImage] = useState(() => ({
-    imageUrl: '',
-    seriesName: '',
-    seriesId: 0,
-  }));
 
   const versionQuery = useVersionQuery();
   const { isPending: isLoginPending, mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);
   const imageMetadataQuery = useRandomImageMetadataQuery('Backdrop');
 
+  let loginImage = { imageUrl: '', seriesName: '', seriesId: 0 };
+  if (!imageMetadataQuery.isPending && (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data?.UID)) {
+    loginImage = { imageUrl: 'default', seriesName: 'One Piece', seriesId: 0 };
+  } else if (imageMetadataQuery.isSuccess && imageMetadataQuery.data.UID) {
+    loginImage = {
+      imageUrl: `/api/v3/Image/${imageMetadataQuery.data.UID}`,
+      seriesName: imageMetadataQuery.data.Series?.Name ?? '',
+      seriesId: imageMetadataQuery.data.Series?.ID ?? 0,
+    };
+  }
+
   const setRedirect = () => {
-    if (seriesId === 0) return;
-    setSearchParams(`redirectTo=/webui/collection/series/${seriesId}`, { replace: true });
+    if (loginImage.seriesId === 0) return;
+    setSearchParams(`redirectTo=/webui/collection/series/${loginImage.seriesId}`, { replace: true });
   };
 
   useEffect(() => {
-    if (imageMetadataQuery.isPending) return;
-    if (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data.UID) {
-      setLoginImage({ imageUrl: 'default', seriesName: 'One Piece', seriesId: 0 });
-      return;
-    }
-    const { Series, UID } = imageMetadataQuery.data;
-    setLoginImage({
-      imageUrl: `/api/v3/Image/${UID}`,
-      seriesName: Series?.Name ?? '',
-      seriesId: Series?.ID ?? 0,
-    });
-  }, [imageMetadataQuery.isSuccess, imageMetadataQuery.isPending, imageMetadataQuery.data]);
-
-  useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- poll server status until it responds, then stop
     if (!serverStatusQuery.data) setPollingInterval(500);
     else setPollingInterval(0);
 
@@ -214,18 +207,18 @@ const LoginPage = () => {
               <div
                 className={cx(
                   'flex max-w-92 items-center gap-x-2 font-semibold',
-                  seriesId && 'cursor-pointer text-panel-text-primary',
+                  loginImage.seriesId && 'cursor-pointer text-panel-text-primary',
                 )}
                 onClick={setRedirect}
               >
-                {/* oxlint-disable-next-line no-nested-ternary */}
+                {/* oxlint-disable-next-line no-nested-ternary -- nested ternary picks the fallback title for the login art */}
                 {imageMetadataQuery.isError
                   ? 'One Piece'
                   : imageMetadataQuery.data?.Series === undefined
                   ? 'Series Not Found'
                   : (
                     <>
-                      <span className="truncate" title={seriesName}>{seriesName}</span>
+                      <span className="truncate" title={loginImage.seriesName}>{loginImage.seriesName}</span>
                       <Icon className="shrink-0 text-panel-text-primary" path={mdiOpenInNew} size={1} />
                     </>
                   )}
@@ -265,10 +258,10 @@ const LoginPage = () => {
         <div
           className={cx(
             'fixed top-0 left-0 -z-10 size-full opacity-20',
-            imageUrl === 'default' && 'login-image-default',
+            loginImage.imageUrl === 'default' && 'login-image-default',
           )}
-          style={imageUrl !== '' && imageUrl !== 'default'
-            ? { background: `center / cover no-repeat url('${imageUrl}')` }
+          style={loginImage.imageUrl !== '' && loginImage.imageUrl !== 'default'
+            ? { background: `center / cover no-repeat url('${loginImage.imageUrl}')` }
             : {}}
         />
       </div>

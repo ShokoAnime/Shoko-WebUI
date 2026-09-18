@@ -99,6 +99,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
   useEffect(() => {
     if (!show) return;
+    // oxlint-disable-next-line react/set-state-in-effect -- re-initialize the form whenever a different show is opened
     initForm();
   }, [show]);
 

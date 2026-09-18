@@ -53,7 +53,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
               loading={isUpdatePending}
               disabled={!plugin.CanEnableOrDisable}
               tooltip={
-                /* oxlint-disable-next-line no-nested-ternary */
+                /* oxlint-disable-next-line no-nested-ternary -- nested ternary composes the enable/disable tooltip */
                 plugin.CanEnableOrDisable
                   ? (plugin.IsEnabled ? 'Disable' : 'Enable')
                   : 'Cannot be enabled/disabled'
@@ -70,7 +70,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
               loading={isUninstallPending}
               disabled={!plugin.CanUninstall || !plugin.IsInstalled}
               tooltip={
-                /* oxlint-disable-next-line no-nested-ternary */
+                /* oxlint-disable-next-line no-nested-ternary -- nested ternary composes the uninstall tooltip */
                 plugin.IsInstalled
                   ? (plugin.CanUninstall ? 'Uninstall' : 'Cannot be uninstalled')
                   : 'Already uninstalled'

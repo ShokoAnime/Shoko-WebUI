@@ -36,6 +36,7 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
     gap: dynamicCardSize.gap,
   }), [castArray.length, scrollRef, dynamicCardSize.y, dynamicCardSize.gap, lanes, overscan]);
 
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const rowVirtualizer = useVirtualizer(virtualizerOptions);
 
   useEffect(() => {

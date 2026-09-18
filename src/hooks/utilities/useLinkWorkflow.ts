@@ -128,14 +128,14 @@ const useLinkWorkflow = (
     inFlight.current.fetching.clear();
   }, []);
 
-  const cancelActiveWork = useEffectEvent(() => {
+  const cancelActiveWork = () => {
     setLinks((draft) => {
       forEach(Object.values(draft), (draftLink) => {
         if (draftLink.state === 'submitting') draftLink.state = 'ready';
         else if (['searching', 'fetching'].includes(draftLink.state)) draftLink.state = 'init';
       });
     });
-  });
+  };
 
   return { cancelActiveWork };
 };

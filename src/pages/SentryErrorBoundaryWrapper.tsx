@@ -31,16 +31,19 @@ type RaceRecoveryFallbackProps = {
 
 const RaceRecoveryFallback = ({ error, lastAutoRecoveredAtRef, resetError }: RaceRecoveryFallbackProps) => {
   const recoveryRef = lastAutoRecoveredAtRef;
+  // The recovery verdict controls this render's output (null vs the crash page), so the throttle
+  // check against wall-clock time must happen during render.
+  // oxlint-disable-next-line react/purity -- Date.now() is intentional: it feeds the render-time recovery verdict
   const now = Date.now();
   const canAutoRecover = isRecoverableDomRaceError(error)
+    // oxlint-disable-next-line react/refs -- the throttle verdict reads the shared recovery timestamp during render
     && (now - recoveryRef.current > RECOVERY_THROTTLE_MS);
 
   useLayoutEffect(() => {
     if (!canAutoRecover) return;
-    recoveryRef.current = now;
+    recoveryRef.current = Date.now();
     resetError();
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- only re-run when the recoverability verdict changes
-  }, [canAutoRecover, resetError]);
+  }, [canAutoRecover, recoveryRef, resetError]);
 
   if (canAutoRecover) return null;
 

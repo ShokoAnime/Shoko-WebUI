@@ -24,10 +24,10 @@ const TreeNode = (props: Props) => {
 
   const selectedNode = useSelector(state => state.modals.browseFolder.selectedNode);
 
-  const [expanded, setExpanded] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
   const { isAccessible, level, nodeId, path } = props;
+
+  const [expanded, setExpanded] = useState(nodeId === 0);
+  const [loaded, setLoaded] = useState(false);
   const isSelected = nodeId === selectedNode.id;
 
   const drivesQuery = useFolderDrivesQuery(nodeId === 0);
@@ -85,10 +85,6 @@ const TreeNode = (props: Props) => {
     }
     return part;
   };
-
-  useEffect(() => {
-    if (nodeId === 0) setExpanded(true);
-  }, [nodeId]);
 
   return (
     <li

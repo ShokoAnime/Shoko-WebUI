@@ -209,9 +209,13 @@ const SeriesOverview = () => {
 
       <ShokoPanel title="Top 20 Actors" className="w-full" transparent>
         <div className="z-10 flex w-full gap-x-6">
-          {cast?.filter(credit => credit.RoleName === 'Actor' && credit.Character).slice(0, 20).map(seiyuu => (
+          {cast?.filter(credit => credit.RoleName === 'Actor' && credit.Character).slice(0, 20).map((seiyuu, index) => (
             <div
-              key={`${seiyuu.Character?.Name}-${Math.random() * (cast.length + (seiyuu.Character?.Name.length ?? 0))}`}
+              // Index-only key: the list is a static slice (no reordering/insertion), the items
+              // are stateless display elements, and React just updates content in place on data
+              // changes — no remount churn.
+              // oxlint-disable-next-line react/no-array-index-key -- index uniquely identifies items in this static slice
+              key={index}
               className="flex flex-col items-center gap-y-3 pb-3"
             >
               <div className="flex gap-x-4">

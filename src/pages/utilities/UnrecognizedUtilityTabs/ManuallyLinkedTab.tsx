@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import {
   mdiCloseCircleOutline,
@@ -33,6 +33,7 @@ import { getAnidbAnimeLink, getAnidbEpisodeLink } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
+import useSyncedState from '@/hooks/useSyncedState';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -176,10 +177,12 @@ const ManuallyLinkedTab = () => {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
-  const [selectedSeries, setSelectedSeries] = useState(0);
-
   const seriesQuery = useSeriesWithLinkedFilesInfiniteQuery({ pageSize: 25, search: debouncedSearch });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
+
+  // Selection resets whenever the list data changes (search, refresh, unlink), so the episode
+  // pane does not show episodes of a series no longer present in the list.
+  const [selectedSeries, setSelectedSeries] = useSyncedState(seriesQuery.data, () => 0);
 
   const episodesQuery = useSeriesEpisodesInfiniteQuery(
     selectedSeries,
@@ -220,11 +223,6 @@ const ManuallyLinkedTab = () => {
       })
       .catch(console.error);
   };
-
-  // Reset series selection if query data changes
-  useEffect(() => {
-    setSelectedSeries(0);
-  }, [seriesQuery.data]);
 
   return (
     <>

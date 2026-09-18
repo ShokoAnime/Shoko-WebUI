@@ -130,6 +130,7 @@ const SeriesEpisodes = () => {
 
   const { scrollRef } = useOutletContext<SeriesContextType>();
 
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
     getScrollElement: () => scrollRef.current,

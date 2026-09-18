@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useMemo, useState } from 'react';
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import {
   mdiAlertCircleOutline,
@@ -357,26 +357,21 @@ const Renamer = () => {
     setSelectedPreset(tempPreset);
   };
 
-  const changeSelectedPresetEvent = useEffectEvent((presetId: string) => changeSelectedPreset(presetId));
-
   // Handle the below 3 hooks with care. These are used for auto-updating previews on changes.
   // We combine them here because there is a delay in when the name changes and the config changes
   // Effect should only be triggered once even if both values change
   const [debouncedConfig] = useDebounceValue(newConfig, 500);
-  const [initialClear, setInitialClear] = useState(true);
+  const initialClearRef = useRef(true);
   useEffect(() => {
     if (!debouncedConfig) return;
 
     // To avoid clearing of rename results on render as it's already cleared from the other useEffect
-    if (initialClear) {
-      setInitialClear(false);
+    if (initialClearRef.current) {
+      initialClearRef.current = false;
       return;
     }
 
     dispatch(clearResults());
-    // initialClear is used to skip the effect on initial render, adding it to deps would cause the effect to run
-    // an extra time
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedConfig, dispatch]);
 
   const handleSaveConfig = () => {
@@ -419,18 +414,31 @@ const Renamer = () => {
     togglePresetModal();
   };
 
+  // `moveFiles`/`renameFiles` are trigger-only deps: rename results must clear whenever the mode
+  // changes, even though the effect body does not read them.
   useEffect(() => {
     dispatch(clearResults());
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- moveFiles/renameFiles are trigger-only deps: results must clear whenever the mode changes
   }, [dispatch, moveFiles, renameFiles]);
 
+  // The reads of `selectedPreset` live in the effect event so the effect does not re-run when the
+  // user picks a different preset (the dropdown `onChange` already handles that).
+  const syncSelectedPresetEvent = useEffectEvent((presets: RelocationPresetType[]) => {
+    if (selectedPreset) {
+      changeSelectedPreset(selectedPreset.ID);
+    } else {
+      changeSelectedPreset(find(presets, preset => preset.IsDefault)?.ID ?? '');
+    }
+  });
+
+  // `settings` is a trigger-only dep: re-sync the preset selection when settings change, keeping
+  // the config up-to-date for the `configEdited` flag.
   useEffect(() => {
     if (!relocationPresetsQuery.isSuccess) return;
 
-    if (selectedPreset) changeSelectedPresetEvent(selectedPreset.ID);
-    else changeSelectedPresetEvent(defaultPreset?.ID ?? '');
-    // This shouldn't run when `selectedConfig.Name` changes.
-    // We are resetting `selectedConfig` when new data arrives so that it is up-to-date for `configEdited` flag
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react/set-state-in-effect -- re-sync the selected preset whenever the renamer settings change
+    syncSelectedPresetEvent(relocationPresetsQuery.data ?? []);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- settings is a trigger-only dep: re-sync the preset selection when settings change
   }, [relocationPresetsQuery.data, relocationPresetsQuery.isSuccess, settings]);
 
   const {
@@ -602,6 +610,7 @@ const Renamer = () => {
                     )}
 
                     <PresetModal
+                      key={`${showPresetModal}-${presetRename}-${selectedPreset?.ID ?? 0}`}
                       show={showPresetModal}
                       onClose={togglePresetModal}
                       rename={presetRename}

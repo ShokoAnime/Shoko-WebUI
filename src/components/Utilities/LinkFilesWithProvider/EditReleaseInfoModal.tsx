@@ -463,6 +463,7 @@ const EditReleaseInfoModal = (props: Props) => {
       <div className="flex grow flex-col gap-y-4 p-6">
         {!formState.selectedSeriesId && !hasDifferent.series && (
           <AnimeSelectPanel
+            key={initialSeriesName}
             placeholder={initialSeriesName}
             onSelect={(series) => {
               handleSeriesSelect(series).catch(console.error);

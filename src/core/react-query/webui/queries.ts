@@ -28,19 +28,19 @@ export const useGroupViewQuery = (params: GroupViewRequestType, enabled = true) 
     if (!query.data) return;
     queryClient.setQueryData(
       ['webui', 'group-view', 'all'],
-      (oldData: WebuiGroupExtra[]) => [...oldData, ...query.data],
+      (oldData: WebuiGroupExtra[] | undefined) => [...(oldData ?? []), ...query.data],
     );
   }, [query.data]);
 
   const groupViewQuery = useQuery<WebuiGroupExtra[]>({
     queryKey: ['webui', 'group-view', 'all'],
     queryFn: () => [],
+    initialData: [],
     staleTime: Infinity,
   });
 
   return {
-    // oxlint-disable-next-line @tanstack/query/no-rest-destructuring
-    ...groupViewQuery,
+    data: groupViewQuery.data,
     isSuccess: query.isSuccess,
     isPending: query.isPending,
     isFetching: query.isFetching,
@@ -68,9 +68,7 @@ export const useWebuiThemesQuery = () =>
   });
 
 export const useWebuiUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
-  // The rule is disabled here because the query key needs to be same for both force: true and force: false
-  // Because when we force check update from settings, it should reflect in TopNav
-  // oxlint-disable-next-line @tanstack/query/exhaustive-deps
+  // oxlint-disable-next-line @tanstack/query/exhaustive-deps -- the key must match for force: true/false so a forced check from settings reflects in TopNav
   useQuery<ComponentVersionType>({
     queryKey: ['webui', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestVersion', { params }),
@@ -79,8 +77,7 @@ export const useWebuiUpdateCheckQuery = (params: UpdateCheckRequestType, enabled
   });
 
 export const useServerUpdateCheckQuery = (params: UpdateCheckRequestType, enabled = true) =>
-  // Read the comment in useWebuiUpdateCheckQuery
-  // oxlint-disable-next-line @tanstack/query/exhaustive-deps
+  // oxlint-disable-next-line @tanstack/query/exhaustive-deps -- same as useWebuiUpdateCheckQuery: the key must stay identical across forced checks
   useQuery<ComponentVersionType>({
     queryKey: ['server', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestServerVersion', { params }),

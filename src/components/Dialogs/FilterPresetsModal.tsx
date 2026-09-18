@@ -133,6 +133,7 @@ const SidePanel = (
   }, [debouncedSearch, filtersQuery.data]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count: filteredList.length,
     getScrollElement: () => scrollRef.current,

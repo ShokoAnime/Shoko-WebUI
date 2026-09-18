@@ -12,6 +12,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { useDispatch, useSelector } from '@/core/store';
 import toast from '@/core/toast';
+import useSyncedState from '@/hooks/useSyncedState';
 import WelcomeModal from '@/pages/dashboard/components/WelcomeModal';
 
 import CollectionStats from './panels/CollectionStats';
@@ -77,19 +78,23 @@ const DashboardPage = () => {
 
   const { containerRef: gridContainerRef, width: gridWidth } = useContainerWidth();
 
-  const [currentLayout, setCurrentLayout] = useState(
+  const [currentLayout, setCurrentLayout] = useSyncedState(
     settings.WebUI_Settings.layout.dashboard,
   );
 
   useEffect(() => {
-    if (settingsQuery.isSuccess) setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
-  }, [settings, settingsQuery.isSuccess]);
+    if (!settingsQuery.isSuccess) return;
+    // Force the grid to re-measure after the saved layout is initially loaded.
+    window.dispatchEvent(new Event('resize'));
+  }, [settingsQuery.isSuccess]);
 
   const cancelLayoutChange = useCallback(() => {
     setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
+    // Force the grid to re-measure after the layout is swapped programmatically.
+    window.dispatchEvent(new Event('resize'));
     dispatch(setLayoutEditMode(false));
     toast.dismiss('layoutEditMode');
-  }, [dispatch, settings.WebUI_Settings.layout.dashboard]);
+  }, [dispatch, setCurrentLayout, settings.WebUI_Settings.layout.dashboard]);
 
   const saveLayout = useEffectEvent((reset = false) => {
     const newSettings = produce(settings, (draftState) => {
@@ -105,6 +110,8 @@ const DashboardPage = () => {
         dispatch(setLayoutEditMode(false));
         toast.dismiss('layoutEditMode');
         toast.success(reset ? 'Layout reset to default!' : 'Layout Saved!');
+        // Force the grid to re-measure after the layout is saved/reset.
+        window.dispatchEvent(new Event('resize'));
       },
       onError: error => toast.error('', error.message),
     });
@@ -116,6 +123,7 @@ const DashboardPage = () => {
   useEffect(() => {
     const locationState = location.state as { firstRun?: boolean } ?? { firstRun: false };
     if (locationState.firstRun) {
+      // oxlint-disable-next-line react/set-state-in-effect -- open the welcome modal when redirected from first-run setup
       setShowWelcomeModal(true);
     }
   }, [location]);
@@ -144,10 +152,6 @@ const DashboardPage = () => {
   }, [cancelLayoutChange, layoutEditMode]);
 
   useEffect(() => () => cancelLayoutChange(), [cancelLayoutChange]);
-
-  useEffect(() => {
-    window.dispatchEvent(new Event('resize'));
-  }, [currentLayout]);
 
   return (
     <>

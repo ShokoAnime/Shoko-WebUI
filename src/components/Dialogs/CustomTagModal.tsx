@@ -25,23 +25,19 @@ export type Props = {
 };
 
 const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
-  const userTagsQuery = useUserTagsQuery({ pageSize: 0, includeCount: true }, show);
-  const activeTagSetQuery = useSeriesUserTagsSetQuery(seriesId, show);
+  const { data: userTags, refetch: refetchUserTags } = useUserTagsQuery({ pageSize: 0, includeCount: true }, show);
+  const { data: activeTagSet, refetch: refetchActiveTagSet } = useSeriesUserTagsSetQuery(seriesId, show);
   const { mutate: addUserTagMutation } = useAddUserTagMutation();
   const { mutate: removeUserTagMutation } = useRemoveUserTagMutation();
   const { mutate: createUserTagMutation } = useCreateUserTagMutation();
   const { mutate: updateTagMutation } = useUpdateUserTagMutation();
   const { mutate: deleteTagMutation } = useDeleteUserTagMutation();
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
-  const selectedTag = useMemo(() => userTagsQuery.data?.find(tag => tag.ID === selectedTagId) ?? null, [
-    userTagsQuery.data,
-    selectedTagId,
-  ]);
+  const selectedTag = userTags?.find(tag => tag.ID === selectedTagId) ?? null;
   const [mode, setMode] = useState<'create' | 'edit' | null>(null);
   const [tagName, setTagName] = useState('');
   const [tagDesc, setTagDescription] = useState('');
 
-  const activeTagSet = activeTagSetQuery.data;
   const lockedControls = !mode || (mode === 'edit' && !selectedTag);
   const lockedTag = mode === 'create';
   const canCreate = mode === 'create' && tagName && tagName.length > 0;
@@ -67,7 +63,7 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
 
     const selectedTagId1 = parseInt(event.currentTarget.dataset.tagId ?? '0', 10);
     if (Number.isNaN(selectedTagId1) || !selectedTagId1) return;
-    const selectedTag1 = userTagsQuery.data?.find(tag => tag.ID === selectedTagId1) ?? null;
+    const selectedTag1 = userTags?.find(tag => tag.ID === selectedTagId1) ?? null;
     if (selectedTag1 && selectedTag1.ID === selectedTag?.ID) {
       setSelectedTagId(null);
       setTagName('');
@@ -239,11 +235,10 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
 
   useLayoutEffect(() => {
     if (show) {
-      userTagsQuery.refetch().catch(console.error);
-      activeTagSetQuery.refetch().catch(console.error);
+      refetchActiveTagSet().catch(console.error);
+      refetchUserTags().catch(console.error);
     }
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [show, seriesId]);
+  }, [refetchActiveTagSet, refetchUserTags, show]);
 
   return (
     <ModalPanel
@@ -269,7 +264,7 @@ const CustomTagModal = ({ onClose, seriesId, show }: Props) => {
           </div>
         </div>
         <div className="flex h-42 flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 contain-strict">
-          {userTagsQuery.data?.map(tag => (
+          {userTags?.map(tag => (
             <div
               key={tag.ID}
               data-tag-id={tag.ID}

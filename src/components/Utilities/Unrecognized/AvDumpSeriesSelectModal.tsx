@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -74,10 +74,6 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
   const commonSeries = findMostCommonShowName(links.map(link => detectShow(link.split('|')[2])));
   const rulesPrompt = useMemo(() => anidbPrompts[promptSeed % anidbPrompts.length], [promptSeed]);
 
-  useEffect(() => {
-    setSearchText(commonSeries);
-  }, [commonSeries, show]);
-
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
   };
@@ -151,6 +147,7 @@ const AvDumpSeriesSelectModal = ({ fileIds, links, onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      onAfterOpen={() => setSearchText(commonSeries)}
       header={<Title step={activeStep} stepCount={2} count={fileIds.length} />}
       size="sm"
       noPadding

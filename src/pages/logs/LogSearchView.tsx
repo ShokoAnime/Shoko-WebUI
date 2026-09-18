@@ -30,6 +30,7 @@ const LogSearchView = ({ activeLevels, onClearFilters, search }: Props) => {
   const searching = isFetching && logEntries.length === 0;
 
   const parentRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const rowVirtualizer = useVirtualizer({
     count: logEntries.length + (hasNextPage ? 1 : 0),
     getScrollElement: () => parentRef.current,

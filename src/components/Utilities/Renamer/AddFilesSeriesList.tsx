@@ -37,6 +37,7 @@ const AddFilesSeriesList = (props: Props) => {
   const { fetchNextPage, isFetchingNextPage, isPending, series, seriesCount } = props;
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count: seriesCount,
     getScrollElement: () => scrollRef.current,

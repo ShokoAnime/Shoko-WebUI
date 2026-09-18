@@ -53,6 +53,7 @@ const StartServer = () => {
 
   useEffect(() => {
     if (serverStatusQuery.data?.State === 'Started' || serverStatusQuery.data?.State === 'Failed') {
+      // oxlint-disable-next-line react/set-state-in-effect -- stop polling once the server has started or failed
       setPollingInterval(0);
     }
   }, [serverStatusQuery.data]);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 /* global globalThis */
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
@@ -15,6 +15,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
+import useSyncedState from '@/hooks/useSyncedState';
 
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
@@ -55,12 +56,12 @@ const SettingsPage = () => {
 
   const pluginGroups = groupBy(pluginPages, page => page.PluginInfo.ID);
 
-  const [newSettings, setNewSettings] = useState(settings);
+  const [newSettings, setNewSettings] = useSyncedState(settings);
 
+  // Clear any leftover theme preview when (re)entering the settings page.
   useEffect(() => {
     dispatch(setMiscItem({ webuiPreviewTheme: null }));
-    setNewSettings(settings);
-  }, [dispatch, settings]);
+  }, [dispatch]);
 
   const unsavedChanges = useMemo(
     () => {
@@ -163,7 +164,10 @@ const SettingsPage = () => {
       return;
     }
 
-    patchSettings(newSettings);
+    patchSettings(newSettings, {
+      // The saved theme is now persisted; drop the in-memory preview once the settings round-trip.
+      onSuccess: () => dispatch(setMiscItem({ webuiPreviewTheme: null })),
+    });
   };
 
   const handleCancel = () => {

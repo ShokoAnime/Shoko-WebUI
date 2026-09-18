@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import Button from '@/components/Input/Button';
@@ -23,10 +23,6 @@ const EditEpisodeTitleModal = ({ episode, nextUp, onRequestClose, seriesId, show
 
   const episodeId = episode.IDs.ID;
   const { isPending, mutate: overrideTitle } = useOverrideEpisodeTitleMutation(episodeId, seriesId, nextUp);
-
-  useEffect(() => {
-    if (show) setTitle(episode.Name);
-  }, [episode.Name, show]);
 
   const handleSave = () => {
     if (isPending) return;
@@ -59,6 +55,7 @@ const EditEpisodeTitleModal = ({ episode, nextUp, onRequestClose, seriesId, show
     <ModalPanel
       show={show}
       onRequestClose={isPending ? undefined : onRequestClose}
+      onAfterOpen={() => setTitle(episode.Name)}
       size="sm"
       header="Edit Episode Title"
       footer={

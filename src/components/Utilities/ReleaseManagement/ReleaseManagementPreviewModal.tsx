@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSearchParams } from 'react-router';
@@ -183,11 +182,6 @@ const ReleaseManagementPreviewModal = ({
   // Place IDs unchecked by the user (excluded from execute)
   const [uncheckedPlaceIDs, setUncheckedPlaceIDs] = useImmer<Set<number>>(new Set());
 
-  useEffect(() => {
-    setRemovedSeriesIDs(new Set());
-    setUncheckedPlaceIDs(new Set());
-  }, [show, setRemovedSeriesIDs, setUncheckedPlaceIDs]);
-
   const visiblePreviews = filter(
     mixMatchSelection ? mixMatchPreviewData : previewQuery.data,
     preview => !removedSeriesIDs.has(preview.SeriesID),
@@ -245,6 +239,10 @@ const ReleaseManagementPreviewModal = ({
       show={show}
       size="xl"
       onRequestClose={onClose}
+      onAfterOpen={() => {
+        setRemovedSeriesIDs(new Set());
+        setUncheckedPlaceIDs(new Set());
+      }}
       header="Preview Deletion"
       footer={
         <div className="flex items-center justify-between">

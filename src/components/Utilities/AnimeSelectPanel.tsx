@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -48,10 +48,6 @@ const AnimeSelectPanel = (
   const [searchText, setSearchText] = useState(placeholder);
   const [debouncedSearch] = useDebounceValue(searchText, 200);
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
-
-  useEffect(() => {
-    setSearchText(placeholder);
-  }, [placeholder]);
 
   const isLoading = showLoading || (!!debouncedSearch && searchQuery.isPending);
 

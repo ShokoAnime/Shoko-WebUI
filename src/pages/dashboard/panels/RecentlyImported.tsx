@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { produce } from 'immer';
 import { map } from 'lodash';
 
@@ -9,11 +8,14 @@ import {
   useDashboardRecentlyAddedEpisodesQuery,
   useDashboardRecentlyAddedSeriesQuery,
 } from '@/core/react-query/dashboard/queries';
+import queryClient from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 import SeriesDetails from '@/pages/dashboard/components/SeriesDetails';
+
+import type { SettingsServerType } from '@/core/types/api/settings';
 
 const tabStates: { label?: string, value: string }[] = [
   { label: 'Episodes', value: 'episodes' },
@@ -41,16 +43,16 @@ const RecentlyImported = () => {
     pageSize: recentlyImportedEpisodesCount,
   });
 
-  const [viewMode, setViewMode] = useState<'episodes' | 'series'>('episodes');
-
-  useEffect(() => {
-    setViewMode(recentlyImportedView);
-  }, [recentlyImportedView]);
-
   const handleTabChange = (newTab: 'episodes' | 'series') => {
-    setViewMode(newTab);
     const newSettings = produce(settings, (draftState) => {
       draftState.WebUI_Settings.dashboard.recentlyImportedView = newTab;
+    });
+    // Optimistically write the new settings to the cache so the tab switches immediately,
+    // without waiting for the patch + refetch round trip. The cache holds the raw server
+    // shape, so WebUI_Settings must be re-stringified.
+    queryClient.setQueryData<SettingsServerType>(['settings'], {
+      ...newSettings,
+      WebUI_Settings: JSON.stringify(newSettings.WebUI_Settings),
     });
     patchSettings(newSettings);
   };
@@ -59,10 +61,10 @@ const RecentlyImported = () => {
     <ShokoPanel
       title="Recently Imported"
       editMode={layoutEditMode}
-      isFetching={viewMode === 'series' ? recentSeriesQuery.isPending : recentEpisodesQuery.isPending}
+      isFetching={recentlyImportedView === 'series' ? recentSeriesQuery.isPending : recentEpisodesQuery.isPending}
       options={
         <MultiStateButton
-          activeState={viewMode}
+          activeState={recentlyImportedView}
           states={tabStates}
           onStateChange={handleTabChange}
           alternateColor
@@ -71,7 +73,7 @@ const RecentlyImported = () => {
       contentClassName="relative"
     >
       <TransitionDiv
-        show={viewMode !== 'series'}
+        show={recentlyImportedView !== 'series'}
         className="absolute flex size-full gap-x-6"
       >
         {(!recentEpisodesQuery.data || recentEpisodesQuery.data.length === 0) && (
@@ -87,7 +89,7 @@ const RecentlyImported = () => {
       </TransitionDiv>
 
       <TransitionDiv
-        show={viewMode === 'series'}
+        show={recentlyImportedView === 'series'}
         className="absolute flex size-full gap-x-6"
       >
         {(!recentSeriesQuery.data || recentSeriesQuery.data.length === 0) && (

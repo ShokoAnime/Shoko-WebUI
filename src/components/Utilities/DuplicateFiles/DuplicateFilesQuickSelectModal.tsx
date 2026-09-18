@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { ChangeEvent } from 'react';
 import { forEach, map, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
@@ -47,10 +47,6 @@ const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
 
   const [groupsToDelete, setGroupsToDelete] = useImmer<Set<number>>(new Set());
 
-  useEffect(() => {
-    setGroupsToDelete(new Set());
-  }, [setGroupsToDelete, show]);
-
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const index = toNumber(event.target.id.split('-')[1]);
     setGroupsToDelete((state) => {
@@ -85,7 +81,13 @@ const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
   };
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} header="Quick Select" size="sm">
+    <ModalPanel
+      show={show}
+      onRequestClose={onClose}
+      onAfterOpen={() => setGroupsToDelete(new Set())}
+      header="Quick Select"
+      size="sm"
+    >
       {fileSummaryQuery.isSuccess && (
         map(
           fileSummary?.Groups,

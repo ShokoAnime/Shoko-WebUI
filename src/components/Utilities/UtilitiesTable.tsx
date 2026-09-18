@@ -165,6 +165,7 @@ const UtilitiesTable = (props: Props) => {
   const renamerPreviews = useSelector(state => state.utilities.renamer.results);
 
   const parentRef = useRef<HTMLDivElement>(null);
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count,
     getScrollElement: () => parentRef.current,

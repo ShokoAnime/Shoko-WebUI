@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -25,10 +25,6 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
 
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
-  useEffect(() => {
-    setSearchText('');
-  }, [show]);
-
   const {
     isPending: isRefreshPending,
     mutate: refreshSeries,
@@ -53,6 +49,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      onAfterOpen={() => setSearchText('')}
       header="Add new series"
       size="sm"
       noPadding

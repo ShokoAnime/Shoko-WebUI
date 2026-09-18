@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -8,6 +7,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { useSetPreferredTmdbShowOrderingMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbShowOrderingQuery } from '@/core/react-query/tmdb/queries';
 import toast from '@/core/toast';
+import useSyncedState from '@/hooks/useSyncedState';
 
 type Props = {
   onClose: () => void;
@@ -32,15 +32,11 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
 
   const { isPending: setOrderingPending, mutate: setOrdering } = useSetPreferredTmdbShowOrderingMutation(showId);
 
-  const [inUseOrdering, setInUseOrdering] = useState('');
-  const [selectedOrdering, setSelectedOrdering] = useState('');
-  useEffect(() => {
-    if (!orderingQuery.data) return;
-    const initialOrdering = orderingQuery.data.find(ordering => ordering.InUse);
-    if (!initialOrdering) return;
-    setSelectedOrdering(initialOrdering.OrderingID);
-    setInUseOrdering(initialOrdering.OrderingID);
-  }, [orderingQuery.data]);
+  const inUseOrdering = orderingQuery.data?.find(ordering => ordering.InUse)?.OrderingID ?? '';
+  const [selectedOrdering, setSelectedOrdering] = useSyncedState(
+    orderingQuery.data,
+    data => data?.find(ordering => ordering.InUse)?.OrderingID ?? '',
+  );
 
   const handleSave = () => {
     if (!selectedOrdering) return;

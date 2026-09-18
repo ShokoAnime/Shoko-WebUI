@@ -56,7 +56,7 @@ const DropdownButton = (props: Props) => {
     return () => {
       window.removeEventListener('resize', resizeEvent);
     };
-  }, [className]);
+  }, []);
 
   return (
     <div className="relative inline-block" ref={containerRef}>

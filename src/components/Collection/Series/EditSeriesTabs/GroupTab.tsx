@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { ChangeEvent, MouseEventHandler } from 'react';
 import {
   mdiArrowRightThinCircleOutline,
@@ -48,10 +48,6 @@ const EditableNameComponent = (
 ) => {
   const [editingName, setEditingName] = useState(false);
   const [modifiableName, setModifiableName] = useState(name);
-
-  useEffect(() => {
-    setModifiableName(name);
-  }, [name]);
 
   const cancelEditing = () => {
     setModifiableName(() => {
@@ -185,6 +181,7 @@ const GroupTab = ({ seriesId }: Props) => {
   return (
     <div className="flex h-full flex-col">
       <EditableNameComponent
+        key={seriesGroup?.Name ?? ''}
         groupId={seriesGroup?.IDs.ID ?? 0}
         loading={isFetching}
         name={seriesGroup?.Name ?? ''}

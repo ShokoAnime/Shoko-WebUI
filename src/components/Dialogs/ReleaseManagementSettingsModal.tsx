@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { produce } from 'immer';
 
@@ -24,11 +24,6 @@ const ReleaseManagementSettingsModal = ({ onClose, show }: Props) => {
     settings.ReleaseComparisonPreferences,
   );
 
-  useEffect(() => {
-    if (!show) return;
-    setPreferences(settings.ReleaseComparisonPreferences);
-  }, [show, settings.ReleaseComparisonPreferences]);
-
   const handleSave = () => {
     const newSettings = produce(settings, (draft) => {
       draft.ReleaseComparisonPreferences = preferences;
@@ -44,6 +39,7 @@ const ReleaseManagementSettingsModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      onAfterOpen={() => setPreferences(settings.ReleaseComparisonPreferences)}
       header="Release Management Settings"
       size="md"
       footer={

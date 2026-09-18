@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import cx from 'classnames';
 import { produce } from 'immer';
@@ -12,6 +12,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { useDispatch } from '@/core/store';
+import useSyncedState from '@/hooks/useSyncedState';
 
 type Props = {
   onClose: () => void;
@@ -41,17 +42,14 @@ const Title = ({ onClose }: { onClose: () => void }) => {
 };
 
 const DashboardSettingsModal = ({ onClose, show }: Props) => {
-  const dispatch = useDispatch();
-
   const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const [newSettings, setNewSettings] = useState(settings);
   const [activeTab, setActiveTab] = useState('widgets');
 
-  useEffect(() => {
-    setNewSettings(settings);
-  }, [dispatch, settings]);
+  // Draft re-syncs to the server value when the settings query refetches (initial load and after
+  // each save), while preserving in-progress edits between saves.
+  const [newSettings, setNewSettings] = useSyncedState(settings);
 
   const {
     combineContinueWatching,

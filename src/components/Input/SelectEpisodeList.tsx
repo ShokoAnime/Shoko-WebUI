@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
@@ -20,6 +20,10 @@ type Option = {
   AirDate: string;
   disabled?: boolean;
 };
+
+// Fallback for when the current value doesn't match any option; must be a stable
+// reference since it feeds Headless UI's controlled Listbox value.
+const EMPTY_OPTION = {} as Option;
 
 type Props = {
   options: Option[];
@@ -90,11 +94,7 @@ const SelectButton = (
 
 const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, standalone, value }: Props) => {
   const [epFilter, setEpFilter] = useState('');
-  const [selected, setSelected] = useState<Option>(options[0]);
-
-  useEffect(() => {
-    setSelected(find(options, ['value', value]) ?? {} as Option);
-  }, [value, options]);
+  const selected = find(options, ['value', value]) ?? EMPTY_OPTION;
 
   const handleEpFilter = (event: ChangeEvent<HTMLInputElement>) => setEpFilter(event.target.value);
 
@@ -104,7 +104,6 @@ const SelectEpisodeList = ({ disabled = false, onChange, options, rowIdx, standa
   };
 
   const selectOption = (selectedOption: Option) => {
-    setSelected(selectedOption);
     onChange(selectedOption?.value ?? 0);
   };
 

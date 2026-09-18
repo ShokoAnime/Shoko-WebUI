@@ -129,6 +129,7 @@ const SeriesImages = () => {
     : 0;
   const rowCount = itemsPerRow > 0 ? Math.ceil(imagesTotal / itemsPerRow) : 0;
 
+  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
   const virtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => scrollRef.current,

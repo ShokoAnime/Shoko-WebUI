@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { mdiCog, mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { produce } from 'immer';
@@ -21,10 +21,32 @@ import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/provide
 import { clearReleaseSettings, setProviders } from '@/core/slices/settings/release';
 import { useDispatch, useSelector } from '@/core/store';
 import toast from '@/core/toast';
+import useSyncedState from '@/hooks/useSyncedState';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
-import type { ReleaseComparisonPreferencesType } from '@/core/types/api/settings';
+import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
+import type { SettingsType } from '@/core/types/api/settings';
+
+const DEFAULT_HASHING_SETTINGS: HashingSummaryType = { ParallelMode: false };
+
+const buildProviderState = (settings: SettingsType, providersData: ReleaseProviderInfoType[]) => {
+  const cleanWebuiProviders = settings.WebUI_Settings.releaseInfoProviders
+    .map((webuiProvider) => {
+      const foundProvider = providersData.find(provider => provider.ID === webuiProvider.id);
+      if (!foundProvider) return undefined;
+      return { ...foundProvider, IsEnabled: webuiProvider.enabled };
+    })
+    .filter(webuiProvider => !!webuiProvider);
+
+  const existingIds = new Set(cleanWebuiProviders.map(provider => provider.ID));
+  const newProviders = providersData.filter(provider => !existingIds.has(provider.ID));
+
+  return {
+    providers: providersData,
+    webuiProviders: [...cleanWebuiProviders, ...newProviders],
+  };
+};
 
 const HashingAndReleaseSettings = () => {
   const dispatch = useDispatch();
@@ -42,48 +64,29 @@ const HashingAndReleaseSettings = () => {
 
   const [showHashTypesModal, setShowHashTypesModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<HashProviderInfoType | undefined>();
-  const [hashingSettings, setHashingSettings] = useState<HashingSummaryType>({ ParallelMode: false });
-  const [releaseComparisonPreferences, setReleaseComparisonPreferences] = useState<ReleaseComparisonPreferencesType>(
+  const [hashingSettings, setHashingSettings] = useSyncedState<HashingSummaryType | undefined, HashingSummaryType>(
+    hashingSummaryQuery.data,
+    data => data ?? DEFAULT_HASHING_SETTINGS,
+  );
+  const [releaseComparisonPreferences, setReleaseComparisonPreferences] = useSyncedState(
     settings.ReleaseComparisonPreferences,
   );
 
   const newWebuiProviderOrder = webuiProviders
     .map(provider => ({ id: provider.ID, enabled: provider.IsEnabled }));
 
-  const initializeSettings = useCallback(() => {
-    if (
-      !releaseProvidersQuery.data || !hashingProvidersQuery.data || !hashingSummaryQuery.data
-    ) return;
-
-    setHashingSettings(hashingSummaryQuery.data);
-    setReleaseComparisonPreferences(settings.ReleaseComparisonPreferences);
-
-    const cleanWebuiProviders = settings.WebUI_Settings.releaseInfoProviders
-      .map((webuiProvider) => {
-        const foundProvider = releaseProvidersQuery.data.find(provider => provider.ID === webuiProvider.id);
-        if (!foundProvider) return undefined;
-        return { ...foundProvider, IsEnabled: webuiProvider.enabled };
-      })
-      .filter(webuiProvider => !!webuiProvider);
-
-    const existingIds = new Set(cleanWebuiProviders.map(provider => provider.ID));
-    const newProviders = releaseProvidersQuery.data.filter(provider => !existingIds.has(provider.ID));
-
-    dispatch(setProviders({
-      providers: releaseProvidersQuery.data,
-      webuiProviders: [...cleanWebuiProviders, ...newProviders],
-    }));
-  }, [
-    dispatch,
-    hashingProvidersQuery.data,
-    hashingSummaryQuery.data,
-    releaseProvidersQuery.data,
-    settings,
-  ]);
-
   useEffect(() => {
-    initializeSettings();
-  }, [initializeSettings]);
+    if (!releaseProvidersQuery.data) return;
+    dispatch(setProviders(buildProviderState(settings, releaseProvidersQuery.data)));
+  }, [dispatch, releaseProvidersQuery.data, settings]);
+
+  const handleCancel = () => {
+    if (hashingSummaryQuery.data) setHashingSettings(hashingSummaryQuery.data);
+    setReleaseComparisonPreferences(settings.ReleaseComparisonPreferences);
+    if (releaseProvidersQuery.data) {
+      dispatch(setProviders(buildProviderState(settings, releaseProvidersQuery.data)));
+    }
+  };
 
   useEffect(() => () => {
     dispatch(clearReleaseSettings());
@@ -247,7 +250,7 @@ const HashingAndReleaseSettings = () => {
 
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button
-          onClick={initializeSettings}
+          onClick={handleCancel}
           buttonType="secondary"
           buttonSize="normal"
           disabled={!unsavedChanges}

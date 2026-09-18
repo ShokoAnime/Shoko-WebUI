@@ -19,9 +19,18 @@ const PortalAwareItem = (props: Props) => {
 
   const child: ReactNode = (
     <div
+      // Attaching these refs/props during render is the documented contract of
+      // @hello-pangea/dnd's DraggableProvided — the library requires it to measure items.
+      // oxlint-disable-next-line react/refs -- ref/props come from @hello-pangea/dnd's DraggableProvided
       ref={provided.innerRef}
-      {...(provided.draggableProps)}
-      {...(provided.dragHandleProps)}
+      {
+        // oxlint-disable-next-line react/refs -- ref/props come from @hello-pangea/dnd's DraggableProvided
+        ...(provided.draggableProps)
+      }
+      {
+        // oxlint-disable-next-line react/refs -- ref/props come from @hello-pangea/dnd's DraggableProvided
+        ...(provided.dragHandleProps)
+      }
       className="group"
     >
       {children}

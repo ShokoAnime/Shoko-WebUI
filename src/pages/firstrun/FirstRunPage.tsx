@@ -12,6 +12,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
+import useSyncedState from '@/hooks/useSyncedState';
 
 const MenuItem = ({ id, text }: { text: string, id: string }) => {
   const { pathname } = useLocation();
@@ -59,11 +60,9 @@ const FirstRunPage = () => {
     isPersistent,
   ]);
 
-  const [newSettings, setNewSettings] = useState(settings);
-
-  useEffect(() => {
-    setNewSettings(settings);
-  }, [settings]);
+  // Draft re-syncs to the server value when the settings query refetches (initial load and after
+  // each save), while preserving in-progress edits between saves.
+  const [newSettings, setNewSettings] = useSyncedState(settings);
 
   const updateSetting = (type: string, key: string, value: string) => {
     const tempSettings: Record<string, string | string[] | boolean> = {

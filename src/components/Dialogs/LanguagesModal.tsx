@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -10,6 +9,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { addNoLanguageOption } from '@/core/react-query/settings/helpers';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery, useSupportedLanguagesQuery } from '@/core/react-query/settings/queries';
+import useSyncedState from '@/hooks/useSyncedState';
 
 import type { SettingsType } from '@/core/types/api/settings';
 
@@ -42,7 +42,10 @@ const LanguagesModal = ({ onClose, type }: Props) => {
   const LanguagePreference = getLanguagePreference(type, settings);
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const [languages, setLanguages] = useState([] as string[]);
+  const [languages, setLanguages] = useSyncedState<string[] | null, string[]>(
+    type !== null ? LanguagePreference : null,
+    source => source ?? [],
+  );
 
   const handleSave = () => {
     if (type === 'Image') {
@@ -75,10 +78,6 @@ const LanguagesModal = ({ onClose, type }: Props) => {
       onSuccess: onClose,
     });
   };
-
-  useEffect(() => {
-    if (type !== null) setLanguages(LanguagePreference);
-  }, [type, LanguagePreference]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked: value, id } = event.target;

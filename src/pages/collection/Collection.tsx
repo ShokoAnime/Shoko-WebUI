@@ -19,7 +19,7 @@ import {
   useFilteredGroupsInfiniteQuery,
 } from '@/core/react-query/filter/queries';
 import { useGroupQuery } from '@/core/react-query/group/queries';
-import { resetQueries } from '@/core/react-query/queryClient';
+import queryClient, { resetQueries } from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
@@ -33,6 +33,7 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { CreateOrUpdateFilterType, FilterCondition, SortingCriteria } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
+import type { SettingsServerType } from '@/core/types/api/settings';
 
 const getFilter = (
   query: string,
@@ -156,7 +157,6 @@ const Collection = () => {
   const viewSetting = settings.WebUI_Settings.collection.view;
   const { showRandomPoster } = settings.WebUI_Settings.collection.image;
 
-  const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, toggleFilterSidebar, setShowFilterSidebar] = useToggle();
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
@@ -178,10 +178,6 @@ const Collection = () => {
   }, [filterId, setShowFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
-
-  useEffect(() => {
-    setMode(viewSetting);
-  }, [viewSetting]);
 
   const groupsQuery = useFilteredGroupsInfiniteQuery(
     {
@@ -235,6 +231,7 @@ const Collection = () => {
 
   useEffect(() => {
     if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
+    // oxlint-disable-next-line react/set-state-in-effect -- sync the timeline with the fetched single-series data
     setTimelineSeries(seriesQuery.data);
   }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
@@ -250,9 +247,7 @@ const Collection = () => {
   const toggleMode = () => {
     if (isFetching) return;
 
-    const newMode = mode === 'list' ? 'poster' : 'list';
-    // Optimistically update view mode to reduce lag without waiting for settings refetch.
-    setMode(newMode);
+    const newMode = viewSetting === 'list' ? 'poster' : 'list';
     if (newMode === 'list') {
       // If we invalidate instead of resetting, if we had 5 pages loaded in poster view, it will again load 5 pages
       // after invalidation even if we are at the top of the page
@@ -260,6 +255,13 @@ const Collection = () => {
     }
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
+    // Optimistically write the new settings to the cache so the view mode switches immediately,
+    // without waiting for the patch + refetch round trip. The cache holds the raw server shape,
+    // so WebUI_Settings must be re-stringified.
+    queryClient.setQueryData<SettingsServerType>(['settings'], {
+      ...newSettings,
+      WebUI_Settings: JSON.stringify(newSettings.WebUI_Settings),
+    });
     patchSettings(newSettings);
   };
 
@@ -269,7 +271,7 @@ const Collection = () => {
       <div className="flex grow flex-col gap-y-6">
         <div className="sticky -top-6 z-10 flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
           <CollectionTitle
-            // oxlint-disable-next-line no-nested-ternary
+            // oxlint-disable-next-line no-nested-ternary -- nested ternary resolves the count, showing -1 while fetching
             count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
             filterName={filterQuery?.data?.Name}
             groupName={groupQuery?.data?.Name}
@@ -281,7 +283,7 @@ const Collection = () => {
             groupSearch={groupSearch}
             isSeries={isSeries}
             item={item}
-            mode={mode}
+            mode={viewSetting}
             onEditFilter={handleEditFilter}
             seriesSearch={seriesSearch}
             setSearch={setSearch}
@@ -298,7 +300,7 @@ const Collection = () => {
             isSeries={isSeries}
             isSidebarOpen={showFilterSidebar}
             items={items}
-            mode={mode}
+            mode={viewSetting}
             total={total}
           />
           <div

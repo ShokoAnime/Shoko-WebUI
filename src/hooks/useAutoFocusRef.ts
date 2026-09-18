@@ -1,52 +1,42 @@
-import type { RefObject } from 'react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 type TimeoutType = ReturnType<typeof globalThis.setTimeout>;
 
+/**
+ * Returns a ref to attach to an `<input>`. When `autoFocus` is true, the input
+ * is focused — either when `autoFocus` flips to true, or on the render where the
+ * element is already mounted (e.g. a modal whose content renders asynchronously,
+ * where plain `autoFocus` on the element wouldn't work).
+ */
 const useAutoFocusRef = (autoFocus: boolean) => {
-  const elementRef = useRef<HTMLInputElement | null>(null) as RefObject<HTMLInputElement | null> & {
-    timeout?: TimeoutType;
-  };
-  const autoFocusRef = useRef(autoFocus);
+  const elementRef = useRef<HTMLInputElement | null>(null);
+  // Bookkeeping only — holds the id of the currently scheduled focus timer so
+  // overlapping requests can cancel the stale one. Not UI state, hence a ref.
+  const timeoutRef = useRef<TimeoutType | undefined>(undefined);
 
-  // Focus the element when auto-focus changes.
+  // Runs when `autoFocus` changes, and once on mount if it starts true.
   useEffect(() => {
-    autoFocusRef.current = autoFocus;
-    if (autoFocus && elementRef.current) {
-      const element = elementRef.current;
-      const timeout = setTimeout(() => {
-        if (elementRef.timeout !== timeout) return;
-        delete elementRef.timeout;
-        if (elementRef.current === element) {
-          element.focus();
-        }
-      }, 0);
-      if (elementRef.timeout) clearTimeout(elementRef.timeout);
-      elementRef.timeout = timeout;
-    }
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- elementRef is a stable ref object; adding it as a dep would cause incorrect re-runs
+    // Nothing to do unless autofocus is wanted and the element already exists.
+    if (!autoFocus || !elementRef.current) return;
+
+    const element = elementRef.current;
+    // Defer focus with setTimeout(0): the element needs to finish mounting and
+    // become focusable before .focus() actually takes effect.
+    const timeout = setTimeout(() => {
+      // Bail if this timer was superseded by a newer focus request.
+      if (timeoutRef.current !== timeout) return;
+      timeoutRef.current = undefined;
+      // Bail if the element was unmounted/replaced while we waited.
+      if (elementRef.current === element) {
+        element.focus();
+      }
+    }, 0);
+    // Only one pending focus request at a time — cancel any previous timer.
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = timeout;
   }, [autoFocus]);
 
-  // Focus the element when the ref is set.
-  return useMemo(() =>
-    new Proxy(elementRef, {
-      apply(_, __, argArray: [element: HTMLInputElement | null]) {
-        const [element] = argArray;
-        elementRef.current = element;
-        if (autoFocusRef.current && element) {
-          const timeout = setTimeout(() => {
-            if (elementRef.timeout !== timeout) return;
-            delete elementRef.timeout;
-            if (elementRef.current === element) {
-              element.focus();
-            }
-          }, 0);
-          if (elementRef.timeout) clearTimeout(elementRef.timeout);
-          elementRef.timeout = timeout;
-        }
-      },
-      // oxlint-disable-next-line react-hooks/exhaustive-deps -- elementRef and autoFocusRef are stable refs; the proxy must be created only once
-    }), []) as unknown as RefObject<HTMLInputElement | null>;
+  return elementRef;
 };
 
 export default useAutoFocusRef;

@@ -37,10 +37,6 @@ const AniDbRulesModal = ({
   useEffect(() => {
     if (!show) return undefined;
 
-    setAnswer('');
-    setDontShowAgain(false);
-    setSecondsRemaining(ANIDB_RULES_DELAY_SECONDS);
-
     const interval = setInterval(() => {
       setSecondsRemaining((currentSeconds) => {
         if (currentSeconds <= 1) {
@@ -53,7 +49,7 @@ const AniDbRulesModal = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [challenge, show]);
+  }, [show]);
 
   const isAnswerCorrect = answer.trim().toLowerCase() === challenge.answer;
   const canProceed = secondsRemaining === 0 && isAnswerCorrect;
@@ -82,6 +78,11 @@ const AniDbRulesModal = ({
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      onAfterOpen={() => {
+        setAnswer('');
+        setDontShowAgain(false);
+        setSecondsRemaining(ANIDB_RULES_DELAY_SECONDS);
+      }}
       header="AniDB Rules Confirmation"
       size="sm"
       overlayClassName="!z-[90]"
