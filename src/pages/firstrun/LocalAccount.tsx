@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { SubmitEvent } from 'react';
 
 import Input from '@/components/Input/Input';
@@ -7,12 +6,11 @@ import { useSetDefaultUserMutation } from '@/core/react-query/init/mutations';
 import { useDefaultUserQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved, setUser as setUserState } from '@/core/slices/firstrun';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useSyncedState from '@/hooks/useSyncedState';
 
 import Footer from './Footer';
-
-import type { TestStatusType } from '@/core/slices/firstrun';
 
 const DEFAULT_USER = { Username: 'Default', Password: '' };
 
@@ -23,20 +21,19 @@ const LocalAccount = () => {
   const { isPending: createUserPending, mutate: createUser } = useSetDefaultUserMutation();
   const defaultUserQuery = useDefaultUserQuery();
   const [user, setUser] = useSyncedState(defaultUserQuery.data ?? DEFAULT_USER);
-  const [userStatus, setUserStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const handleSave = (event?: SubmitEvent) => {
     if (event) event.preventDefault();
     createUser(user, {
       onSuccess: () => {
-        setUserStatus({ type: 'success', text: 'Account Creation Successful!' });
+        toast.success('Account Creation Successful!');
         dispatch(setUserState(user));
         dispatch(setFirstRunSaved('local-account'));
         navigate('../anidb-account');
       },
       onError: (error) => {
         console.error(error);
-        setUserStatus({ type: 'error', text: error.message });
+        toast.error(error.message);
       },
     });
   };
@@ -77,7 +74,6 @@ const LocalAccount = () => {
           nextDisabled={user.Username === ''}
           saveFunction={handleSave}
           isFetching={createUserPending}
-          status={userStatus}
         />
       </TransitionDiv>
     </>

@@ -4,7 +4,6 @@ import type { SettingsContextType } from '@/core/types/context';
 
 type ContextType = SettingsContextType & {
   fetching: boolean;
-  updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
   saveSettings: () => Promise<void>;
 };
 

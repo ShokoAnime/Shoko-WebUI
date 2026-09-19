@@ -46,14 +46,26 @@ export type MyListDeleteType =
 
 export type MyListStorageState = 'Unknown' | 'HDD' | 'Disk' | 'Deleted' | 'Remote';
 
-export type SettingsAnidbMylistType = {
-  MyList_AddFiles: boolean;
-  MyList_DeleteType: MyListDeleteType;
-  MyList_ReadUnwatched: boolean;
-  MyList_ReadWatched: boolean;
-  MyList_SetUnwatched: boolean;
-  MyList_SetWatched: boolean;
-  MyList_StorageState: MyListStorageState;
+export type MyListWatchedEpisodeMode = 'Ignore' | 'AttachToOldest' | 'CreateGeneric';
+
+export type MyListWatchedSyncMode = 'Ignore' | 'TrustLocal' | 'TrustRemote';
+
+export type SettingsAnidbMyListType = {
+  AddFiles: boolean;
+  SyncTargets: number;
+  WatchedEpisodeMode: MyListWatchedEpisodeMode;
+  ReadWatched: boolean;
+  ReadUnwatched: boolean;
+  SetWatched: boolean;
+  SetUnwatched: boolean;
+  StorageState: MyListStorageState;
+  UpdateStates: boolean;
+  WatchedSyncMode: MyListWatchedSyncMode;
+  DeleteType: MyListDeleteType;
+  UseGenericFileIndex: boolean;
+  RetainedBackupCount: number;
+  UpdateFrequency: SettingsUpdateFrequencyType;
+  FetchMode: number;
 };
 
 // Never = 1, HoursSix = 2, HoursTwelve = 3, Daily = 4, WeekOne = 5, MonthOne = 6
@@ -62,7 +74,6 @@ export type SettingsUpdateFrequencyType = 1 | 2 | 3 | 4 | 5 | 6;
 export type SettingsAnidbUpdateType = {
   Calendar_UpdateFrequency: SettingsUpdateFrequencyType;
   Anime_UpdateFrequency: SettingsUpdateFrequencyType;
-  MyList_UpdateFrequency: SettingsUpdateFrequencyType;
   File_UpdateFrequency: SettingsUpdateFrequencyType;
   Notification_UpdateFrequency: SettingsUpdateFrequencyType;
   Notification_HandleMovedFiles: boolean;
@@ -400,8 +411,8 @@ export type SettingsServerType = {
     & SettingsAnidbLoginType
     & SettingsAnidbType
     & SettingsAnidbDownloadType
-    & SettingsAnidbMylistType
-    & SettingsAnidbUpdateType;
+    & SettingsAnidbUpdateType
+    & { MyList: SettingsAnidbMyListType };
   TMDB: SettingsTMDBType;
   Language: SettingsLanguageType;
   Plex: SettingsPlexType;

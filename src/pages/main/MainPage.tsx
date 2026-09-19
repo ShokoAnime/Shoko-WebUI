@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router';
-import { Slide, ToastContainer } from 'react-toastify';
 import { Tooltip } from 'react-tooltip';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import TopNav from '@/components/Layout/TopNav';
+import ToastContainer from '@/components/ToastContainer';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useDispatch } from '@/core/store';
@@ -38,14 +38,7 @@ const MainPage = () => {
 
   return (
     <>
-      <ToastContainer
-        position={toastPosition}
-        autoClose={4000}
-        transition={Slide}
-        className="mt-36 w-118!"
-        closeButton={false}
-        icon={false}
-      />
+      <ToastContainer toastPosition={toastPosition} />
       <Tooltip
         id="tooltip"
         render={({ content }) => content}

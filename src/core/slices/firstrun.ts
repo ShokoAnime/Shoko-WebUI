@@ -3,11 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { UserType } from '@/core/types/api/init';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-export type TestStatusType = {
-  type: 'error' | 'success' | '';
-  text: string;
-};
-
 type State = {
   saved: Record<string, boolean>;
   user: UserType;
