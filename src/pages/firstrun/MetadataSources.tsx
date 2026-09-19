@@ -13,8 +13,6 @@ import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
 import TMDBTab from './MetadataSourcesTabs/TMDBTab';
 
-import type { TestStatusType } from '@/core/slices/firstrun';
-
 const TabButton = (
   { active, setActiveTab, tabKey, title }: {
     active: boolean;
@@ -40,14 +38,14 @@ const TabButton = (
   );
 };
 
-const TabContent = ({ setStatus, tab }: { setStatus: (status: TestStatusType) => void, tab: string }) => {
+const TabContent = ({ tab }: { tab: string }) => {
   switch (tab) {
     case 'anidb':
-      return <AniDBTab setStatus={setStatus} />;
+      return <AniDBTab />;
     case 'moviedb':
       return <TMDBTab />;
     default:
-      return <AniDBTab setStatus={setStatus} />;
+      return <AniDBTab />;
   }
 };
 
@@ -57,7 +55,6 @@ const MetadataSources = () => {
   const dispatch = useDispatch();
 
   const [activeTab, setActiveTab] = useState('anidb');
-  const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const handleSave = () => {
     saveSettings()
@@ -93,12 +90,11 @@ const MetadataSources = () => {
           />
         </div>
         <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
-          <TabContent setStatus={setStatus} tab={activeTab} />
+          <TabContent tab={activeTab} />
         </div>
         <Footer
           nextPage="start-server"
           saveFunction={handleSave}
-          status={status}
         />
       </TransitionDiv>
     </>

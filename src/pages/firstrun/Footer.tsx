@@ -1,10 +1,6 @@
-import cx from 'classnames';
-
 import Button from '@/components/Input/Button';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
-
-import type { TestStatusType } from '@/core/slices/firstrun';
 
 type Props = {
   nextPage?: string;
@@ -12,7 +8,6 @@ type Props = {
   nextDisabled?: boolean;
   isFetching?: boolean;
   finish?: boolean;
-  status?: TestStatusType;
   saveFunction?: () => void;
 };
 
@@ -37,46 +32,35 @@ const Footer = (props: Props) => {
     isFetching,
     nextDisabled,
     prevDisabled,
-    status,
   } = props;
 
   return (
-    <div className="flex flex-col text-lg">
-      <div
-        className={cx([
-          'mb-5 flex items-center',
-          status?.type === 'error' ? 'text-panel-text-danger' : 'text-panel-text-important',
-        ])}
-      >
-        {status?.text}
-      </div>
-      <div className="flex justify-between font-semibold">
-        <Button onClick={() => navigate(-1)} buttonType="primary" className="mr-6 w-1/2 py-2" disabled={prevDisabled}>
-          Back
-        </Button>
-        {finish
-          ? (
-            <Button
-              onClick={handleFinish}
-              buttonType="primary"
-              className="w-1/2 px-4 py-2"
-              disabled={nextDisabled}
-            >
-              Finish
-            </Button>
-          )
-          : (
-            <Button
-              onClick={() => handleNext()}
-              buttonType="primary"
-              className="w-1/2 px-4 py-2"
-              disabled={nextDisabled || isFetching}
-              loading={isFetching}
-            >
-              Next
-            </Button>
-          )}
-      </div>
+    <div className="flex justify-between text-lg font-semibold">
+      <Button onClick={() => navigate(-1)} buttonType="primary" className="w-1/2 py-2" disabled={prevDisabled}>
+        Back
+      </Button>
+      {finish
+        ? (
+          <Button
+            onClick={handleFinish}
+            buttonType="primary"
+            className="w-1/2 px-4 py-2"
+            disabled={nextDisabled}
+          >
+            Finish
+          </Button>
+        )
+        : (
+          <Button
+            onClick={() => handleNext()}
+            buttonType="primary"
+            className="w-1/2 px-4 py-2"
+            disabled={nextDisabled || isFetching}
+            loading={isFetching}
+          >
+            Next
+          </Button>
+        )}
     </div>
   );
 };

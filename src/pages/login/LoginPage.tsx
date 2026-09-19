@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { useSearchParams } from 'react-router';
-import { Slide, ToastContainer } from 'react-toastify';
-import { mdiAlertCircleOutline, mdiGithub, mdiHelpCircleOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
+import { mdiGithub, mdiHelpCircleOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { siDiscord } from 'simple-icons';
@@ -11,10 +10,12 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoIcon from '@/components/ShokoIcon';
+import ToastContainer from '@/components/ToastContainer';
 import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
+import toast from '@/core/toast';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const LoginPage = () => {
@@ -25,7 +26,6 @@ const LoginPage = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState(false);
   const [rememberUser, setRememberUser] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(500);
 
@@ -82,10 +82,9 @@ const LoginPage = () => {
       },
       {
         onSuccess: () => {
-          setLoginError(false);
           navigate(searchParams.get('redirectTo') ?? '/webui');
         },
-        onError: () => setLoginError(true),
+        onError: () => toast.error('Invalid Username or Password. Try again.'),
       },
     );
   };
@@ -102,23 +101,8 @@ const LoginPage = () => {
   return (
     <>
       <title>Login | Shoko</title>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={4000}
-        transition={Slide}
-        className="mt-20 w-118!"
-        closeButton={false}
-        icon={false}
-      />
+      <ToastContainer toastPosition="bottom-right" />
       <div className="relative flex h-screen w-screen flex-col items-center justify-center gap-y-2">
-        {loginError && (
-          <div className="flex w-full max-w-200 justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
-            <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
-            <div className="font-semibold text-panel-text-danger">
-              Invalid Username or Password. Try again.
-            </div>
-          </div>
-        )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
           <div className="flex w-200 flex-row items-center gap-x-6 p-6">
             <div className="flex w-80 flex-col items-center gap-y-6 py-6">

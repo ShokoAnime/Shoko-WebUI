@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { ChangeEvent, SubmitEvent } from 'react';
 
 import Input from '@/components/Input/Input';
@@ -6,12 +5,11 @@ import TransitionDiv from '@/components/TransitionDiv';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import { setSaved as setFirstRunSaved, unsetSaved as unsetFirstRunSaved } from '@/core/slices/firstrun';
 import { useDispatch } from '@/core/store';
+import toast from '@/core/toast';
 import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import Footer from './Footer';
-
-import type { TestStatusType } from '@/core/slices/firstrun';
 
 const AniDBAccount = () => {
   const {
@@ -24,14 +22,12 @@ const AniDBAccount = () => {
   const navigate = useNavigateVoid();
 
   const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
-  const [anidbStatus, setAnidbStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const { Password, Username } = newSettings.AniDb;
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     updateSetting('AniDb', id, value);
-    setAnidbStatus({ type: 'success', text: '' });
     dispatch(unsetFirstRunSaved('anidb-account'));
   };
 
@@ -39,7 +35,7 @@ const AniDBAccount = () => {
     if (event) event.preventDefault();
     testAniDbLogin({ Username, Password }, {
       onSuccess: () => {
-        setAnidbStatus({ type: 'success', text: 'AniDB Test Successful!' });
+        toast.success('AniDB Test Successful!');
         saveSettings()
           .then(() => {
             dispatch(setFirstRunSaved('anidb-account'));
@@ -49,7 +45,7 @@ const AniDBAccount = () => {
       },
       onError: (error) => {
         console.error(error);
-        setAnidbStatus({ type: 'error', text: 'Failed to log in!' });
+        toast.error('Failed to log in!');
       },
     });
   };
@@ -104,7 +100,6 @@ const AniDBAccount = () => {
           nextDisabled={!Username || !Password}
           saveFunction={handleTest}
           isFetching={isAnidbLoginPending}
-          status={anidbStatus}
         />
       </TransitionDiv>
     </>

@@ -17,15 +17,7 @@ import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
 import useSyncedState from '@/hooks/useSyncedState';
 
-import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
-
-type SettingValueType =
-  | string
-  | string[]
-  | number
-  | boolean
-  | PluginRenamerSettingsType
-  | undefined;
+import type { SettingValueType } from '@/core/types/context';
 
 const items = [
   { name: 'General', path: 'general' },
