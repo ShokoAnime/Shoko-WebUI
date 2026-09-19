@@ -261,6 +261,110 @@ export type SettingsTMDBType = {
   UserApiKey: string | null;
 };
 
+export type SettingsAnilistType = {
+  /**
+   * Automagically link AniDB anime to AniList anime.
+   *
+   * @default false
+   */
+  AutoLink: boolean;
+
+  /**
+   * Automagically link restricted AniDB anime to AniList anime.
+   * {@link AutoLink} also needs to be set for this setting to take
+   * effect.
+   *
+   * @default true
+   */
+  AutoLinkRestricted: boolean;
+
+  /**
+   * Consider existing links from other providers when auto-matching
+   * episodes.
+   *
+   * @default false
+   */
+  ConsiderExistingOtherLinks: boolean;
+
+  /**
+   * Automagically download staff for AniList anime.
+   *
+   * @default false
+   */
+  AutoDownloadStaff: boolean;
+
+  /**
+   * Automagically download characters for AniList anime.
+   *
+   * @default false
+   */
+  AutoDownloadCharacters: boolean;
+
+  /**
+   * Optional. Image CDN base URL to use instead of the default AniList CDN.
+   *
+   * @default null
+   */
+  ImageCdnUrl: string | null;
+
+  /**
+   * Automagically download posters for AniList anime.
+   *
+   * @default true
+   */
+  AutoDownloadPosters: boolean;
+
+  /**
+   * Automagically download banners for AniList anime.
+   *
+   * @default true
+   */
+  AutoDownloadBanners: boolean;
+
+  /**
+   * Automagically download studios for AniList anime.
+   *
+   * @default false
+   */
+  AutoDownloadStudios: boolean;
+
+  /**
+   * The number of candidates to consider during an auto-search.
+   *
+   * @default 5
+   */
+  AutoSearchCandidateCount: number;
+
+  /**
+   * Purge unlinked AniList anime after the given number of days. Set to 0 to
+   * disable.
+   *
+   * @default 14
+   */
+  AutoPurgeUnlinkedAfterDays: number;
+
+  /**
+   * AniList request rate limit.
+   */
+  RateLimit: SettingsAnilistRateLimitType;
+};
+
+export type SettingsAnilistRateLimitType = {
+  /**
+   * Maximum number of requests per window. Range 1-90.
+   *
+   * @default 1
+   */
+  MaxRequestsPerWindow: number;
+
+  /**
+   * Window duration in milliseconds. Range 1000-120000.
+   *
+   * @default 4000
+   */
+  WindowDurationMs: number;
+};
+
 export type SettingsLanguageType = {
   /**
    * Use synonyms when selecting the preferred language from AniDB.
@@ -403,6 +507,7 @@ export type SettingsServerType = {
     & SettingsAnidbMylistType
     & SettingsAnidbUpdateType;
   TMDB: SettingsTMDBType;
+  Anilist: SettingsAnilistType;
   Language: SettingsLanguageType;
   Plex: SettingsPlexType;
   Logging: SettingsLoggingType;
@@ -445,6 +550,9 @@ export type WebUISettingsType = {
       useThumbnailFallback: boolean;
     };
     tmdb: {
+      includeRestricted: boolean;
+    };
+    anilist: {
       includeRestricted: boolean;
     };
     anidb: {

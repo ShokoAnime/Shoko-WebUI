@@ -15,4 +15,4 @@ export type RandomImageMetadataResultType = {
   };
 };
 
-export type ImageTabType = 'Posters' | 'Backdrops' | 'Logos';
+export type ImageTabType = 'Posters' | 'Backdrops' | 'Banners' | 'Logos';

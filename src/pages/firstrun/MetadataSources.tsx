@@ -11,6 +11,7 @@ import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
+import AnilistTab from './MetadataSourcesTabs/AnilistTab';
 import TMDBTab from './MetadataSourcesTabs/TMDBTab';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
@@ -46,6 +47,8 @@ const TabContent = ({ setStatus, tab }: { setStatus: (status: TestStatusType) =>
       return <AniDBTab setStatus={setStatus} />;
     case 'moviedb':
       return <TMDBTab />;
+    case 'anilist':
+      return <AnilistTab />;
     default:
       return <AniDBTab setStatus={setStatus} />;
   }
@@ -90,6 +93,13 @@ const MetadataSources = () => {
             setActiveTab={setActiveTab}
             tabKey="moviedb"
             title="TMDB"
+          />
+          |
+          <TabButton
+            active={activeTab === 'anilist'}
+            setActiveTab={setActiveTab}
+            tabKey="anilist"
+            title="AniList"
           />
         </div>
         <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
