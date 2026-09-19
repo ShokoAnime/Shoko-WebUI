@@ -107,7 +107,7 @@ const SettingsPage = () => {
     }
 
     const tempSettings: Record<string, SettingValueType> = {
-      ...(newSettings[type] as Record<string, string | string[] | boolean>),
+      ...(newSettings[type] as Record<string, SettingValueType>),
       [key]: value,
     };
     setNewSettings({ ...newSettings, [type]: tempSettings });

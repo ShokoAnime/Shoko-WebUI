@@ -63,6 +63,8 @@ const AniDBSettings = (props: Props) => {
     StorageState,
   } = MyList;
 
+  // Convention: every control's DOM id must match its settings key (e.g. id="AddFiles"
+  // -> AniDb.MyList.AddFiles); do not rename ids for styling/a11y without updating the key.
   const handleInputChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
     const value = event.target.type === 'checkbox' && 'checked' in event.target
       ? event.target.checked

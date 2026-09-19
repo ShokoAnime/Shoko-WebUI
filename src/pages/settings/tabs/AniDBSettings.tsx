@@ -52,40 +52,40 @@ const AniDBSettings = () => {
           <div className="flex justify-between">
             Username
             <InputSmall
-              id="username"
+              id="Username"
               value={Username}
               type="text"
-              onChange={event => updateSetting('AniDb', 'Username', event.target.value)}
+              onChange={event => updateSetting('AniDb', event.target.id, event.target.value)}
               className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
             Password
             <InputSmall
-              id="password"
+              id="Password"
               value={Password}
               type="password"
-              onChange={event => updateSetting('AniDb', 'Password', event.target.value)}
+              onChange={event => updateSetting('AniDb', event.target.id, event.target.value)}
               className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
             AVDump Key
             <InputSmall
-              id="avdump-key"
+              id="AVDumpKey"
               value={AVDumpKey ?? ''}
               type="password"
-              onChange={event => updateSetting('AniDb', 'AVDumpKey', event.target.value)}
+              onChange={event => updateSetting('AniDb', event.target.id, event.target.value)}
               className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
             HTTP Server URL
             <InputSmall
-              id="http-server-url"
+              id="HTTPServerUrl"
               value={HTTPServerUrl}
               type="text"
-              onChange={event => updateSetting('AniDb', 'HTTPServerUrl', event.target.value)}
+              onChange={event => updateSetting('AniDb', event.target.id, event.target.value)}
               className="w-60 px-3 py-1"
             />
           </div>

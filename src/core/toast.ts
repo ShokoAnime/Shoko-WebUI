@@ -12,7 +12,8 @@ import type { SettingsServerType, WebUISettingsType } from '@/core/types/api/set
 const showToast = (isSystemToast?: boolean) => {
   if (isSystemToast) return true;
 
-  const settings = queryClient.getQueryData<SettingsServerType>(['settings'])!;
+  const settings = queryClient.getQueryData<SettingsServerType>(['settings']);
+  if (!settings) return true;
 
   try {
     const webuiSettings = JSON.parse(settings.WebUI_Settings) as WebUISettingsType;
