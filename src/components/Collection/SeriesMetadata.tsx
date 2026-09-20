@@ -3,6 +3,8 @@ import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCir
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
+import { getAnilistAnimeLink } from '@/core/anilistUtils';
+import { useDeleteAnilistLinkMutation } from '@/core/react-query/anilist/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteTmdbLinkMutation } from '@/core/react-query/tmdb/mutations';
 import { getAnidbAnimeLink } from '@/core/util';
@@ -11,19 +13,22 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 type Props = {
   id?: number;
   seriesId: number;
-  site: 'AniDB' | 'TMDB';
+  site: 'AniDB' | 'AniList' | 'TMDB';
   type?: 'Movie' | 'Show';
 };
 
 const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Movie');
+  const { mutate: deleteAnilistLink } = useDeleteAnilistLinkMutation(seriesId);
 
   const siteLink = useMemo(() => {
     if (!id) return '#';
     switch (site) {
       case 'AniDB':
         return getAnidbAnimeLink(id);
+      case 'AniList':
+        return getAnilistAnimeLink(id);
       case 'TMDB':
         return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
       default:
@@ -31,16 +36,25 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
     }
   }, [id, site, type]);
 
-  const canAddLink = useMemo(() => site === 'TMDB', [site]);
-  const canEditLink = useMemo(() => site === 'TMDB', [site]);
-  const canRemoveLink = useMemo(() => site === 'TMDB', [site]);
+  const canAddLink = useMemo(() => site === 'TMDB' || site === 'AniList', [site]);
+  const canEditLink = useMemo(() => site === 'TMDB' || site === 'AniList', [site]);
+  const canRemoveLink = useMemo(() => site === 'TMDB' || site === 'AniList', [site]);
 
   const addLink = () => {
+    if (site === 'AniList') {
+      navigate('../anilist-linking');
+      return;
+    }
     navigate('../tmdb-linking');
   };
 
   const editLink = () => {
-    if (!id || !type) return;
+    if (!id) return;
+    if (site === 'AniList') {
+      navigate(`../anilist-linking?id=${id}`);
+      return;
+    }
+    if (!type) return;
     navigate(`../tmdb-linking?type=${type}&id=${id}`);
   };
 
@@ -49,6 +63,11 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
     switch (site) {
       case 'TMDB':
         deleteTmdbLink({ ID: id }, {
+          onSuccess: () => invalidateQueries(['series', seriesId]),
+        });
+        break;
+      case 'AniList':
+        deleteAnilistLink({ ID: id }, {
           onSuccess: () => invalidateQueries(['series', seriesId]),
         });
         break;
@@ -77,7 +96,8 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
             : (
               <>
                 {site === 'TMDB' && 'Add TMDB Link'}
-                {site !== 'TMDB' && 'Series Not Linked'}
+                {site === 'AniList' && 'Add AniList Link'}
+                {site === 'AniDB' && 'Series Not Linked'}
               </>
             )}
         </div>

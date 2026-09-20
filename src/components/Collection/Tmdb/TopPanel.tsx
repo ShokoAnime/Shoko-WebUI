@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { mdiLinkPlus } from '@mdi/js';
+import { mdiLinkPlus, mdiRestore } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { countBy, filter, flatMap } from 'lodash';
@@ -10,19 +10,24 @@ import ItemCount from '@/components/Utilities/ItemCount';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { MatchRatingValues } from '@/core/types/api/episode';
-import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
+
+type RatedXrefType = {
+  Rating: MatchRatingValues;
+};
 
 type Props = {
   createInProgress: boolean;
   disableCreateLink: boolean;
   handleCreateLink: () => void;
+  handleResetLinks?: () => void;
   seriesId: number;
-  xrefs?: Record<string, TmdbEpisodeXrefType[]>;
+  xrefs?: Record<string, RatedXrefType[]>;
   xrefsCount?: number;
 };
 
 const TopPanel = (props: Props) => {
-  const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
+  const { createInProgress, disableCreateLink, handleCreateLink, handleResetLinks, seriesId, xrefs, xrefsCount } =
+    props;
   const navigate = useNavigateVoid();
 
   const flatXrefs = useMemo(
@@ -58,14 +63,16 @@ const TopPanel = (props: Props) => {
           <span>|</span>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
-              {(matchRatingCounts.DateAndTitleMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)}
+              {(matchRatingCounts.DateAndTitleMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)
+                + (matchRatingCounts.DateAndNumberMatches ?? 0)}
             </div>
             Perfect
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
               {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
-                + (matchRatingCounts.TitleKindaMatches ?? 0) + (matchRatingCounts.DateKindaMatches ?? 0)}
+                + (matchRatingCounts.TitleKindaMatches ?? 0) + (matchRatingCounts.DateKindaMatches ?? 0)
+                + (matchRatingCounts.DateOffsetMatches ?? 0)}
             </div>
             Approximate
           </div>
@@ -82,6 +89,19 @@ const TopPanel = (props: Props) => {
             Override
           </div>
         </div>
+        {handleResetLinks && (
+          <Button
+            buttonType="secondary"
+            buttonSize="normal"
+            className="flex flex-row flex-wrap items-center gap-x-2 py-3"
+            onClick={handleResetLinks}
+            disabled={createInProgress}
+            tooltip="Remove all existing episode links and re-run the automatic matching"
+          >
+            <Icon path={mdiRestore} size={1} />
+            Reset Links
+          </Button>
+        )}
         <Button
           buttonType="secondary"
           buttonSize="normal"

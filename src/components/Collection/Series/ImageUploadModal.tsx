@@ -19,6 +19,7 @@ import type { ImageTabType } from '@/core/types/api/image';
 const tabLabelMap: Record<ImageTabType, { label: string, serverType: ImageEntityValues }> = {
   Posters: { label: 'Poster', serverType: 'Primary' },
   Backdrops: { label: 'Backdrop', serverType: 'Backdrop' },
+  Banners: { label: 'Banner', serverType: 'Banner' },
   Logos: { label: 'Logo', serverType: 'Logo' },
 };
 

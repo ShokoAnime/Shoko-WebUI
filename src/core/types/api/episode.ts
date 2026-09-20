@@ -59,10 +59,12 @@ export type AniDBEpisodeType = {
 };
 
 export type MatchRatingValues =
+  | 'DateAndNumberMatches'
   | 'DateAndTitleKindaMatches'
   | 'DateAndTitleMatches'
   | 'DateKindaMatches'
   | 'DateMatches'
+  | 'DateOffsetMatches'
   | 'FirstAvailable'
   | 'None'
   | 'TitleKindaMatches'
