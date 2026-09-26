@@ -126,6 +126,7 @@ const ImagesTab = ({ groupId }: Props) => {
                   )}
                   linkToImage
                   zoomOnHover
+                  overlayOnHover
                 >
                   {poster.Preferred && (
                     <div
