@@ -20,7 +20,6 @@ import {
   useUnsetSeriesPreferredImageMutation,
 } from '@/core/react-query/series/mutations';
 import { useSeriesImagesInfiniteQuery } from '@/core/react-query/series/queries';
-import toast from '@/core/toast';
 import { pxPerRem } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -97,10 +96,8 @@ const SeriesImages = () => {
   const handleDeleteImage = async () => {
     if (!selectedImage) return;
     await deleteImage(selectedImage.UID, {
-      onSuccess: () => toast.success(`${imageLabel} deleted.`),
-      onError: () => toast.error(`Failed to delete ${imageLabel.toLowerCase()}.`),
+      onSuccess: () => setSelectedImage(null),
     });
-    setSelectedImage(null);
   };
 
   const handleTabChange = (newType: ImageTabType) => {

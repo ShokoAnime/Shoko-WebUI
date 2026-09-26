@@ -11,7 +11,6 @@ import Button from '@/components/Input/Button';
 import { useSetGroupDefaultImageMutation, useUnsetGroupDefaultImageMutation } from '@/core/react-query/group/mutations';
 import { useGroupImagesQuery } from '@/core/react-query/group/queries';
 import { useDeleteImageMutation } from '@/core/react-query/image-management/mutations';
-import toast from '@/core/toast';
 
 import type { ImageType } from '@/core/types/api/common';
 
@@ -47,13 +46,9 @@ const ImagesTab = ({ groupId }: Props) => {
 
   const handleDeleteConfirm = async () => {
     if (!selectedImage) return;
-    try {
-      await deleteImage(selectedImage.UID);
-      toast.success('Poster deleted.');
-    } catch (error) {
-      console.error(error);
-    }
-    setSelectedImage(null);
+    await deleteImage(selectedImage.UID, {
+      onSuccess: () => setSelectedImage(null),
+    });
   };
 
   return (
