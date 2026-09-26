@@ -39,19 +39,9 @@ const ImagesTab = ({ groupId }: Props) => {
   const handleTogglePreferredImage = () => {
     if (!selectedImage) return;
     if (selectedImage.Preferred) {
-      unsetPreferred(undefined, {
-        onSuccess: () => {
-          toast.success('Preferred poster has been unset.');
-          setSelectedImage(null);
-        },
-      });
+      unsetPreferred(undefined, { onSuccess: () => setSelectedImage(null) });
     } else {
-      setPreferred(selectedImage.UID, {
-        onSuccess: () => {
-          toast.success('Preferred poster has been set.');
-          setSelectedImage(null);
-        },
-      });
+      setPreferred(selectedImage.UID, { onSuccess: () => setSelectedImage(null) });
     }
   };
 

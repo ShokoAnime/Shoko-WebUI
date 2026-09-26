@@ -88,21 +88,9 @@ const SeriesImages = () => {
   const handleTogglePreferredImage = () => {
     if (!selectedImage) return;
     if (selectedImage.Preferred) {
-      unsetPreferred(undefined, {
-        onSuccess: () => {
-          toast.success(`Preferred ${imageLabel} has been unset.`);
-          setSelectedImage(null);
-        },
-        onError: () => toast.error(`Failed to unset preferred ${imageLabel}.`),
-      });
+      unsetPreferred(undefined, { onSuccess: () => setSelectedImage(null) });
     } else {
-      setPreferred(selectedImage.UID, {
-        onSuccess: () => {
-          toast.success(`Preferred ${imageLabel} has been set.`);
-          setSelectedImage(null);
-        },
-        onError: () => toast.error(`Failed to set preferred ${imageLabel}.`),
-      });
+      setPreferred(selectedImage.UID, { onSuccess: () => setSelectedImage(null) });
     }
   };
 

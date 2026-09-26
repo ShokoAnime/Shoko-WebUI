@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import { imageEntityLabels } from '@/core/react-query/image-management/helpers';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
 
@@ -92,17 +93,29 @@ export const useUploadGroupImageMutation = () =>
       formData.append('file', file);
       return axios.post(`Group/${groupId}/Images/${imageType}/Upload`, formData);
     },
-    onSuccess: (_, { groupId }) => groupImageInvalidations(groupId),
+    onSuccess: (_, { groupId, imageType }) => {
+      toast.success(`${imageEntityLabels[imageType]} uploaded successfully!`);
+      groupImageInvalidations(groupId);
+    },
+    onError: (_, { imageType }) => toast.error(`Failed to upload ${imageEntityLabels[imageType].toLowerCase()}`),
   });
 
 export const useSetGroupDefaultImageMutation = (groupId: number) =>
   useMutation({
     mutationFn: (imageUID: string) => axios.put(`Group/${groupId}/Images/Primary/Default`, { ID: imageUID }),
-    onSuccess: () => groupImageInvalidations(groupId),
+    onSuccess: () => {
+      toast.success(`Preferred ${imageEntityLabels.Primary} has been set.`);
+      groupImageInvalidations(groupId);
+    },
+    onError: () => toast.error(`Failed to set preferred ${imageEntityLabels.Primary}.`),
   });
 
 export const useUnsetGroupDefaultImageMutation = (groupId: number) =>
   useMutation({
     mutationFn: () => axios.delete(`Group/${groupId}/Images/Primary/Default`),
-    onSuccess: () => groupImageInvalidations(groupId),
+    onSuccess: () => {
+      toast.success(`Preferred ${imageEntityLabels.Primary} has been unset.`);
+      groupImageInvalidations(groupId);
+    },
+    onError: () => toast.error(`Failed to unset preferred ${imageEntityLabels.Primary}.`),
   });

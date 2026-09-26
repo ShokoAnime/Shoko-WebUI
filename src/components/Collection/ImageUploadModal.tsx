@@ -65,18 +65,10 @@ const ImageUploadModal = ({ id, imageType, onClose, show, type }: ImageUploadMod
   const handleUpload = () => {
     if (!file || isPending) return;
 
-    const callbacks = {
-      onSuccess: () => {
-        toast.success(`${imageLabel} uploaded successfully!`);
-        onClose();
-      },
-      onError: () => toast.error(`Failed to upload ${imageLabel.toLowerCase()}`),
-    };
-
     if (type === 'series') {
-      uploadSeriesImage({ file, imageType: serverType, seriesId: id }, callbacks);
+      uploadSeriesImage({ file, imageType: serverType, seriesId: id }, { onSuccess: onClose });
     } else {
-      uploadGroupImage({ file, imageType: serverType, groupId: id }, callbacks);
+      uploadGroupImage({ file, imageType: serverType, groupId: id }, { onSuccess: onClose });
     }
   };
 
