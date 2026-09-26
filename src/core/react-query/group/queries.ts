@@ -47,7 +47,7 @@ export const useGroupSeriesQuery = (groupId: number, enabled = true) =>
 // Convert to an infinite query (see `useSeriesImagesInfiniteQuery`) if the list grows large enough to need virtualization.
 export const useGroupImagesQuery = (groupId: number, enabled = true) =>
   useQuery<ListResultType<ImageType>, unknown, ImageType[]>({
-    queryKey: ['group', groupId, 'images', 'Primary'],
+    queryKey: ['group', groupId, 'images'],
     queryFn: () => axios.get(`Group/${groupId}/Images/Primary`, { params: { pageSize: 0 } }),
     select: transformListResultSimplified,
     enabled: enabled && groupId !== -1,
