@@ -74,7 +74,7 @@ const ImageUploadModal = ({ id, imageType, onClose, show, type }: ImageUploadMod
 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
-  useHotkeys('escape', onClose, { scopes: 'modal' });
+  useHotkeys('escape', () => !isPending && onClose(), { scopes: 'modal' });
   useHotkeys('enter', handleUpload, { scopes: 'modal' });
 
   return (

@@ -32,7 +32,7 @@ const ConfirmationPromptModal = ({
   const [isConfirmPending, setIsConfirmPending] = useState(false);
 
   const handleConfirm = () => {
-    if (!show) return;
+    if (!show || isConfirmPending) return;
     setIsConfirmPending(true);
     Promise.resolve()
       .then(() => onConfirm())
@@ -44,13 +44,13 @@ const ConfirmationPromptModal = ({
   };
 
   useToggleModalKeybinds(show, 'nested-modal');
-  useHotkeys('escape', onClose, { scopes: 'nested-modal' });
+  useHotkeys('escape', () => !isConfirmPending && onClose(), { scopes: 'nested-modal' });
   useHotkeys('enter', handleConfirm, { scopes: 'nested-modal' });
 
   return (
     <ModalPanel
       show={show}
-      onRequestClose={onClose}
+      onRequestClose={isConfirmPending ? undefined : onClose}
       size="sm"
       header={<div className="text-xl font-semibold">{title}</div>}
     >
@@ -58,7 +58,7 @@ const ConfirmationPromptModal = ({
         {children}
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2" disabled={isConfirmPending}>
           {cancelText}
         </Button>
         <Button
