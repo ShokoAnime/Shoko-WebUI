@@ -9,7 +9,7 @@ import { capitalize, debounce } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import ImageUploadModal from '@/components/Collection/Series/ImageUploadModal';
+import ImageUploadModal from '@/components/Collection/ImageUploadModal';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
@@ -297,7 +297,8 @@ const SeriesImages = () => {
       <ImageUploadModal
         show={showUploadModal}
         onClose={toggleUploadModal}
-        seriesId={series.IDs.ID}
+        id={series.IDs.ID}
+        type="series"
         imageType={tabType}
       />
       <ConfirmationPromptModal

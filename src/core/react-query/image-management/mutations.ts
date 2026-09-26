@@ -8,5 +8,7 @@ export const useDeleteImageMutation = () =>
     mutationFn: (imageID: string) => axios.delete(`Image/Management/${imageID}`),
     onSuccess: () => {
       invalidateQueries(['series']);
+      invalidateQueries(['group']);
+      invalidateQueries(['filter', 'preview']);
     },
   });

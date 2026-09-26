@@ -4,7 +4,11 @@ import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
 
-import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/react-query/group/types';
+import type {
+  MoveSeriesGroupRequestType,
+  PatchGroupRequestType,
+  UploadGroupImageRequestType,
+} from '@/core/react-query/group/types';
 import type { SeriesType } from '@/core/types/api/series';
 
 // TODO: FIX INVALIDATIONS
@@ -73,4 +77,32 @@ export const useRelocateGroupFilesMutation = (groupId: number) =>
       );
     },
     onSuccess: () => toast.success('Group files renamed/moved!'),
+  });
+
+const groupImageInvalidations = (groupId: number) => {
+  invalidateQueries(['group', groupId, 'images']);
+  invalidateQueries(['group', groupId]);
+  invalidateQueries(['filter', 'preview']);
+};
+
+export const useUploadGroupImageMutation = () =>
+  useMutation({
+    mutationFn: async ({ file, groupId, imageType }: UploadGroupImageRequestType) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      return axios.post(`Group/${groupId}/Images/${imageType}/Upload`, formData);
+    },
+    onSuccess: (_, { groupId }) => groupImageInvalidations(groupId),
+  });
+
+export const useSetGroupDefaultImageMutation = (groupId: number) =>
+  useMutation({
+    mutationFn: (imageUID: string) => axios.put(`Group/${groupId}/Images/Primary/Default`, { ID: imageUID }),
+    onSuccess: () => groupImageInvalidations(groupId),
+  });
+
+export const useUnsetGroupDefaultImageMutation = (groupId: number) =>
+  useMutation({
+    mutationFn: () => axios.delete(`Group/${groupId}/Images/Primary/Default`),
+    onSuccess: () => groupImageInvalidations(groupId),
   });
