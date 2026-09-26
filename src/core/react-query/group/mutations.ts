@@ -80,12 +80,6 @@ export const useRelocateGroupFilesMutation = (groupId: number) =>
     onSuccess: () => toast.success('Group files renamed/moved!'),
   });
 
-const groupImageInvalidations = (groupId: number) => {
-  invalidateQueries(['group', groupId, 'images']);
-  invalidateQueries(['group', groupId]);
-  invalidateQueries(['filter', 'preview']);
-};
-
 export const useUploadGroupImageMutation = () =>
   useMutation({
     mutationFn: async ({ file, groupId, imageType }: UploadGroupImageRequestType) => {
@@ -95,7 +89,8 @@ export const useUploadGroupImageMutation = () =>
     },
     onSuccess: (_, { groupId, imageType }) => {
       toast.success(`${imageEntityLabels[imageType]} uploaded successfully!`);
-      groupImageInvalidations(groupId);
+      invalidateQueries(['group', groupId]);
+      invalidateQueries(['filter', 'preview']);
     },
     onError: (_, { imageType }) => toast.error(`Failed to upload ${imageEntityLabels[imageType].toLowerCase()}`),
   });
@@ -105,7 +100,8 @@ export const useSetGroupDefaultImageMutation = (groupId: number) =>
     mutationFn: (imageUID: string) => axios.put(`Group/${groupId}/Images/Primary/Default`, { ID: imageUID }),
     onSuccess: () => {
       toast.success(`Preferred ${imageEntityLabels.Primary} has been set.`);
-      groupImageInvalidations(groupId);
+      invalidateQueries(['group', groupId]);
+      invalidateQueries(['filter', 'preview']);
     },
     onError: () => toast.error(`Failed to set preferred ${imageEntityLabels.Primary}.`),
   });
@@ -115,7 +111,8 @@ export const useUnsetGroupDefaultImageMutation = (groupId: number) =>
     mutationFn: () => axios.delete(`Group/${groupId}/Images/Primary/Default`),
     onSuccess: () => {
       toast.success(`Preferred ${imageEntityLabels.Primary} has been unset.`);
-      groupImageInvalidations(groupId);
+      invalidateQueries(['group', groupId]);
+      invalidateQueries(['filter', 'preview']);
     },
     onError: () => toast.error(`Failed to unset preferred ${imageEntityLabels.Primary}.`),
   });
