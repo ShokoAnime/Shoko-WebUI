@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.145",
+      "minServerVersion": "6.0.0-dev.479",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.145/Shoko-WebUI-v2.6.0-dev.145.zip",
+      "checksum": "sha256:165ceea175f5dee7e90addcd7b4d4ad26caade6ec14f5fbb16140722ccd68f9a",
+      "commit": "a9b923015ed9c3a2457129d826182b8fd689a3b9",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.479** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.479** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(groups): add poster management (upload, preferred, delete) by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1474\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.143...v2.6.0-dev.145\n"
+    },
+    {
       "version": "2.6.0-dev.143",
       "minServerVersion": "6.0.0-dev.479",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.143/Shoko-WebUI-v2.6.0-dev.143.zip",
