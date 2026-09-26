@@ -1,4 +1,5 @@
 import type { PaginationType } from '@/core/types/api';
+import type { ImageEntityValues } from '@/core/types/api/common';
 import type { Operation } from 'fast-json-patch';
 
 export type GroupsInfiniteRequestType = {
@@ -16,5 +17,11 @@ export type PatchGroupRequestType = {
 
 export type MoveSeriesGroupRequestType = {
   seriesId: number;
+  groupId: number;
+};
+
+export type UploadGroupImageRequestType = {
+  file: File;
+  imageType: ImageEntityValues;
   groupId: number;
 };

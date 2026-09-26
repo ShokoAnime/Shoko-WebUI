@@ -9,6 +9,7 @@ import prettyBytes from 'pretty-bytes';
 import Button from '@/components/Input/Button';
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { useUploadGroupImageMutation } from '@/core/react-query/group/mutations';
 import { useUploadSeriesImageMutation } from '@/core/react-query/series/mutations';
 import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
@@ -25,17 +26,20 @@ const tabLabelMap: Record<ImageTabType, { label: string, serverType: ImageEntity
 type ImageUploadModalProps = {
   show: boolean;
   onClose: () => void;
-  seriesId: number;
+  id: number;
+  type: 'series' | 'group';
   imageType: ImageTabType;
 };
 
-const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadModalProps) => {
+const ImageUploadModal = ({ id, imageType, onClose, show, type }: ImageUploadModalProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const { label: imageLabel, serverType } = tabLabelMap[imageType];
-  const { isPending, mutate: uploadImage } = useUploadSeriesImageMutation();
+  const { isPending: isSeriesPending, mutate: uploadSeriesImage } = useUploadSeriesImageMutation();
+  const { isPending: isGroupPending, mutate: uploadGroupImage } = useUploadGroupImageMutation();
+  const isPending = isSeriesPending || isGroupPending;
 
   const selectFile = (selectedFile?: File) => {
     if (!selectedFile) return;
@@ -60,21 +64,17 @@ const ImageUploadModal = ({ imageType, onClose, seriesId, show }: ImageUploadMod
 
   const handleUpload = () => {
     if (!file || isPending) return;
-    uploadImage(
-      { seriesId, imageType: serverType, file },
-      {
-        onSuccess: () => {
-          toast.success(`${imageLabel} uploaded successfully!`);
-          onClose();
-        },
-        onError: () => toast.error(`Failed to upload ${imageLabel.toLowerCase()}`),
-      },
-    );
+
+    if (type === 'series') {
+      uploadSeriesImage({ file, imageType: serverType, seriesId: id }, { onSuccess: onClose });
+    } else {
+      uploadGroupImage({ file, imageType: serverType, groupId: id }, { onSuccess: onClose });
+    }
   };
 
   useToggleModalKeybinds(show, 'modal');
   useToggleModalKeybinds(!show, 'primary');
-  useHotkeys('escape', onClose, { scopes: 'modal' });
+  useHotkeys('escape', () => !isPending && onClose(), { scopes: 'modal' });
   useHotkeys('enter', handleUpload, { scopes: 'modal' });
 
   return (

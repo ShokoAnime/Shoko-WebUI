@@ -3,6 +3,7 @@ import cx from 'classnames';
 import { map } from 'lodash';
 
 import FileActionsTab from '@/components/Collection/Group/EditGroupTabs/FileActionsTab';
+import ImagesTab from '@/components/Collection/Group/EditGroupTabs/ImagesTab';
 import NameTab from '@/components/Collection/Group/EditGroupTabs/NameTab';
 import SeriesTab from '@/components/Collection/Group/EditGroupTabs/SeriesTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -12,6 +13,7 @@ import { useDispatch, useSelector } from '@/core/store';
 const tabs = {
   name: 'Name',
   series: 'Series',
+  images: 'Images',
   file_actions: 'File Actions',
 };
 
@@ -23,6 +25,8 @@ const renderTab = (activeTab: string, groupId: number) => {
   switch (activeTab) {
     case 'series':
       return <SeriesTab groupId={groupId} />;
+    case 'images':
+      return <ImagesTab groupId={groupId} />;
     case 'file_actions':
       return <FileActionsTab groupId={groupId} />;
     case 'name':
@@ -46,8 +50,15 @@ const EditGroupModal = () => {
   const [activeTab, setActiveTab] = useState<keyof typeof tabs>('name');
 
   return (
-    <ModalPanel show={groupId !== -1} onRequestClose={onClose} header="Edit Group" size="md" noPadding noGap>
-      <div className="flex h-104 flex-row gap-x-6 p-6">
+    <ModalPanel
+      show={groupId !== -1}
+      onRequestClose={onClose}
+      header="Edit Group"
+      size="lg"
+      noPadding
+      noGap
+    >
+      <div className="flex h-136 flex-row gap-x-6 p-6">
         <div className="flex shrink-0 gap-y-6 font-semibold">
           <div className="flex flex-col gap-y-1">
             {map(tabs, (value: string, key: keyof typeof tabs) => (

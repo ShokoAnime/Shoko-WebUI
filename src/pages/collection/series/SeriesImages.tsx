@@ -9,7 +9,7 @@ import { capitalize, debounce } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import ImageUploadModal from '@/components/Collection/Series/ImageUploadModal';
+import ImageUploadModal from '@/components/Collection/ImageUploadModal';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
@@ -20,7 +20,6 @@ import {
   useUnsetSeriesPreferredImageMutation,
 } from '@/core/react-query/series/mutations';
 import { useSeriesImagesInfiniteQuery } from '@/core/react-query/series/queries';
-import toast from '@/core/toast';
 import { pxPerRem } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -88,31 +87,17 @@ const SeriesImages = () => {
   const handleTogglePreferredImage = () => {
     if (!selectedImage) return;
     if (selectedImage.Preferred) {
-      unsetPreferred(undefined, {
-        onSuccess: () => {
-          toast.success(`Preferred ${imageLabel} has been unset.`);
-          setSelectedImage(null);
-        },
-        onError: () => toast.error(`Failed to unset preferred ${imageLabel}.`),
-      });
+      unsetPreferred(undefined, { onSuccess: () => setSelectedImage(null) });
     } else {
-      setPreferred(selectedImage.UID, {
-        onSuccess: () => {
-          toast.success(`Preferred ${imageLabel} has been set.`);
-          setSelectedImage(null);
-        },
-        onError: () => toast.error(`Failed to set preferred ${imageLabel}.`),
-      });
+      setPreferred(selectedImage.UID, { onSuccess: () => setSelectedImage(null) });
     }
   };
 
   const handleDeleteImage = async () => {
     if (!selectedImage) return;
     await deleteImage(selectedImage.UID, {
-      onSuccess: () => toast.success(`${imageLabel} deleted.`),
-      onError: () => toast.error(`Failed to delete ${imageLabel.toLowerCase()}.`),
+      onSuccess: () => setSelectedImage(null),
     });
-    setSelectedImage(null);
   };
 
   const handleTabChange = (newType: ImageTabType) => {
@@ -297,7 +282,8 @@ const SeriesImages = () => {
       <ImageUploadModal
         show={showUploadModal}
         onClose={toggleUploadModal}
-        seriesId={series.IDs.ID}
+        id={series.IDs.ID}
+        type="series"
         imageType={tabType}
       />
       <ConfirmationPromptModal

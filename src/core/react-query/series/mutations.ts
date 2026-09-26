@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import { imageEntityLabels } from '@/core/react-query/image-management/helpers';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
 
@@ -134,23 +135,29 @@ export const useUploadSeriesImageMutation = () =>
       formData.append('file', file);
       return axios.post(`Series/${seriesId}/Images/${imageType}/Upload`, formData);
     },
-    onSuccess: (_, { seriesId }) => {
+    onSuccess: (_, { imageType, seriesId }) => {
+      toast.success(`${imageEntityLabels[imageType]} uploaded successfully!`);
       invalidateQueries(['series', seriesId, 'images']);
     },
+    onError: (_, { imageType }) => toast.error(`Failed to upload ${imageEntityLabels[imageType].toLowerCase()}`),
   });
 
 export const useSetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityValues) =>
   useMutation({
     mutationFn: (ID: string) => axios.put(`Series/${seriesId}/Images/${imageType}/Default`, { ID }),
     onSuccess: () => {
+      toast.success(`Preferred ${imageEntityLabels[imageType]} has been set.`);
       invalidateQueries(['series', seriesId]);
     },
+    onError: () => toast.error(`Failed to set preferred ${imageEntityLabels[imageType]}.`),
   });
 
 export const useUnsetSeriesPreferredImageMutation = (seriesId: number, imageType: ImageEntityValues) =>
   useMutation({
     mutationFn: () => axios.delete(`Series/${seriesId}/Images/${imageType}/Default`),
     onSuccess: () => {
+      toast.success(`Preferred ${imageEntityLabels[imageType]} has been unset.`);
       invalidateQueries(['series', seriesId]);
     },
+    onError: () => toast.error(`Failed to unset preferred ${imageEntityLabels[imageType]}.`),
   });
