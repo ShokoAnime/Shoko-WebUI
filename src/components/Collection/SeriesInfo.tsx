@@ -6,7 +6,7 @@ import { toNumber } from 'lodash';
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter } from '@/core/slices/collection';
 import { useDispatch } from '@/core/store';
-import { convertTimeSpanToMs, dayjs } from '@/core/util';
+import { convertTimeSpanToMs, dayjs, formatDate, getPartialDateEnd } from '@/core/util';
 import { startQuickFilter } from '@/core/utilities/filter';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -26,26 +26,21 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   // Series Data;
   const seriesOverviewQuery = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
   const overview = seriesOverviewQuery?.data ?? {} as WebuiSeriesDetailsType;
-  const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
-  const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
+  const startDate = series.AniDB?.AirDate ?? null;
+  const endDate = series.AniDB?.EndDate ?? null;
   const airDate = useMemo(() => {
-    if (!startDate) {
-      return 'Unknown';
-    }
-    if (endDate) {
-      if (startDate.format('MMM DD, YYYY') === endDate.format('MMM DD, YYYY')) {
-        return startDate.format('MMM DD, YYYY');
-      }
-      return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
-    }
-    return `${startDate.format('MMM DD, YYYY')} - Ongoing`;
+    if (!startDate) return 'Unknown';
+    const start = formatDate(startDate);
+    if (!endDate) return `${start} - Ongoing`;
+    const end = formatDate(endDate);
+    return start === end ? start : `${start} - ${end}`;
   }, [startDate, endDate]);
 
   const status = useMemo(() => {
     if (!startDate) {
       return 'Unknown';
     }
-    if (!endDate || endDate.isAfter(dayjs())) {
+    if (!endDate || getPartialDateEnd(endDate).isAfter(dayjs())) {
       return 'Currently Airing';
     }
     return 'Finished';
