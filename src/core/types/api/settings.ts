@@ -64,18 +64,10 @@ export type SettingsAnidbMyListType = {
   DeleteType: MyListDeleteType;
   UseGenericFileIndex: boolean;
   RetainedBackupCount: number;
-  UpdateFrequency: SettingsUpdateFrequencyType;
   FetchMode: number;
 };
 
-// Never = 1, HoursSix = 2, HoursTwelve = 3, Daily = 4, WeekOne = 5, MonthOne = 6
-export type SettingsUpdateFrequencyType = 1 | 2 | 3 | 4 | 5 | 6;
-
 export type SettingsAnidbUpdateType = {
-  Calendar_UpdateFrequency: SettingsUpdateFrequencyType;
-  Anime_UpdateFrequency: SettingsUpdateFrequencyType;
-  File_UpdateFrequency: SettingsUpdateFrequencyType;
-  Notification_UpdateFrequency: SettingsUpdateFrequencyType;
   Notification_HandleMovedFiles: boolean;
 };
 
@@ -339,7 +331,6 @@ export type SettingsLoggingType = {
 
 export type SettingsImportType = {
   AutomaticallyDeleteDuplicatesOnImport: boolean;
-  RunOnStart: boolean;
   UseExistingFileWatchedStatus: boolean;
   VideoExtensions: string[];
 };
@@ -389,7 +380,6 @@ export type PluginRenamerSettingsType = {
 export type PluginUpdatesSettingsType = {
   IsAutoSyncEnabled: boolean;
   IsAutoUpgradeEnabled: boolean;
-  AutoUpdateFrequency: SettingsUpdateFrequencyType;
   // .NET TimeSpan string, e.g. "12:00:00" or "30.00:00:00".
   DefaultRepositoryStaleTime: string;
   // .NET TimeSpan string, e.g. "12:00:00" or "30.00:00:00".
