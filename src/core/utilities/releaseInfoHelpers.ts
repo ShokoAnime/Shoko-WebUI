@@ -70,6 +70,7 @@ const createLinksFromFiles = (files: FileType[], providers: ManualLinkProviderTy
       FileSize: file.Size,
       Hashes: file.Hashes,
       IsCorrupted: false,
+      IsDeprecated: false,
       Released: file.MediaInfo?.Encoded?.slice(0, 10) ?? file.Created?.slice(0, 10),
       Created: now,
       Updated: now,
