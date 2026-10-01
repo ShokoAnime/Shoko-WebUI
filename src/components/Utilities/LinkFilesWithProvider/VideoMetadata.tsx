@@ -76,6 +76,11 @@ const VideoMetadata = ({ link }: { link: ManualLinkType }) => {
         </div>
 
         <div>
+          Deprecated:&nbsp;
+          {link.release.IsDeprecated ? 'Yes' : 'No'}
+        </div>
+
+        <div>
           Source:&nbsp;
           {parseReleaseSource(link.release.Source)}
         </div>
