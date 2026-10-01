@@ -6,13 +6,11 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import UpdateFrequencyValues from '@/components/Settings/UpdateFrequencyValues';
-import { useVersionQuery } from '@/core/react-query/init/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { convertMsToTimeSpan, convertTimeSpanToMs, dayjs } from '@/core/util';
 
-import type { PluginUpdatesSettingsType, SettingsUpdateFrequencyType } from '@/core/types/api/settings';
+import type { PluginUpdatesSettingsType } from '@/core/types/api/settings';
 
 type Props = {
   onClose: () => void;
@@ -21,17 +19,13 @@ type Props = {
 
 const PluginUpdateSettingsModal = ({ onClose, show }: Props) => {
   const settings = useSettingsQuery().data;
-  const versionQuery = useVersionQuery();
   const { isPending: isSavePending, mutate: patchSettings } = usePatchSettingsMutation();
-
-  const isDevChannel = versionQuery.data?.Server.ReleaseChannel !== 'Stable';
 
   const [updatesSettings, setUpdatesSettings] = useState(settings.Plugins.Updates);
 
   const unsavedChanges = !isEqual(settings.Plugins.Updates, updatesSettings);
 
   const {
-    AutoUpdateFrequency,
     InactivePluginVersionRetention,
     IsAutoSyncEnabled,
     IsAutoUpgradeEnabled,
@@ -83,29 +77,6 @@ const PluginUpdateSettingsModal = ({ onClose, show }: Props) => {
       }
     >
       <div className="flex flex-col gap-y-6">
-        {isDevChannel && (
-          <>
-            <div className="flex flex-col gap-y-1">
-              <div className="flex items-center justify-between">
-                <span>Update Frequency</span>
-                <SelectSmall
-                  id="auto-update-frequency"
-                  value={AutoUpdateFrequency}
-                  onChange={event =>
-                    updateUpdatesSetting(
-                      'AutoUpdateFrequency',
-                      toNumber(event.target.value) as SettingsUpdateFrequencyType,
-                    )}
-                >
-                  <UpdateFrequencyValues min24Hours />
-                </SelectSmall>
-              </div>
-            </div>
-
-            <div className="border-b border-panel-border" />
-          </>
-        )}
-
         <div className="flex items-center font-semibold">Plugin Updates</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
