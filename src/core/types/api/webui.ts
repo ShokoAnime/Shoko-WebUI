@@ -41,6 +41,7 @@ export type WebuiSeriesFileSummaryGroupType = {
   FileSource?: string;
   FileLocation?: string;
   FileIsDeprecated?: boolean;
+  FileIsCorrupted?: boolean;
   ManagedFolder?: number;
   VideoCodecs?: string;
   VideoBitDepth?: number;

@@ -48,6 +48,7 @@ export type ReleaseInfoType = {
   IsCreditless?: boolean;
   IsChaptered?: boolean;
   IsCorrupted: boolean;
+  IsDeprecated?: boolean;
   Source: ReleaseSourceValues;
   Group?: ReleaseGroupType;
   Hashes?: FileHashDigestType[];
