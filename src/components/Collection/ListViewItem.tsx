@@ -19,7 +19,7 @@ import TagButton from '@/components/Collection/TagButton';
 import Button from '@/components/Input/Button';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { dayjs, formatThousand } from '@/core/util';
+import { dayjs, formatPartialDate, formatThousand, getPartialDateEnd } from '@/core/util';
 import useEditGroupCallback from '@/hooks/collection/useEditGroupCallback';
 import useEditSeriesCallback from '@/hooks/collection/useEditSeriesCallback';
 import useRouteLink from '@/hooks/collection/useRouteLink';
@@ -65,29 +65,27 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
     if (isSeries) {
       const anidbSeries = (item as SeriesType).AniDB;
       const tmdbSeries = (item as SeriesType).TMDB;
-      const tempEndDate = dayjs(anidbSeries?.EndDate);
       return [
-        dayjs(anidbSeries?.AirDate),
+        anidbSeries?.AirDate ?? null,
         item.Description,
         tmdbSeries?.Shows[0]?.Overview ?? tmdbSeries?.Movies[0]?.Overview ?? '',
-        tempEndDate,
+        anidbSeries?.EndDate ?? null,
         0,
-        anidbSeries?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
+        anidbSeries?.EndDate ? getPartialDateEnd(anidbSeries.EndDate).isAfter(dayjs()) : true,
       ];
     }
 
     const group = item as CollectionGroupType;
     const tempCount = reduce(group.Sizes.SeriesTypes, (count, value) => count + value, 0);
-    const tempEndDate = dayjs(groupExtras?.EndDate);
     return [
-      dayjs(groupExtras?.AirDate),
+      groupExtras?.AirDate ?? null,
       group.Description,
       undefined,
-      tempEndDate,
+      groupExtras?.EndDate ?? null,
       tempCount,
-      groupExtras?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
+      groupExtras?.EndDate ? getPartialDateEnd(groupExtras.EndDate).isAfter(dayjs()) : true,
     ];
-  }, [isSeries, item, groupExtras?.AirDate, groupExtras?.EndDate]);
+  }, [isSeries, item, groupExtras]);
 
   const tags = useMemo(
     () => {
@@ -161,11 +159,11 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
                   <div className="flex items-center gap-x-2 align-middle">
                     <Icon path={mdiCalendarMonthOutline} size={1} />
                     <span className="text-sm font-semibold">
-                      {airDate.format('MMMM Do, YYYY')}
-                      {!airDate.isSame(endDate) && (
+                      {airDate ? formatPartialDate(airDate, 'MMMM Do, YYYY') : 'Unknown'}
+                      {airDate !== endDate && (
                         <>
                           &nbsp;-&nbsp;
-                          {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
+                          {endDate ? formatPartialDate(endDate, 'MMMM Do, YYYY') : 'Current'}
                         </>
                       )}
                     </span>
