@@ -86,6 +86,33 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
  */
 export const convertMsToTimeSpan = (milliseconds: number) => dayjs.duration(milliseconds).format('D.HH:mm:ss');
 
+/**
+ * To get the precision of a partial AniDB date, which may only be known to the
+ * year ("YYYY") or the month ("YYYY-MM") instead of the day ("YYYY-MM-DD").
+ */
+const getPartialDateUnit = (date: string) => {
+  if (date.length <= 4) return 'year';
+  if (date.length <= 7) return 'month';
+  return 'day';
+};
+
+/**
+ * To format a date to the precision it carries: a year ("YYYY") or a month
+ * ("YYYY-MM") as only that, and a full date or timestamp with the day format.
+ */
+export const formatDate = (date: string, dayFormat = 'MMM DD, YYYY') => {
+  const unit = getPartialDateUnit(date);
+  if (unit === 'year') return dayjs(date).format('YYYY');
+  if (unit === 'month') return dayjs(date).format('MMM YYYY');
+  return dayjs(date).format(dayFormat);
+};
+
+/**
+ * To get the last moment a partial AniDB date in the "YYYY", "YYYY-MM" or
+ * "YYYY-MM-DD" format can stand for, eg. the end of the year for a year-only date.
+ */
+export const getPartialDateEnd = (date: string) => dayjs(date).endOf(getPartialDateUnit(date));
+
 export const padNumber = (num: number | string, size = 2) => num.toString().padStart(size, '0');
 
 export const processError = (axiosError: AxiosError) => {

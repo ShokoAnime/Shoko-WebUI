@@ -13,7 +13,7 @@ import EpisodeWatchModal from '@/components/Collection/Episode/EpisodeWatchModal
 import Button from '@/components/Input/Button';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
-import { dayjs } from '@/core/util';
+import { dayjs, getPartialDateEnd } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
@@ -115,18 +115,9 @@ const SeriesEpisodes = () => {
     [series.Sizes],
   );
 
-  const startDate = useMemo(
-    () => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null),
-    [series],
-  );
-  const endDate = useMemo(
-    () => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null),
-    [series],
-  );
-  const hasUnairedEpisodes = useMemo(
-    () => (!!startDate && (endDate === null || endDate.isAfter(dayjs()))),
-    [startDate, endDate],
-  );
+  const startDate = series.AniDB?.AirDate ?? null;
+  const endDate = series.AniDB?.EndDate ?? null;
+  const hasUnairedEpisodes = !!startDate && (endDate === null || getPartialDateEnd(endDate).isAfter(dayjs()));
 
   const { scrollRef } = useOutletContext<SeriesContextType>();
 
