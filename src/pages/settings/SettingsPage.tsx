@@ -27,6 +27,7 @@ const items = [
   { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
+  { name: 'Scheduled Actions', path: 'scheduled-actions' },
   { name: 'Plugin Management', path: 'plugin-management' },
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
@@ -73,7 +74,7 @@ const SettingsPage = () => {
       || pathname.includes('settings/plugin-management')
       || pathname.includes('settings/plugin/')
     ) return true;
-    return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
+    return ['user-management', 'api-keys', 'hashing-release', 'dynamic', 'scheduled-actions'].includes(path);
   }, [pathname]);
 
   const isPluginConfigPage = pathname.includes('settings/plugin/config/');
