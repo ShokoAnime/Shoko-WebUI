@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 
 import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
 import NotToggle from '@/components/Collection/Filter/NotToggle';
+import PairCriteriaModal from '@/components/Collection/Filter/PairCriteriaModal';
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
 
 import type { FilterExpression, LeafNode } from '@/core/types/api/filter';
@@ -37,8 +38,13 @@ type ModalProps = {
   type: ModalType;
 };
 
-const CriteriaModal = ({ catalogEntry, node, onClose, onRemove, show, type }: ModalProps) => (
-  type === 'multivalue'
+const CriteriaModal = ({ catalogEntry, node, onClose, onRemove, show, type }: ModalProps) => {
+  if (node.value.kind === 'multiPair') {
+    return (
+      <PairCriteriaModal catalogEntry={catalogEntry} node={node} show={show} onClose={onClose} onRemove={onRemove} />
+    );
+  }
+  return type === 'multivalue'
     ? (
       <MultiValueCriteriaModal
         catalogEntry={catalogEntry}
@@ -56,8 +62,8 @@ const CriteriaModal = ({ catalogEntry, node, onClose, onRemove, show, type }: Mo
         onClose={onClose}
         onRemove={onRemove}
       />
-    )
-);
+    );
+};
 
 const Criteria = (
   { catalogEntry, node, onRemove, onToggleNegate, parameterExists, transformedParameter, type }: Props,

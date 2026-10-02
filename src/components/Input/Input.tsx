@@ -30,6 +30,7 @@ type Props = {
   endIcons?: EndIcon[];
   startIcon?: string;
   inline?: boolean;
+  list?: string;
 };
 
 type TooltipAttributes = {
@@ -49,6 +50,7 @@ const Input = (props: Props) => {
     inline,
     inputClassName,
     label,
+    list,
     onChange,
     onKeyDown,
     onKeyUp,
@@ -91,6 +93,7 @@ const Input = (props: Props) => {
               startIcon && 'pl-11!',
             ])}
             id={id}
+            list={list}
             type={type}
             placeholder={placeholder ?? ''}
             value={value}

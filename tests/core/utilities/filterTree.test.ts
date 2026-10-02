@@ -2,12 +2,18 @@ import { describe, expect, it } from 'vitest';
 
 import {
   buildFilterTree,
+  closePairDraft,
   createEmptyGroupNode,
   createLeafNode,
+  editPairInDraft,
   findGroupById,
   findNodeById,
+  findStalePairs,
   generateNodeId,
+  getPairEditor,
+  getPairPickerOptions,
   getWidgetKind,
+  openPairDraft,
   parseFilterTree,
   removeNodeById,
 } from '@/core/utilities/filterTree';
@@ -75,7 +81,7 @@ const MULTI_OTHER = makeEntry('HasResolution', {
   Parameter: 'String',
   PossibleParameters: ['2160p', '1080p', '720p', '480p'],
 });
-// InSeason is the ONLY multiPair expression the server exposes.
+// InSeason sends pairs only; HasSourceGenre/HasSourceTag send pairs next to their plain lists.
 const PAIR = makeEntry('InSeason', {
   Parameter: 'Number',
   PossibleParameterPairs: [['2010', 'Winter'], ['2023', 'Fall']],
@@ -1161,5 +1167,128 @@ describe('removeNodeById', () => {
     removeNodeById(rootGroup, unsupportedNode.id);
     expect(rootGroup.children.length).toBe(1);
     expect(rootGroup.children[0].kind).toBe('leaf');
+  });
+});
+
+describe('two-parameter conditions', () => {
+  // Current servers send the sources, every name and the real [source, name] pairs.
+  const SOURCE_GENRE = makeEntry('HasSourceGenre', {
+    Parameter: 'String',
+    PossibleParameterPairs: [['AniDB', 'Action'], ['TMDB', 'Action: Live']],
+    PossibleParameters: ['AniDB', 'TMDB'],
+    PossibleSecondParameters: ['Action', 'Action: Live'],
+    SecondParameter: 'String',
+  });
+  // Older servers send the sources and names but no pairs.
+  const SOURCE_GENRE_OLD = makeEntry('HasSourceGenre', {
+    Parameter: 'String',
+    PossibleParameters: ['AniDB', 'TMDB'],
+    PossibleSecondParameters: ['Action'],
+    SecondParameter: 'String',
+  });
+  // Some send no possible values at all.
+  const CHARACTER = makeEntry('HasCharacterWithAppearance', { Parameter: 'String', SecondParameter: 'String' });
+
+  it('picks from the pairs, not the plain lists, when pairs come', () => {
+    expect(getWidgetKind(SOURCE_GENRE)).toBe('multiPair');
+    expect(getPairEditor(SOURCE_GENRE)).toEqual({
+      kind: 'picker',
+      pairs: [['AniDB', 'Action'], ['TMDB', 'Action: Live']],
+    });
+  });
+
+  it('leaves InSeason, which sends pairs only, a picker', () => {
+    expect(getWidgetKind(PAIR)).toBe('multiPair');
+    expect(getPairEditor(PAIR).kind).toBe('picker');
+  });
+
+  it('types both values when no pairs come, suggesting the names sent', () => {
+    expect(getWidgetKind(SOURCE_GENRE_OLD)).toBe('multiPair');
+    expect(getPairEditor(SOURCE_GENRE_OLD)).toEqual({
+      kind: 'typed',
+      firstOptions: ['AniDB', 'TMDB'],
+      secondSuggestions: ['Action'],
+    });
+  });
+
+  it('types both values as free text when nothing comes', () => {
+    expect(getWidgetKind(CHARACTER)).toBe('multiPair');
+    expect(createLeafNode(CHARACTER).value).toEqual({ kind: 'multiPair', match: 'Or', values: [] });
+    expect(getPairEditor(CHARACTER)).toEqual({ kind: 'typed', firstOptions: undefined, secondSuggestions: [] });
+  });
+
+  it('round-trips saved two-parameter conditions with and without pairs', () => {
+    const condition = orCond(
+      exprPair('HasSourceGenre', 'TMDB', 'Action: Live'),
+      exprPair('HasSourceGenre', 'AniDB', 'Action'),
+    );
+    const values = [['TMDB', 'Action: Live'], ['AniDB', 'Action']];
+    for (const catalog of [[SOURCE_GENRE], [SOURCE_GENRE_OLD]]) {
+      const tree = parseFilterTree(condition, catalog);
+      expect(stripIds(tree!.children[0])).toEqual({
+        expression: 'HasSourceGenre',
+        kind: 'leaf',
+        negate: false,
+        value: { kind: 'multiPair', match: 'Or', values },
+      });
+      expect(buildFilterTree(tree)).toEqual(condition);
+    }
+
+    const character = exprPair('HasCharacterWithAppearance', '123', 'Main');
+    expect(buildFilterTree(parseFilterTree(character, [CHARACTER]))).toEqual(character);
+  });
+
+  it('opens a pair saved without its second value with the first filled in', () => {
+    const tree = parseFilterTree(expr('HasSourceGenre', 'AniDB'), [SOURCE_GENRE_OLD]);
+    const leafNode = tree!.children[0] as LeafNode;
+    expect(leafNode.value).toEqual({ kind: 'multiPair', match: 'Or', values: [['AniDB', '']] });
+
+    const saved = (leafNode.value as { values: [string, string][] }).values;
+    const draft = openPairDraft(saved, getPairEditor(SOURCE_GENRE_OLD));
+    expect(draft).toMatchObject({ first: 'AniDB', pairs: [], second: '' });
+    // Left alone it is kept as it was; filled in it is completed.
+    expect(closePairDraft(draft)).toEqual([['AniDB', '']]);
+    expect(closePairDraft({ ...draft, second: 'Action' })).toEqual([['AniDB', 'Action']]);
+    // A picker never fills inputs.
+    expect(openPairDraft(saved, getPairEditor(SOURCE_GENRE))).toMatchObject({ first: '', pairs: saved });
+  });
+
+  it('edits a typed pair in place, keeping the one in the inputs', () => {
+    const kept: [string, string] = ['TMDB', 'Drama'];
+    const edited: [string, string] = ['AniDB', 'Action'];
+    const draft = editPairInDraft({ pairs: [kept, edited], first: 'AniDB', second: 'Comedy' }, edited);
+    expect(draft).toMatchObject({ first: 'AniDB', pairs: [kept, ['AniDB', 'Comedy']], second: 'Action' });
+    expect(closePairDraft({ ...draft, second: '' })).toEqual([kept, ['AniDB', 'Comedy'], edited]);
+  });
+});
+
+describe('stale pairs', () => {
+  const GENRE = makeEntry('HasSourceGenre', {
+    Parameter: 'String',
+    PossibleParameterPairs: [['AniDB', 'Action'], ['TMDB', 'Drama']],
+    SecondParameter: 'String',
+  });
+  const editor = getPairEditor(GENRE);
+  const offered: [string, string] = ['AniDB', 'Action'];
+  const stale: [string, string] = ['TMDB', 'Gone'];
+
+  it('flags a saved pair the server no longer offers and keeps it on save', () => {
+    const saved = [offered, stale];
+    expect(findStalePairs(saved, editor)).toEqual([stale]);
+    expect(closePairDraft(openPairDraft(saved, editor))).toEqual(saved);
+    // Typed values have nothing to go stale against.
+    expect(findStalePairs(saved, getPairEditor(makeEntry('HasSourceGenre', { SecondParameter: 'String' }))))
+      .toEqual([]);
+  });
+
+  it('offers a removed stale pair again until the editor closes, then never', () => {
+    const staleAtOpen = findStalePairs([offered, stale], editor);
+    expect(getPairPickerOptions(editor, staleAtOpen, [offered, stale])).toEqual([['TMDB', 'Drama']]);
+    // Removed in the same session, it is offered again.
+    expect(getPairPickerOptions(editor, staleAtOpen, [offered])).toEqual([['TMDB', 'Drama'], stale]);
+    // Saved without it, the next opening finds nothing stale and offers the server's pairs only.
+    const reopened = findStalePairs([offered], editor);
+    expect(reopened).toEqual([]);
+    expect(getPairPickerOptions(editor, reopened, [offered])).toEqual([['TMDB', 'Drama']]);
   });
 });
