@@ -12,7 +12,6 @@ import Button from '@/components/Input/Button';
 import { isAnidbSource, isTmdbSource } from '@/core/react-query/metadata/helpers';
 import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
-import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { MetadataLinkType } from '@/core/react-query/metadata/types';
@@ -26,25 +25,16 @@ type Props = {
   readOnly?: boolean;
   /** The source's display name, when it differs from `source`. */
   sourceName?: string;
+  /** The entry's page on its source's site; without one, the entry opens on the linking page. */
+  siteUrl?: string | null;
   type?: MetadataLinkType;
 };
 
-/**
- * The entry's page on its own site, where one is known. Only AniDB and TMDB
- * have one for now; the server does not send a site URL for other sources.
- */
-const getSiteLink = (source: string, id: number | string, type?: MetadataLinkType) => {
-  if (isAnidbSource(source)) return getAnidbAnimeLink(id);
-  if (isTmdbSource(source)) return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
-  return undefined;
-};
-
-const SeriesMetadataLink = ({ id, readOnly = false, seriesId, source, sourceName = source, type }: Props) => {
+const SeriesMetadataLink = ({ id, readOnly = false, seriesId, siteUrl, source, sourceName = source, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, source, type ?? 'Movie');
 
   const isAnidb = isAnidbSource(source);
-  const siteLink = id ? getSiteLink(source, id, type) : undefined;
   const linkingPage = `../metadata-linking?${new URLSearchParams({ source }).toString()}`;
   const editLinkingPage = id && type
     ? `../metadata-linking?${new URLSearchParams({ source, type, id: id.toString() }).toString()}`
@@ -77,9 +67,9 @@ const SeriesMetadataLink = ({ id, readOnly = false, seriesId, source, sourceName
           {isAnidb || isTmdbSource(source)
             ? <div className={`metadata-link-icon ${source}`} />
             : <Icon className="shrink-0 text-panel-icon" path={mdiDatabaseOutline} size={1} />}
-          {id && siteLink && (
+          {id && siteUrl && (
             <a
-              href={siteLink}
+              href={siteUrl}
               className="flex gap-x-2 font-semibold text-panel-text-primary"
               rel="noopener noreferrer"
               target="_blank"
@@ -88,8 +78,8 @@ const SeriesMetadataLink = ({ id, readOnly = false, seriesId, source, sourceName
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )}
-          {id && !siteLink && readOnly && <span className="font-semibold text-panel-text-primary">{label}</span>}
-          {id && !siteLink && !readOnly && (
+          {id && !siteUrl && readOnly && <span className="font-semibold text-panel-text-primary">{label}</span>}
+          {id && !siteUrl && !readOnly && (
             <Link to={editLinkingPage} className="flex gap-x-2 font-semibold text-panel-text-primary">
               {label}
             </Link>

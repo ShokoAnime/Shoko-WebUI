@@ -10,7 +10,7 @@ import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import SelectSmall from '@/components/Input/SelectSmall';
-import { isSameKey, isTmdbSource } from '@/core/react-query/metadata/helpers';
+import { isSameKey } from '@/core/react-query/metadata/helpers';
 import { useMetadataRefreshMutation } from '@/core/react-query/metadata/mutations';
 import { useMetadataSearchQuery, useSeriesMetadataAutoSearchQuery } from '@/core/react-query/metadata/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -33,30 +33,28 @@ const originLabels: Record<MetadataAutoSearchOriginValues, string> = {
 };
 
 type SearchResultRowProps = {
-  linkType: MetadataLinkType;
   origins?: MetadataAutoSearchOriginValues[];
   result: MetadataSearchResultType;
   selectLink: (id: string) => void;
-  source: string;
 };
 
-const SearchResultRow = ({ linkType, origins, result, selectLink, source }: SearchResultRowProps) => {
+const SearchResultRow = ({ origins, result, selectLink }: SearchResultRowProps) => {
   const handleClick = () => {
     selectLink(result.ID);
   };
 
   return (
     <div className="flex items-center gap-x-4">
-      {isTmdbSource(source)
+      {result.SiteUrl
         ? (
           <a
-            className="flex w-24 cursor-pointer items-center justify-between font-semibold text-panel-text-primary"
-            href={`https://www.themoviedb.org/${linkType === 'Show' ? 'tv' : 'movie'}/${result.ID}`}
+            className="flex w-24 shrink-0 cursor-pointer items-center justify-between font-semibold text-panel-text-primary"
+            href={result.SiteUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {result.ID}
-            <Icon path={mdiOpenInNew} size={0.9} />
+            <span className="line-clamp-1">{result.ID}</span>
+            <Icon className="shrink-0" path={mdiOpenInNew} size={0.9} />
           </a>
         )
         : <div className="line-clamp-1 w-24 shrink-0 font-semibold text-panel-text-primary">{result.ID}</div>}
@@ -241,9 +239,7 @@ const LinkSelectPanel = ({ seriesType, source, sources }: Props) => {
                 key={result.ID}
                 origins={origins}
                 result={result}
-                linkType={linkType}
                 selectLink={selectLink}
-                source={source}
               />
             ))}
 
@@ -251,9 +247,7 @@ const LinkSelectPanel = ({ seriesType, source, sources }: Props) => {
               <SearchResultRow
                 key={result.ID}
                 result={result}
-                linkType={linkType}
                 selectLink={selectLink}
-                source={source}
               />
             ))}
 
