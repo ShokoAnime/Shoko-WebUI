@@ -232,7 +232,7 @@ const TmdbLinking = () => {
         );
 
         await editEpisodeLinks({
-          ResetAll: false,
+          UnsetAll: false,
           Mapping: newMappings,
         });
       }
