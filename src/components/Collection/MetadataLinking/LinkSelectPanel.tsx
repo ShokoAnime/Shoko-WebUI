@@ -7,10 +7,9 @@ import { groupBy, map, toNumber, uniq, uniqBy } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
+import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
-import SelectSmall from '@/components/Input/SelectSmall';
-import { isSameKey } from '@/core/react-query/metadata/helpers';
 import { useMetadataRefreshMutation } from '@/core/react-query/metadata/mutations';
 import { useMetadataSearchQuery, useSeriesMetadataAutoSearchQuery } from '@/core/react-query/metadata/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -79,15 +78,15 @@ const SearchResultRow = ({ origins, result, selectLink }: SearchResultRowProps) 
 type Props = {
   seriesType?: AnimeTypeValues;
   source: string;
-  sources?: MetadataLinkSourceType[];
+  /** The source as `GET Metadata/Source` lists it, once loaded. */
+  sourceInfo?: MetadataLinkSourceType;
 };
 
-const LinkSelectPanel = ({ seriesType, source, sources }: Props) => {
+const LinkSelectPanel = ({ seriesType, source, sourceInfo }: Props) => {
   const { seriesId } = useParams();
 
   const [, setSearchParams] = useSearchParams();
 
-  const sourceInfo = sources?.find(item => isSameKey(item.Source, source));
   const supportsSeries = sourceInfo?.SupportsSeries ?? true;
   const supportsMovies = sourceInfo?.SupportsMovies ?? true;
 
@@ -144,11 +143,6 @@ const LinkSelectPanel = ({ seriesType, source, sources }: Props) => {
     setSelectedId(id);
   };
 
-  const changeSource = (newSource: string) => {
-    setSelectedId('');
-    setSearchParams({ source: newSource });
-  };
-
   useEffect(() => {
     if (selectedId === '') return;
 
@@ -169,14 +163,8 @@ const LinkSelectPanel = ({ seriesType, source, sources }: Props) => {
     <div className="row-span-2 flex flex-col gap-y-2">
       <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
         <div className="flex items-center gap-x-2">
-          <SelectSmall
-            id="link-source"
-            value={sourceInfo?.Source ?? source}
-            onChange={event => changeSource(event.target.value)}
-          >
-            {!sourceInfo && <option value={source}>{source}</option>}
-            {sources?.map(item => <option key={item.Source} value={item.Source}>{item.Name}</option>)}
-          </SelectSmall>
+          <MetadataSourceIcon hasIcon={sourceInfo?.HasIcon} source={source} />
+          <span>{sourceInfo?.Name ?? source}</span>
           |
           <div>
             Not linked

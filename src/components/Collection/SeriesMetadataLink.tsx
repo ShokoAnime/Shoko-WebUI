@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
@@ -17,7 +17,7 @@ type Props = {
   seriesId: number;
   /** `AniDB`, or the source as the metadata routes take it. */
   source: string;
-  id?: number | string;
+  id: number | string;
   /** Shows the entry without a link to the linking page or any action. */
   readOnly?: boolean;
   /** The source's display name, when it differs from `source`. */
@@ -41,20 +41,13 @@ const SeriesMetadataLink = ({
   const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, source, type ?? 'Movie');
 
   const isAnidb = isAnidbSource(source);
-  const linkingPage = `../metadata-linking?${new URLSearchParams({ source }).toString()}`;
-  const editLinkingPage = id && type
-    ? `../metadata-linking?${new URLSearchParams({ source, type, id: id.toString() }).toString()}`
-    : linkingPage;
+  const editLinkingPage = `../metadata-linking?${
+    new URLSearchParams(type ? { source, type, id: id.toString() } : { source }).toString()
+  }`;
 
-  const addLink = () => navigate(linkingPage);
-
-  const editLink = () => {
-    if (!id || !type) return;
-    navigate(editLinkingPage);
-  };
+  const editLink = () => navigate(editLinkingPage);
 
   const removeLink = () => {
-    if (!id || !type) return;
     deleteLink({ ID: id.toString() }, {
       onSuccess: () => {
         invalidateQueries(['series', seriesId]);
@@ -73,7 +66,7 @@ const SeriesMetadataLink = ({
           {isAnidb
             ? <div className="metadata-link-icon AniDB" />
             : <MetadataSourceIcon hasIcon={hasIcon} source={source} />}
-          {id && siteUrl && (
+          {siteUrl && (
             <a
               href={siteUrl}
               className="flex gap-x-2 font-semibold text-panel-text-primary"
@@ -84,32 +77,21 @@ const SeriesMetadataLink = ({
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )}
-          {id && !siteUrl && readOnly && <span className="font-semibold text-panel-text-primary">{label}</span>}
-          {id && !siteUrl && !readOnly && (
+          {!siteUrl && readOnly && <span className="font-semibold text-panel-text-primary">{label}</span>}
+          {!siteUrl && !readOnly && (
             <Link to={editLinkingPage} className="flex gap-x-2 font-semibold text-panel-text-primary">
               {label}
             </Link>
           )}
-          {!id && (isAnidb ? 'Series Not Linked' : `Add ${sourceName} Link`)}
         </div>
-        {!isAnidb && !readOnly && (
+        {!isAnidb && !readOnly && type && (
           <div className="flex gap-x-2">
-            {id
-              ? type && (
-                <>
-                  <Button onClick={editLink} tooltip="Edit Link">
-                    <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
-                  </Button>
-                  <Button onClick={removeLink} tooltip="Remove Link">
-                    <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
-                  </Button>
-                </>
-              )
-              : (
-                <Button onClick={addLink} tooltip="Add Link">
-                  <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-                </Button>
-              )}
+            <Button onClick={editLink} tooltip="Edit Link">
+              <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
+            </Button>
+            <Button onClick={removeLink} tooltip="Remove Link">
+              <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
+            </Button>
           </div>
         )}
       </div>
