@@ -42,6 +42,7 @@ import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import MetadataSettings from '@/pages/settings/tabs/MetadataSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
+import ScheduledActionsSettings from '@/pages/settings/tabs/ScheduledActionsSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
@@ -135,6 +136,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="metadata" element={<MetadataSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
+            <Route path="scheduled-actions" element={<ScheduledActionsSettings />} />
             <Route path="plugin-management">
               <Route index element={<Navigate to="installed" replace />} />
               <Route path=":section" element={<PluginManagementSettings />} />
