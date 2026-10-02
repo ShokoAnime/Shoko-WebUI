@@ -4,11 +4,13 @@ import { Icon } from '@mdi/react';
 import { produce } from 'immer';
 import { toNumber } from 'lodash';
 
-import TmdbExportModal from '@/components/Dialogs/TmdbExportModal';
-import TmdbImportModal from '@/components/Dialogs/TmdbImportModal';
+import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
+import MetadataExportModal from '@/components/Dialogs/MetadataExportModal';
+import MetadataImportModal from '@/components/Dialogs/MetadataImportModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
 import MetadataImageSettings from '@/components/Settings/MetadataSitesSettings/MetadataImageSettings';
 import MetadataSourceSettings from '@/components/Settings/MetadataSitesSettings/MetadataSourceSettings';
 import { getMetadataSources } from '@/core/react-query/metadata/helpers';
@@ -26,6 +28,12 @@ const MetadataSettings = () => {
   const providersQuery = useMetadataProvidersQuery();
   const linkSourcesQuery = useMetadataLinkSourcesQuery();
   const sources = getMetadataSources(providersQuery.data ?? [], linkSourcesQuery.data);
+
+  // Links are exported and imported for one source at a time, the first one until another is picked.
+  const linkSources = linkSourcesQuery.data ?? [];
+  const [pickedSource, setPickedSource] = useState('');
+  const crossReferenceSource = linkSources.find(item => item.Source === pickedSource) ?? linkSources[0];
+  const crossReferenceName = crossReferenceSource?.Name ?? '';
 
   const { includeRestricted } = newSettings.WebUI_Settings.collection.tmdb;
 
@@ -168,41 +176,71 @@ const MetadataSettings = () => {
       ))}
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">Cross-References</div>
-          <div className="flex gap-x-2">
-            <Button
-              buttonType="secondary"
-              buttonSize="small"
-              className="flex flex-row flex-wrap items-center gap-x-2"
-              onClick={() => setShowExportModal(true)}
-              tooltip="Export AniDB/TMDB cross-references to a CSV file"
-            >
-              <Icon path={mdiExport} size={0.85} />
-              <span>Export</span>
-            </Button>
-            <Button
-              buttonType="secondary"
-              buttonSize="small"
-              className="flex flex-row flex-wrap items-center gap-x-2"
-              onClick={() => setShowImportModal(true)}
-              tooltip="Import AniDB/TMDB cross-references from a CSV file"
-            >
-              <Icon path={mdiImport} size={0.85} />
-              <span>Import</span>
-            </Button>
-          </div>
-        </div>
+        <div className="font-semibold">Cross-References</div>
         <div>
-          Back up or restore the links between your AniDB anime and TMDB movies, shows and episodes, or share them with
-          another Shoko Server.
+          Back up or restore the links between your AniDB anime and the series, movies and episodes of a source, or
+          share them with another Shoko Server.
         </div>
+        {linkSources.length === 0
+          ? <div className="opacity-65">No source can be linked to.</div>
+          : (
+            <div className="flex items-center justify-between gap-x-2">
+              <div className="flex items-center gap-x-2">
+                {crossReferenceSource && (
+                  <MetadataSourceIcon hasIcon={crossReferenceSource.HasIcon} source={crossReferenceSource.Source} />
+                )}
+                <SelectSmall
+                  id="metadata-cross-reference-source"
+                  value={crossReferenceSource?.Source ?? ''}
+                  onChange={event => setPickedSource(event.target.value)}
+                >
+                  {linkSources.map(item => <option key={item.Source} value={item.Source}>{item.Name}</option>)}
+                </SelectSmall>
+              </div>
+              <div className="flex gap-x-2">
+                <Button
+                  buttonType="secondary"
+                  buttonSize="small"
+                  className="flex flex-row flex-wrap items-center gap-x-2"
+                  onClick={() => setShowExportModal(true)}
+                  tooltip={`Export AniDB/${crossReferenceName} cross-references to a CSV file`}
+                >
+                  <Icon path={mdiExport} size={0.85} />
+                  <span>Export</span>
+                </Button>
+                <Button
+                  buttonType="secondary"
+                  buttonSize="small"
+                  className="flex flex-row flex-wrap items-center gap-x-2"
+                  onClick={() => setShowImportModal(true)}
+                  tooltip={`Import AniDB/${crossReferenceName} cross-references from a CSV file`}
+                >
+                  <Icon path={mdiImport} size={0.85} />
+                  <span>Import</span>
+                </Button>
+              </div>
+            </div>
+          )}
       </div>
 
       <div className="border-b border-panel-border" />
 
-      <TmdbExportModal show={showExportModal} onClose={() => setShowExportModal(false)} />
-      <TmdbImportModal show={showImportModal} onClose={() => setShowImportModal(false)} />
+      {crossReferenceSource && (
+        <>
+          <MetadataExportModal
+            show={showExportModal}
+            onClose={() => setShowExportModal(false)}
+            source={crossReferenceSource.Source}
+            sourceName={crossReferenceName}
+          />
+          <MetadataImportModal
+            show={showImportModal}
+            onClose={() => setShowImportModal(false)}
+            source={crossReferenceSource.Source}
+            sourceName={crossReferenceName}
+          />
+        </>
+      )}
     </>
   );
 };

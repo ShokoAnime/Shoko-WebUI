@@ -194,3 +194,18 @@ export type MetadataSourceProvidersType = {
   EntityType: string;
   Providers: MetadataSourceProviderType[];
 };
+
+/** What an import of a cross-reference file did, from `POST Metadata/{source}/CrossReferences/Import`. */
+export type MetadataImportSummaryType = {
+  LinkCount: number;
+  MoviesAdded: number;
+  MoviesUpdated: number;
+  MoviesKept: number;
+  MoviesRemoved: number;
+  SeriesAdded: number;
+  EpisodesAdded: number;
+  EpisodesUpdated: number;
+  EpisodesKept: number;
+  EpisodesRemoved: number;
+  RefreshesQueued: number;
+};
