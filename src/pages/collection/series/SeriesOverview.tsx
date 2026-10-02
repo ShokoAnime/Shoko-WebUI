@@ -7,10 +7,13 @@ import { flatMap, get, map, round } from 'lodash';
 
 import CharacterImage from '@/components/CharacterImage';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
-import SeriesMetadata from '@/components/Collection/SeriesMetadata';
+import SeriesMetadataLink from '@/components/Collection/SeriesMetadataLink';
+import SeriesSourceLinks from '@/components/Collection/SeriesSourceLinks';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import SeriesPoster from '@/components/SeriesPoster';
+import { isAnidbSource, isSameKey, isTmdbSource } from '@/core/react-query/metadata/helpers';
+import { useMetadataLinkSourcesQuery } from '@/core/react-query/metadata/queries';
 import {
   useRelatedAnimeQuery,
   useSeriesCastQuery,
@@ -21,9 +24,6 @@ import {
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
-
-// Links
-const MetadataLinks = ['AniDB', 'TMDB'] as const;
 
 const SeriesOverview = () => {
   const { series } = useOutletContext<SeriesContextType>();
@@ -50,6 +50,30 @@ const SeriesOverview = () => {
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(series.IDs.ID).data;
 
+  // Sources other than AniDB and TMDB: the ones that can be linked, and any other the series is still linked to.
+  const sourcesQuery = useMetadataLinkSourcesQuery();
+  const linkedIds = series.IDs.Linked;
+  const findLinkedIds = (source: string) =>
+    Object.entries(linkedIds).find(([key]) => isSameKey(key, source))?.[1] ?? [];
+  const otherSources = [
+    ...(sourcesQuery.data ?? [])
+      .filter(item => !isTmdbSource(item.Source))
+      .map(item => ({
+        canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
+        linkedIds: findLinkedIds(item.Source),
+        name: item.Name,
+        source: item.Source,
+      })),
+    ...Object.entries(linkedIds)
+      .filter(([key]) =>
+        !isTmdbSource(key) && !isAnidbSource(key) && !sourcesQuery.data?.some(item => isSameKey(item.Source, key))
+      )
+      .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, source: key })),
+  ];
+  // The AniDB row and the row to add a TMDB link, then one row per link and per source that can be linked.
+  const linkRowCount = 2 + series.IDs.TMDB.Movie.length + series.IDs.TMDB.Show.length
+    + otherSources.reduce((count, item) => count + item.linkedIds.length + (item.canLink ? 1 : 0), 0);
+
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
     const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
     if (thumbnail === null) return null;
@@ -74,46 +98,36 @@ const SeriesOverview = () => {
               <div
                 className={cx(
                   'flex h-62.5 flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
-                  // TODO: The below needs to check for how many links are rendered, not how many types of links can exist
-                  MetadataLinks.length > 4 ? 'pr-4' : '',
+                  linkRowCount > 4 ? 'pr-4' : '',
                 )}
               >
-                {MetadataLinks.map((site) => {
-                  if (site === 'TMDB') {
-                    const tmdbIds = series.IDs.TMDB;
-                    if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
-                      return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
-                    }
-
-                    return [
-                      ...flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
-                        ids.map(id => (
-                          id
-                            ? (
-                              <SeriesMetadata
-                                key={`${site}-${type}-${id}`}
-                                site={site}
-                                id={id}
-                                seriesId={series.IDs.ID}
-                                type={type}
-                              />
-                            )
-                            : null
-                        ))),
-                      /* Show row to add new TMDB links */
-                      <SeriesMetadata key="TMDB-add-new" site="TMDB" seriesId={series.IDs.ID} />,
-                    ];
-                  }
-
-                  // Site is not TMDB, so it's either a single ID or an array of IDs
-                  const idOrIds = series?.IDs[site] ?? [0];
-                  const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
-                  if (linkIds.length === 0) linkIds.push(0);
-
-                  return linkIds.map(id => (
-                    <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
-                  ));
-                })}
+                <SeriesMetadataLink source="AniDB" id={series.IDs.AniDB} seriesId={series.IDs.ID} />
+                {flatMap(series.IDs.TMDB, (ids, type: 'Movie' | 'Show') =>
+                  ids.map(id => (
+                    id
+                      ? (
+                        <SeriesMetadataLink
+                          key={`TMDB-${type}-${id}`}
+                          source="TMDB"
+                          id={id}
+                          seriesId={series.IDs.ID}
+                          type={type}
+                        />
+                      )
+                      : null
+                  )))}
+                {/* Show row to add new TMDB links */}
+                <SeriesMetadataLink source="TMDB" seriesId={series.IDs.ID} />
+                {otherSources.map(item => (
+                  <SeriesSourceLinks
+                    key={item.source}
+                    canLink={item.canLink}
+                    linkedIds={item.linkedIds}
+                    name={item.name}
+                    seriesId={series.IDs.ID}
+                    source={item.source}
+                  />
+                ))}
               </div>
             )}
             {series && currentTab === 'links' && (
