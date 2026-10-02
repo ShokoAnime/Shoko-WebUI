@@ -84,6 +84,9 @@ export type FilterType = {
   Size: number;
 } & BaseFilterType;
 
+// A condition's first and second parameter.
+export type ParameterPair = [string, string];
+
 // Editable UI representation of a FilterCondition tree. Leaves reuse the existing
 // widget kinds (boolean/multi/multiPair/tag); anything else (Function calls, comparison
 // operators over selectors) is preserved verbatim as an UnsupportedNode rather than
@@ -91,7 +94,7 @@ export type FilterType = {
 export type LeafValue =
   | { kind: 'boolean', value: boolean }
   | { kind: 'multi', values: string[], match: 'And' | 'Or' }
-  | { kind: 'multiPair', values: [string, string][], match: 'And' | 'Or' }
+  | { kind: 'multiPair', values: ParameterPair[], match: 'And' | 'Or' }
   | { kind: 'tag', tags: FilterTag[] };
 
 export type LeafNode = {

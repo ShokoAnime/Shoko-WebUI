@@ -4,6 +4,7 @@ import type {
   GroupNode,
   LeafNode,
   LeafValue,
+  ParameterPair,
   TreeNode,
   UnsupportedNode,
 } from '@/core/types/api/filter';
@@ -24,9 +25,78 @@ const TAG_LIKE_EXPRESSIONS = new Set(['HasTag', 'HasCustomTag']);
 // heuristics that used to live in Criteria.tsx and buildSidebarFilterCondition.
 export const getWidgetKind = (entry: FilterExpression): 'boolean' | 'multi' | 'multiPair' | 'tag' => {
   if (TAG_LIKE_EXPRESSIONS.has(entry.Expression)) return 'tag';
-  if (entry.PossibleParameterPairs) return 'multiPair';
+  if (entry.PossibleParameterPairs ?? entry.SecondParameter) return 'multiPair';
   if (entry.PossibleParameters ?? entry.Parameter === 'Number') return 'multi';
   return 'boolean';
+};
+
+// Pair values are shown as one joined string, but never split back: the editor keeps the pairs.
+export const displayPair = (pair: readonly string[]) => pair.join(': ');
+
+// A pair is picked from the catalog's pairs when the server sends them (HasSourceGenre and
+// HasSourceTag also send the plain lists, which the picker ignores). Without them both values
+// are typed: the first chosen from PossibleParameters when sent, the second free text with
+// PossibleSecondParameters as suggestions only.
+export type PairEditor =
+  | { kind: 'picker', pairs: ParameterPair[] }
+  | { kind: 'typed', firstOptions?: string[], secondSuggestions: string[] };
+
+export const getPairEditor = (entry: FilterExpression): PairEditor => {
+  if (entry.PossibleParameterPairs?.length) {
+    return { kind: 'picker', pairs: entry.PossibleParameterPairs.map(pair => [pair[0], pair[1] ?? '']) };
+  }
+  return {
+    kind: 'typed',
+    firstOptions: entry.PossibleParameters?.length ? entry.PossibleParameters : undefined,
+    secondSuggestions: entry.PossibleSecondParameters ?? [],
+  };
+};
+
+// `editing` is the saved pair loaded into the inputs, kept as it was unless both values are filled.
+export type PairDraft = { pairs: ParameterPair[], first: string, second: string, editing?: ParameterPair };
+
+export const isSamePair = (left: readonly string[], right: readonly string[]) =>
+  left[0] === right[0] && left[1] === right[1];
+
+// The draft's pairs plus the one in the inputs once both values are filled.
+export const getDraftPairs = ({ editing, first, pairs, second }: PairDraft): ParameterPair[] => {
+  if (first !== '' && second !== '') {
+    const typed: ParameterPair = [first, second];
+    return pairs.some(pair => isSamePair(pair, typed)) ? pairs : [...pairs, typed];
+  }
+  return editing ? [...pairs, editing] : pairs;
+};
+
+// Loads one of the draft's pairs into the inputs, closing the one there first.
+export const editPairInDraft = (draft: PairDraft, pair: ParameterPair): PairDraft => ({
+  pairs: getDraftPairs(draft).filter(selected => selected !== pair),
+  first: pair[0],
+  second: pair[1],
+  editing: pair,
+});
+
+// When values are typed, a saved pair without its second value opens in the inputs so it can
+// be completed.
+export const openPairDraft = (saved: ParameterPair[], editor: PairEditor): PairDraft => {
+  const draft = { pairs: saved, first: '', second: '' };
+  const incomplete = editor.kind === 'typed' ? saved.find(pair => pair[1] === '') : undefined;
+  return incomplete ? editPairInDraft(draft, incomplete) : draft;
+};
+
+// Saved pairs the server no longer offers. They are kept as they are, and stay pickable until
+// the editor that found them closes, so a removal can be undone.
+export const findStalePairs = (saved: ParameterPair[], editor: PairEditor): ParameterPair[] => (
+  editor.kind === 'picker' ? saved.filter(pair => !editor.pairs.some(offered => isSamePair(offered, pair))) : []
+);
+
+// The picker's options: the server's pairs, then the stale ones found on opening, less those selected.
+export const getPairPickerOptions = (
+  editor: PairEditor,
+  stale: ParameterPair[],
+  selected: ParameterPair[],
+): ParameterPair[] => {
+  if (editor.kind !== 'picker') return [];
+  return [...editor.pairs, ...stale].filter(pair => !selected.some(chosen => isSamePair(chosen, pair)));
 };
 
 export const createLeafNode = (entry: FilterExpression): LeafNode => {
@@ -70,8 +140,14 @@ const parseAtomicCondition = (condition: FilterCondition, catalog: FilterExpress
   const entry = catalog.find(item => item.Expression === inner.Type);
   if (!entry || entry.Left || entry.Right) return unsupported(condition);
 
+  // A second parameter only survives a pair widget; anything else would drop it on save.
+  const widgetKind = getWidgetKind(entry);
+  if ((entry.SecondParameter !== undefined || inner.SecondParameter !== undefined) && widgetKind !== 'multiPair') {
+    return unsupported(condition);
+  }
+
   const id = generateNodeId();
-  switch (getWidgetKind(entry)) {
+  switch (widgetKind) {
     case 'tag': {
       if (inner.Parameter === undefined) return unsupported(condition);
       return {
@@ -83,13 +159,14 @@ const parseAtomicCondition = (condition: FilterCondition, catalog: FilterExpress
       };
     }
     case 'multiPair': {
-      if (inner.Parameter === undefined || inner.SecondParameter === undefined) return unsupported(condition);
+      // A pair saved without its second value opens with it empty, ready to be filled in.
+      if (inner.Parameter === undefined) return unsupported(condition);
       return {
         id,
         kind: 'leaf',
         expression: inner.Type,
         negate: negated,
-        value: { kind: 'multiPair', values: [[inner.Parameter, inner.SecondParameter]], match: 'Or' },
+        value: { kind: 'multiPair', values: [[inner.Parameter, inner.SecondParameter ?? '']], match: 'Or' },
       };
     }
     case 'multi': {

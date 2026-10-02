@@ -18,52 +18,25 @@ type Props = {
   show: boolean;
 };
 
-// Pair values are joined into a single display string only for this picker's own list -
-// matched back against the catalog's original pair rather than re-split, so a value that
-// happens to contain ': ' can't be misinterpreted. The dispatched LeafValue always carries
-// real [string, string] tuples, never the joined string as the source of truth.
-const displayPair = (pair: string[]) => pair.join(': ');
-
 const MultiValueCriteriaModal = ({ catalogEntry, node, onClose, onRemove, show }: Props) => {
   const dispatch = useDispatch();
-  const isPair = node.value.kind === 'multiPair';
 
-  const selectedDisplayValues = useMemo(() => {
-    if (node.value.kind === 'multiPair') return node.value.values.map(displayPair);
-    if (node.value.kind === 'multi') return node.value.values;
-    return [];
-  }, [node.value]);
-  const initialMatch = node.value.kind === 'multi' || node.value.kind === 'multiPair' ? node.value.match : 'Or';
+  const selectedValues = useMemo(() => (node.value.kind === 'multi' ? node.value.values : []), [node.value]);
+  const initialMatch = node.value.kind === 'multi' ? node.value.match : 'Or';
 
   const [unsavedValues, setUnsavedValues] = useState<string[]>([]);
   const [match, setMatch] = useState<'And' | 'Or'>(initialMatch);
 
   const unusedValues = useMemo(
-    () => {
-      const possibleValues = catalogEntry.PossibleParameters
-        ?? catalogEntry.PossibleParameterPairs?.map(displayPair);
-
-      return filter(
-        possibleValues,
-        item => !selectedDisplayValues.includes(item) && !unsavedValues.includes(item),
-      );
-    },
-    [catalogEntry.PossibleParameters, catalogEntry.PossibleParameterPairs, selectedDisplayValues, unsavedValues],
+    () =>
+      filter(
+        catalogEntry.PossibleParameters,
+        item => !selectedValues.includes(item) && !unsavedValues.includes(item),
+      ),
+    [catalogEntry.PossibleParameters, selectedValues, unsavedValues],
   );
 
-  const buildValue = (displayValues: string[], matchValue: 'And' | 'Or'): LeafValue => {
-    if (isPair) {
-      return {
-        kind: 'multiPair',
-        match: matchValue,
-        values: displayValues.map((display): [string, string] => {
-          const pair = catalogEntry.PossibleParameterPairs?.find(candidate => displayPair(candidate) === display);
-          return pair ? [pair[0], pair[1]] : [display, ''];
-        }),
-      };
-    }
-    return { kind: 'multi', values: displayValues, match: matchValue };
-  };
+  const toMultiValue = (values: string[]): LeafValue => ({ kind: 'multi', values, match });
 
   const handleMatchChange = (event: ChangeEvent<HTMLSelectElement>) => setMatch(event.target.value as 'And' | 'Or');
 
@@ -75,24 +48,24 @@ const MultiValueCriteriaModal = ({ catalogEntry, node, onClose, onRemove, show }
     if (unsavedValues.includes(value)) {
       setUnsavedValues(pull([...unsavedValues], value));
     }
-    if (selectedDisplayValues.includes(value)) {
+    if (selectedValues.includes(value)) {
       dispatch(updateLeafValue({
         nodeId: node.id,
-        value: buildValue(pull([...selectedDisplayValues], value), match),
+        value: toMultiValue(pull([...selectedValues], value)),
       }));
     }
   };
 
   const handleCancel = () => {
     setUnsavedValues([]);
-    if (selectedDisplayValues.length === 0) onRemove();
+    if (selectedValues.length === 0) onRemove();
     onClose();
   };
 
   const handleSave = () => {
     dispatch(updateLeafValue({
       nodeId: node.id,
-      value: buildValue([...selectedDisplayValues, ...unsavedValues], match),
+      value: toMultiValue([...selectedValues, ...unsavedValues]),
     }));
     setUnsavedValues([]);
     onClose();
@@ -130,7 +103,7 @@ const MultiValueCriteriaModal = ({ catalogEntry, node, onClose, onRemove, show }
         <div className="font-semibold">Selected Values</div>
         <div className="flex grow basis-0 overflow-y-auto rounded-lg bg-panel-input p-4">
           <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
-            {map([...selectedDisplayValues, ...unsavedValues], value => (
+            {map([...selectedValues, ...unsavedValues], value => (
               <div
                 onClick={() => {
                   removeValue(value);

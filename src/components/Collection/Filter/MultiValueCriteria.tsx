@@ -1,4 +1,5 @@
 import Criteria from '@/components/Collection/Filter/Criteria';
+import { displayPair } from '@/core/utilities/filterTree';
 
 import type { FilterExpression, LeafNode } from '@/core/types/api/filter';
 
@@ -12,7 +13,7 @@ type Props = {
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
 const getDisplayValues = (node: LeafNode): string[] => {
-  if (node.value.kind === 'multiPair') return node.value.values.map(([first, second]) => `${first}: ${second}`);
+  if (node.value.kind === 'multiPair') return node.value.values.map(displayPair);
   if (node.value.kind === 'multi') return node.value.values;
   return [];
 };
