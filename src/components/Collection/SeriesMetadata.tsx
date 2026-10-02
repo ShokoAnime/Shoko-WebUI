@@ -1,104 +1,108 @@
-import { useMemo } from 'react';
-import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import { Link } from 'react-router';
+import {
+  mdiCloseCircleOutline,
+  mdiDatabaseOutline,
+  mdiOpenInNew,
+  mdiPencilCircleOutline,
+  mdiPlusCircleOutline,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
+import { isTmdbSource } from '@/core/react-query/metadata/helpers';
 import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
+import type { MetadataLinkType } from '@/core/react-query/metadata/types';
+
 type Props = {
-  id?: number;
   seriesId: number;
-  site: 'AniDB' | 'TMDB';
-  type?: 'Movie' | 'Show';
+  /** `AniDB`, or the source as the metadata routes take it. */
+  site: string;
+  id?: number | string;
+  /** The source's display name, when it differs from `site`. */
+  siteName?: string;
+  type?: MetadataLinkType;
 };
 
-const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
+/**
+ * The entry's page on its own site, where one is known. Only AniDB and TMDB
+ * have one for now; the server does not send a site URL for other sources.
+ */
+const getSiteLink = (site: string, id: number | string, type?: MetadataLinkType) => {
+  if (site === 'AniDB') return getAnidbAnimeLink(id);
+  if (isTmdbSource(site)) return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
+  return undefined;
+};
+
+const SeriesMetadata = ({ id, seriesId, site, siteName = site, type }: Props) => {
   const navigate = useNavigateVoid();
-  const { mutate: deleteTmdbLink } = useSeriesMetadataDeleteLinkMutation(seriesId, 'TMDB', type ?? 'Movie');
+  const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, site, type ?? 'Movie');
 
-  const siteLink = useMemo(() => {
-    if (!id) return '#';
-    switch (site) {
-      case 'AniDB':
-        return getAnidbAnimeLink(id);
-      case 'TMDB':
-        return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
-      default:
-        return '#';
-    }
-  }, [id, site, type]);
+  const isAnidb = site === 'AniDB';
+  const siteLink = id ? getSiteLink(site, id, type) : undefined;
+  const linkingPage = `../metadata-linking?${new URLSearchParams({ source: site }).toString()}`;
+  const editLinkingPage = id && type
+    ? `../metadata-linking?${new URLSearchParams({ source: site, type, id: id.toString() }).toString()}`
+    : linkingPage;
 
-  const canAddLink = useMemo(() => site === 'TMDB', [site]);
-  const canEditLink = useMemo(() => site === 'TMDB', [site]);
-  const canRemoveLink = useMemo(() => site === 'TMDB', [site]);
-
-  const addLink = () => {
-    navigate('../metadata-linking?source=TMDB');
-  };
+  const addLink = () => navigate(linkingPage);
 
   const editLink = () => {
     if (!id || !type) return;
-    navigate(`../metadata-linking?source=TMDB&type=${type}&id=${id}`);
+    navigate(editLinkingPage);
   };
 
   const removeLink = () => {
-    if (!id) return;
-    switch (site) {
-      case 'TMDB':
-        deleteTmdbLink({ ID: id.toString() }, {
-          onSuccess: () => invalidateQueries(['series', seriesId]),
-        });
-        break;
-      default:
-        break;
-    }
+    if (!id || !type) return;
+    deleteLink({ ID: id.toString() }, {
+      onSuccess: () => invalidateQueries(['series', seriesId]),
+    });
   };
+
+  const label = `${siteName} (${type ? type[0].toLowerCase() : ''}${id})`;
 
   return (
     <div className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3">
       <div className="flex justify-between">
         <div className="flex gap-x-4">
-          <div className={`metadata-link-icon ${site}`} />
-          {id
-            ? (
-              <a
-                href={siteLink}
-                className="flex gap-x-2 font-semibold text-panel-text-primary"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {`${site} (${type ? type[0].toLowerCase() : ''}${id})`}
-                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-              </a>
-            )
-            : (
-              <>
-                {site === 'TMDB' && 'Add TMDB Link'}
-                {site !== 'TMDB' && 'Series Not Linked'}
-              </>
-            )}
+          {isAnidb || isTmdbSource(site)
+            ? <div className={`metadata-link-icon ${site}`} />
+            : <Icon className="shrink-0 text-panel-icon" path={mdiDatabaseOutline} size={1} />}
+          {id && siteLink && (
+            <a
+              href={siteLink}
+              className="flex gap-x-2 font-semibold text-panel-text-primary"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {label}
+              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+            </a>
+          )}
+          {id && !siteLink && (
+            <Link to={editLinkingPage} className="flex gap-x-2 font-semibold text-panel-text-primary">
+              {label}
+            </Link>
+          )}
+          {!id && (isAnidb ? 'Series Not Linked' : `Add ${siteName} Link`)}
         </div>
-        {site !== 'AniDB' && (
+        {!isAnidb && (
           <div className="flex gap-x-2">
             {id
-              ? (
+              ? type && (
                 <>
-                  {canEditLink && (
-                    <Button onClick={editLink} tooltip="Edit Link">
-                      <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
-                    </Button>
-                  )}
-                  {canRemoveLink && (
-                    <Button onClick={removeLink} tooltip="Remove Link">
-                      <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
-                    </Button>
-                  )}
+                  <Button onClick={editLink} tooltip="Edit Link">
+                    <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
+                  </Button>
+                  <Button onClick={removeLink} tooltip="Remove Link">
+                    <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
+                  </Button>
                 </>
               )
-              : canAddLink && (
+              : (
                 <Button onClick={addLink} tooltip="Add Link">
                   <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
                 </Button>
