@@ -43,8 +43,21 @@ export type TmdbSearchResultType = {
   Title: string;
 };
 
+export type TmdbAutoSearchOriginType = 'Search' | 'CurrentLink' | 'PrequelLink' | 'AnidbResource' | 'CrossSourceLink';
+
+export type TmdbAutoSearchRejectionType = {
+  /** The server's `MatchRejectionReason`, such as `Outranked` or `TitleMismatch`. */
+  Reason: string;
+  /** Anything more worth showing about it, if anything. */
+  Details: string | null;
+};
+
 export type TmdbAutoSearchResultType = {
   IsMovie: boolean;
   Show: TmdbSearchResultType;
   Movie: TmdbSearchResultType;
+  /** Where the match came from. */
+  Origin: TmdbAutoSearchOriginType;
+  /** Why an automatic search would not link it, or `null` when it would. */
+  Rejection: TmdbAutoSearchRejectionType | null;
 };

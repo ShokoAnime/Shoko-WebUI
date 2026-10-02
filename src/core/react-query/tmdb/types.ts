@@ -67,7 +67,7 @@ export type TmdbEpisodeXrefMappingRequestType = {
 };
 
 export type TmdbEditEpisodeXrefsRequestType = {
-  ResetAll?: boolean;
+  UnsetAll?: boolean;
   Mapping: TmdbEpisodeXrefMappingRequestType[];
 };
 
