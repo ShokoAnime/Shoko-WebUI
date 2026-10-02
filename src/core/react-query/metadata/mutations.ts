@@ -9,8 +9,19 @@ import type {
   MetadataDeleteLinkRequestType,
   MetadataEditEpisodeLinksRequestType,
   MetadataLinkType,
+  MetadataProviderUpdateRequestType,
   MetadataRefreshRequestType,
 } from '@/core/react-query/metadata/types';
+
+export const useUpdateMetadataProviderMutation = () =>
+  useMutation({
+    mutationFn: ({ providerId, ...data }: MetadataProviderUpdateRequestType) =>
+      axios.put(`Metadata/Provider/${providerId}`, data),
+    onSuccess: () => {
+      invalidateQueries(['metadata', 'provider']);
+      invalidateQueries(['metadata', 'source']);
+    },
+  });
 
 export const useMetadataRefreshMutation = (source: string, type: MetadataLinkType) =>
   useMutation({

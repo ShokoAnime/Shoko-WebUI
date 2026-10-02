@@ -49,3 +49,21 @@ export type MetadataEditEpisodeLinksRequestType = {
   UnsetAll?: boolean;
   Mapping: MetadataEpisodeLinkRequestType[];
 };
+
+export type MetadataProviderUpdateRequestType = {
+  providerId: string;
+  /** The kinds to turn the provider on for; every other kind is turned off. */
+  EnabledEntityTypes?: string[];
+  IsAutoLinker?: boolean;
+  AutoLink?: boolean;
+  AutoLinkRestricted?: boolean;
+};
+
+/**
+ * The new order of one or more kinds' providers, for `PUT Metadata/Source/{source}/Providers`. Kinds left out are
+ * kept, and providers left out of a kind keep their place after the given ones.
+ */
+export type MetadataSourceProvidersUpdateRequestType = {
+  EntityType: string;
+  Providers: { ProviderID: string, IsEnabled: boolean, Priority: number }[];
+}[];

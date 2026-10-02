@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
@@ -18,8 +19,10 @@ import type {
   MetadataEpisodeType,
   MetadataLinkSourceType,
   MetadataMovieType,
+  MetadataProviderType,
   MetadataSearchResultType,
   MetadataSeriesOrderingType,
+  MetadataSourceProvidersType,
 } from '@/core/types/api/metadata';
 
 export const useMetadataLinkSourcesQuery = (enabled = true) =>
@@ -27,6 +30,33 @@ export const useMetadataLinkSourcesQuery = (enabled = true) =>
     queryKey: ['metadata', 'source'],
     queryFn: () => axios.get('Metadata/Source'),
     enabled,
+  });
+
+export const useMetadataProvidersQuery = (enabled = true) =>
+  useQuery<MetadataProviderType[]>({
+    queryKey: ['metadata', 'provider'],
+    queryFn: () => axios.get('Metadata/Provider'),
+    enabled,
+  });
+
+/**
+ * The providers of each kind of a source, in order. `null` on an older server without the route (404), where the page
+ * falls back to a switch per provider. A known source never answers 404 there.
+ */
+export const useMetadataSourceProvidersQuery = (source: string, enabled = true) =>
+  useQuery<MetadataSourceProvidersType[] | null>({
+    queryKey: ['metadata', 'source', source, 'providers'],
+    queryFn: async () => {
+      try {
+        return await axios.get<unknown, MetadataSourceProvidersType[]>(
+          `Metadata/Source/${encodeURIComponent(source)}/Providers`,
+        );
+      } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 404) return null;
+        throw error;
+      }
+    },
+    enabled: enabled && !!source,
   });
 
 /**
