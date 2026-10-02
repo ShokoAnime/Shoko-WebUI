@@ -15,5 +15,5 @@ export const isSameKey = (first: string, second: string) => first.toLowerCase() 
 /** Whether a source is AniDB, which every series is linked to. */
 export const isAnidbSource = (source: string) => isSameKey(source, 'AniDB');
 
-/** Whether a source is TMDB, which has extras of its own on the linking page. */
+/** Whether a source is TMDB, which the series page lists first. */
 export const isTmdbSource = (source: string) => isSameKey(source, 'tmdb');

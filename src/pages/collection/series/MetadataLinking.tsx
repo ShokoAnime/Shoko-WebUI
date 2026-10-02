@@ -13,6 +13,7 @@ import EpisodeRow from '@/components/Collection/MetadataLinking/EpisodeRow';
 import LinkSelectPanel from '@/components/Collection/MetadataLinking/LinkSelectPanel';
 import MovieRow from '@/components/Collection/MetadataLinking/MovieRow';
 import TopPanel from '@/components/Collection/MetadataLinking/TopPanel';
+import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import MetadataSeriesSettingsModal from '@/components/Dialogs/MetadataSeriesSettingsModal';
 import Button from '@/components/Input/Button';
 import { episodePickerParams, isSameKey } from '@/core/react-query/metadata/helpers';
@@ -62,7 +63,8 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
   const sourcesQuery = useMetadataLinkSourcesQuery();
-  const sourceName = sourcesQuery.data?.find(item => isSameKey(item.Source, source))?.Name ?? source;
+  const sourceInfo = sourcesQuery.data?.find(item => isSameKey(item.Source, source));
+  const sourceName = sourceInfo?.Name ?? source;
 
   const [showSettingsModal, toggleSettingsModal] = useToggle();
   const showSettings = type === 'Show' && !!linkId;
@@ -384,7 +386,8 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
             )}
           >
             <div className="flex items-center rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-              <div className="shrink-0">
+              <div className="flex shrink-0 items-center gap-x-2">
+                <div className="metadata-link-icon AniDB" />
                 AniDB |&nbsp;
               </div>
               <a
@@ -418,7 +421,8 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
                   {linkedEntryQuery.data && (
                     <>
                       <div className="flex grow items-center">
-                        <div className="shrink-0">
+                        <div className="flex shrink-0 items-center gap-x-2">
+                          <MetadataSourceIcon key={source} hasIcon={sourceInfo?.HasIcon} source={source} />
                           {sourceName}
                           &nbsp;|&nbsp;
                         </div>

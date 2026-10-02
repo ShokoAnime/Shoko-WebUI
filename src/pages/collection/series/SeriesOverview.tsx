@@ -62,6 +62,7 @@ const SeriesOverview = () => {
     !sourcesQuery.isSuccess ? [] : [
       ...sourcesQuery.data.map(item => ({
         canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
+        hasIcon: item.HasIcon,
         linkedIds: findLinkedIds(item.Source),
         name: item.Name,
         readOnly: false,
@@ -69,7 +70,14 @@ const SeriesOverview = () => {
       })),
       ...Object.entries(linkedIds)
         .filter(([key]) => !isAnidbSource(key) && !sourcesQuery.data.some(item => isSameKey(item.Source, key)))
-        .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, readOnly: true, source: key })),
+        .map(([key, ids]) => ({
+          canLink: false,
+          hasIcon: false,
+          linkedIds: ids,
+          name: key,
+          readOnly: true,
+          source: key,
+        })),
     ],
     item => !isTmdbSource(item.source),
   );
@@ -114,6 +122,7 @@ const SeriesOverview = () => {
                   <SeriesSourceLinks
                     key={item.source}
                     canLink={item.canLink}
+                    hasIcon={item.hasIcon}
                     linkedIds={item.linkedIds}
                     name={item.name}
                     readOnly={item.readOnly}

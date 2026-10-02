@@ -8,6 +8,8 @@ import type { MetadataLinkType } from '@/core/react-query/metadata/types';
 type Props = {
   /** Whether the source can be linked to now, which adds a row to link it. */
   canLink: boolean;
+  /** Whether the server has an icon for the source. */
+  hasIcon: boolean;
   /** The IDs the series is linked to on the source, from the series' `IDs.Linked`. */
   linkedIds: string[];
   name: string;
@@ -21,7 +23,7 @@ const isLinkType = (entityType: string): entityType is MetadataLinkType =>
   entityType === 'Show' || entityType === 'Movie';
 
 /** A series' links to one source other than AniDB, and a row to add one. */
-const SeriesSourceLinks = ({ canLink, linkedIds, name, readOnly, seriesId, source }: Props) => {
+const SeriesSourceLinks = ({ canLink, hasIcon, linkedIds, name, readOnly, seriesId, source }: Props) => {
   // The series only lists the linked IDs, so the cross-references tell whether each is a series or a movie.
   const crossReferencesQuery = useSeriesMetadataCrossReferencesQuery(
     seriesId,
@@ -44,6 +46,7 @@ const SeriesSourceLinks = ({ canLink, linkedIds, name, readOnly, seriesId, sourc
       {links.map(link => (
         <SeriesMetadataLink
           key={`${source}-${link.type}-${link.id}`}
+          hasIcon={hasIcon}
           id={link.id}
           readOnly={readOnly}
           seriesId={seriesId}
@@ -53,7 +56,7 @@ const SeriesSourceLinks = ({ canLink, linkedIds, name, readOnly, seriesId, sourc
           type={link.type}
         />
       ))}
-      {canLink && <SeriesMetadataLink seriesId={seriesId} source={source} sourceName={name} />}
+      {canLink && <SeriesMetadataLink hasIcon={hasIcon} seriesId={seriesId} source={source} sourceName={name} />}
     </>
   );
 };

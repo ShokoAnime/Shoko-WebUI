@@ -1,15 +1,10 @@
 import { Link } from 'react-router';
-import {
-  mdiCloseCircleOutline,
-  mdiDatabaseOutline,
-  mdiOpenInNew,
-  mdiPencilCircleOutline,
-  mdiPlusCircleOutline,
-} from '@mdi/js';
+import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
+import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import Button from '@/components/Input/Button';
-import { isAnidbSource, isTmdbSource } from '@/core/react-query/metadata/helpers';
+import { isAnidbSource } from '@/core/react-query/metadata/helpers';
 import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -17,6 +12,8 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 import type { MetadataLinkType } from '@/core/react-query/metadata/types';
 
 type Props = {
+  /** Whether the server has an icon for the source. */
+  hasIcon?: boolean;
   seriesId: number;
   /** `AniDB`, or the source as the metadata routes take it. */
   source: string;
@@ -30,7 +27,16 @@ type Props = {
   type?: MetadataLinkType;
 };
 
-const SeriesMetadataLink = ({ id, readOnly = false, seriesId, siteUrl, source, sourceName = source, type }: Props) => {
+const SeriesMetadataLink = ({
+  hasIcon,
+  id,
+  readOnly = false,
+  seriesId,
+  siteUrl,
+  source,
+  sourceName = source,
+  type,
+}: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, source, type ?? 'Movie');
 
@@ -64,9 +70,9 @@ const SeriesMetadataLink = ({ id, readOnly = false, seriesId, siteUrl, source, s
     <div className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3">
       <div className="flex justify-between">
         <div className="flex gap-x-4">
-          {isAnidb || isTmdbSource(source)
-            ? <div className={`metadata-link-icon ${source}`} />
-            : <Icon className="shrink-0 text-panel-icon" path={mdiDatabaseOutline} size={1} />}
+          {isAnidb
+            ? <div className="metadata-link-icon AniDB" />
+            : <MetadataSourceIcon hasIcon={hasIcon} source={source} />}
           {id && siteUrl && (
             <a
               href={siteUrl}
