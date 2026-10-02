@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router';
 import { mdiEarth, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { flatMap, get, map, round } from 'lodash';
+import { get, map, round, sortBy } from 'lodash';
 
 import CharacterImage from '@/components/CharacterImage';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
@@ -20,6 +20,7 @@ import {
   useSeriesNextUpQuery,
   useSimilarAnimeQuery,
 } from '@/core/react-query/series/queries';
+import { getAnidbAnimeLink } from '@/core/util';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
@@ -50,28 +51,29 @@ const SeriesOverview = () => {
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(series.IDs.ID).data;
 
-  // Sources other than AniDB and TMDB: the ones that can be linked, and any other the series is still linked to.
+  // Every source but AniDB, TMDB first: the ones that can be linked, and any other the series is still linked to.
   const sourcesQuery = useMetadataLinkSourcesQuery();
   const linkedIds = series.IDs.Linked;
   const findLinkedIds = (source: string) =>
     Object.entries(linkedIds).find(([key]) => key.toLowerCase() === source.toLowerCase())?.[1] ?? [];
-  const otherSources = [
-    ...(sourcesQuery.data ?? [])
-      .filter(item => !isTmdbSource(item.Source))
-      .map(item => ({
+  const otherSources = sortBy(
+    [
+      ...(sourcesQuery.data ?? []).map(item => ({
         canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
         linkedIds: findLinkedIds(item.Source),
         name: item.Name,
         source: item.Source,
       })),
-    ...Object.entries(linkedIds)
-      .filter(([key]) =>
-        !isTmdbSource(key) && key.toLowerCase() !== 'anidb'
-        && !sourcesQuery.data?.some(item => item.Source.toLowerCase() === key.toLowerCase())
-      )
-      .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, source: key })),
-  ];
-  const linkRowCount = 2 + series.IDs.TMDB.Movie.length + series.IDs.TMDB.Show.length
+      ...Object.entries(linkedIds)
+        .filter(([key]) =>
+          key.toLowerCase() !== 'anidb'
+          && !sourcesQuery.data?.some(item => item.Source.toLowerCase() === key.toLowerCase())
+        )
+        .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, source: key })),
+    ],
+    item => !isTmdbSource(item.source),
+  );
+  const linkRowCount = 1
     + otherSources.reduce((count, item) => count + item.linkedIds.length + (item.canLink ? 1 : 0), 0);
 
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
@@ -101,23 +103,12 @@ const SeriesOverview = () => {
                   linkRowCount > 4 ? 'pr-4' : '',
                 )}
               >
-                <SeriesMetadata site="AniDB" id={series.IDs.AniDB} seriesId={series.IDs.ID} />
-                {flatMap(series.IDs.TMDB, (ids, type: 'Movie' | 'Show') =>
-                  ids.map(id => (
-                    id
-                      ? (
-                        <SeriesMetadata
-                          key={`TMDB-${type}-${id}`}
-                          site="TMDB"
-                          id={id}
-                          seriesId={series.IDs.ID}
-                          type={type}
-                        />
-                      )
-                      : null
-                  )))}
-                {/* Show row to add new TMDB links */}
-                <SeriesMetadata site="TMDB" seriesId={series.IDs.ID} />
+                <SeriesMetadata
+                  site="AniDB"
+                  id={series.IDs.AniDB}
+                  seriesId={series.IDs.ID}
+                  siteUrl={getAnidbAnimeLink(series.IDs.AniDB)}
+                />
                 {otherSources.map(item => (
                   <SeriesSourceLinks
                     key={item.source}

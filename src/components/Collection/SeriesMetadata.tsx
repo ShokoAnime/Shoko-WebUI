@@ -12,7 +12,6 @@ import Button from '@/components/Input/Button';
 import { isTmdbSource } from '@/core/react-query/metadata/helpers';
 import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { MetadataLinkType } from '@/core/react-query/metadata/types';
@@ -24,25 +23,16 @@ type Props = {
   id?: number | string;
   /** The source's display name, when it differs from `site`. */
   siteName?: string;
+  /** The entry's page on its source's site; without one, the entry opens on the linking page. */
+  siteUrl?: string | null;
   type?: MetadataLinkType;
 };
 
-/**
- * The entry's page on its own site, where one is known. Only AniDB and TMDB
- * have one for now; the server does not send a site URL for other sources.
- */
-const getSiteLink = (site: string, id: number | string, type?: MetadataLinkType) => {
-  if (site === 'AniDB') return getAnidbAnimeLink(id);
-  if (isTmdbSource(site)) return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
-  return undefined;
-};
-
-const SeriesMetadata = ({ id, seriesId, site, siteName = site, type }: Props) => {
+const SeriesMetadata = ({ id, seriesId, site, siteName = site, siteUrl, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, site, type ?? 'Movie');
 
   const isAnidb = site === 'AniDB';
-  const siteLink = id ? getSiteLink(site, id, type) : undefined;
   const linkingPage = `../metadata-linking?${new URLSearchParams({ source: site }).toString()}`;
   const editLinkingPage = id && type
     ? `../metadata-linking?${new URLSearchParams({ source: site, type, id: id.toString() }).toString()}`
@@ -71,9 +61,9 @@ const SeriesMetadata = ({ id, seriesId, site, siteName = site, type }: Props) =>
           {isAnidb || isTmdbSource(site)
             ? <div className={`metadata-link-icon ${site}`} />
             : <Icon className="shrink-0 text-panel-icon" path={mdiDatabaseOutline} size={1} />}
-          {id && siteLink && (
+          {id && siteUrl && (
             <a
-              href={siteLink}
+              href={siteUrl}
               className="flex gap-x-2 font-semibold text-panel-text-primary"
               rel="noopener noreferrer"
               target="_blank"
@@ -82,7 +72,7 @@ const SeriesMetadata = ({ id, seriesId, site, siteName = site, type }: Props) =>
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )}
-          {id && !siteLink && (
+          {id && !siteUrl && (
             <Link to={editLinkingPage} className="flex gap-x-2 font-semibold text-panel-text-primary">
               {label}
             </Link>

@@ -15,7 +15,6 @@ import MovieRow from '@/components/Collection/Tmdb/MovieRow';
 import TopPanel from '@/components/Collection/Tmdb/TopPanel';
 import MetadataSeriesSettingsModal from '@/components/Dialogs/MetadataSeriesSettingsModal';
 import Button from '@/components/Input/Button';
-import { isTmdbSource } from '@/core/react-query/metadata/helpers';
 import {
   useSeriesMetadataAddLinkMutation,
   useSeriesMetadataDeleteLinkMutation,
@@ -50,7 +49,6 @@ const MetadataLinking = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const source = searchParams.get('source') ?? 'TMDB';
-  const isTmdb = isTmdbSource(source);
   const type = useMemo(() => searchParams.get('type') ?? null, [searchParams]) as MetadataLinkType | null;
   const linkId = searchParams.get('id') ?? '';
 
@@ -209,6 +207,7 @@ const MetadataLinking = () => {
           AnidbAnimeID: seriesQuery.data.IDs.AniDB,
           AnidbEpisodeID: episodeId,
           ID: overrideId || null,
+          SiteUrl: null,
           ParentID: linkId,
           Index: index,
           MatchRating: 'UserVerified',
@@ -424,10 +423,11 @@ const MetadataLinking = () => {
                           &nbsp;|&nbsp;
                         </div>
                         <a
-                          className={cx('flex font-semibold text-panel-text-primary', isTmdb && 'cursor-pointer')}
-                          href={isTmdb
-                            ? `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${linkId}`
-                            : undefined}
+                          className={cx(
+                            'flex font-semibold text-panel-text-primary',
+                            linkedEntryQuery.data.SiteUrl && 'cursor-pointer',
+                          )}
+                          href={linkedEntryQuery.data.SiteUrl ?? undefined}
                           target="_blank"
                           rel="noopener noreferrer"
                           data-tooltip-id="tooltip"
@@ -442,7 +442,7 @@ const MetadataLinking = () => {
                             {linkedEntryQuery.data.Title}
                           </div>
 
-                          {isTmdb && (
+                          {linkedEntryQuery.data.SiteUrl && (
                             <div className="mx-1 shrink-0">
                               <Icon path={mdiOpenInNew} size={1} />
                             </div>
