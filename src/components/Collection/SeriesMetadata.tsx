@@ -3,8 +3,8 @@ import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCir
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
+import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import { useDeleteTmdbLinkMutation } from '@/core/react-query/tmdb/mutations';
 import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -17,7 +17,7 @@ type Props = {
 
 const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
   const navigate = useNavigateVoid();
-  const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Movie');
+  const { mutate: deleteTmdbLink } = useSeriesMetadataDeleteLinkMutation(seriesId, 'TMDB', type ?? 'Movie');
 
   const siteLink = useMemo(() => {
     if (!id) return '#';
@@ -36,19 +36,19 @@ const SeriesMetadata = ({ id, seriesId, site, type }: Props) => {
   const canRemoveLink = useMemo(() => site === 'TMDB', [site]);
 
   const addLink = () => {
-    navigate('../tmdb-linking');
+    navigate('../metadata-linking?source=TMDB');
   };
 
   const editLink = () => {
     if (!id || !type) return;
-    navigate(`../tmdb-linking?type=${type}&id=${id}`);
+    navigate(`../metadata-linking?source=TMDB&type=${type}&id=${id}`);
   };
 
   const removeLink = () => {
     if (!id) return;
     switch (site) {
       case 'TMDB':
-        deleteTmdbLink({ ID: id }, {
+        deleteTmdbLink({ ID: id.toString() }, {
           onSuccess: () => invalidateQueries(['series', seriesId]),
         });
         break;

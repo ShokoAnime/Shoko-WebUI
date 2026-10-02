@@ -4,18 +4,21 @@ import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useSetPreferredTmdbShowOrderingMutation } from '@/core/react-query/tmdb/mutations';
-import { useTmdbShowOrderingQuery } from '@/core/react-query/tmdb/queries';
+import { useSetPreferredMetadataOrderingMutation } from '@/core/react-query/metadata/mutations';
+import { useMetadataSeriesOrderingsQuery } from '@/core/react-query/metadata/queries';
 import toast from '@/core/toast';
 import useSyncedState from '@/hooks/useSyncedState';
 
 type Props = {
   onClose: () => void;
+  seriesId: string;
   show: boolean;
-  showId: number;
+  source: string;
+  sourceName: string;
 };
 
 const orderingDescriptionMap = {
+  Default: '',
   Unknown: ' (Unknown)',
   OriginalAirDate: ' (Original Air Date)',
   Absolute: ' (Absolute)',
@@ -24,23 +27,28 @@ const orderingDescriptionMap = {
   StoryArc: ' (Story Arc)',
   Production: ' (Production)',
   TV: ' (TV)',
-  default: '',
+  User: ' (User)',
 } as const;
 
-const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
-  const orderingQuery = useTmdbShowOrderingQuery(showId, show && showId > 0);
+const MetadataSeriesSettingsModal = ({ onClose, seriesId, show, source, sourceName }: Props) => {
+  const orderingQuery = useMetadataSeriesOrderingsQuery(source, seriesId, show);
 
-  const { isPending: setOrderingPending, mutate: setOrdering } = useSetPreferredTmdbShowOrderingMutation(showId);
+  const { isPending: setOrderingPending, mutate: setOrdering } = useSetPreferredMetadataOrderingMutation(
+    source,
+    seriesId,
+  );
 
-  const inUseOrdering = orderingQuery.data?.find(ordering => ordering.InUse)?.OrderingID ?? '';
+  const inUseOrdering = orderingQuery.data?.find(ordering => ordering.IsPreferred)?.ID ?? '';
   const [selectedOrdering, setSelectedOrdering] = useSyncedState(
     orderingQuery.data,
-    data => data?.find(ordering => ordering.InUse)?.OrderingID ?? '',
+    data => data?.find(ordering => ordering.IsPreferred)?.ID ?? '',
   );
 
   const handleSave = () => {
-    if (!selectedOrdering) return;
-    setOrdering(selectedOrdering, {
+    const ordering = orderingQuery.data?.find(item => item.ID === selectedOrdering);
+    if (!ordering) return;
+    // The default ordering is chosen by unsetting the preferred one.
+    setOrdering(ordering.IsDefault ? null : ordering.ID, {
       onSuccess: () => {
         toast.success('Ordering has been updated!');
         onClose();
@@ -55,7 +63,7 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header="TMDB Show Settings"
+      header={`${sourceName} Series Settings`}
       size="sm"
       overlayClassName="!z-[90]"
     >
@@ -70,14 +78,14 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
               <div className="flex h-full grow flex-col gap-y-2 overflow-y-auto">
                 {orderingQuery.data.map(ordering => (
                   <div
-                    key={ordering.OrderingID}
-                    onClick={() => setSelectedOrdering(ordering.OrderingID)}
+                    key={ordering.ID}
+                    onClick={() => setSelectedOrdering(ordering.ID)}
                     className={cx(
                       'flex cursor-pointer justify-between transition-colors',
-                      selectedOrdering === ordering.OrderingID && 'text-panel-text-primary',
+                      selectedOrdering === ordering.ID && 'text-panel-text-primary',
                     )}
                   >
-                    {`${ordering.OrderingName}${orderingDescriptionMap[ordering.OrderingType ?? 'default']}`}
+                    {`${ordering.Name}${orderingDescriptionMap[ordering.Type] ?? ''}`}
                     <div className="w-10 text-center">
                       {`${ordering.EpisodeCount}${
                         ordering.HiddenEpisodeCount > 0 ? `(+${ordering.HiddenEpisodeCount})` : ''
@@ -111,4 +119,4 @@ const TmdbShowSettingsModal = ({ onClose, show, showId }: Props) => {
   );
 };
 
-export default TmdbShowSettingsModal;
+export default MetadataSeriesSettingsModal;

@@ -9,19 +9,23 @@ import { useDebounceValue } from 'usehooks-ts';
 import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
+import SelectSmall from '@/components/Input/SelectSmall';
+import { isTmdbSource } from '@/core/react-query/metadata/helpers';
+import { useMetadataRefreshMutation } from '@/core/react-query/metadata/mutations';
+import { useMetadataSearchQuery, useSeriesMetadataAutoSearchQuery } from '@/core/react-query/metadata/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { useTmdbRefreshMutation } from '@/core/react-query/tmdb/mutations';
-import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/tmdb/queries';
 import toast from '@/core/toast';
 
-import type { AnimeTypeValues } from '@/core/types/api/series';
+import type { MetadataLinkType } from '@/core/react-query/metadata/types';
 import type {
-  TmdbAutoSearchOriginType,
-  TmdbAutoSearchRejectionType,
-  TmdbSearchResultType,
-} from '@/core/types/api/tmdb';
+  MetadataAutoSearchOriginType,
+  MetadataAutoSearchRejectionType,
+  MetadataLinkSourceType,
+  MetadataSearchResultType,
+} from '@/core/types/api/metadata';
+import type { AnimeTypeValues } from '@/core/types/api/series';
 
-const originLabels: Record<TmdbAutoSearchOriginType, string> = {
+const originLabels: Record<MetadataAutoSearchOriginType, string> = {
   Search: 'Search',
   CurrentLink: 'Current link',
   PrequelLink: 'Prequel link',
@@ -45,7 +49,7 @@ const rejectionLabels: Record<string, { description: string, label: string }> = 
   Other: { label: 'Not linked', description: 'The automatic search would not link it.' },
 };
 
-const getRejectionInfo = ({ Details, Reason }: TmdbAutoSearchRejectionType) => {
+const getRejectionInfo = ({ Details, Reason }: MetadataAutoSearchRejectionType) => {
   const known = rejectionLabels[Reason] as { description: string, label: string } | undefined;
   const why = Details ?? known?.description ?? 'The automatic search would not link it.';
   return {
@@ -55,14 +59,15 @@ const getRejectionInfo = ({ Details, Reason }: TmdbAutoSearchRejectionType) => {
 };
 
 type SearchResultRowProps = {
-  linkType: 'Show' | 'Movie';
-  origins?: TmdbAutoSearchOriginType[];
-  rejection?: TmdbAutoSearchRejectionType | null;
-  result: TmdbSearchResultType;
-  selectLink: (tmdbId: number) => void;
+  linkType: MetadataLinkType;
+  origins?: MetadataAutoSearchOriginType[];
+  rejection?: MetadataAutoSearchRejectionType | null;
+  result: MetadataSearchResultType;
+  selectLink: (id: string) => void;
+  source: string;
 };
 
-const SearchResultRow = ({ linkType, origins, rejection, result, selectLink }: SearchResultRowProps) => {
+const SearchResultRow = ({ linkType, origins, rejection, result, selectLink, source }: SearchResultRowProps) => {
   const handleClick = () => {
     selectLink(result.ID);
   };
@@ -71,15 +76,19 @@ const SearchResultRow = ({ linkType, origins, rejection, result, selectLink }: S
 
   return (
     <div className="flex items-center gap-x-4">
-      <a
-        className="flex w-24 cursor-pointer items-center justify-between font-semibold text-panel-text-primary"
-        href={`https://www.themoviedb.org/${linkType === 'Show' ? 'tv' : 'movie'}/${result.ID}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {result.ID}
-        <Icon path={mdiOpenInNew} size={0.9} />
-      </a>
+      {isTmdbSource(source)
+        ? (
+          <a
+            className="flex w-24 cursor-pointer items-center justify-between font-semibold text-panel-text-primary"
+            href={`https://www.themoviedb.org/${linkType === 'Show' ? 'tv' : 'movie'}/${result.ID}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {result.ID}
+            <Icon path={mdiOpenInNew} size={0.9} />
+          </a>
+        )
+        : <div className="line-clamp-1 w-24 shrink-0 font-semibold text-panel-text-primary">{result.ID}</div>}
       <div
         className="line-clamp-1 flex cursor-pointer items-center gap-x-4 hover:text-panel-text-primary"
         onClick={handleClick}
@@ -111,42 +120,61 @@ const SearchResultRow = ({ linkType, origins, rejection, result, selectLink }: S
   );
 };
 
-const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) => {
+type Props = {
+  seriesType?: AnimeTypeValues;
+  source: string;
+  sources?: MetadataLinkSourceType[];
+};
+
+const LinkSelectPanel = ({ seriesType, source, sources }: Props) => {
   const { seriesId } = useParams();
 
   const [, setSearchParams] = useSearchParams();
 
-  const [linkType, setLinkType] = useState<'Show' | 'Movie'>(seriesType === 'Movie' ? 'Movie' : 'Show');
-  const [selectedId, setSelectedId] = useState(0);
+  const sourceInfo = sources?.find(item => item.Source.toLowerCase() === source.toLowerCase());
+  const supportsSeries = sourceInfo?.SupportsSeries ?? true;
+  const supportsMovies = sourceInfo?.SupportsMovies ?? true;
+
+  const [preferredLinkType, setLinkType] = useState<MetadataLinkType>(seriesType === 'Movie' ? 'Movie' : 'Show');
+  let linkType = preferredLinkType;
+  if (linkType === 'Show' && !supportsSeries && supportsMovies) linkType = 'Movie';
+  if (linkType === 'Movie' && !supportsMovies && supportsSeries) linkType = 'Show';
+  const [selectedId, setSelectedId] = useState('');
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
 
   const { includeRestricted } = useSettingsQuery().data.WebUI_Settings.collection.tmdb;
 
-  const autoSearchQuery = useTmdbAutoSearchQuery(toNumber(seriesId), debouncedSearch === '' && !!seriesId);
+  const autoSearchQuery = useSeriesMetadataAutoSearchQuery(
+    toNumber(seriesId),
+    source,
+    debouncedSearch === '' && !!seriesId,
+  );
   const autoSearchResults = useMemo(() => {
     if (!autoSearchQuery.data) return [];
 
     // The server lists every scored candidate, accepted ones first, and may list one entry once per origin,
     // so each entry is shown once with every origin that found it. It counts as rejected only when every
     // origin's entry is, and then shows the first rejection.
-    const candidates = autoSearchQuery.data.filter(result => result.IsMovie === (linkType === 'Movie'));
-    const candidatesById = groupBy(candidates, candidate => candidate[linkType].ID);
-    return uniqBy(candidates, candidate => candidate[linkType].ID).map((candidate) => {
-      const group = candidatesById[candidate[linkType].ID];
+    const candidates = autoSearchQuery.data.filter(
+      candidate => (candidate.Result.Type === 'Movie') === (linkType === 'Movie'),
+    );
+    const candidatesById = groupBy(candidates, candidate => candidate.ID);
+    return uniqBy(candidates, candidate => candidate.ID).map((candidate) => {
+      const group = candidatesById[candidate.ID];
       return {
         origins: uniq(map(group, 'Origin')),
         rejection: find(group, entry => entry.Rejection === null) ? null : candidate.Rejection,
-        result: candidate[linkType],
+        result: candidate.Result,
       };
     });
   }, [autoSearchQuery.data, linkType]);
 
-  const searchQuery = useTmdbSearchQuery(linkType, debouncedSearch, {
+  const searchQuery = useMetadataSearchQuery(source, linkType, debouncedSearch, {
     includeRestricted,
     pageSize: 25,
   });
-  const { isPending: refreshPending, mutate: refreshData } = useTmdbRefreshMutation(linkType);
+  const { isPending: refreshPending, mutate: refreshData } = useMetadataRefreshMutation(source, linkType);
 
   const noResults = useMemo(() => {
     if (debouncedSearch === '') return autoSearchResults.length === 0;
@@ -158,31 +186,44 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
     [autoSearchQuery.isLoading, refreshPending, searchQuery.isLoading],
   );
 
-  const selectLink = (tmdbId: number) => {
-    setSelectedId(tmdbId);
+  const selectLink = (id: string) => {
+    setSelectedId(id);
+  };
+
+  const changeSource = (newSource: string) => {
+    setSelectedId('');
+    setSearchParams({ source: newSource });
   };
 
   useEffect(() => {
-    if (selectedId === 0) return;
+    if (selectedId === '') return;
 
     refreshData(
       {
-        tmdbId: selectedId,
+        id: selectedId,
         Immediate: true,
         SkipIfExists: true,
       },
       {
-        onSuccess: () => setSearchParams({ type: linkType, id: selectedId.toString() }),
+        onSuccess: () => setSearchParams({ source, type: linkType, id: selectedId }),
         onError: () => toast.error('Failed to refresh data!'),
       },
     );
-  }, [linkType, refreshData, selectedId, setSearchParams]);
+  }, [linkType, refreshData, selectedId, setSearchParams, source]);
 
   return (
     <div className="row-span-2 flex flex-col gap-y-2">
       <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-        <div className="flex items-center">
-          TMDB |&nbsp;
+        <div className="flex items-center gap-x-2">
+          <SelectSmall
+            id="link-source"
+            value={sourceInfo?.Source ?? source}
+            onChange={event => changeSource(event.target.value)}
+          >
+            {!sourceInfo && <option value={source}>{source}</option>}
+            {sources?.map(item => <option key={item.Source} value={item.Source}>{item.Name}</option>)}
+          </SelectSmall>
+          |
           <div>
             Not linked
           </div>
@@ -193,6 +234,7 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
               'flex gap-x-2 transition-colors hover:text-panel-text-primary',
               linkType === 'Show' && 'text-panel-text-primary',
             )}
+            disabled={!supportsSeries}
             onClick={() => setLinkType('Show')}
           >
             <Icon path={mdiTelevision} size={1} />
@@ -204,6 +246,7 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
               'flex gap-x-2 transition-colors hover:text-panel-text-primary',
               linkType === 'Movie' && 'text-panel-text-primary',
             )}
+            disabled={!supportsMovies}
             onClick={() => setLinkType('Movie')}
           >
             <Icon path={mdiFilmstrip} size={1} />
@@ -217,7 +260,7 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
         type="text"
         value={searchText}
         onChange={event => setSearchText(event.target.value)}
-        placeholder="Enter Title or TMDB ID..."
+        placeholder={`Enter Title or ${sourceInfo?.Name ?? source} ID...`}
         inputClassName="!p-4"
         startIcon={mdiMagnify}
         autoFocus
@@ -245,6 +288,7 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
                 result={result}
                 linkType={linkType}
                 selectLink={selectLink}
+                source={source}
               />
             ))}
 
@@ -254,6 +298,7 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
                 result={result}
                 linkType={linkType}
                 selectLink={selectLink}
+                source={source}
               />
             ))}
 
@@ -269,4 +314,4 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
   );
 };
 
-export default TmdbLinkSelectPanel;
+export default LinkSelectPanel;
