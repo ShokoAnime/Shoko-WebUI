@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams, useSearchParams } from 'react-router';
 import { mdiCogOutline, mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -13,6 +13,7 @@ import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeRow from '@/components/Collection/Tmdb/EpisodeRow';
 import LinkSelectPanel from '@/components/Collection/Tmdb/LinkSelectPanel';
 import MovieRow from '@/components/Collection/Tmdb/MovieRow';
+import SourcePicker from '@/components/Collection/Tmdb/SourcePicker';
 import TopPanel from '@/components/Collection/Tmdb/TopPanel';
 import MetadataSeriesSettingsModal from '@/components/Dialogs/MetadataSeriesSettingsModal';
 import Button from '@/components/Input/Button';
@@ -49,7 +50,8 @@ const MetadataLinking = () => {
   }
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const source = searchParams.get('source') ?? 'TMDB';
+  // Without a source, the page lists the sources to pick one from.
+  const source = searchParams.get('source') ?? '';
   const type = useMemo(() => searchParams.get('type') ?? null, [searchParams]) as MetadataLinkType | null;
   const linkId = searchParams.get('id') ?? '';
 
@@ -59,12 +61,20 @@ const MetadataLinking = () => {
     source,
     linkId,
     { search: '', pageSize: 30 },
-    type === 'Show',
+    !!source && type === 'Show',
   );
   const showEpisodeMapping = type === 'Show' && (linkedEpisodesQuery.data?.pages[0]?.Total ?? 0) > 0;
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
   const sourcesQuery = useMetadataLinkSourcesQuery();
+  const linkableSources = sourcesQuery.data?.filter(item => item.IsSeriesEnabled || item.IsMovieEnabled);
+  // Picking a source replaces the page in the history, so going back returns to the series.
+  const pickSource = (newSource: string) => setSearchParams({ source: newSource }, { replace: true });
+  // With only one source to link, there is nothing to pick.
+  const onlySource = !source && linkableSources?.length === 1 ? linkableSources[0].Source : undefined;
+  useEffect(() => {
+    if (onlySource) setSearchParams({ source: onlySource }, { replace: true });
+  }, [onlySource, setSearchParams]);
   const sourceInfo = sourcesQuery.data?.find(item => item.Source.toLowerCase() === source.toLowerCase());
   const sourceName = sourceInfo?.Name ?? source;
 
@@ -73,7 +83,7 @@ const MetadataLinking = () => {
 
   const [createInProgress, setCreateInProgress] = useState(false);
 
-  const crossReferencesQuery = useSeriesMetadataCrossReferencesQuery(seriesId, source, !!seriesId);
+  const crossReferencesQuery = useSeriesMetadataCrossReferencesQuery(seriesId, source, !!seriesId && !!source);
   const isNewLink = useMemo(() => {
     if (!linkId || !type || !crossReferencesQuery.data) return false;
     return !crossReferencesQuery.data.some(xref => xref.EntityType === type && xref.ID === linkId);
@@ -88,7 +98,7 @@ const MetadataLinking = () => {
       type: ['Episode', 'Special', 'Other'],
       pageSize: 50,
     },
-    !!seriesId,
+    !!seriesId && !!source,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
 
@@ -136,7 +146,7 @@ const MetadataLinking = () => {
     showEpisodeMapping && lastPageIds.length > 0,
   );
 
-  const linkedEntryQuery = useMetadataLookupQuery(source, type ?? 'Show', linkId, !!type);
+  const linkedEntryQuery = useMetadataLookupQuery(source, type ?? 'Show', linkId, !!source && !!type);
 
   const { scrollRef } = useOutletContext<SeriesContextType>();
 
@@ -371,13 +381,26 @@ const MetadataLinking = () => {
         xrefsCount={showEpisodeMapping ? undefined : movieXrefCount}
       />
       <div className="flex grow flex-col rounded-lg border border-panel-border bg-panel-background px-4 py-6">
-        {(seriesQuery.isPending || episodesQuery.isPending || linkedEpisodesQuery.isLoading) && (
+        {!source && (
+          <div className="grid grid-cols-2 gap-2">
+            <SourcePicker
+              linkedIds={seriesQuery.data?.IDs.Linked ?? {}}
+              onPick={pickSource}
+              sources={onlySource ? undefined : linkableSources}
+            />
+            <div className="flex items-center justify-center rounded-lg border border-panel-border p-4 opacity-65">
+              Pick a source to search it for a series or movie to link.
+            </div>
+          </div>
+        )}
+
+        {!!source && (seriesQuery.isPending || episodesQuery.isPending || linkedEpisodesQuery.isLoading) && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
         )}
 
-        {(seriesQuery.data && episodesQuery.data && !linkedEpisodesQuery.isLoading) && (
+        {!!source && seriesQuery.data && episodesQuery.data && !linkedEpisodesQuery.isLoading && (
           <div
             className={cx(
               'grid grid-rows-[auto_minmax(0,1fr)] gap-2',
@@ -490,13 +513,7 @@ const MetadataLinking = () => {
                   )}
                 </div>
               )
-              : (
-                <LinkSelectPanel
-                  seriesType={seriesQuery.data?.AniDB?.Type}
-                  source={source}
-                  sources={sourcesQuery.data}
-                />
-              )}
+              : <LinkSelectPanel seriesType={seriesQuery.data?.AniDB?.Type} source={source} sourceInfo={sourceInfo} />}
 
             <div
               className={cx(

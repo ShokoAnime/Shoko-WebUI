@@ -13,6 +13,16 @@ export type MetadataLinkSourceType = {
   SupportsMovies: boolean;
   IsSeriesEnabled: boolean;
   IsMovieEnabled: boolean;
+  Status: MetadataSourceStatusType;
+};
+
+/** Whether a source is configured, and whether it is paused. */
+export type MetadataSourceStatusType = {
+  IsConfigured: boolean;
+  NotConfiguredReason: string | null;
+  IsPaused: boolean;
+  Reason: string | null;
+  ResumesAt: string | null;
 };
 
 export type MetadataSearchResultType = {

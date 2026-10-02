@@ -125,7 +125,6 @@ const router = sentryCreateBrowserRouter(
               <Route path="tags" element={<SeriesTags />} />
             </Route>
             <Route path="series/:seriesId/metadata-linking" element={<MetadataLinking />} />
-            <Route path="series/:seriesId/tmdb-linking" element={<MetadataLinking />} />
           </Route>
           <Route path="settings" element={<SettingsPage />}>
             <Route index element={<Navigate to="general" replace />} />

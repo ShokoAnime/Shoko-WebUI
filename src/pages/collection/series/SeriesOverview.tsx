@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router';
-import { mdiEarth, mdiOpenInNew } from '@mdi/js';
+import { Link, useOutletContext } from 'react-router';
+import { mdiEarth, mdiOpenInNew, mdiPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, map, round, sortBy } from 'lodash';
@@ -51,31 +51,20 @@ const SeriesOverview = () => {
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(series.IDs.ID).data;
 
-  // Every source but AniDB, TMDB first: the ones that can be linked, and any other the series is still linked to.
+  // Every source but AniDB the series is linked to, TMDB first.
   const sourcesQuery = useMetadataLinkSourcesQuery();
-  const linkedIds = series.IDs.Linked;
-  const findLinkedIds = (source: string) =>
-    Object.entries(linkedIds).find(([key]) => key.toLowerCase() === source.toLowerCase())?.[1] ?? [];
-  const otherSources = sortBy(
-    [
-      ...(sourcesQuery.data ?? []).map(item => ({
-        canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
-        hasIcon: item.HasIcon,
-        linkedIds: findLinkedIds(item.Source),
-        name: item.Name,
-        source: item.Source,
-      })),
-      ...Object.entries(linkedIds)
-        .filter(([key]) =>
-          key.toLowerCase() !== 'anidb'
-          && !sourcesQuery.data?.some(item => item.Source.toLowerCase() === key.toLowerCase())
-        )
-        .map(([key, ids]) => ({ canLink: false, hasIcon: false, linkedIds: ids, name: key, source: key })),
-    ],
+  const linkedSources = sortBy(
+    Object.entries(series.IDs.Linked)
+      .filter(([key, ids]) => key.toLowerCase() !== 'anidb' && ids.length > 0)
+      .map(([key, ids]) => {
+        const sourceInfo = sourcesQuery.data?.find(item => item.Source.toLowerCase() === key.toLowerCase());
+        return { hasIcon: sourceInfo?.HasIcon ?? false, linkedIds: ids, name: sourceInfo?.Name ?? key, source: key };
+      }),
     item => !isTmdbSource(item.source),
   );
-  const linkRowCount = 1
-    + otherSources.reduce((count, item) => count + item.linkedIds.length + (item.canLink ? 1 : 0), 0);
+  const canAddLink = sourcesQuery.data?.some(item => item.IsSeriesEnabled || item.IsMovieEnabled) ?? false;
+  const linkRowCount = 1 + (canAddLink ? 1 : 0)
+    + linkedSources.reduce((count, item) => count + item.linkedIds.length, 0);
 
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
     const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
@@ -110,10 +99,9 @@ const SeriesOverview = () => {
                   seriesId={series.IDs.ID}
                   siteUrl={getAnidbAnimeLink(series.IDs.AniDB)}
                 />
-                {otherSources.map(item => (
+                {linkedSources.map(item => (
                   <SeriesSourceLinks
                     key={item.source}
-                    canLink={item.canLink}
                     hasIcon={item.hasIcon}
                     linkedIds={item.linkedIds}
                     name={item.name}
@@ -121,6 +109,15 @@ const SeriesOverview = () => {
                     source={item.source}
                   />
                 ))}
+                {canAddLink && (
+                  <Link
+                    to="../metadata-linking"
+                    className="flex w-full shrink-0 items-center justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 font-semibold text-panel-text-primary transition-colors hover:bg-panel-toggle-background-hover"
+                  >
+                    Add link
+                    <Icon path={mdiPlus} size={1} />
+                  </Link>
+                )}
               </div>
             )}
             {series && currentTab === 'links' && (
