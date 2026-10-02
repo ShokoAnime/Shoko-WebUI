@@ -40,8 +40,8 @@ import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
+import MetadataSettings from '@/pages/settings/tabs/MetadataSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
-import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
@@ -132,7 +132,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="import" element={<ImportSettings />} />
             <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
-            <Route path="tmdb" element={<TmdbSettings />} />
+            <Route path="metadata" element={<MetadataSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="plugin-management">

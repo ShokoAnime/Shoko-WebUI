@@ -11,7 +11,7 @@ import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
-import TMDBTab from './MetadataSourcesTabs/TMDBTab';
+import MetadataTab from './MetadataSourcesTabs/MetadataTab';
 
 const TabButton = (
   { active, setActiveTab, tabKey, title }: {
@@ -42,8 +42,8 @@ const TabContent = ({ tab }: { tab: string }) => {
   switch (tab) {
     case 'anidb':
       return <AniDBTab />;
-    case 'moviedb':
-      return <TMDBTab />;
+    case 'metadata':
+      return <MetadataTab />;
     default:
       return <AniDBTab />;
   }
@@ -66,11 +66,10 @@ const MetadataSources = () => {
     <>
       <title>First Run &gt; Metadata Sources | Shoko</title>
       <TransitionDiv className="flex max-w-152 flex-col justify-center gap-y-6 overflow-y-auto">
-        <div className="text-xl font-semibold">Metadata Sites</div>
+        <div className="text-xl font-semibold">Metadata Sources</div>
         <div className="text-justify">
-          Shoko offers support for various community sites that provide additional metadata for the series in your
-          collection. We highly recommend that you review the settings for each site and configure them to meet your
-          preferences.
+          Shoko gets the metadata for the series in your collection from AniDB and from the sources its plugins add. We
+          highly recommend that you review the settings for each source and configure them to meet your preferences.
         </div>
         <div className="flex items-center gap-x-2 pb-3 text-xl font-semibold">
           <div>Recently Imported</div>
@@ -83,10 +82,10 @@ const MetadataSources = () => {
           />
           |
           <TabButton
-            active={activeTab === 'moviedb'}
+            active={activeTab === 'metadata'}
             setActiveTab={setActiveTab}
-            tabKey="moviedb"
-            title="TMDB"
+            tabKey="metadata"
+            title="Metadata"
           />
         </div>
         <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">

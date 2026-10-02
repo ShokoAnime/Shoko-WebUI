@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 /* global globalThis */
 import { NavLink, Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
@@ -9,6 +9,7 @@ import { groupBy, isEmpty, isEqual, map } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
+import { emptyMetadataDraft, isMetadataDraftEmpty, saveMetadataDraft } from '@/core/react-query/metadata/draft';
 import { usePluginPagesQuery } from '@/core/react-query/plugin/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -24,7 +25,7 @@ const items = [
   { name: 'Import', path: 'import' },
   { name: 'Hashing & Release', path: 'hashing-release' },
   { name: 'AniDB', path: 'anidb' },
-  { name: 'TMDB', path: 'tmdb' },
+  { name: 'Metadata', path: 'metadata' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
   { name: 'Plugin Management', path: 'plugin-management' },
@@ -42,20 +43,23 @@ const SettingsPage = () => {
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
-  const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
+  const { isPending: settingsPatchPending, mutateAsync: patchSettings } = usePatchSettingsMutation();
 
   const pluginPages = usePluginPagesQuery().data;
 
   const pluginGroups = groupBy(pluginPages, page => page.PluginInfo.ID);
 
   const [newSettings, setNewSettings] = useSyncedState(settings);
+  // The metadata page's provider changes, kept here so they wait for Save like the settings.
+  const [metadataDraft, setMetadataDraft] = useState(emptyMetadataDraft);
+  const [isProviderSavePending, setIsProviderSavePending] = useState(false);
 
   // Clear any leftover theme preview when (re)entering the settings page.
   useEffect(() => {
     dispatch(setMiscItem({ webuiPreviewTheme: null }));
   }, [dispatch]);
 
-  const unsavedChanges = useMemo(
+  const settingsChanged = useMemo(
     () => {
       // if Username is null, settings haven't been copied yet into newSettings
       if (!settingsQuery.isSuccess || !newSettings?.AniDb.Username) return false;
@@ -63,6 +67,7 @@ const SettingsPage = () => {
     },
     [newSettings, settings, settingsQuery.isSuccess],
   );
+  const unsavedChanges = settingsChanged || !isMetadataDraftEmpty(metadataDraft);
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   const isSpecialPage = useMemo(() => {
@@ -118,7 +123,9 @@ const SettingsPage = () => {
   };
 
   const settingContext = {
+    metadataDraft,
     newSettings,
+    setMetadataDraft,
     setNewSettings,
     updateSetting,
   };
@@ -137,7 +144,28 @@ const SettingsPage = () => {
     }
   };
 
-  const validateAndPatchSettings = () => {
+  // The settings go first, then the provider changes, a source at a time. A failed part shows its error and stays
+  // unsaved for another try, while the rest are still sent.
+  const saveAll = async () => {
+    if (settingsChanged) {
+      try {
+        await patchSettings(newSettings);
+        // The saved theme is now persisted; drop the in-memory preview once the settings round-trip.
+        dispatch(setMiscItem({ webuiPreviewTheme: null }));
+      } catch {
+        // The error is shown by the mutation, and the settings stay unsaved.
+      }
+    }
+
+    if (!isMetadataDraftEmpty(metadataDraft)) {
+      setIsProviderSavePending(true);
+      const remaining = await saveMetadataDraft(metadataDraft).catch(() => metadataDraft);
+      setMetadataDraft(remaining);
+      setIsProviderSavePending(false);
+    }
+  };
+
+  const validateAndSave = () => {
     if (!isHttpServerUrlValid()) {
       toast.error(
         'Invalid HTTP Server URL',
@@ -156,14 +184,12 @@ const SettingsPage = () => {
       return;
     }
 
-    patchSettings(newSettings, {
-      // The saved theme is now persisted; drop the in-memory preview once the settings round-trip.
-      onSuccess: () => dispatch(setMiscItem({ webuiPreviewTheme: null })),
-    });
+    saveAll().catch(console.error);
   };
 
   const handleCancel = () => {
     setNewSettings(settings);
+    setMetadataDraft(emptyMetadataDraft);
     dispatch(setMiscItem({ webuiPreviewTheme: '' }));
   };
 
@@ -269,10 +295,10 @@ const SettingsPage = () => {
                     Cancel
                   </Button>
                   <Button
-                    onClick={validateAndPatchSettings}
+                    onClick={validateAndSave}
                     buttonType="primary"
                     buttonSize="normal"
-                    loading={settingsPatchPending}
+                    loading={settingsPatchPending || isProviderSavePending}
                     disabled={!unsavedChanges}
                   >
                     Save

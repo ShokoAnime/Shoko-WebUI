@@ -1,4 +1,6 @@
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { MatchRatingValues } from '@/core/types/api/episode';
+import type { PluginInfoType } from '@/core/types/api/plugin';
 
 /** A source series or movies can be linked to, from `GET Metadata/Source`. */
 export type MetadataLinkSourceType = {
@@ -123,4 +125,61 @@ export type MetadataSeriesOrderingType = {
   EpisodeCount: number;
   HiddenEpisodeCount: number;
   SeasonCount: number;
+};
+
+/** A metadata provider, from `GET Metadata/Provider`. */
+export type MetadataProviderType = {
+  ID: string;
+  Name: string;
+  Description: string;
+  Version: string;
+  /** The source the provider answers for, as routes take it. */
+  Source: string;
+  Plugin: PluginInfoType;
+  PluginID: string;
+  /** Whether the provider's source has an icon, served at `Metadata/Source/{source}/Icon`. */
+  HasIcon: boolean;
+  /** The provider's own configuration, saved through `Configuration/{id}`, if it has one. */
+  Configuration: ConfigurationInfoType | null;
+  SupportsSeries: boolean;
+  SupportsMovies: boolean;
+  SupportsCollections: boolean;
+  SupportsImages: boolean;
+  SupportsAutoLinking: boolean;
+  SupportsLookup: boolean;
+  SupportsPausing: boolean;
+  /** The kinds of entries the provider can answer for, such as `Show`, `Movie` or `Episode`. */
+  AvailableEntityTypes: string[];
+  MaxConcurrentJobs: number | null;
+  IsEnabled: boolean;
+  /** The kinds of entries the provider is on for. */
+  EnabledEntityTypes: string[];
+  IsConfigured: boolean;
+  NotConfiguredReason: string | null;
+  /** Whether this is the provider that works out what an anime is for its source. */
+  IsAutoLinker: boolean;
+  /** Whether the source links new anime on its own. */
+  AutoLink: boolean;
+  /** Whether the source's automatic links may point at restricted entries. */
+  AutoLinkRestricted: boolean;
+  Status: MetadataSourceStatusType;
+};
+
+/** One provider's place in the order of a kind, from `GET Metadata/Source/{source}/Providers`. */
+export type MetadataSourceProviderType = {
+  ProviderID: string;
+  Name: string;
+  PluginID: string;
+  /** The place in the order, from 0 for the first. */
+  Priority: number;
+  /** Whether it may answer, now or once those before it are off. */
+  IsEnabled: boolean;
+  /** Whether it is the one answering: the first enabled one. The other enabled ones stand by. */
+  IsActive: boolean;
+};
+
+/** The providers claiming one kind of a source, in the order they are tried, from `GET Metadata/Source/{source}/Providers`. */
+export type MetadataSourceProvidersType = {
+  EntityType: string;
+  Providers: MetadataSourceProviderType[];
 };

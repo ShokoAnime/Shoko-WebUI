@@ -71,197 +71,41 @@ export type SettingsAnidbUpdateType = {
   Notification_HandleMovedFiles: boolean;
 };
 
-export type SettingsTMDBType = {
-  /**
-   * Automagically link AniDB anime to TMDB shows and movies.
-   *
-   * @default false
-   */
-  AutoLink: boolean;
-
-  /**
-   * Automagically link restricted AniDB anime to TMDB shows and movies.
-   * {@link AutoLink} also needs to be set for this setting to take
-   * effect.
-   *
-   * @default false
-   */
-  AutoLinkRestricted: boolean;
-
-  /**
-   * Indicates that all titles should be stored locally for the TMDB entity,
-   * otherwise it will use
-   * {@link LanguageSettings.SeriesTitleLanguageOrder} or
-   * {@link LanguageSettings.EpisodeTitleLanguageOrder} depending
-   * on the entity type to determine which titles to store locally.
-   *
-   * @default false
-   */
-  DownloadAllTitles: boolean;
-
-  /**
-   * Indicates that all overviews should be stored locally for the TMDB
-   * entity, otherwise it will use
-   * {@link LanguageSettings.DescriptionLanguageOrder} to determine
-   * which overviews should be stored locally.
-   *
-   * @default false
-   */
-  DownloadAllOverviews: boolean;
-
-  /**
-   * Image language preference order. Images in other languages are not
-   * downloaded, unless the list is empty. `none` matches images without a
-   * language, and `x-main` matches the main language of the TMDB entity.
-   *
-   * @default ['none', 'x-main', 'en']
-   */
+/** Which images to download for a metadata source, per image type. A max of `0` is no limit. */
+export type SettingsMetadataImageType = {
+  /** Image language preference order. `none` is an image without text, `x-main` the entry's own language. */
   ImageLanguageOrder: string[];
-
-  /**
-   * Automagically download crew and cast for movies and tv shows in the
-   * local collection.
-   *
-   * @default false
-   */
-  AutoDownloadCrewAndCast: boolean;
-
-  /**
-   * Automagically download collections for movies and tv shows in the local
-   * collection.
-   *
-   * @default false
-   */
-  AutoDownloadCollections: boolean;
-
-  /**
-   * Automagically download episode groups to use with alternate ordering
-   * for tv shows.
-   *
-   * @default false
-   */
-  AutoDownloadAlternateOrdering: boolean;
-
-  /**
-   * Automagically download backdrops for TMDB entities that supports
-   * backdrops up to {@link MaxAutoBackdrops} images per entity.
-   *
-   * @default true
-   */
   AutoDownloadBackdrops: boolean;
-
-  /**
-   * The maximum number of backdrops to download for each TMDB entity that
-   * supports backdrops.
-   *
-   * @remarks
-   *
-   * Set to `0` to disable the limit.
-   *
-   * @default 10
-   * @min 0
-   * @max 30
-   */
   MaxAutoBackdrops: number;
-
-  /**
-   * Automagically download posters for TMDB entities that supports
-   * posters up to {@link MaxAutoPosters} images per entity.
-   *
-   * @default true
-   */
   AutoDownloadPosters: boolean;
-
-  /**
-   * The maximum number of posters to download for each TMDB entity that
-   * supports posters.
-   *
-   * @remarks
-   *
-   * Set to `0` to disable the limit.
-   *
-   * @default 10
-   * @min 0
-   * @max 30
-   */
   MaxAutoPosters: number;
-
-  /**
-   * Automagically download logos for TMDB entities that supports
-   * logos up to {@link MaxAutoLogos} images per entity.
-   * @default true
-   */
   AutoDownloadLogos: boolean;
-
-  /**
-   * The maximum number of logos to download for each TMDB entity that
-   * supports logos.
-   *
-   * @remarks
-   *
-   * Set to `0` to disable the limit.
-   *
-   * @default 10
-   * @min 0
-   * @max 30
-   */
   MaxAutoLogos: number;
-
-  /**
-   * Automagically download thumbnail images for TMDB entities that supports
-   * thumbnails.
-   *
-   * @default true
-   */
+  AutoDownloadBanners: boolean;
+  MaxAutoBanners: number;
   AutoDownloadThumbnails: boolean;
-
-  /**
-   * The maximum number of thumbnail images to download for each TMDB entity
-   * that supports thumbnail images.
-   *
-   * @remarks
-   *
-   * Set to `0` to disable the limit.
-   *
-   * @default 10
-   * @min 0
-   * @max 30
-   */
   MaxAutoThumbnails: number;
-
-  /**
-   * Automagically download staff member and voice-actor images.
-   * @default true
-   */
   AutoDownloadStaffImages: boolean;
-
-  /**
-   * The maximum number of staff member and voice-actor images to download
-   * for each TMDB entity that supports staff member and voice-actor images.
-   *
-   * @remarks
-   *
-   * Set to `0` to disable the limit.
-   *
-   * @default 10
-   * @min 0
-   * @max 30
-   */
   MaxAutoStaffImages: number;
-
-  /**
-   * Automagically download studio and company images.
-   *
-   * @default true
-   */
   AutoDownloadStudioImages: boolean;
+};
 
-  /**
-   * Optional. User provided TMDB API key to use.
-   *
-   * @default null
-   */
-  UserApiKey: string | null;
+/** The image settings of one source, TMDB or a plugin source, in place of the defaults. */
+export type SettingsMetadataSourceImageType = SettingsMetadataImageType & {
+  Source: string;
+};
+
+export type SettingsImageType = {
+  /** Which images to download for a source without settings of its own. */
+  MetadataSourceDefaults: SettingsMetadataImageType;
+  MetadataSources: SettingsMetadataSourceImageType[];
+};
+
+export type SettingsMetadataType = {
+  /** Days a creator, character, studio or network may go unused before it is purged. */
+  PurgeOrphanedAfterDays: number;
+  /** Days a series, movie or collection may stay stored with nothing linking to it, or `0` to keep them. */
+  AutoPurgeUnlinkedAfterDays: number;
 };
 
 export type SettingsLanguageType = {
@@ -403,7 +247,8 @@ export type SettingsServerType = {
     & SettingsAnidbDownloadType
     & SettingsAnidbUpdateType
     & { MyList: SettingsAnidbMyListType };
-  TMDB: SettingsTMDBType;
+  Image: SettingsImageType;
+  Metadata: SettingsMetadataType;
   Language: SettingsLanguageType;
   Plex: SettingsPlexType;
   Logging: SettingsLoggingType;

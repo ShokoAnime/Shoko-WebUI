@@ -355,27 +355,28 @@ export const initialSettings: SettingsType = {
     },
     Notification_HandleMovedFiles: false,
   },
-  TMDB: {
-    AutoLink: false,
-    AutoLinkRestricted: false,
-    DownloadAllTitles: false,
-    DownloadAllOverviews: false,
-    ImageLanguageOrder: ['none', 'x-main', 'en'],
-    AutoDownloadCrewAndCast: false,
-    AutoDownloadCollections: false,
-    AutoDownloadAlternateOrdering: false,
-    AutoDownloadBackdrops: true,
-    MaxAutoBackdrops: 10,
-    AutoDownloadPosters: true,
-    MaxAutoPosters: 10,
-    AutoDownloadLogos: true,
-    MaxAutoLogos: 10,
-    AutoDownloadThumbnails: true,
-    MaxAutoThumbnails: 10,
-    AutoDownloadStaffImages: true,
-    MaxAutoStaffImages: 10,
-    AutoDownloadStudioImages: true,
-    UserApiKey: null,
+  Image: {
+    MetadataSourceDefaults: {
+      ImageLanguageOrder: ['none', 'x-main', 'en'],
+      AutoDownloadBackdrops: true,
+      MaxAutoBackdrops: 10,
+      AutoDownloadPosters: true,
+      MaxAutoPosters: 10,
+      AutoDownloadLogos: true,
+      MaxAutoLogos: 10,
+      AutoDownloadBanners: true,
+      MaxAutoBanners: 10,
+      AutoDownloadThumbnails: true,
+      MaxAutoThumbnails: 1,
+      AutoDownloadStaffImages: true,
+      MaxAutoStaffImages: 10,
+      AutoDownloadStudioImages: true,
+    },
+    MetadataSources: [],
+  },
+  Metadata: {
+    PurgeOrphanedAfterDays: 7,
+    AutoPurgeUnlinkedAfterDays: 14,
   },
   Language: {
     UseSynonyms: false,
@@ -497,7 +498,7 @@ export const transformSupportedLanguages = (response: SupportedLanguagesResponse
   };
 };
 
-// TMDB images can have no language (e.g. textless posters), which the server stores as "none". It is not one of
+// Images can have no language (e.g. textless posters), which the server stores as "none". It is not one of
 // the supported naming languages, so add it after "x-main" for the image language preference.
 export const addNoLanguageOption = (languages: Record<string, string>): Record<string, string> => {
   if (isEmpty(languages)) return languages;

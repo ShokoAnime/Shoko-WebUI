@@ -97,3 +97,12 @@ export type FormSchemaType = JSONSchema4 & {
   properties: Record<string, PropertySchemaType>;
   type: 'object';
 };
+
+/** What a save or an action on a configuration did, from `PUT Configuration/{id}`. */
+export type ConfigurationActionResultType = {
+  ShowSaveMessage: boolean;
+  Refresh: boolean;
+  Messages: { Title?: string, Message: string, Theme?: string }[];
+  /** The errors, by member path, when the configuration was refused. */
+  ValidationErrors: Record<string, string[]> | null;
+};
