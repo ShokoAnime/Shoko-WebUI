@@ -1,15 +1,9 @@
 import { Link } from 'react-router';
-import {
-  mdiCloseCircleOutline,
-  mdiDatabaseOutline,
-  mdiOpenInNew,
-  mdiPencilCircleOutline,
-  mdiPlusCircleOutline,
-} from '@mdi/js';
+import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
+import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import Button from '@/components/Input/Button';
-import { isTmdbSource } from '@/core/react-query/metadata/helpers';
 import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
@@ -17,6 +11,8 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 import type { MetadataLinkType } from '@/core/react-query/metadata/types';
 
 type Props = {
+  /** Whether the server has an icon for the source. */
+  hasIcon?: boolean;
   seriesId: number;
   /** `AniDB`, or the source as the metadata routes take it. */
   site: string;
@@ -28,7 +24,7 @@ type Props = {
   type?: MetadataLinkType;
 };
 
-const SeriesMetadata = ({ id, seriesId, site, siteName = site, siteUrl, type }: Props) => {
+const SeriesMetadata = ({ hasIcon, id, seriesId, site, siteName = site, siteUrl, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, site, type ?? 'Movie');
 
@@ -58,9 +54,9 @@ const SeriesMetadata = ({ id, seriesId, site, siteName = site, siteUrl, type }: 
     <div className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3">
       <div className="flex justify-between">
         <div className="flex gap-x-4">
-          {isAnidb || isTmdbSource(site)
-            ? <div className={`metadata-link-icon ${site}`} />
-            : <Icon className="shrink-0 text-panel-icon" path={mdiDatabaseOutline} size={1} />}
+          {isAnidb
+            ? <div className="metadata-link-icon AniDB" />
+            : <MetadataSourceIcon hasIcon={hasIcon} source={site} />}
           {id && siteUrl && (
             <a
               href={siteUrl}

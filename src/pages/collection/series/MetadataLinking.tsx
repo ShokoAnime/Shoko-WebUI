@@ -8,6 +8,7 @@ import { debounce, every, filter, forEach, groupBy, isEqual, map, reduce, some, 
 import { useImmer } from 'use-immer';
 import { useToggle } from 'usehooks-ts';
 
+import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeRow from '@/components/Collection/Tmdb/EpisodeRow';
 import LinkSelectPanel from '@/components/Collection/Tmdb/LinkSelectPanel';
@@ -64,8 +65,8 @@ const MetadataLinking = () => {
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
   const sourcesQuery = useMetadataLinkSourcesQuery();
-  const sourceName = sourcesQuery.data?.find(item => item.Source.toLowerCase() === source.toLowerCase())?.Name
-    ?? source;
+  const sourceInfo = sourcesQuery.data?.find(item => item.Source.toLowerCase() === source.toLowerCase());
+  const sourceName = sourceInfo?.Name ?? source;
 
   const [showSettingsModal, toggleSettingsModal] = useToggle();
   const showSettings = type === 'Show' && !!linkId;
@@ -384,7 +385,8 @@ const MetadataLinking = () => {
             )}
           >
             <div className="flex items-center rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-              <div className="shrink-0">
+              <div className="flex shrink-0 items-center gap-x-2">
+                <div className="metadata-link-icon AniDB" />
                 AniDB |&nbsp;
               </div>
               <a
@@ -418,7 +420,8 @@ const MetadataLinking = () => {
                   {linkedEntryQuery.data && (
                     <>
                       <div className="flex grow items-center">
-                        <div className="shrink-0">
+                        <div className="flex shrink-0 items-center gap-x-2">
+                          <MetadataSourceIcon hasIcon={sourceInfo?.HasIcon} source={source} />
                           {sourceName}
                           &nbsp;|&nbsp;
                         </div>

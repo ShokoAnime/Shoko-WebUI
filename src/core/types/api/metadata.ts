@@ -5,6 +5,10 @@ export type MetadataLinkSourceType = {
   /** The source, as routes take it (e.g. `TMDB`). */
   Source: string;
   Name: string;
+  /** The plugin of the source's first registered provider. */
+  PluginID: string;
+  /** Whether the source has an icon, served at `Metadata/Source/{source}/Icon`. */
+  HasIcon: boolean;
   SupportsSeries: boolean;
   SupportsMovies: boolean;
   IsSeriesEnabled: boolean;

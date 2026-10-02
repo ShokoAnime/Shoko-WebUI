@@ -60,6 +60,7 @@ const SeriesOverview = () => {
     [
       ...(sourcesQuery.data ?? []).map(item => ({
         canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
+        hasIcon: item.HasIcon,
         linkedIds: findLinkedIds(item.Source),
         name: item.Name,
         source: item.Source,
@@ -69,7 +70,7 @@ const SeriesOverview = () => {
           key.toLowerCase() !== 'anidb'
           && !sourcesQuery.data?.some(item => item.Source.toLowerCase() === key.toLowerCase())
         )
-        .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, source: key })),
+        .map(([key, ids]) => ({ canLink: false, hasIcon: false, linkedIds: ids, name: key, source: key })),
     ],
     item => !isTmdbSource(item.source),
   );
@@ -113,6 +114,7 @@ const SeriesOverview = () => {
                   <SeriesSourceLinks
                     key={item.source}
                     canLink={item.canLink}
+                    hasIcon={item.hasIcon}
                     linkedIds={item.linkedIds}
                     name={item.name}
                     seriesId={series.IDs.ID}
