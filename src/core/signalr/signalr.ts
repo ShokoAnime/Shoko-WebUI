@@ -9,6 +9,7 @@ import {
 import { throttle } from 'lodash';
 
 import Events from '@/core/events';
+import queryClient from '@/core/react-query/queryClient';
 import { handleEvent } from '@/core/signalr/eventHandlers';
 import {
   resetQueueStatus,
@@ -27,6 +28,7 @@ import type {
   AniDBBanItemType,
   NetworkAvailabilityValues,
   QueueStatusType,
+  RestartReasonsEventType,
   RestartRequiredType,
   SeriesUpdateEventType,
 } from '@/core/signalr/types';
@@ -73,21 +75,14 @@ const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniD
   dispatch(setHttpBanStatus(state));
 };
 
-let restartToastId: number | string | undefined;
+// Restart Events, shown by RestartNotice
 
-const onRestartRequiredUpdate = (getState: () => RootState) => (state: RestartRequiredType) => {
-  // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
-  if (getState().serverLifecycle.action !== 'idle') return;
-  if (state.RequiresRestart) {
-    if (restartToastId) return;
-    restartToastId = toast.info('Restart required!', 'A restart is pending. Please restart the application.', {
-      autoClose: false,
-      position: 'top-right',
-    });
-  } else {
-    if (restartToastId) toast.dismiss(restartToastId);
-    restartToastId = undefined;
-  }
+const onRestartRequiredUpdate = (state: RestartRequiredType) => {
+  queryClient.setQueryData(['init', 'configuration-restart'], state.RequiresRestart);
+};
+
+const onRestartReasonsUpdate = (state: RestartReasonsEventType) => {
+  queryClient.setQueryData(['init', 'restart-reasons'], state.Reasons);
 };
 
 // Network Events
@@ -138,7 +133,11 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration';
+      // The restart feed is for admins only, so only they join it.
+      const { isAdmin } = (action.payload ?? {}) as { isAdmin?: boolean };
+      const feeds = ['anidb', 'file', 'metadata', 'release', 'queue', 'network', 'avdump', 'configuration'];
+      if (isAdmin) feeds.push('restart');
+      const connectionHub = `/signalr/aggregate?feeds=${feeds.join(',')}`;
 
       const protocol = new JsonHubProtocol();
 
@@ -191,8 +190,11 @@ async (action: UnknownAction) => {
       connectionEvents.on('metadata:series.updated', onSeriesEvent);
       connectionEvents.on('metadata:series.removed', onSeriesEvent);
 
-      connectionEvents.on('configuration:connected', onRestartRequiredUpdate(getState));
-      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate(getState));
+      connectionEvents.on('configuration:connected', onRestartRequiredUpdate);
+      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate);
+
+      connectionEvents.on('restart:connected', onRestartReasonsUpdate);
+      connectionEvents.on('restart:reasonsChanged', onRestartReasonsUpdate);
 
       connectionEvents.onreconnecting(() => {
         // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
@@ -224,6 +226,8 @@ async (action: UnknownAction) => {
       startSignalRConnection(connectionEvents).catch(console.error);
     } else if (action.type === Events.AUTH_LOGOUT) {
       await connectionEvents?.stop();
+      queryClient.removeQueries({ queryKey: ['init', 'restart-reasons'] });
+      queryClient.removeQueries({ queryKey: ['init', 'configuration-restart'] });
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : undefined;
