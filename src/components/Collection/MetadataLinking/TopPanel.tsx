@@ -10,14 +10,14 @@ import ItemCount from '@/components/Utilities/ItemCount';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { MatchRatingValues } from '@/core/types/api/episode';
-import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
+import type { MetadataCrossReferenceType } from '@/core/types/api/metadata';
 
 type Props = {
   createInProgress: boolean;
   disableCreateLink: boolean;
   handleCreateLink: () => void;
   seriesId: number;
-  xrefs?: Record<string, TmdbEpisodeXrefType[]>;
+  xrefs?: Record<string, MetadataCrossReferenceType[]>;
   xrefsCount?: number;
 };
 
@@ -30,14 +30,14 @@ const TopPanel = (props: Props) => {
       if (!xrefs) return undefined;
       return filter(
         flatMap(xrefs, xref => xref),
-        xref => xref.Rating !== 'None',
+        xref => xref.MatchRating !== 'None',
       );
     },
     [xrefs],
   );
 
   const matchRatingCounts = useMemo(
-    () => (flatXrefs ? countBy(flatXrefs, 'Rating') : {}),
+    () => (flatXrefs ? countBy(flatXrefs, 'MatchRating') : {}),
     [flatXrefs],
   ) as Record<MatchRatingValues, number>;
 

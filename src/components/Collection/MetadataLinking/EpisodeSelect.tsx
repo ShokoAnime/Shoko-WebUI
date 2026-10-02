@@ -1,58 +1,69 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import { mdiChevronDown, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, toNumber } from 'lodash';
+import { debounce } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
-import { useTmdbShowEpisodesQuery } from '@/core/react-query/tmdb/queries';
+import { episodePickerParams } from '@/core/react-query/metadata/helpers';
+import { useMetadataSeriesEpisodesQuery } from '@/core/react-query/metadata/queries';
 import { padNumber } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
-import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
+import type { MetadataEpisodeType } from '@/core/types/api/metadata';
 
 type Props = {
   isDisabled: boolean;
   isOdd: boolean;
-  override?: number;
-  overrideLink: (newTmdbId?: number) => void;
-  tmdbEpisode?: TmdbEpisodeType;
+  /** The source's ID of the series being linked. */
+  linkId: string;
+  overrideLink: (newEpisodeId?: string) => void;
+  source: string;
+  linkedEpisode?: MetadataEpisodeType;
+  override?: string;
+};
+
+const getEpisodeTitle = (episode: MetadataEpisodeType) => episode.Title ?? `Episode ${episode.EpisodeNumber}`;
+
+const getEpisodeLabel = (episode: MetadataEpisodeType) => {
+  if (episode.SeasonNumber === 0) return `Special ${padNumber(episode.EpisodeNumber)}`;
+  if (episode.SeasonNumber === null) return `E${padNumber(episode.EpisodeNumber)}`;
+  return `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`;
 };
 
 const EpisodeSelect = (props: Props) => {
-  const { isDisabled, isOdd, override, overrideLink, tmdbEpisode: initialTmdbEpisode } = props;
-  const [searchParams] = useSearchParams();
-  const tmdbId = toNumber(searchParams.get('id'));
+  const { isDisabled, isOdd, linkId, linkedEpisode: initialEpisode, override, overrideLink, source } = props;
 
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
 
-  const episodesQuery = useTmdbShowEpisodesQuery(tmdbId, {
+  const episodesQuery = useMetadataSeriesEpisodesQuery(source, linkId, {
+    ...episodePickerParams,
     search: debouncedSearch,
-    pageSize: 30,
   });
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
 
-  const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
+  const [selectedEpisode, setSelectedEpisode] = useState(initialEpisode);
 
   useEffect(() => {
-    if (override && override !== initialTmdbEpisode?.ID) {
+    if (override && override !== initialEpisode?.ID) {
       const episodeOverride = episodes.find(episode => episode.ID === override);
       if (episodeOverride) {
-        setTmdbEpisode(episodeOverride);
+        setSelectedEpisode(episodeOverride);
       }
       return;
     }
 
-    setTmdbEpisode(initialTmdbEpisode);
-  }, [episodes, initialTmdbEpisode, override]);
+    setSelectedEpisode(initialEpisode);
+  }, [episodes, initialEpisode, override]);
 
-  const handleSelect = (newSelectedEpisode?: TmdbEpisodeType) => {
-    overrideLink(newSelectedEpisode?.ID ?? 0);
+  const selectedTitle = selectedEpisode ? getEpisodeTitle(selectedEpisode) : '';
+
+  const handleSelect = (newSelectedEpisode?: MetadataEpisodeType) => {
+    overrideLink(newSelectedEpisode?.ID ?? '');
   };
 
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
@@ -76,7 +87,7 @@ const EpisodeSelect = (props: Props) => {
 
   return (
     <Listbox
-      value={tmdbEpisode ?? {}}
+      value={selectedEpisode ?? {}}
       by="ID"
       onChange={handleSelect}
       disabled={isDisabled}
@@ -97,24 +108,24 @@ const EpisodeSelect = (props: Props) => {
           <>
             <div className="w-8 shrink-0">
               {/* oxlint-disable-next-line no-nested-ternary -- nested ternary keeps the season label short and readable */}
-              {tmdbEpisode?.SeasonNumber != null
-                ? (tmdbEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(tmdbEpisode.SeasonNumber)}`)
+              {selectedEpisode?.SeasonNumber != null
+                ? (selectedEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(selectedEpisode.SeasonNumber)}`)
                 : 'XX'}
             </div>
             <div className="w-8 shrink-0">
-              {tmdbEpisode?.EpisodeNumber ? padNumber(tmdbEpisode.EpisodeNumber) : 'XX'}
+              {selectedEpisode?.EpisodeNumber ? padNumber(selectedEpisode.EpisodeNumber) : 'XX'}
             </div>
 
             <div
               className="flex grow flex-col text-left"
               data-tooltip-id={!isDisabled ? 'tooltip' : ''}
-              data-tooltip-content={tmdbEpisode?.Title ?? ''}
+              data-tooltip-content={selectedTitle}
             >
               <div className="line-clamp-1 text-xs font-semibold opacity-65">
-                {tmdbEpisode?.Title ? tmdbEpisode?.AiredAt ?? 'Airdate Unknown' : ''}
+                {selectedEpisode ? selectedEpisode.AirDate ?? 'Airdate Unknown' : ''}
               </div>
               <div className="line-clamp-1">
-                {tmdbEpisode?.Title ?? 'Entry Not Linked'}
+                {selectedTitle || 'Entry Not Linked'}
               </div>
             </div>
 
@@ -145,7 +156,7 @@ const EpisodeSelect = (props: Props) => {
             value={searchText}
             onChange={event => setSearchText(event.target.value)}
             onKeyDown={event => event.stopPropagation()}
-            placeholder="Enter Episode Title or Season/Episode Number..."
+            placeholder="Search by number, S1E5, Special 3 or title..."
             inputClassName="!p-4"
             startIcon={mdiMagnify}
           />
@@ -170,6 +181,7 @@ const EpisodeSelect = (props: Props) => {
                     const { index, key, start } = virtualItem;
 
                     const episode = index === 0 ? undefined : episodes[index - 1];
+                    const title = episode ? getEpisodeTitle(episode) : '';
 
                     if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
@@ -206,22 +218,20 @@ const EpisodeSelect = (props: Props) => {
                         <div className="w-24 text-panel-text-important group-data-selected:text-panel-text-primary">
                           {!episode && 'XX'}
 
-                          {episode && (episode.SeasonNumber === 0
-                            ? `Special ${padNumber(episode.EpisodeNumber)}`
-                            : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
+                          {episode && getEpisodeLabel(episode)}
                         </div>
                         |
 
                         <div
                           className="ml-4 line-clamp-1 grow basis-0"
                           data-tooltip-id="tooltip"
-                          data-tooltip-content={episode?.Title ?? ''}
+                          data-tooltip-content={title}
                         >
-                          {episode?.Title ?? 'Do Not Link Entry'}
+                          {title || 'Do Not Link Entry'}
                         </div>
 
                         <div className="pr-4">
-                          {episode?.AiredAt ?? ''}
+                          {episode?.AirDate ?? ''}
                         </div>
                       </ListboxOption>
                     );

@@ -15,7 +15,7 @@ const TMDBSettings = (props: Props) => {
     AutoLinkRestricted,
   } = newSettings.TMDB;
 
-  const { includeRestricted } = newSettings.WebUI_Settings.collection.tmdb;
+  const { includeRestricted } = newSettings.WebUI_Settings.collection.metadata;
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const propId = event.target.id.replace('TMDB_', '');
@@ -26,7 +26,7 @@ const TMDBSettings = (props: Props) => {
   const handleIncludeRestrictedChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.checked;
     setNewSettings(produce(newSettings, (draftState) => {
-      draftState.WebUI_Settings.collection.tmdb.includeRestricted = value;
+      draftState.WebUI_Settings.collection.metadata.includeRestricted = value;
     }));
   };
 

@@ -1,5 +1,3 @@
-import type { MatchRatingValues } from '@/core/types/api/episode';
-
 export type TmdbEpisodeType = {
   ID: number;
   SeasonID: string;
@@ -21,34 +19,3 @@ export type TmdbBaseItemType = {
 export type TmdbMovieType = TmdbBaseItemType;
 
 export type TmdbShowType = TmdbBaseItemType;
-
-export type TmdbXrefType = {
-  AnidbAnimeID: number;
-  AnidbEpisodeID: number;
-};
-
-export type TmdbEpisodeXrefType = {
-  TmdbShowID: number;
-  TmdbEpisodeID: number;
-  Index: number;
-  Rating: MatchRatingValues;
-} & TmdbXrefType;
-
-export type TmdbMovieXrefType = {
-  TmdbMovieID: number;
-} & TmdbXrefType;
-
-export type TmdbSearchResultType = {
-  ID: number;
-  Title: string;
-};
-
-export type TmdbAutoSearchOriginValues = 'Search' | 'CurrentLink' | 'PrequelLink' | 'AnidbResource' | 'CrossSourceLink';
-
-export type TmdbAutoSearchResultType = {
-  IsMovie: boolean;
-  Show: TmdbSearchResultType;
-  Movie: TmdbSearchResultType;
-  /** Where the match came from. */
-  Origin: TmdbAutoSearchOriginValues;
-};

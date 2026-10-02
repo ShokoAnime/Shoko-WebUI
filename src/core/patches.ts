@@ -59,5 +59,13 @@ export const webuiSettingsPatches = {
     if (layoutItem) layoutItem.i = 'managedFolders';
     return { ...webuiSettings, settingsRevision: 11 };
   },
+  12: (oldWebuiSettings) => {
+    const webuiSettings = oldWebuiSettings;
+    webuiSettings.collection.metadata = {
+      includeRestricted: webuiSettings.collection.tmdb?.includeRestricted ?? false,
+    };
+    delete webuiSettings.collection.tmdb;
+    return { ...webuiSettings, settingsRevision: 12 };
+  },
   // oxlint-disable-next-line typescript/no-explicit-any -- legacy persisted settings have an unknown shape
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

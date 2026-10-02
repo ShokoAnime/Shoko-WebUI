@@ -5,15 +5,7 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
 import { downloadBlob } from '@/core/util';
 
-import type {
-  TmdbAddAutoXrefsRequestType,
-  TmdbAddLinkRequestType,
-  TmdbDeleteLinkRequestType,
-  TmdbEditEpisodeXrefsRequestType,
-  TmdbExportRequestType,
-  TmdbImportRequestType,
-  TmdbRefreshRequestType,
-} from '@/core/react-query/tmdb/types';
+import type { TmdbExportRequestType, TmdbImportRequestType } from '@/core/react-query/tmdb/types';
 
 export const useTmdbExportXrefsMutation = () =>
   useMutation({
@@ -56,45 +48,4 @@ export const useTmdbImportXrefsMutation = () =>
       invalidateQueries(['dashboard', 'stats']);
     },
     onError: () => toast.error('Failed to import TMDB cross-references!'),
-  });
-
-export const useTmdbRefreshMutation = (type: 'Show' | 'Movie') =>
-  useMutation({
-    mutationFn: ({ SkipIfExists = false, tmdbId, ...data }: TmdbRefreshRequestType) =>
-      axios.post(`Tmdb/${type}/${tmdbId}/Action/Refresh`, {
-        ...data,
-        [type === 'Show' ? 'QuickRefresh' : 'SkipIfExists']: SkipIfExists,
-      }),
-  });
-
-export const useTmdbAddLinkMutation = (seriesId: number, type: 'Show' | 'Movie') =>
-  useMutation({
-    mutationFn: (data: TmdbAddLinkRequestType) => axios.post(`Series/${seriesId}/TMDB/${type}`, data),
-  });
-
-export const useTmdbEditEpisodeXrefsMutation = (seriesId: number) =>
-  useMutation({
-    mutationFn: (data: TmdbEditEpisodeXrefsRequestType) =>
-      axios.post(`Series/${seriesId}/TMDB/Show/CrossReferences/Episode`, data),
-  });
-
-export const useTmdbAddAutoXrefsMutation = (seriesId: number) =>
-  useMutation({
-    mutationFn: (data: TmdbAddAutoXrefsRequestType) =>
-      axios.post(`Series/${seriesId}/TMDB/Show/CrossReferences/Episode/Auto`, data),
-  });
-
-export const useDeleteTmdbLinkMutation = (seriesId: number, linkType: 'Movie' | 'Show') =>
-  useMutation({
-    mutationFn: (data: TmdbDeleteLinkRequestType) => axios.delete(`Series/${seriesId}/TMDB/${linkType}`, { data }),
-  });
-
-export const useSetPreferredTmdbShowOrderingMutation = (showId: number) =>
-  useMutation({
-    mutationFn: (alternateOrderingId: string) =>
-      axios.post(`Tmdb/Show/${showId}/Ordering/SetPreferred`, { AlternateOrderingID: alternateOrderingId }),
-    onSuccess: () => {
-      invalidateQueries(['series', 'tmdb', 'show']);
-      invalidateQueries(['series', 'tmdb', 'episode']);
-    },
   });
