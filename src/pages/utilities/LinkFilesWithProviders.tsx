@@ -351,7 +351,7 @@ const LinkFilesWithProviders = () => {
               <Icon className="text-panel-text-primary" path={mdiLoading} size={4} spin={0.5} />
             </div>
           )}
-          {links.length && (
+          {links.length > 0 && (
             <div
               className="grow overflow-y-auto pr-4"
               ref={scrollRef}
