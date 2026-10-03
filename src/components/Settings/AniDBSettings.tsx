@@ -3,7 +3,6 @@ import type { ChangeEventHandler, ReactNode } from 'react';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
-import UpdateFrequencyValues from '@/components/Settings/UpdateFrequencyValues';
 
 import type { SettingsAnidbMyListType } from '@/core/types/api/settings';
 import type { SettingsContextType } from '@/core/types/context';
@@ -41,16 +40,12 @@ const AniDBSettings = (props: Props) => {
   const { isFirstRun = false, newSettings, updateSetting } = props;
 
   const {
-    Anime_UpdateFrequency,
-    Calendar_UpdateFrequency,
     DownloadCharacters,
     DownloadCreators,
     DownloadRelatedAnime,
-    File_UpdateFrequency,
     MaxRelationDepth,
     MyList,
     Notification_HandleMovedFiles,
-    Notification_UpdateFrequency,
   } = newSettings.AniDb;
 
   const {
@@ -180,38 +175,6 @@ const AniDBSettings = (props: Props) => {
         </SelectSmall>
       </Section>
       <Section title="Update Options" isFirstRun={isFirstRun}>
-        <SelectSmall
-          label="Calendar"
-          id="Calendar_UpdateFrequency"
-          value={Calendar_UpdateFrequency}
-          onChange={handleInputChange}
-        >
-          <UpdateFrequencyValues min24Hours />
-        </SelectSmall>
-        <SelectSmall
-          label="Anime Information"
-          id="Anime_UpdateFrequency"
-          value={Anime_UpdateFrequency}
-          onChange={handleInputChange}
-        >
-          <UpdateFrequencyValues min24Hours />
-        </SelectSmall>
-        <SelectSmall
-          label="Files With Missing Info"
-          id="File_UpdateFrequency"
-          value={File_UpdateFrequency}
-          onChange={handleInputChange}
-        >
-          <UpdateFrequencyValues />
-        </SelectSmall>
-        <SelectSmall
-          label="Notifications"
-          id="Notification_UpdateFrequency"
-          value={Notification_UpdateFrequency}
-          onChange={handleInputChange}
-        >
-          <UpdateFrequencyValues />
-        </SelectSmall>
         <Checkbox
           justify
           label="Handle Moved Files"

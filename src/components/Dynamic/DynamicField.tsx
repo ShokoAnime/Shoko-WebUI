@@ -105,7 +105,7 @@ export default DynamicField;
 // TODO: Unsupported element types (with real schema examples):
 // - enum      -> Select dropdown from enumDefinitions
 //                e.g. OfflineImporter.Mode, OfflineImporter.MatchType,
-//                CoreSettings.AniDb.MyList.StorageState, CoreSettings.AniDb.Calendar_UpdateFrequency
+//                CoreSettings.AniDb.MyList.StorageState, CoreSettings.AniDb.MyList.DeleteType
 // - list      -> DynamicList (add/remove/sort items)
 //                e.g. OfflineImporter.AutoMatchRules, OfflineImporter.ParseRules,
 //                CoreSettings.Import.VideoExtensions, CoreSettings.Image.ImageTemplateUrls
