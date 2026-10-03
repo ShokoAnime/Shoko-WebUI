@@ -16,6 +16,7 @@ import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
+import { getDocsUrl } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const LoginPage = () => {
@@ -219,7 +220,7 @@ const LoginPage = () => {
                 Discord
               </a>
               <a
-                href="https://docs.shokoanime.com"
+                href={getDocsUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-x-2 transition-colors hover:text-header-icon-primary"

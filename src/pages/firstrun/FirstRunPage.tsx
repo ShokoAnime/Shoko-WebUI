@@ -12,6 +12,7 @@ import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/q
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
+import { getDocsUrl } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useSyncedState from '@/hooks/useSyncedState';
 
@@ -129,7 +130,7 @@ const FirstRunPage = () => {
               <Button
                 buttonType="primary"
                 className="py-2"
-                onClick={() => window.open('https://docs.shokoanime.com', '_blank')}
+                onClick={() => window.open(getDocsUrl(), '_blank')}
               >
                 Documentation
               </Button>

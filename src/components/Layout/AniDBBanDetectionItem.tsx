@@ -3,7 +3,7 @@ import { mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { dayjs } from '@/core/util';
+import { dayjs, getDocsUrl } from '@/core/util';
 
 import type { AniDBBanItemType } from '@/core/signalr/types';
 
@@ -55,7 +55,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
             Click the link below to learn more and how you can minimize the chances of an AniDB Ban.
           </p>
           <a
-            href="https://docs.shokoanime.com/faq"
+            href={getDocsUrl('faq')}
             target="_blank"
             rel="noopener noreferrer"
             className="flex gap-x-2 font-bold text-panel-text-primary"
