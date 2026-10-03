@@ -16,7 +16,7 @@ import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
-import { getDocsUrl } from '@/core/util';
+import useDocsUrl from '@/hooks/useDocsUrl';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const LoginPage = () => {
@@ -34,6 +34,7 @@ const LoginPage = () => {
   const { isPending: isLoginPending, mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);
   const imageMetadataQuery = useRandomImageMetadataQuery('Backdrop');
+  const docsUrl = useDocsUrl();
 
   let loginImage = { imageUrl: '', seriesName: '', seriesId: 0 };
   if (!imageMetadataQuery.isPending && (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data?.UID)) {
@@ -220,7 +221,7 @@ const LoginPage = () => {
                 Discord
               </a>
               <a
-                href={getDocsUrl()}
+                href={docsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-x-2 transition-colors hover:text-header-icon-primary"

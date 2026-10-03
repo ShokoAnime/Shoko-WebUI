@@ -46,7 +46,8 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useServerUpdateCheckQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { useDispatch, useSelector } from '@/core/store';
-import { getDocsUrl, getUiVersion, isDebug } from '@/core/util';
+import { getUiVersion, isDebug } from '@/core/util';
+import useDocsUrl from '@/hooks/useDocsUrl';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -94,6 +95,7 @@ const TopNav = () => {
   const { isPending: isNetworkCheckPending, mutate: checkNetworkConnectivity } = useCheckNetworkConnectivityMutation();
 
   const currentUserQuery = useCurrentUserQuery();
+  const docsUrl = useDocsUrl();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
@@ -283,7 +285,7 @@ const TopNav = () => {
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
               <div className="flex items-center gap-x-5">
                 <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} name="Discord" />
-                <ExternalLinkMenuItem url={getDocsUrl()} icon={mdiHelpCircleOutline} name="Docs" />
+                <ExternalLinkMenuItem url={docsUrl} icon={mdiHelpCircleOutline} name="Docs" />
                 <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} name="GitHub" />
               </div>
             </div>

@@ -12,7 +12,7 @@ import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/q
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
-import { getDocsUrl } from '@/core/util';
+import useDocsUrl from '@/hooks/useDocsUrl';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useSyncedState from '@/hooks/useSyncedState';
 
@@ -47,6 +47,7 @@ const FirstRunPage = () => {
   const { mutateAsync: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
   const serverStatusQuery = useServerStatusQuery();
+  const docsUrl = useDocsUrl();
 
   useEffect(() => {
     if (
@@ -130,7 +131,7 @@ const FirstRunPage = () => {
               <Button
                 buttonType="primary"
                 className="py-2"
-                onClick={() => window.open(getDocsUrl(), '_blank')}
+                onClick={() => window.open(docsUrl, '_blank')}
               >
                 Documentation
               </Button>

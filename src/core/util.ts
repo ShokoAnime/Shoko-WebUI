@@ -46,13 +46,6 @@ export const isDebug = () => DEV;
 export const getMinimumServerVersion = () => VITE_MIN_SERVER_VERSION;
 export const getUiVersion = () => (DEV ? VITE_GITHASH : VITE_APPVERSION);
 
-/**
- * Returns the base URL for Shoko documentation, switching to the daily
- * subpath when running in local dev mode.
- */
-export const getDocsUrl = (subpath = '') =>
-  `https://docs.shokoanime.com${DEV ? '/daily/' : ''}${subpath.replace(/^\//, '')}`;
-
 export const formatThousand = (num: number) => formatThousands(num, ',');
 
 export const getMainPoster = (target: SeriesType | CollectionGroupType) =>
