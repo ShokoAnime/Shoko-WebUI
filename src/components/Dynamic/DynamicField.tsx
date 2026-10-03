@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
+import PasswordField from '@/components/Dynamic/PasswordField';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
@@ -70,6 +71,10 @@ const DynamicField = ({ onChange, propertyName, propertySchema, value }: Props) 
     );
   }
 
+  if (elementType === 'password') {
+    return <PasswordField id={`dynamic-${propertyName}`} label={label} onChange={onChange} value={value} />;
+  }
+
   if (elementType === 'code-block') {
     const language = (uiDef.codeLanguage ?? 'plaintext').toLowerCase();
     return (
@@ -105,12 +110,10 @@ export default DynamicField;
 // TODO: Unsupported element types (with real schema examples):
 // - enum      -> Select dropdown from enumDefinitions
 //                e.g. OfflineImporter.Mode, OfflineImporter.MatchType,
-//                CoreSettings.AniDb.MyList.StorageState, CoreSettings.AniDb.Calendar_UpdateFrequency
+//                CoreSettings.AniDb.MyList.StorageState, CoreSettings.AniDb.MyList.DeleteType
 // - list      -> DynamicList (add/remove/sort items)
 //                e.g. OfflineImporter.AutoMatchRules, OfflineImporter.ParseRules,
 //                CoreSettings.Import.VideoExtensions, CoreSettings.Image.ImageTemplateUrls
-// - password  -> Password input (masked text)
-//                e.g. CoreSettings.AniDb.Password
 // - record    -> DynamicRecord (add/remove/sort key-value entries, IDictionary on backend)
 //                (no live examples found yet)
 // - select    -> Select dropdown with server-provided options (SelectComponent)

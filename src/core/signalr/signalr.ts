@@ -28,6 +28,7 @@ import type {
   NetworkAvailabilityValues,
   QueueStatusType,
   RestartRequiredType,
+  SeriesUpdateEventType,
 } from '@/core/signalr/types';
 import type store from '@/core/store';
 import type { RootState } from '@/core/store';
@@ -163,7 +164,7 @@ async (action: UnknownAction) => {
       connectionEvents.on('queue:state.changed', onQueueStateChange(dispatch));
 
       connectionEvents.on('anidb:connected', onAniDBConnected(dispatch));
-      connectionEvents.on('anidb:udb.stateUpdate', onAniDBUDPStateUpdate(dispatch));
+      connectionEvents.on('anidb:udp.stateUpdate', onAniDBUDPStateUpdate(dispatch));
       connectionEvents.on('anidb:http.stateUpdate', onAniDBHttpStateUpdate(dispatch));
 
       connectionEvents.on('network:connected', onNetworkChanged(dispatch));
@@ -183,11 +184,12 @@ async (action: UnknownAction) => {
       connectionEvents.on('file:deleted', () => handleEvent('FileDeleted'));
 
       connectionEvents.on('release:saved', () => handleEvent('FileMatched'));
-      connectionEvents.on('release:deleted', () => handleEvent('FileMatched'));
+      connectionEvents.on('release:removed', () => handleEvent('FileMatched'));
 
-      connectionEvents.on('metadata:series.added', () => handleEvent('SeriesUpdated'));
-      connectionEvents.on('metadata:series.updated', () => handleEvent('SeriesUpdated'));
-      connectionEvents.on('metadata:series.removed', () => handleEvent('SeriesUpdated'));
+      const onSeriesEvent = (event: SeriesUpdateEventType) => handleEvent('SeriesUpdated', event);
+      connectionEvents.on('metadata:series.added', onSeriesEvent);
+      connectionEvents.on('metadata:series.updated', onSeriesEvent);
+      connectionEvents.on('metadata:series.removed', onSeriesEvent);
 
       connectionEvents.on('configuration:connected', onRestartRequiredUpdate(getState));
       connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate(getState));
