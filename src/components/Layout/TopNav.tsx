@@ -46,7 +46,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useServerUpdateCheckQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { useDispatch, useSelector } from '@/core/store';
-import { getUiVersion, isDebug } from '@/core/util';
+import { getDocsUrl, getUiVersion, isDebug } from '@/core/util';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -283,7 +283,7 @@ const TopNav = () => {
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
               <div className="flex items-center gap-x-5">
                 <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} name="Discord" />
-                <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} name="Docs" />
+                <ExternalLinkMenuItem url={getDocsUrl()} icon={mdiHelpCircleOutline} name="Docs" />
                 <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} name="GitHub" />
               </div>
             </div>
