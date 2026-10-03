@@ -1,4 +1,5 @@
 .theme-shoko-gray {
+  color-scheme: dark;
   --button-danger: #ff6c6c;
   --button-danger-border: #21242b;
   --button-danger-hover: #fa7676;
