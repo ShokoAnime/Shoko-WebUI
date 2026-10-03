@@ -3,7 +3,8 @@ import { mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { dayjs, getDocsUrl } from '@/core/util';
+import { dayjs } from '@/core/util';
+import useDocsUrl from '@/hooks/useDocsUrl';
 
 import type { AniDBBanItemType } from '@/core/signalr/types';
 
@@ -16,6 +17,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
   const [showModal, setModalOpen] = useState(false);
 
   const banType = type === 'HTTP' ? 'HTTPBan' : 'UDPBan';
+  const docsUrl = useDocsUrl();
 
   if (banStatus.UpdateType !== banType || !banStatus.Value) {
     return null;
@@ -55,7 +57,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
             Click the link below to learn more and how you can minimize the chances of an AniDB Ban.
           </p>
           <a
-            href={getDocsUrl('faq')}
+            href={`${docsUrl}/faq`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex gap-x-2 font-bold text-panel-text-primary"

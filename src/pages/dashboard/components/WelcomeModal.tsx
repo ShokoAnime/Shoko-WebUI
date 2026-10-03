@@ -1,7 +1,7 @@
 import Modal from 'react-modal';
 
 import Button from '@/components/Input/Button';
-import { getDocsUrl } from '@/core/util';
+import useDocsUrl from '@/hooks/useDocsUrl';
 
 type Props = {
   onClose: () => void;
@@ -15,6 +15,7 @@ const WelcomeModal = (props: Props) => {
   } = props;
 
   Modal.setAppElement('#app-root');
+  const docsUrl = useDocsUrl();
 
   return (
     <Modal
@@ -46,15 +47,15 @@ const WelcomeModal = (props: Props) => {
                 find these links under your username in the top-right corner for future reference.`}
               </p>
               <p className="flex flex-col">
-                <a className="font-semibold text-panel-text-primary" href={getDocsUrl()}>
+                <a className="font-semibold text-panel-text-primary" href={docsUrl}>
                   Using Shoko | ShokoDocs
                 </a>
-                <a className="font-semibold text-panel-text-primary" href={getDocsUrl('faq')}>
+                <a className="font-semibold text-panel-text-primary" href={`${docsUrl}/faq`}>
                   Frequently Asked Questions | Shoko Docs
                 </a>
               </p>
               <p className="flex flex-col">
-                <a className="font-semibold text-panel-text-primary" href={getDocsUrl()}>
+                <a className="font-semibold text-panel-text-primary" href={docsUrl}>
                   Media Player Integrations | Shoko Docs
                 </a>
                 <a className="font-semibold text-panel-text-primary" href="https://discord.gg/vpeHDsg">
