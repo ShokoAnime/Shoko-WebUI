@@ -100,7 +100,7 @@ const Input = (props: Props) => {
             disabled={disabled}
             ref={inputRef}
           />
-          {endIcons?.length && (
+          {endIcons && endIcons.length > 0 && (
             <div className="absolute top-1/2 right-3 flex -translate-y-1/2 flex-row gap-x-2">
               {endIcons.map((icon) => {
                 let tooltipAttributes: TooltipAttributes | null = null;

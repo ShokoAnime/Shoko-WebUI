@@ -24,14 +24,24 @@ const invalidateQueueItems = debounce(
   500,
 );
 
-const invalidateSeries = debounce(
-  (seriesIds: number[]) =>
-    seriesIds.forEach((seriesId) => {
+// Series updated within the debounce window, refreshed together when it ends.
+const pendingSeriesIds = new Set<number>();
+
+const flushSeries = debounce(
+  () => {
+    pendingSeriesIds.forEach((seriesId) => {
       invalidateQueries(['series', seriesId]);
       invalidateQueries(['webui', 'series-overview', seriesId]);
-    }),
+    });
+    pendingSeriesIds.clear();
+  },
   1000,
 );
+
+const invalidateSeries = (seriesIds: number[]) => {
+  seriesIds.forEach(seriesId => pendingSeriesIds.add(seriesId));
+  flushSeries();
+};
 
 const invalidateUtilities = debounce(
   () => {

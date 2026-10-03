@@ -351,13 +351,8 @@ export const initialSettings: SettingsType = {
       DeleteType: 'MarkUnknown',
       UseGenericFileIndex: true,
       RetainedBackupCount: 30,
-      UpdateFrequency: 1,
       FetchMode: 7,
     },
-    Calendar_UpdateFrequency: 1,
-    Anime_UpdateFrequency: 1,
-    File_UpdateFrequency: 1,
-    Notification_UpdateFrequency: 1,
     Notification_HandleMovedFiles: false,
   },
   TMDB: {
@@ -408,7 +403,6 @@ export const initialSettings: SettingsType = {
   AutoGroupSeriesRelationExclusions: [],
   Import: {
     AutomaticallyDeleteDuplicatesOnImport: false,
-    RunOnStart: false,
     UseExistingFileWatchedStatus: false,
     VideoExtensions: [],
   },
@@ -441,7 +435,6 @@ export const initialSettings: SettingsType = {
     Updates: {
       IsAutoSyncEnabled: false,
       IsAutoUpgradeEnabled: false,
-      AutoUpdateFrequency: 4,
       DefaultRepositoryStaleTime: '12:00:00',
       InactivePluginVersionRetention: '30.00:00:00',
     },
