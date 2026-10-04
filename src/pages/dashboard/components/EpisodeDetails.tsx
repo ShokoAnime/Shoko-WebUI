@@ -1,7 +1,7 @@
 import DashboardEpisode from '@/components/Dashboard/DashboardEpisode';
 import SeriesPoster from '@/components/SeriesPoster';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { convertTimeSpanToMs, dayjs } from '@/core/util';
+import { convertTimeSpanToMs, dayjs, formatDate } from '@/core/util';
 
 import type { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
 import type { EpisodeTypeValues } from '@/core/types/api/episode';
@@ -77,7 +77,9 @@ const EpisodeDetails = ({ episode, isInCollection = false, showDate = false }: P
     >
       {showDate && (
         <div>
-          <div className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</div>
+          <div className="truncate text-center text-sm font-semibold">
+            {formatDate(episode.AirDate, 'MMMM Do, YYYY')}
+          </div>
           <div className="truncate text-center text-sm font-semibold opacity-65">{relativeTime}</div>
         </div>
       )}

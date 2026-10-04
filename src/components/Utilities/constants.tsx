@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import prettyBytes from 'pretty-bytes';
 
-import { dayjs, extractFileNameFromPath, getManagedFolderName } from '@/core/util';
+import { extractFileNameFromPath, formatDate, getManagedFolderName } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -95,6 +95,6 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
     id: 'created',
     name: 'Created',
     className: 'w-60',
-    item: file => dayjs(file.Created).format('MMMM DD YYYY, HH:mm'),
+    item: file => formatDate(file.Created, 'MMMM DD YYYY, HH:mm'),
   },
 ];
