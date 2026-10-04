@@ -25,7 +25,7 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
-import { dayjs, getAnidbAnimeLink } from '@/core/util';
+import { formatDate, getAnidbAnimeLink } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
@@ -80,7 +80,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     id: 'created',
     name: 'Date Added',
     className: 'w-64',
-    item: series => dayjs(series.Created).format('MMMM DD YYYY, HH:mm'),
+    item: series => formatDate(series.Created, 'MMMM DD YYYY, HH:mm'),
   },
 ];
 

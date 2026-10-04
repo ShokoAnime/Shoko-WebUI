@@ -3,7 +3,7 @@ import { mdiClipboardOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
 
-import { copyToClipboard, dayjs } from '@/core/util';
+import { copyToClipboard, formatDate } from '@/core/util';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useMediaInfo from '@/hooks/useMediaInfo';
 
@@ -17,8 +17,6 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
     event.stopPropagation();
     copyToClipboard(hash, 'ED2K hash').catch(console.error);
   };
-
-  const importedTime = dayjs(file.Imported);
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -59,9 +57,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
           </div>
           <div className="flex">
             <div className="min-w-37.5 font-semibold">Imported At</div>
-            {importedTime.isValid()
-              ? importedTime.format('MMMM Do, YYYY | HH:mm')
-              : 'N/A'}
+            {formatDate(file.Imported, 'MMMM Do, YYYY | HH:mm') || 'N/A'}
           </div>
           {compact && (
             <div className="flex">

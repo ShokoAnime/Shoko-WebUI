@@ -2,7 +2,6 @@ import AnimateHeight from 'react-animate-height';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import dayjs from 'dayjs';
 import { find, map, some } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
@@ -10,6 +9,7 @@ import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import PluginInstallModal from '@/components/Settings/PluginManagement/Dialogs/PluginInstallModal';
 import { usePluginPackageManifestsQuery } from '@/core/react-query/plugin-package/queries';
+import { formatDate } from '@/core/util';
 
 import type { PackageManifestInfoType, PackageReleaseInfoType } from '@/core/types/api/plugin-package';
 
@@ -40,7 +40,7 @@ const Version = ({ manifest, version }: { manifest: PackageManifestInfoType, ver
 
         <div className="opacity-65">
           Released: &nbsp;
-          {dayjs(version.ReleasedAt).format('MMMM Do, YYYY')}
+          {formatDate(version.ReleasedAt, 'MMMM Do, YYYY')}
         </div>
 
         <Button

@@ -13,7 +13,7 @@ import {
 } from '@/core/react-query/plugin-package/mutations';
 import { usePluginPackageRepositoriesQuery } from '@/core/react-query/plugin-package/queries';
 import toast from '@/core/toast';
-import { dayjs } from '@/core/util';
+import { formatDate } from '@/core/util';
 
 import type { PackageRepositoryInfoType } from '@/core/types/api/plugin-package';
 
@@ -55,7 +55,7 @@ const RepositoryCard = ({ repository }: { repository: PackageRepositoryInfoType 
         </div>
         <div className="text-sm opacity-65">
           Last sync:&nbsp;
-          {repository.LastFetchedAt ? dayjs(repository.LastFetchedAt).format('MMMM Do, YYYY HH:mm') : 'Never'}
+          {formatDate(repository.LastFetchedAt, 'MMMM Do, YYYY HH:mm') || 'Never'}
         </div>
       </div>
 
