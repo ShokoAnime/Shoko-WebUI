@@ -43,7 +43,7 @@ pnpm lint           # dprint -> oxlint -> stylelint
   - `axiosV2` — Shoko API v2 (`/api`)
   - `axiosPlex` — Plex endpoints (`/plex`)
   - `axiosExternal` — Unconfigured base for external calls
-  - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`. A 401 on an authenticated request dispatches `AUTH_LOGOUT`.
+  - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`. A 401 on an authenticated `/api` request dispatches `AUTH_LOGOUT` once `GET User/Current` also answers 401: endpoints the server keeps reachable while starting (eg. `Settings`) reject every apikey until it has started.
 - **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware. Connects on `MAINPAGE_LOADED` to `/signalr/aggregate` (feed list via query param), authenticates with the apikey, and stops on `AUTH_LOGOUT`. Event handlers invalidate React Query caches and dispatch slice actions.
 - **Redux:** Single-file store at `src/core/store.ts`. Root reducer clears all state on `AUTH_LOGOUT`. Full store persisted to `sessionStorage`; only `apiSession` persisted to `localStorage` (when `rememberUser` is true). Store is throttled to persist at most once per second. Re-exports typed `useDispatch`/`useSelector` — import from `@/core/store`, never from `react-redux` directly.
 - **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/`, typically with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts` (subsets are common; shared files live at `src/core/react-query/` top level, e.g. `queryClient.ts`).
@@ -80,7 +80,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 
 ## Verification & CI
 
-- **Verification is `pnpm test` (Vitest unit tests) + `pnpm lint` (typecheck: `pnpm tscheck`).** Test coverage is deliberately limited to regression protection of high-risk modules (`filterTree.ts`, auto-match logic/regexes); never add coverage tooling or UI/DOM assertions.
+- **Verification is `pnpm test` (Vitest unit tests) + `pnpm lint` (typecheck: `pnpm tscheck`).** Test coverage is deliberately limited to regression protection of high-risk modules (`filterTree.ts`, auto-match logic/regexes, the 401 logout in `axios.ts`); never add coverage tooling or UI/DOM assertions.
 - **Other CI workflows:** `release-dev-auto.yml` (auto build on `master` push), `release-manual.yml`, `update-manifest.yml`, CodeQL.
 - **Pre-commit:** Husky runs `lint-staged` (configured in `lint-staged.config.js`), which executes `dprint fmt`, `oxlint`, and `stylelint` on staged files. `stylelint` only covers `src/css/*.css` (flat, not recursive).
 - **PR CI:** `.github/workflows/validate-pr.yml` runs `pnpm lint --quiet`, then `pnpm test`.
