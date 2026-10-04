@@ -10,6 +10,7 @@ import { applyKindDrafts, withAutoLinkDraft, withKindDraft } from '@/core/react-
 import { getEntityTypeName, getSourceKinds } from '@/core/react-query/metadata/helpers';
 import { useMetadataSourceProvidersQuery } from '@/core/react-query/metadata/queries';
 import { dayjs } from '@/core/util';
+import { getDistinctPluginName } from '@/core/utilities/getDistinctPluginName';
 
 import type { MetadataProviderDraftType } from '@/core/react-query/metadata/draft';
 import type {
@@ -91,15 +92,18 @@ const MetadataSourceSettings = ({ children, metadataDraft, setMetadataDraft, sum
     return null;
   };
 
-  const renderProviderLabel = (provider: MetadataKindProviderType) => (
-    <div className="flex grow items-center justify-between gap-x-2">
-      <div className="flex items-center gap-x-1">
-        {provider.name}
-        {provider.pluginName && <span className="text-xs opacity-65">{provider.pluginName}</span>}
+  const renderProviderLabel = (provider: MetadataKindProviderType) => {
+    const pluginName = getDistinctPluginName(provider.name, provider.pluginName);
+    return (
+      <div className="flex grow items-center justify-between gap-x-2">
+        <div className="flex items-center gap-x-1">
+          {provider.name}
+          {pluginName && <span className="text-xs opacity-65">{`(${pluginName})`}</span>}
+        </div>
+        {renderProviderState(provider)}
       </div>
-      {renderProviderState(provider)}
-    </div>
-  );
+    );
+  };
 
   const renderKind = (kind: MetadataSourceKindType) => {
     const id = `metadata-${source}-${kind.entityType}`;

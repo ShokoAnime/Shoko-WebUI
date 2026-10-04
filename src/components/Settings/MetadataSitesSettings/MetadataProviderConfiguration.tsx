@@ -11,6 +11,7 @@ import { useUpdateConfigurationMutation } from '@/core/react-query/configuration
 import { useConfigurationQuery } from '@/core/react-query/configuration/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import toast from '@/core/toast';
+import { getDistinctPluginName } from '@/core/utilities/getDistinctPluginName';
 import useSyncedState from '@/hooks/useSyncedState';
 
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
@@ -28,6 +29,7 @@ const toDraft = (data: Record<string, unknown> | undefined) => data ?? {};
  */
 const MetadataProviderConfiguration = ({ configuration, providerName }: Props) => {
   const [open, toggleOpen] = useToggle(false);
+  const pluginName = getDistinctPluginName(providerName, configuration.Plugin.Name);
 
   const configQuery = useConfigurationQuery(configuration.ID, open);
   const [draft, setDraft] = useSyncedState(configQuery.data, toDraft);
@@ -61,7 +63,7 @@ const MetadataProviderConfiguration = ({ configuration, providerName }: Props) =
       >
         <span className="flex items-center gap-x-1">
           {`${providerName} Settings`}
-          <span className="text-xs opacity-65">{configuration.Plugin.Name}</span>
+          {pluginName && <span className="text-xs opacity-65">{`(${pluginName})`}</span>}
         </span>
         <Icon path={mdiChevronDown} size={1} className={cx('transition-transform', open && 'rotate-180')} />
       </button>
