@@ -6,7 +6,7 @@ import prettyBytes from 'pretty-bytes';
 import { useToggle } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
-import { dayjs } from '@/core/util';
+import { formatDate } from '@/core/util';
 
 export type FileOption = {
   placeID: number;
@@ -131,8 +131,6 @@ export const MixAndMatchEpisode = ({
               const isSelected = selectedPlaceID === placeID;
               const fileName = absolutePath?.split(/[/\\]/).pop() ?? `Place ${placeID}`;
               const summary = getOptionSummary(option);
-              const releasedAtTime = releasedAt ? dayjs(releasedAt) : undefined;
-              const importedAtTime = importedAt ? dayjs(importedAt) : undefined;
 
               return (
                 <button
@@ -165,11 +163,11 @@ export const MixAndMatchEpisode = ({
                         {subtitleLanguages.length > 0 && `Subs: ${subtitleLanguages.join(', ')}`}
                       </div>
                     )}
-                    {(releasedAtTime?.isValid() || importedAtTime?.isValid()) && (
+                    {(!!releasedAt || !!importedAt) && (
                       <div className="text-xs opacity-65">
-                        {releasedAtTime?.isValid() && `Released: ${releasedAtTime.format('MMMM Do, YYYY')}`}
-                        {releasedAtTime?.isValid() && importedAtTime?.isValid() && ', '}
-                        {importedAtTime?.isValid() && `Imported: ${importedAtTime.format('MMMM Do, YYYY | HH:mm')}`}
+                        {releasedAt && `Released: ${formatDate(releasedAt, 'MMMM Do, YYYY')}`}
+                        {releasedAt && importedAt && ', '}
+                        {importedAt && `Imported: ${formatDate(importedAt, 'MMMM Do, YYYY | HH:mm')}`}
                       </div>
                     )}
                     {absolutePath != null

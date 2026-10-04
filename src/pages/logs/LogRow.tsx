@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import { dayjs } from '@/core/util';
+import { formatDate } from '@/core/util';
 import LogLevelChip from '@/pages/logs/LogLevelChip';
 
 import type { LogEventType } from '@/core/react-query/logging/types';
 
-const formatStamp = (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm:ss');
+const formatStamp = (date: string) => formatDate(date, 'YYYY-MM-DD HH:mm:ss');
 
 type Props = {
   dataIndex: number;

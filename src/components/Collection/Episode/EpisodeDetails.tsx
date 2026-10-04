@@ -10,7 +10,7 @@ import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
-import { convertTimeSpanToMs, copyToClipboard, dayjs, getAnidbEpisodeLink } from '@/core/util';
+import { convertTimeSpanToMs, copyToClipboard, dayjs, formatDate, getAnidbEpisodeLink } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 
@@ -53,7 +53,7 @@ const EpisodeDetails = ({ episode, onEditTitle }: { episode: EpisodeType, onEdit
     <div className="flex flex-wrap items-center gap-x-3 text-sm font-semibold">
       <div className="flex items-center gap-x-2">
         <Icon className="text-panel-icon" path={mdiCalendarMonthOutline} size={1} />
-        {dayjs(episode.AniDB?.AirDate).format('MMMM Do, YYYY')}
+        {formatDate(episode.AniDB?.AirDate, 'MMMM Do, YYYY') || 'Unknown'}
       </div>
       <div className="flex items-center gap-x-2">
         <Icon className="text-panel-icon" path={mdiClockOutline} size={1} />
