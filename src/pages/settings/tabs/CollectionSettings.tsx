@@ -3,13 +3,32 @@ import type { ChangeEvent } from 'react';
 import { keys } from 'lodash';
 
 import LanguagesModal from '@/components/Dialogs/LanguagesModal';
+import TextSourcesModal from '@/components/Dialogs/TextSourcesModal';
 import Checkbox from '@/components/Input/Checkbox';
 import LanguageOrderList from '@/components/Settings/LanguageOrderList';
+import OrderList from '@/components/Settings/OrderList';
+import TextSourceLabel from '@/components/Settings/TextSourceLabel';
+import { getTextSourceOrder, getTextSources } from '@/core/react-query/metadata/helpers';
+import { useMetadataLinkSourcesQuery, useMetadataProvidersQuery } from '@/core/react-query/metadata/queries';
 import useSettingsContext from '@/hooks/useSettingsContext';
+
+type TextSourceOrderKeyType = 'DescriptionSourceOrder' | 'EpisodeTitleSourceOrder' | 'SeriesTitleSourceOrder';
+
+const textSourceOrderNames: Record<TextSourceOrderKeyType, string> = {
+  SeriesTitleSourceOrder: 'Series Title',
+  EpisodeTitleSourceOrder: 'Episode Title',
+  DescriptionSourceOrder: 'Description',
+};
 
 const CollectionSettings = () => {
   const { newSettings, setNewSettings } = useSettingsContext();
   const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | 'Description' | null>(null);
+  const [showSourcesModal, setShowSourcesModal] = useState<TextSourceOrderKeyType | null>(null);
+
+  // `Metadata/Source` names the sources and has their icons; the providers name the plugins serving them.
+  const linkSourcesQuery = useMetadataLinkSourcesQuery();
+  const providersQuery = useMetadataProvidersQuery();
+  const textSources = getTextSources(linkSourcesQuery.data, providersQuery.data);
 
   const {
     AutoGroupSeries,
@@ -24,6 +43,27 @@ const CollectionSettings = () => {
   ) => {
     setNewSettings({ ...newSettings, Language: { ...Language, [key]: languages } });
   };
+
+  const handleSourceOrderChange = (key: TextSourceOrderKeyType, sources: string[]) => {
+    setNewSettings({ ...newSettings, Language: { ...Language, [key]: sources } });
+  };
+
+  // Each source keeps the spelling the settings have it in, so a name no route lists is saved back as it was.
+  const renderSourceOrder = (key: TextSourceOrderKeyType) => (
+    <OrderList
+      label={`${textSourceOrderNames[key]} Source`}
+      items={getTextSourceOrder(Language[key], textSources).map((source, index) => ({
+        key: Language[key][index],
+        content: <TextSourceLabel source={source} />,
+      }))}
+      onOrderChange={sources => handleSourceOrderChange(key, sources)}
+      onAdd={() => setShowSourcesModal(key)}
+      addTooltip="Add Source"
+      isPending={linkSourcesQuery.isPending}
+      errorMessage={linkSourcesQuery.isError ? 'Failed to load metadata sources.' : undefined}
+      emptyStateMessage="No source set."
+    />
+  );
 
   const exclusionMapping = {
     dissimilarTitles: {
@@ -109,8 +149,8 @@ const CollectionSettings = () => {
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">Collection</div>
         <div>
-          Set your preferred language for the series and episodes in your collection, and determine how Shoko groups
-          related series within your collection.
+          Set your preferred languages and sources for the titles and descriptions in your collection, and determine how
+          Shoko groups related series within your collection.
         </div>
       </div>
 
@@ -133,26 +173,39 @@ const CollectionSettings = () => {
           />
           <div className="flex flex-col gap-y-3">
             <LanguageOrderList
-              label="Series Title"
+              label="Series Title Language"
               order={Language.SeriesTitleLanguageOrder}
               onAddLanguage={() => setShowLanguagesModal('Series')}
               onOrderChange={languages => handleLanguageOrderChange('SeriesTitleLanguageOrder', languages)}
             />
+            {renderSourceOrder('SeriesTitleSourceOrder')}
             <LanguageOrderList
-              label="Episode Title"
+              label="Episode Title Language"
               order={Language.EpisodeTitleLanguageOrder}
               onAddLanguage={() => setShowLanguagesModal('Episode')}
               onOrderChange={languages => handleLanguageOrderChange('EpisodeTitleLanguageOrder', languages)}
             />
+            {renderSourceOrder('EpisodeTitleSourceOrder')}
             <LanguageOrderList
-              label="Descriptions"
+              label="Description Language"
               order={Language.DescriptionLanguageOrder}
               onAddLanguage={() => setShowLanguagesModal('Description')}
               onOrderChange={languages => handleLanguageOrderChange('DescriptionLanguageOrder', languages)}
             />
+            {renderSourceOrder('DescriptionSourceOrder')}
+            <div className="text-sm opacity-65">
+              Titles and descriptions users add or pick always apply, whatever the source order.
+            </div>
           </div>
         </div>
         <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} />
+        <TextSourcesModal
+          type={showSourcesModal && textSourceOrderNames[showSourcesModal]}
+          order={showSourcesModal ? Language[showSourcesModal] : []}
+          sources={textSources}
+          onOrderChange={sources => showSourcesModal && handleSourceOrderChange(showSourcesModal, sources)}
+          onClose={() => setShowSourcesModal(null)}
+        />
       </div>
 
       <div className="border-b border-panel-border" />

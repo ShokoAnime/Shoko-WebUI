@@ -1,6 +1,5 @@
 import type { Layout } from 'react-grid-layout';
 
-import type { DataSourceValues } from './common';
 import type { ReleaseChannelValues } from '@/core/types/api/init';
 import type { ManualLinkProviderType } from '@/core/types/utilities/link-files-with-providers';
 
@@ -124,11 +123,12 @@ export type SettingsLanguageType = {
   SeriesTitleLanguageOrder: string[];
 
   /**
-   * Series / group title source preference order.
+   * Series / group title source preference order. Only the listed sources are used, best first, each named as the metadata routes take it (e.g. `AniDB`,
+   * `TMDB` or a plugin's source). Unknown names are kept as they are.
    *
    * @default ['AniDB', 'TMDB']
    */
-  SeriesTitleSourceOrder: DataSourceValues[];
+  SeriesTitleSourceOrder: string[];
 
   /**
    * Episode / season title language preference order.
@@ -138,11 +138,12 @@ export type SettingsLanguageType = {
   EpisodeTitleLanguageOrder: string[];
 
   /**
-   * Episode / season title source preference order.
+   * Episode / season title source preference order. Only the listed sources are used, best first, each named as the metadata routes take it (e.g. `AniDB`,
+   * `TMDB` or a plugin's source). Unknown names are kept as they are.
    *
    * @default ['TMDB', 'AniDB']
    */
-  EpisodeTitleSourceOrder: DataSourceValues[];
+  EpisodeTitleSourceOrder: string[];
 
   /**
    * Description language preference order.
@@ -152,11 +153,12 @@ export type SettingsLanguageType = {
   DescriptionLanguageOrder: string[];
 
   /**
-   * Description source preference order.
+   * Description source preference order. Only the listed sources are used, best first, each named as the metadata routes take it (e.g. `AniDB`,
+   * `TMDB` or a plugin's source). Unknown names are kept as they are.
    *
    * @default ['TMDB', 'AniDB']
    */
-  DescriptionSourceOrder: DataSourceValues[];
+  DescriptionSourceOrder: string[];
 };
 
 export type SettingsPlexType = {
