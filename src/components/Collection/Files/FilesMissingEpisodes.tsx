@@ -2,7 +2,7 @@ import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { dayjs, getAnidbEpisodeLink, padNumber } from '@/core/util';
+import { formatDate, getAnidbEpisodeLink, padNumber } from '@/core/util';
 
 import type { WebuiSeriesFileSummaryMissingEpisodeType } from '@/core/types/api/webui';
 
@@ -39,7 +39,7 @@ const MissingEpisode = ({ episode, rowId }: FileMissingEpisodeProps) => (
       </a>
     </div>
     <div>
-      {dayjs(episode.AirDate).format('MMMM DD YYYY')}
+      {formatDate(episode.AirDate, 'MMMM DD YYYY') || 'Unknown'}
     </div>
   </div>
 );

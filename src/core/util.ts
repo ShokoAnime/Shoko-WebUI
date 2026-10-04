@@ -89,22 +89,29 @@ export const convertMsToTimeSpan = (milliseconds: number) => dayjs.duration(mill
 /**
  * To get the precision of a partial AniDB date, which may only be known to the
  * year ("YYYY") or the month ("YYYY-MM") instead of the day ("YYYY-MM-DD").
+ * The server emits exactly these three lengths, so the checks are strict.
  */
-const getPartialDateUnit = (date: string) => {
-  if (date.length <= 4) return 'year';
-  if (date.length <= 7) return 'month';
+const getPartialDateUnit = (date: string | null | undefined) => {
+  if (!date || date.length === 4) return 'year';
+  if (date.length === 7) return 'month';
   return 'day';
 };
 
 /**
- * To format a date to the precision it carries: a year ("YYYY") or a month
- * ("YYYY-MM") as only that, and a full date or timestamp with the day format.
+ * The canonical date formatter. Full dates and timestamps (10+ chars) render
+ * with `dayFormat`. Partial AniDB dates — "YYYY" (4 chars) or "YYYY-MM"
+ * (7 chars), the only sub-10-char forms the server emits — render at the
+ * precision they carry, ignoring `dayFormat`. Invalid or empty input renders
+ * as an empty string, never "Invalid Date".
  */
-export const formatDate = (date: string, dayFormat = 'MMM DD, YYYY') => {
+export const formatDate = (date: string | null | undefined, dayFormat = 'MMM DD, YYYY') => {
+  if (!date) return '';
+  const parsed = dayjs(date);
+  if (!parsed.isValid()) return '';
   const unit = getPartialDateUnit(date);
-  if (unit === 'year') return dayjs(date).format('YYYY');
-  if (unit === 'month') return dayjs(date).format('MMM YYYY');
-  return dayjs(date).format(dayFormat);
+  if (unit === 'year') return parsed.format('YYYY');
+  if (unit === 'month') return parsed.format('MMM YYYY');
+  return parsed.format(dayFormat);
 };
 
 /**

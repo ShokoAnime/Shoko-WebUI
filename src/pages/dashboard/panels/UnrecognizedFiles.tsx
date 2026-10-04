@@ -10,13 +10,12 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
-import { dayjs } from '@/core/util';
+import { formatDate } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { FileType } from '@/core/types/api/file';
 
 const FileItem = ({ file }: { file: FileType }) => {
-  const createdTime = dayjs(file.Created);
   const navigate = useNavigateVoid();
   const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
   const { mutate: rescanFile } = useRescanFileMutation();
@@ -37,9 +36,9 @@ const FileItem = ({ file }: { file: FileType }) => {
         data-tooltip-content={fileName}
       >
         <span className="opacity-65">
-          {createdTime.format('YYYY-MM-DD')}
+          {formatDate(file.Created, 'YYYY-MM-DD')}
           &nbsp;|&nbsp;
-          {createdTime.format('HH:mm')}
+          {formatDate(file.Created, 'HH:mm')}
         </span>
         <span className="max-w-[95%] break-all">
           {fileName}

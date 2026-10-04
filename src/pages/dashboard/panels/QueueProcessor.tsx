@@ -12,7 +12,7 @@ import {
 } from '@/core/react-query/queue/mutations';
 import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
 import { useSelector } from '@/core/store';
-import { dayjs } from '@/core/util';
+import { formatDate } from '@/core/util';
 
 import type { QueueItemType } from '@/core/signalr/types';
 
@@ -81,7 +81,7 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
     <div className="flex flex-col gap-y-1 break-all">
       <span className="text-sm opacity-65">
         {item.IsRunning ? item.Title : item.Type}
-        {item.StartTime && ` | ${dayjs(item.StartTime).format('MMMM DD YYYY, HH:mm')}`}
+        {item.StartTime && ` | ${formatDate(item.StartTime, 'MMMM DD YYYY, HH:mm')}`}
       </span>
       {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
