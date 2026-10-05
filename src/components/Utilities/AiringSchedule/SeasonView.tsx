@@ -7,17 +7,19 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { useMediaQuery, useResizeObserver } from 'usehooks-ts';
 
+import StartSeasonModal from '@/components/Dialogs/StartSeasonModal';
 import SeasonBrowser from '@/components/Utilities/AiringSchedule/SeasonBrowser';
 import SeasonCard from '@/components/Utilities/AiringSchedule/SeasonCard';
 import SeasonSlider from '@/components/Utilities/AiringSchedule/SeasonSlider';
 import { FadeIn, SkeletonBlock, SkeletonFade, SkeletonRest } from '@/components/Utilities/AiringSchedule/Skeleton';
+import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { pxPerRem } from '@/core/util';
 import { getOffsetIn, scrollUnlessThere } from '@/core/utilities/scroll';
 import { seasonKeyToValue } from '@/core/utilities/season';
 import { getGridColumnCount, getSeasonGridRows, getSkeletonRowCount } from '@/core/utilities/seasonGrid';
 import { getBrowserCloseScroll, getBrowserOpenPin, getBrowserOpenScroll } from '@/core/utilities/seasonSlider';
 
-import type { SeasonSectionType, SeasonYearType } from '@/core/types/api/airing-season';
+import type { SeasonAnimeType, SeasonSectionType, SeasonYearType } from '@/core/types/api/airing-season';
 import type { SeasonKey } from '@/core/utilities/season';
 import type { SeasonGridRowType } from '@/core/utilities/seasonGrid';
 import type { BrowserOpenScrollType, SeasonSlideType } from '@/core/utilities/seasonSlider';
@@ -178,7 +180,11 @@ const estimateRowHeight = (row: SeasonGridRowType, isLast: boolean) => {
  * view are drawn. Scrolling draws this list again, and not the slider above it.
  */
 const SeasonGrid = (
-  { sections, showCollectionBadge }: { sections: SeasonSectionType[], showCollectionBadge: boolean },
+  { onMoveSeason, sections, showCollectionBadge }: {
+    onMoveSeason?: (anime: SeasonAnimeType) => void;
+    sections: SeasonSectionType[];
+    showCollectionBadge: boolean;
+  },
 ) => {
   const { scrollRef } = useOutletContext<{ scrollRef: RefObject<HTMLDivElement | null> }>();
   // Kept as state, so the list is drawn again with its offset once it is in place.
@@ -237,7 +243,12 @@ const SeasonGrid = (
                     style={{ gridTemplateColumns: getColumnsTemplate(columns) }}
                   >
                     {row.anime.map(item => (
-                      <SeasonCard key={item.ID} anime={item} showCollectionBadge={showCollectionBadge} />
+                      <SeasonCard
+                        key={item.ID}
+                        anime={item}
+                        showCollectionBadge={showCollectionBadge}
+                        onMoveSeason={onMoveSeason}
+                      />
                     ))}
                   </div>
                 )}
@@ -275,6 +286,9 @@ const SeasonView = (
 ) => {
   const { scrollRef } = useOutletContext<{ scrollRef: RefObject<HTMLDivElement | null> }>();
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  // Admins may move an anime to another season, through one picker for the whole view.
+  const isAdmin = useCurrentUserQuery().data?.IsAdmin ?? false;
+  const [movingAnime, setMovingAnime] = useState<SeasonAnimeType | null>(null);
 
   // Opening the browser from the slider brings the shown season's year into view below the stuck slider, whose height
   // this is. Dropped as the browser closes, so neither its leaving pane nor a page loaded with it open does.
@@ -469,7 +483,13 @@ const SeasonView = (
               <span className="opacity-65">Only anime the server has AniDB data for are listed.</span>
             </div>
           )
-          : <SeasonGrid sections={sections} showCollectionBadge={showCollectionBadge} />}
+          : (
+            <SeasonGrid
+              sections={sections}
+              showCollectionBadge={showCollectionBadge}
+              onMoveSeason={isAdmin ? setMovingAnime : undefined}
+            />
+          )}
       </FadeIn>
     );
   };
@@ -524,6 +544,8 @@ const SeasonView = (
           {renderPane(shown)}
         </div>
       </div>
+
+      <StartSeasonModal anime={movingAnime} season={season} onClose={() => setMovingAnime(null)} />
     </div>
   );
 };

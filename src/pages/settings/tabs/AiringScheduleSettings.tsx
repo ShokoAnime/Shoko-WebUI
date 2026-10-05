@@ -10,6 +10,7 @@ import ChannelVisibility from '@/components/Settings/AiringScheduleSettings/Chan
 import PreferredChannels from '@/components/Settings/AiringScheduleSettings/PreferredChannels';
 import PreferredTracks from '@/components/Settings/AiringScheduleSettings/PreferredTracks';
 import SeasonDetailSources from '@/components/Settings/AiringScheduleSettings/SeasonDetailSources';
+import StartSeasonOverrides from '@/components/Settings/AiringScheduleSettings/StartSeasonOverrides';
 import {
   sortAiringProviders,
   withAiringScheduleDraft,
@@ -63,7 +64,7 @@ const AiringScheduleSettingsContent = ({ configurationId }: { configurationId: s
   const trackPriorityQuery = useAiringTrackPriorityQuery();
   const configQuery = useConfigurationQuery(configurationId);
   const schemaQuery = useConfigurationSchemaQuery(configurationId);
-  // Merging channels and editing their aliases are saved at once, and only for admins.
+  // Merging channels, editing their aliases and the start season overrides are saved at once, and only for admins.
   const isAdmin = useCurrentUserQuery().data?.IsAdmin ?? false;
 
   const queries = [
@@ -214,6 +215,14 @@ const AiringScheduleSettingsContent = ({ configurationId }: { configurationId: s
                 setDraft(withAiringScheduleOption(draft, serverOptions, 'SeasonDetailSourceOrder', value))}
             />
           </div>
+
+          <div className="border-b border-panel-border" />
+        </>
+      )}
+
+      {isAdmin && (
+        <>
+          <StartSeasonOverrides />
 
           <div className="border-b border-panel-border" />
         </>

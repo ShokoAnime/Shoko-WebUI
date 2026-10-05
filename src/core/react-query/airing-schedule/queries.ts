@@ -31,6 +31,8 @@ import type {
   SeasonSectionType,
   SeasonSummaryType,
   SeasonYearType,
+  StartSeasonOverrideType,
+  StartSeasonType,
 } from '@/core/types/api/airing-season';
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { CalendarEntryType } from '@/core/utilities/airingSchedule';
@@ -193,4 +195,20 @@ export const useAiringScheduleConfigurationQuery = () =>
   useQuery<ConfigurationInfoType>({
     queryKey: ['airing-schedule', 'configuration'],
     queryFn: () => axios.get('AiringSchedule/Configuration'),
+  });
+
+/** An anime's start season, overridden or not, with the one its dates give, from `GET Series/AniDB/{anidbID}/StartSeason`. */
+export const useStartSeasonQuery = (anidbId: number, enabled = true) =>
+  useQuery<StartSeasonType>({
+    queryKey: ['airing-schedule', 'start-season', anidbId],
+    queryFn: () => axios.get(`Series/AniDB/${anidbId}/StartSeason`),
+    enabled,
+  });
+
+/** The start seasons set by hand, from `GET Series/AniDB/StartSeason/Overrides`. */
+export const useStartSeasonOverridesQuery = (enabled = true) =>
+  useQuery<StartSeasonOverrideType[]>({
+    queryKey: ['airing-schedule', 'start-season-overrides'],
+    queryFn: () => axios.get('Series/AniDB/StartSeason/Overrides'),
+    enabled,
   });

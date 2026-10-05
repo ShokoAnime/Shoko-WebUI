@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
+import { mdiCalendarArrowRight, mdiCalendarLockOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { startCase } from 'lodash';
 
 import AiringProviderIcon from '@/components/AiringProviderIcon';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { Badge } from '@/components/Badge';
 import CleanDescription from '@/components/Collection/CleanDescription';
+import Button from '@/components/Input/Button';
 import {
   LocalFilesIcon,
   MoreButton,
@@ -40,6 +43,8 @@ type Props = {
   anime: SeasonAnimeType;
   /** Show "In Collection"; "Missing Files" shows either way. */
   showCollectionBadge?: boolean;
+  /** Opens the start season picker; left out for users who may not move anime. */
+  onMoveSeason?: (anime: SeasonAnimeType) => void;
 };
 
 /** A date the server may send partial (`2026` or `2026-10`), shown to the precision it has. */
@@ -215,7 +220,7 @@ const AiringStatus = ({ anime }: Props) => {
 };
 
 /** One anime of the season, laid out like a season chart card: the poster, then when it airs and what it is. */
-const SeasonCard = ({ anime, showCollectionBadge = true }: Props) => {
+const SeasonCard = ({ anime, onMoveSeason, showCollectionBadge = true }: Props) => {
   const studios = anime.Studios.map(studio => studio.Name).join(', ');
   const source = anime.SourceMaterial && anime.SourceMaterial !== 'Unknown' ? startCase(anime.SourceMaterial) : null;
   // The next episode's own length, else the anime's usual one.
@@ -252,7 +257,23 @@ const SeasonCard = ({ anime, showCollectionBadge = true }: Props) => {
         {/* A narrow card puts the badge above, leaving the airing the whole width. */}
         <div className="flex flex-col-reverse gap-1 @sm:flex-row @sm:items-start @sm:justify-between">
           <AiringStatus anime={anime} />
-          <CollectionBadge anime={anime} showCollectionBadge={showCollectionBadge} />
+          <div className="flex shrink-0 items-center gap-x-2">
+            <CollectionBadge anime={anime} showCollectionBadge={showCollectionBadge} />
+            {anime.IsStartSeasonOverridden && (
+              <span
+                className="flex text-panel-text-important"
+                data-tooltip-id="tooltip"
+                data-tooltip-content="Moved to this season by hand"
+              >
+                <Icon path={mdiCalendarLockOutline} size={0.8333} />
+              </span>
+            )}
+            {onMoveSeason && (
+              <Button onClick={() => onMoveSeason(anime)} tooltip="Move to season…">
+                <Icon className="text-panel-icon-action" path={mdiCalendarArrowRight} size={0.8333} />
+              </Button>
+            )}
+          </div>
         </div>
         {details && <span className="text-sm opacity-65">{details}</span>}
         <CleanDescription

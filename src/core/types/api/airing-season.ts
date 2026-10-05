@@ -55,6 +55,8 @@ export type SeasonAnimeType = {
   VideoCount: number;
   /** The season the first regular episode aired in; `null` when unknown. */
   StartSeason: { Year: number, AnimeSeason: YearlySeasonValues } | null;
+  /** Whether an admin set the start season by hand. */
+  IsStartSeasonOverridden: boolean;
   /** The median length of the regular episodes, eg. `00:24:00`; `null` when unknown. */
   EpisodeDuration: string | null;
   AiringStatus: SeasonAiringStatusType;
@@ -122,4 +124,41 @@ export type SeasonSummaryType = {
 export type SeasonYearType = {
   year: number;
   seasons: SeasonSummaryType[];
+};
+
+/** A year and season as the start season routes send and take them. */
+export type StartSeasonValueType = {
+  Year: number;
+  Season: YearlySeasonValues;
+};
+
+/** An anime's start season, from `GET Series/AniDB/{anidbID}/StartSeason`. */
+export type StartSeasonType = {
+  /** `null` when the anime has no dates to go by and no override. */
+  Year: number | null;
+  Season: YearlySeasonValues | null;
+  /** Whether an admin set it by hand. */
+  IsOverridden: boolean;
+  /** The season worked out from the anime's dates, whether overridden or not. */
+  Computed: StartSeasonValueType | null;
+};
+
+/** One start season set by hand, from `GET Series/AniDB/StartSeason/Overrides`. */
+export type StartSeasonOverrideType = StartSeasonValueType & {
+  AnidbAnimeID: number;
+  /** The anime's preferred title; `null` when the server has no data for it or the user may not see it. */
+  Title: string | null;
+  CreatedAt: string;
+  UpdatedAt: string;
+  /** The user who last set it; `null` when the system did. */
+  UserID: number | null;
+};
+
+/** What `POST Series/AniDB/StartSeason/Overrides.csv` did. */
+export type StartSeasonImportSummaryType = {
+  Added: number;
+  Updated: number;
+  Unchanged: number;
+  /** The lines it could not import, in file order. */
+  Rejected: { Line: number, Text: string, Reason: string }[];
 };
