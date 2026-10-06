@@ -1,3 +1,5 @@
+import { clamp } from 'lodash';
+
 import { dayjs } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
@@ -163,6 +165,37 @@ export const toCalendarEntry = (airing: EpisodeAiringType): CalendarEntryType =>
     movedFrom: isMoved ? dayjs(airing.OriginalAiredAt) : null,
     others: [],
   };
+};
+
+/** The time since `target` the way a countdown reads, eg. `2 hours, 15 mins ago`; `Just now` under a minute. */
+export const formatTimeSince = (target: Dayjs, now: Dayjs) => {
+  const since = formatCountdown(now, target);
+  return since === 'now' ? 'Just now' : `${since} ago`;
+};
+
+/** The whole days since `day`: `Today`, `Yesterday` or `4 days ago`. */
+export const formatDaysSince = (day: Dayjs, now: Dayjs) => {
+  const days = Math.max(now.startOf('day').diff(day.startOf('day'), 'day'), 0);
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  return `${days} days ago`;
+};
+
+/** The bounds of the season view's recently aired look back, in whole hours. */
+export const RECENTLY_AIRED_MIN_HOURS = 1;
+export const RECENTLY_AIRED_MAX_HOURS = 24;
+
+/** The look back's hours as the season view takes them: whole, from 1 to 24. */
+export const clampRecentlyAiredHours = (hours: number) =>
+  clamp(Math.trunc(hours), RECENTLY_AIRED_MIN_HOURS, RECENTLY_AIRED_MAX_HOURS);
+
+// The look back moves on in steps, so the season read keeps its key between them.
+const RECENTLY_AIRED_STEP = 15 * 60_000;
+
+/** The time the season view reads as of to keep what aired in the last `hours`: that long ago, down to 15 minutes. */
+export const getRecentlyAiredAt = (now: Dayjs, hours: number) => {
+  const time = now.subtract(hours, 'hour').valueOf();
+  return dayjs(time - (time % RECENTLY_AIRED_STEP));
 };
 
 /** Whether the airing is on air: from its `AiredAt` until its `EndsAt`. A date-only airing never is. */
