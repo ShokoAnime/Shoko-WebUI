@@ -20,6 +20,7 @@ import type {
   AiringCalendarDayType,
   AiringChannelType,
   AiringScheduleProviderType,
+  AiringTrackPreferenceType,
 } from '@/core/types/api/airing-schedule';
 import type {
   AiringSeasonType,
@@ -28,6 +29,7 @@ import type {
   SeasonSummaryType,
   SeasonYearType,
 } from '@/core/types/api/airing-season';
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { CalendarEntryType } from '@/core/utilities/airingSchedule';
 import type { SeasonKey } from '@/core/utilities/season';
 
@@ -70,6 +72,25 @@ export const useAiringChannelsQuery = (enabled = true) =>
     queryKey: ['airing-schedule', 'channels'],
     queryFn: () => axios.get('AiringSchedule/Channel'),
     enabled,
+  });
+
+export const useAiringChannelPriorityQuery = () =>
+  useQuery<string[]>({
+    queryKey: ['airing-schedule', 'channel-priority'],
+    queryFn: () => axios.get('AiringSchedule/Channel/Priority'),
+  });
+
+/** The hidden channels' IDs, from `GET AiringSchedule/Channel/Hidden`. */
+export const useAiringHiddenChannelsQuery = () =>
+  useQuery<string[]>({
+    queryKey: ['airing-schedule', 'hidden-channels'],
+    queryFn: () => axios.get('AiringSchedule/Channel/Hidden'),
+  });
+
+export const useAiringTrackPriorityQuery = () =>
+  useQuery<AiringTrackPreferenceType[]>({
+    queryKey: ['airing-schedule', 'track-priority'],
+    queryFn: () => axios.get('AiringSchedule/Track/Priority'),
   });
 
 /**
@@ -120,4 +141,11 @@ export const useAiringSeasonsByYearQuery = (
     // The seasons' counts change as anime are added, rarely; opening the browser again keeps them.
     staleTime: 60 * 60_000,
     enabled,
+  });
+
+/** The airing schedule service's own configuration, whose ID the configuration routes take. */
+export const useAiringScheduleConfigurationQuery = () =>
+  useQuery<ConfigurationInfoType>({
+    queryKey: ['airing-schedule', 'configuration'],
+    queryFn: () => axios.get('AiringSchedule/Configuration'),
   });

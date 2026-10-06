@@ -56,3 +56,16 @@ export type AiringSeasonsByYearRequestType = AiringSeasonFiltersType & {
   /** Leave out the earlier years; the current season's year is listed either way. */
   fromYear?: number;
 };
+
+/** One provider's changes for `POST AiringSchedule/Provider`. A provider with no enabled kinds is disabled. */
+export type UpdateAiringProvidersRequestType = {
+  ID: string;
+  Priority?: number;
+  EnabledKinds?: AiringKindType[];
+  SweepInterval?: string;
+};
+
+/** The body of `POST AiringSchedule/Channel/{channelID}/Merge`: the channels merged into it and then gone. */
+export type MergeAiringChannelsRequestType = {
+  SourceIDs: string[];
+};
