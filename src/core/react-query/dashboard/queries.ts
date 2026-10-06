@@ -5,7 +5,6 @@ import { transformSeriesSummary } from '@/core/react-query/dashboard/helpers';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
 
 import type {
-  DashboardCalendarRequestType,
   DashboardContinueWatchingRequestType,
   DashboardNextUpRequestType,
 } from '@/core/react-query/dashboard/types';
@@ -17,12 +16,6 @@ import type {
   DashboardStatsType,
 } from '@/core/types/api/dashboard';
 import type { SeriesType } from '@/core/types/api/series';
-
-export const useDashboardCalendarQuery = (params: DashboardCalendarRequestType) =>
-  useQuery<DashboardEpisodeDetailsType[]>({
-    queryKey: ['dashboard', 'calendar', params],
-    queryFn: () => axios.get('Dashboard/AniDBCalendar', { params }),
-  });
 
 export const useDashboardContinueWatchingQuery = (params: DashboardContinueWatchingRequestType) =>
   useQuery<ListResultType<DashboardEpisodeDetailsType>, unknown, DashboardEpisodeDetailsType[]>({

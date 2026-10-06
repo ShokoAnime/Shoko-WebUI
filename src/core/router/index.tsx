@@ -33,6 +33,7 @@ import MainPage from '@/pages/main/MainPage';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import SettingsPage from '@/pages/settings/SettingsPage';
+import AiringScheduleSettings from '@/pages/settings/tabs/AiringScheduleSettings';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
@@ -45,6 +46,7 @@ import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
+import AiringSchedule from '@/pages/utilities/AiringSchedule';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
@@ -103,6 +105,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="duplicate-files/linked" element={<DuplicateFilesLinkedTab />} />
             <Route path="duplicate-files/unrecognized" element={<DuplicateFilesUnrecognizedTab />} />
             <Route path="missing-episodes" element={<MissingEpisodes />} />
+            <Route path="airing-schedule" element={<AiringSchedule />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />
@@ -133,6 +136,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="tmdb" element={<TmdbSettings />} />
+            <Route path="airing-schedule" element={<AiringScheduleSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="plugin-management">
