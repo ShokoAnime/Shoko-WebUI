@@ -3,7 +3,12 @@ import cx from 'classnames';
 import AiringProviderIcon from '@/components/AiringProviderIcon';
 import SeriesPoster from '@/components/SeriesPoster';
 import { OtherAiringsPopover } from '@/components/Utilities/AiringSchedule/AiringEntry';
-import { getAiringAnidbAnimeId, getAiringEpisodeLabel, getAiringShokoSeriesId } from '@/core/utilities/airingSchedule';
+import {
+  UNRESOLVED_AIRING_HINT,
+  getAiringAnidbAnimeId,
+  getAiringEpisodeLabel,
+  getAiringShokoSeriesId,
+} from '@/core/utilities/airingSchedule';
 import useAiringProviderContext from '@/hooks/useAiringProviderContext';
 
 import type { CalendarEntryType } from '@/core/utilities/airingSchedule';
@@ -32,6 +37,7 @@ const AiringDetails = ({ entry, isAired = false, isInCollection = false, showTim
   const relativeTime = airedAt.calendar(null, CalendarConfig);
   const seriesTitle = airing.Series?.Title ?? 'Unknown Series';
   const provider = useAiringProviderContext(airing.Source?.ID);
+  const episodeLabel = getAiringEpisodeLabel(airing);
 
   return (
     <div className={cx('flex w-56 shrink-0 flex-col gap-y-3 transition-opacity', isAired && 'opacity-65')}>
@@ -58,10 +64,11 @@ const AiringDetails = ({ entry, isAired = false, isInCollection = false, showTim
       <SeriesPoster
         image={airing.Poster ?? undefined}
         title={seriesTitle}
-        subtitle={getAiringEpisodeLabel(airing)}
+        subtitle={airing.IsResolved ? episodeLabel : [episodeLabel, UNRESOLVED_AIRING_HINT].filter(Boolean).join(' · ')}
         shokoId={getAiringShokoSeriesId(airing)}
         anidbSeriesId={getAiringAnidbAnimeId(airing) ?? undefined}
-        anidbEpisodeId={airing.IDs.AnidbEpisode ?? undefined}
+        // An unresolved airing has no episode yet, so it links to its series.
+        anidbEpisodeId={airing.IsResolved ? airing.IDs.AnidbEpisode ?? undefined : undefined}
         inCollection={isInCollection}
       />
     </div>

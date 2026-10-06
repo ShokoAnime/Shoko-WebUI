@@ -104,12 +104,19 @@ export const getAiringShokoSeriesId = (airing: EpisodeAiringType) =>
 export const getAiringAnidbAnimeId = (airing: EpisodeAiringType) =>
   airing.Series?.AnidbID ?? airing.IDs.AnidbAnime ?? null;
 
-/** `5 - Title`, `S2 - Title`, or whatever part of it is known. */
+/** The muted hint shown with an unresolved airing, whose episode AniDB does not list yet. */
+export const UNRESOLVED_AIRING_HINT = 'Not on AniDB yet';
+
+/** `5 - Title`, `S2 - Title`, or whatever part of it is known; `Ep 14` for an unresolved airing. */
 export const getAiringEpisodeLabel = (airing: EpisodeAiringType) => {
+  if (!airing.IsResolved) return airing.Number === null ? '' : `Ep ${airing.Number}`;
   const number = airing.Number === null ? null : `${getEpisodePrefix(airing.Type ?? undefined)}${airing.Number}`;
   if (number && airing.EpisodeTitle) return `${number} - ${airing.EpisodeTitle}`;
   return number ?? airing.EpisodeTitle ?? '';
 };
+
+/** The local files of the airing's episode; none for an unresolved airing, which has no episode yet. */
+export const getAiringVideoCount = (airing: EpisodeAiringType) => (airing.IsResolved ? airing.VideoCount : 0);
 
 /** The browser's IANA time zone, which every time of the airing schedule is shown in. */
 export const getLocalTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;

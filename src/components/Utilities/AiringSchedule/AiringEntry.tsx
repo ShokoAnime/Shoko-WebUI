@@ -10,15 +10,17 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import { Badge } from '@/components/Badge';
 import { dayjs, getAnidbAnimeLink } from '@/core/util';
 import {
+  UNRESOLVED_AIRING_HINT,
   getAiringAnidbAnimeId,
   getAiringEpisodeLabel,
   getAiringShokoSeriesId,
+  getAiringVideoCount,
   isAiringNow,
 } from '@/core/utilities/airingSchedule';
 import useAiringProviderContext from '@/hooks/useAiringProviderContext';
 import useNow from '@/hooks/useNow';
 
-import type { AiringChannelReferenceType, AiringKindType } from '@/core/types/api/airing-schedule';
+import type { AiringChannelReferenceType, AiringKindType, EpisodeAiringType } from '@/core/types/api/airing-schedule';
 import type { CalendarEntryType } from '@/core/utilities/airingSchedule';
 
 /** Switches a channel off in the airing schedule's channel filter. */
@@ -183,6 +185,20 @@ export const LocalFilesIcon = ({ count, showTooltip = true }: { count: number, s
   );
 };
 
+/** `Not on AniDB yet`, muted, after the label of an unresolved airing, whose episode AniDB does not list yet. */
+export const UnresolvedHint = ({ airing, className }: { airing: EpisodeAiringType, className?: string }) => {
+  if (airing.IsResolved) return null;
+  return (
+    <span
+      className={cx('shrink-0 text-xs opacity-65', className)}
+      data-tooltip-id="tooltip"
+      data-tooltip-content="AniDB does not list this episode yet"
+    >
+      {UNRESOLVED_AIRING_HINT}
+    </span>
+  );
+};
+
 const getWhere = (entry: CalendarEntryType) => {
   const { Channel, IsDateOnly, Source } = entry.airing;
   if (IsDateOnly) return 'AniDB air date';
@@ -336,6 +352,7 @@ export const OtherAiringsPopover = (
 const AiringEntry = ({ entry, onHideChannel, showKinds = false, striped = false, variant }: Props) => {
   const { airing, movedTo } = entry;
   const episodeLabel = getAiringEpisodeLabel(airing);
+  const videoCount = getAiringVideoCount(airing);
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => setExpanded(value => !value);
   const showOthers = expanded && entry.others.length > 0;
@@ -348,10 +365,11 @@ const AiringEntry = ({ entry, onHideChannel, showKinds = false, striped = false,
         data-tooltip-content={[
           airing.Series?.Title,
           episodeLabel,
+          airing.IsResolved ? null : UNRESOLVED_AIRING_HINT,
           getWhere(entry),
           ...getBadges(entry).map(badge => badge.tooltip ?? badge.text),
           ...(showKinds ? getKinds(entry) : []),
-          airing.VideoCount > 0 ? formatLocalFiles(airing.VideoCount) : null,
+          videoCount > 0 ? formatLocalFiles(videoCount) : null,
           ...getOthersSummary(entry).map(other => `Also ${other}`),
         ].filter(Boolean).join(' | ')}
         data-tooltip-delay-show={500}
@@ -364,7 +382,7 @@ const AiringEntry = ({ entry, onHideChannel, showKinds = false, striped = false,
         <NowBadge entry={entry} className="self-center px-1 leading-4" showTooltip={false} />
         {/* The month's rows have no room for the list, so it opens in a popover. */}
         <OtherAiringsPopover others={entry.others} onHideChannel={onHideChannel} />
-        <LocalFilesIcon count={airing.VideoCount} showTooltip={false} />
+        <LocalFilesIcon count={videoCount} showTooltip={false} />
         <SeriesLink entry={entry} className="font-normal!" showTooltip={false} />
       </div>
     );
@@ -381,7 +399,8 @@ const AiringEntry = ({ entry, onHideChannel, showKinds = false, striped = false,
           <SeriesLink entry={entry} />
           <div className="flex min-w-0 items-center gap-x-1.5 text-sm">
             {episodeLabel && <span className="truncate opacity-65">{episodeLabel}</span>}
-            <LocalFilesIcon count={airing.VideoCount} />
+            <UnresolvedHint airing={airing} />
+            <LocalFilesIcon count={videoCount} />
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-1">
@@ -430,7 +449,7 @@ const AiringEntry = ({ entry, onHideChannel, showKinds = false, striped = false,
           </div>
         </div>
         <SeriesLink entry={entry} />
-        {(episodeLabel || airing.VideoCount > 0) && (
+        {(episodeLabel || videoCount > 0) && (
           <div className="flex min-w-0 items-center gap-x-1.5">
             {episodeLabel && (
               <span
@@ -442,7 +461,8 @@ const AiringEntry = ({ entry, onHideChannel, showKinds = false, striped = false,
                 {episodeLabel}
               </span>
             )}
-            <LocalFilesIcon count={airing.VideoCount} />
+            <UnresolvedHint airing={airing} />
+            <LocalFilesIcon count={videoCount} />
           </div>
         )}
         <Where entry={entry} className="text-xs" onHideChannel={onHideChannel} />

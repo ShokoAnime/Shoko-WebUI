@@ -7,13 +7,19 @@ import AiringProviderIcon from '@/components/AiringProviderIcon';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { Badge } from '@/components/Badge';
 import CleanDescription from '@/components/Collection/CleanDescription';
-import { LocalFilesIcon, MoreButton, OtherAiringsList } from '@/components/Utilities/AiringSchedule/AiringEntry';
+import {
+  LocalFilesIcon,
+  MoreButton,
+  OtherAiringsList,
+  UnresolvedHint,
+} from '@/components/Utilities/AiringSchedule/AiringEntry';
 import { useSelector } from '@/core/store';
 import { dayjs, getAnidbAnimeLink } from '@/core/util';
 import {
   formatCountdown,
   formatDayCountdown,
   getAiringDisplayTime,
+  getAiringVideoCount,
   hasAiringEnded,
   isAiringNow,
   parseTimeSpanMinutes,
@@ -91,6 +97,14 @@ const NextAiringSlot = ({ airing }: { airing: EpisodeAiringType }) => {
   );
 };
 
+/** The muted line above the countdown, naming the episode, and that AniDB does not list it yet when it is unresolved. */
+const EpisodeLine = ({ airing, text }: { airing: EpisodeAiringType, text: string }) => (
+  <span className="flex min-w-0 items-baseline gap-x-1.5 text-sm">
+    <span className="truncate opacity-65">{text}</span>
+    <UnresolvedHint airing={airing} />
+  </span>
+);
+
 /**
  * The countdown to the next airing, or while it is on air that it is and when it ends. Once over it stays put until
  * the season's next read moves on to the following episode.
@@ -104,7 +118,7 @@ const NextAiringTime = ({ airing, episode, now }: { airing: EpisodeAiringType, e
     const endsIn = formatCountdown(endsAt, now);
     return (
       <>
-        <span className="text-sm opacity-65">{episode}</span>
+        <EpisodeLine airing={airing} text={episode} />
         <span
           className="flex min-w-0 items-baseline gap-x-2"
           data-tooltip-id="tooltip"
@@ -120,7 +134,7 @@ const NextAiringTime = ({ airing, episode, now }: { airing: EpisodeAiringType, e
   if (!airing.IsDateOnly && hasAiringEnded(airing, now)) {
     return (
       <>
-        <span className="text-sm opacity-65">{episode}</span>
+        <EpisodeLine airing={airing} text={episode} />
         <span className="text-lg font-semibold" data-tooltip-id="tooltip" data-tooltip-content={tooltip}>
           Just aired
         </span>
@@ -132,7 +146,7 @@ const NextAiringTime = ({ airing, episode, now }: { airing: EpisodeAiringType, e
   const isNear = countdown === 'Today' || countdown === 'Tomorrow';
   return (
     <>
-      <span className="text-sm opacity-65">{isNear ? `${episode} airs` : `${episode} airing in`}</span>
+      <EpisodeLine airing={airing} text={isNear ? `${episode} airs` : `${episode} airing in`} />
       <span
         className="text-lg font-semibold text-panel-text-primary"
         data-tooltip-id="tooltip"
@@ -154,6 +168,7 @@ const AiringStatus = ({ anime }: Props) => {
   const others = everyChannel ? anime.OtherAirings : [];
 
   if (nextAiring) {
+    // An unresolved airing is a regular episode numbered by its place, so it reads the same.
     const episode = nextAiring.Number === null
       ? 'Next episode'
       : `Ep ${getEpisodePrefix(nextAiring.Type ?? undefined)}${nextAiring.Number}`;
@@ -162,7 +177,7 @@ const AiringStatus = ({ anime }: Props) => {
         <NextAiringTime airing={nextAiring} episode={episode} now={now} />
         <div className="flex min-w-0 items-center gap-x-2">
           <NextAiringSlot airing={nextAiring} />
-          <LocalFilesIcon count={nextAiring.VideoCount} />
+          <LocalFilesIcon count={getAiringVideoCount(nextAiring)} />
           <MoreButton
             entry={{ ...toCalendarEntry(nextAiring), others: others.map(toCalendarEntry) }}
             expanded={expanded}
