@@ -195,7 +195,7 @@ const AiringSchedule = () => {
     include: ['EpisodeTitle', 'Series', 'Poster'],
   }, isAiringView && channelFilter.enabled);
 
-  // The season view and its browser read the anime with the same filters, so the counts agree.
+  // The season view and its browser read the anime with the same filters and layout, so the counts agree.
   const seasonFilters = {
     inCollection: showAll ? 'true' : 'only',
     includeRestricted: airingParams.includeRestricted,
@@ -208,6 +208,7 @@ const AiringSchedule = () => {
       ...seasonFilters,
       fromYear: oldestSeasonYear ?? undefined,
     },
+    sections,
     isSeasonView && channelFilter.enabled,
     clockOffset,
   );
@@ -220,6 +221,7 @@ const AiringSchedule = () => {
       include: airingSeasonImagesInclude,
       fromYear: oldestSeasonYear ?? undefined,
     },
+    sections,
     isBrowsing && channelFilter.enabled,
     clockOffset,
   );

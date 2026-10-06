@@ -56,15 +56,18 @@ export type AiringSeasonRequestType = AiringSeasonFiltersType & {
   episodeType?: string;
 };
 
-/** The body of `POST AiringSchedule/Season/{year}/{season}/Sections`: the layout to group the anime by. */
-export type AiringSeasonSectionsBodyType = {
+/**
+ * The body of the `POST AiringSchedule/Season` routes: the layout to group and count the anime by, or `null` for the
+ * server's default.
+ */
+export type AiringSeasonBodyType = {
   Sections: SeasonSectionDefinitionType[] | null;
 };
 
-/** The query of `GET AiringSchedule/Season`, the seasons with anime under the same filters. */
+/** The query of `POST AiringSchedule/Season`, the seasons with anime under the same filters. */
 export type AiringSeasonsRequestType = AiringSeasonFiltersType;
 
-/** The query of `GET AiringSchedule/Season/ByYear`, the same seasons by year, newest first. */
+/** The query of `POST AiringSchedule/Season/ByYear`, the same seasons by year, newest first. */
 export type AiringSeasonsByYearRequestType = AiringSeasonFiltersType & {
   include?: 'Images'[];
   /** Leave out the earlier years; the current season's year is listed either way. */
