@@ -311,6 +311,8 @@ export const initialSettings: SettingsType = {
       recentlyImportedSeriesCount: 20,
       recentlyImportedView: 'episodes',
       upcomingAnimeView: 'collection',
+      upcomingAnimeDays: 7,
+      upcomingAnimeShowTimes: true,
     },
     airingSchedule: {
       oldestSeasonYear: null,

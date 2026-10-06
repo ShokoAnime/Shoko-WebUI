@@ -472,6 +472,8 @@ export type WebUISettingsType = {
     recentlyImportedSeriesCount: number;
     recentlyImportedView: 'episodes' | 'series';
     upcomingAnimeView: 'collection' | 'all';
+    upcomingAnimeDays: number;
+    upcomingAnimeShowTimes: boolean;
   };
   airingSchedule: {
     /** The oldest year the airing schedule's season view lists, or `null` for every year. */
