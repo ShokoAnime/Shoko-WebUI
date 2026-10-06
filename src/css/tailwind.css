@@ -33,6 +33,10 @@
   --animate-slide-in-from-right: slide-in-from-right 220ms ease-out both;
   --animate-slide-out-to-left: slide-out-to-left 220ms ease-out both;
   --animate-slide-out-to-right: slide-out-to-right 220ms ease-out both;
+  --animate-pane-in: pane-in 200ms ease-out both;
+  --animate-pane-out: pane-out 200ms ease-out both;
+  --animate-flip-out: flip-out 125ms ease-in both;
+  --animate-flip-in: flip-in 125ms ease-out both;
 
   @keyframes slide-in-from-left {
     from {
@@ -59,6 +63,32 @@
     to {
       opacity: 0;
       transform: translateX(100%);
+    }
+  }
+
+  @keyframes pane-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+  }
+
+  @keyframes pane-out {
+    to {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  @keyframes flip-out {
+    to {
+      transform: rotateX(90deg);
+    }
+  }
+
+  @keyframes flip-in {
+    from {
+      transform: rotateX(-90deg);
     }
   }
 }
