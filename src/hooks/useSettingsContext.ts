@@ -1,7 +1,7 @@
 import { useOutletContext } from 'react-router';
 
-import type { SettingsContextType } from '@/core/types/context';
+import type { SettingsPageContextType } from '@/core/types/context';
 
-const useSettingsContext = () => useOutletContext<SettingsContextType>();
+const useSettingsContext = () => useOutletContext<SettingsPageContextType>();
 
 export default useSettingsContext;
