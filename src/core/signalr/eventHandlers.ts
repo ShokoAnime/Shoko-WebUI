@@ -43,6 +43,12 @@ const invalidateSeries = (seriesIds: number[]) => {
   flushSeries();
 };
 
+// A sweep can land many airings at once.
+const invalidateAirings = debounce(
+  () => invalidateQueries(['airing-schedule', 'calendar']),
+  5000,
+);
+
 const invalidateUtilities = debounce(
   () => {
     invalidateQueries(['release-management']);
@@ -69,6 +75,9 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
       break;
     case 'FileRenamed':
       invalidateFiles();
+      break;
+    case 'AiringsUpdated':
+      invalidateAirings();
       break;
     case 'QueueStateChanged':
       invalidateQueueItems();

@@ -138,7 +138,8 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration';
+      const connectionHub =
+        '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration,airing';
 
       const protocol = new JsonHubProtocol();
 
@@ -190,6 +191,12 @@ async (action: UnknownAction) => {
       connectionEvents.on('metadata:series.added', onSeriesEvent);
       connectionEvents.on('metadata:series.updated', onSeriesEvent);
       connectionEvents.on('metadata:series.removed', onSeriesEvent);
+
+      connectionEvents.on(
+        'airing:provider.swept',
+        (event: { IsFinished?: boolean }) => event.IsFinished && handleEvent('AiringsUpdated'),
+      );
+      connectionEvents.on('airing:episode.aired', () => handleEvent('AiringsUpdated'));
 
       connectionEvents.on('configuration:connected', onRestartRequiredUpdate(getState));
       connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate(getState));
