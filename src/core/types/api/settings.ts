@@ -473,6 +473,10 @@ export type WebUISettingsType = {
     recentlyImportedView: 'episodes' | 'series';
     upcomingAnimeView: 'collection' | 'all';
   };
+  airingSchedule: {
+    /** The oldest year the airing schedule's season view lists, or `null` for every year. */
+    oldestSeasonYear: number | null;
+  };
 };
 
 export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {

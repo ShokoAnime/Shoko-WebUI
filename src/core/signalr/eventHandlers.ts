@@ -43,9 +43,12 @@ const invalidateSeries = (seriesIds: number[]) => {
   flushSeries();
 };
 
-// A sweep can land many airings at once.
+// A sweep can land many airings at once, and an episode airing moves every countdown along.
 const invalidateAirings = debounce(
-  () => invalidateQueries(['airing-schedule', 'calendar']),
+  () => {
+    invalidateQueries(['airing-schedule', 'calendar']);
+    invalidateQueries(['airing-schedule', 'season']);
+  },
   5000,
 );
 

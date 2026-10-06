@@ -312,6 +312,9 @@ export const initialSettings: SettingsType = {
       recentlyImportedView: 'episodes',
       upcomingAnimeView: 'collection',
     },
+    airingSchedule: {
+      oldestSeasonYear: null,
+    },
   },
   FirstRun: false,
   Database: {

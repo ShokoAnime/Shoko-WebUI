@@ -1,5 +1,6 @@
 import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 import type { AiringKindType, EpisodeAiringKindType } from '@/core/types/api/airing-schedule';
+import type { AnimeTypeValues } from '@/core/types/api/series';
 
 export type AiringDataToIncludeType = 'EpisodeTitle' | 'Series' | 'Poster' | 'Thumbnail';
 
@@ -27,4 +28,31 @@ export type AiringCalendarRequestType = {
   /** Comma-separated channel IDs, hidden ones included; the visible channels when left out. */
   channel?: string;
   include?: AiringDataToIncludeType[];
+};
+
+/** The anime filters of the season routes, and the channels their airings are on. */
+type AiringSeasonFiltersType = {
+  type?: AnimeTypeValues[];
+  inCollection?: IncludeOnlyFilterType;
+  includeRestricted?: IncludeOnlyFilterType;
+  /** Comma-separated channel IDs, hidden ones included; the visible channels when left out. */
+  channel?: string;
+};
+
+/** The query of `GET AiringSchedule/Season/{year}/{season}/Sections`: the anime filters, then those of their airings. */
+export type AiringSeasonRequestType = AiringSeasonFiltersType & {
+  kind?: AiringKindType[];
+  provider?: string[];
+  episodeKind?: EpisodeAiringKindType[];
+  includeEstimates?: boolean;
+};
+
+/** The query of `GET AiringSchedule/Season`, the seasons with anime under the same filters. */
+export type AiringSeasonsRequestType = AiringSeasonFiltersType;
+
+/** The query of `GET AiringSchedule/Season/ByYear`, the same seasons by year, newest first. */
+export type AiringSeasonsByYearRequestType = AiringSeasonFiltersType & {
+  include?: 'Images'[];
+  /** Leave out the earlier years; the current season's year is listed either way. */
+  fromYear?: number;
 };
