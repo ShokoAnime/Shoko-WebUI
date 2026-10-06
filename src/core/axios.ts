@@ -85,6 +85,23 @@ const unwrapResponse = (response: AxiosResponse) => {
   return response.data;
 };
 
+// Endpoints the server keeps reachable while it is starting (eg. Settings) reject every apikey with 401 until it has
+// started, so a 401 from them does not prove the apikey is bad. This endpoint is not one of them: while the server is
+// not running it answers 503, so a 401 from it always means the apikey itself was rejected.
+const APIKEY_CHECK_URL = 'User/Current';
+let apikeyCheckPending = false;
+
+const checkApikey = () => {
+  if (apikeyCheckPending) return;
+  apikeyCheckPending = true;
+  // A 401 here logs out through handleResponseError; a success or a 503 (server not started) keeps the session.
+  axios.get(APIKEY_CHECK_URL)
+    .catch(() => undefined)
+    .finally(() => {
+      apikeyCheckPending = false;
+    });
+};
+
 const handleResponseError = (error: AxiosError) => {
   addApiBreadcrumb(error.config, (error.response as AxiosResponse | undefined)?.data, error.response?.status, 'error');
 
@@ -93,6 +110,7 @@ const handleResponseError = (error: AxiosError) => {
   // - `AUTH_URL_PATTERN` excludes auth endpoints themselves - failed logins also return 401.
   // - Path check excludes Plex requests (/plex), which use their own authentication.
   // - `apikey` check ensures this fires only while logged in, and therefore at most once per session.
+  // - Only a 401 from the apikey check endpoint logs out; any other 401 asks that endpoint first (see above).
   const status = error.response?.status;
   const url = error.config?.url ?? '';
   const fullPath = `${error.config?.baseURL ?? ''}/${url}`;
@@ -100,10 +118,10 @@ const handleResponseError = (error: AxiosError) => {
     status === 401
     && !AUTH_URL_PATTERN.test(url)
     && fullPath.startsWith('/api')
-    && fullPath !== '/api/v3/Settings'
     && store.getState().apiSession.apikey
   ) {
-    store.dispatch({ type: Events.AUTH_LOGOUT });
+    if (fullPath === `/api/v3/${APIKEY_CHECK_URL}`) store.dispatch({ type: Events.AUTH_LOGOUT });
+    else checkApikey();
   }
 
   return Promise.reject(error);
