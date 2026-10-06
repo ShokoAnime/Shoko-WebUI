@@ -67,7 +67,15 @@ export type EpisodeAiringType = {
     ShokoSeries: number | null;
     AnidbAnime: number | null;
   };
+  /** The local files of the episode; `0` for an unresolved airing. */
   VideoCount: number;
+  /** The airing's place on its schedule's numbered line, from `1`; `null` off the line, as a special, or date-only. */
+  SequenceNumber: number | null;
+  /**
+   * Whether an episode is listed for the airing. An unresolved one is for a place AniDB does not list yet: it is a
+   * regular `Episode` numbered by its place, with its series' IDs but no episode IDs and no local files.
+   */
+  IsResolved: boolean;
   Type: EpisodeTypeValues | null;
   Number: number | null;
   /** Only with `include=EpisodeTitle`. */

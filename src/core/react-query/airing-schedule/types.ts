@@ -25,6 +25,8 @@ export type AiringCalendarRequestType = {
   episodeKind?: EpisodeAiringKindType[];
   includeRestricted?: IncludeOnlyFilterType;
   includeEstimates?: boolean;
+  /** Include the airings of episodes AniDB does not list yet; on when left out. */
+  includeUnresolved?: boolean;
   /** Comma-separated channel IDs, hidden ones included; the visible channels when left out. */
   channel?: string;
   include?: AiringDataToIncludeType[];
@@ -45,6 +47,8 @@ export type AiringSeasonRequestType = AiringSeasonFiltersType & {
   provider?: string[];
   episodeKind?: EpisodeAiringKindType[];
   includeEstimates?: boolean;
+  /** Include the airings of episodes AniDB does not list yet; on when left out. */
+  includeUnresolved?: boolean;
 };
 
 /** The query of `GET AiringSchedule/Season`, the seasons with anime under the same filters. */
