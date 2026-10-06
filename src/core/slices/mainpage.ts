@@ -15,6 +15,8 @@ type State = {
   banStatus: AniDBBanType;
   networkStatus: NetworkAvailabilityValues;
   layoutEditMode: boolean;
+  // Whether the `configuration` feed says a changed setting needs a restart.
+  configurationRestartRequired: boolean;
 };
 
 const initialQueueStatus: QueueStatusType = {
@@ -41,6 +43,7 @@ const initialState: State = {
   } as AniDBBanType,
   networkStatus: 'Internet',
   layoutEditMode: false,
+  configurationRestartRequired: false,
 };
 
 const mainpageSlice = createSlice({
@@ -72,11 +75,15 @@ const mainpageSlice = createSlice({
     setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailabilityValues>) {
       sliceState.networkStatus = action.payload;
     },
+    setConfigurationRestartRequired(sliceState, action: PayloadAction<boolean>) {
+      sliceState.configurationRestartRequired = action.payload;
+    },
   },
 });
 
 export const {
   resetQueueStatus,
+  setConfigurationRestartRequired,
   setFetched,
   setHttpBanStatus,
   setLayoutEditMode,
