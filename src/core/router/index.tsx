@@ -41,6 +41,7 @@ import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSe
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
+import ScheduledActionsSettings from '@/pages/settings/tabs/ScheduledActionsSettings';
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
@@ -135,6 +136,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
+            <Route path="scheduled-actions" element={<ScheduledActionsSettings />} />
             <Route path="plugin-management">
               <Route index element={<Navigate to="installed" replace />} />
               <Route path=":section" element={<PluginManagementSettings />} />
