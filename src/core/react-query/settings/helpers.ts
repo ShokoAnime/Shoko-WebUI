@@ -319,6 +319,7 @@ export const initialSettings: SettingsType = {
         hours: 12,
       },
       sections: null,
+      episodeTypes: null,
     },
   },
   FirstRun: false,

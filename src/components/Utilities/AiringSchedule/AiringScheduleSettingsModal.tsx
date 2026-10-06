@@ -11,6 +11,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import SeasonSectionsEditor from '@/components/Utilities/AiringSchedule/SeasonSectionsEditor';
+import ToggleChips from '@/components/Utilities/AiringSchedule/ToggleChips';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { matchesChannelSearch } from '@/core/utilities/airingChannels';
@@ -23,6 +24,7 @@ import useSyncedState from '@/hooks/useSyncedState';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { SeasonSectionDefinitionType } from '@/core/types/api/airing-season';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { WebUISettingsType } from '@/core/types/api/settings';
 
 /** One channel of the filter, with how many of the view's airings it carries. */
@@ -61,27 +63,39 @@ const tabs: { label: string, value: TabType }[] = [
   { label: 'Sections', value: 'sections' },
 ];
 
+const episodeTypeOptions: { label: string, value: EpisodeTypeValues }[] = [
+  { label: 'Episodes', value: 'Episode' },
+  { label: 'Specials', value: 'Special' },
+  { label: 'Credits', value: 'Credits' },
+  { label: 'Trailers', value: 'Trailer' },
+  { label: 'Parodies', value: 'Parody' },
+  { label: 'Other', value: 'Other' },
+];
+
+const allEpisodeTypes = episodeTypeOptions.map(option => option.value);
+
 type SavedSettingsType = Pick<
   WebUISettingsType['airingSchedule'],
-  'oldestSeasonYear' | 'recentlyAired' | 'sections'
+  'oldestSeasonYear' | 'recentlyAired' | 'sections' | 'episodeTypes'
 >;
 
 /**
  * The airing schedule's settings, in two tabs. General holds the on-the-fly channel filter, which switches the
  * channels off and on in every view for this session only, the other channel-like restrictions passed as `children`,
- * and the saved season view's oldest year, recently aired look back. Sections edits the season
+ * and the saved season view's oldest year, recently aired look back and episode types. Sections edits the season
  * view's saved layout. Every change applies at once.
  */
 const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onShow, show }: Props) => {
   const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
-  const { oldestSeasonYear, recentlyAired, sections } = settings.WebUI_Settings.airingSchedule;
+  const { episodeTypes, oldestSeasonYear, recentlyAired, sections } = settings.WebUI_Settings.airingSchedule;
   const [tab, setTab] = useState<TabType>('general');
   // A number typed digit by digit is saved once typing pauses, or as the modal closes, never half-typed. The changes
   // still to save are saved together, so one never undoes another.
   const [yearDraft, setYearDraft] = useSyncedState(oldestSeasonYear);
   const [enabledDraft, setEnabledDraft] = useSyncedState(recentlyAired.enabled);
   const [hoursDraft, setHoursDraft] = useSyncedState<number, number | null>(recentlyAired.hours);
+  const [episodeTypesDraft, setEpisodeTypesDraft] = useSyncedState(episodeTypes);
   const pendingSave = useRef<{ timer: number, changes: Partial<SavedSettingsType> } | null>(null);
   const [search, setSearch] = useState('');
   const query = search.trim().toLowerCase();
@@ -131,6 +145,14 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
     const hours = clampRecentlyAiredHours(Number(event.target.value));
     setHoursDraft(hours);
     queueSave({ recentlyAired: { enabled: enabledDraft, hours } });
+  };
+
+  // Every type on is no filter at all; the last type on stays on.
+  const handleEpisodeTypesChange = (selected: EpisodeTypeValues[]) => {
+    if (selected.length === 0) return;
+    const newTypes = selected.length === allEpisodeTypes.length ? null : selected;
+    setEpisodeTypesDraft(newTypes);
+    queueSave({ episodeTypes: newTypes });
   };
 
   // Going back to the default saves at once, with anything still waiting.
@@ -229,6 +251,17 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
             )}
             <span className="text-sm opacity-65">
               {`In the current and previous seasons, each card keeps its episode for these hours after it airs, from ${RECENTLY_AIRED_MIN_HOURS} to ${RECENTLY_AIRED_MAX_HOURS}. It is saved too.`}
+            </span>
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <span className="font-semibold">Episode Types</span>
+            <ToggleChips
+              options={episodeTypeOptions}
+              selected={episodeTypesDraft ?? allEpisodeTypes}
+              onChange={handleEpisodeTypesChange}
+            />
+            <span className="text-sm opacity-65">
+              The season and calendar views show only the airings of these AniDB episode types. It is saved too.
             </span>
           </div>
           <div className="flex flex-col gap-y-3">
