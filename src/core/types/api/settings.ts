@@ -89,15 +89,19 @@ export type SettingsMetadataImageType = {
   AutoDownloadStudioImages: boolean;
 };
 
-/** The image settings of one source, TMDB or a plugin source, in place of the defaults. */
-export type SettingsMetadataSourceImageType = SettingsMetadataImageType & {
-  Source: string;
+/** What every metadata source follows unless its entry in `Metadata.Sources` sets its own. */
+export type SettingsMetadataSourceDefaultsType = {
+  /** How many days before an episode airs it may be matched across sources. */
+  EpisodeMatchLookAheadDays: number;
+  /** Which images to download. */
+  Images: SettingsMetadataImageType;
 };
 
-export type SettingsImageType = {
-  /** Which images to download for a source without settings of its own. */
-  MetadataSourceDefaults: SettingsMetadataImageType;
-  MetadataSources: SettingsMetadataSourceImageType[];
+/** One plugin source's own settings, each `null` to follow the defaults. */
+export type SettingsMetadataSourceOverridesType = {
+  Source: string;
+  EpisodeMatchLookAheadDays: number | null;
+  Images: SettingsMetadataImageType | null;
 };
 
 export type SettingsMetadataType = {
@@ -105,6 +109,8 @@ export type SettingsMetadataType = {
   PurgeOrphanedAfterDays: number;
   /** Days a series, movie or collection may stay stored with nothing linking to it, or `0` to keep them. */
   AutoPurgeUnlinkedAfterDays: number;
+  SourceDefaults: SettingsMetadataSourceDefaultsType;
+  Sources: SettingsMetadataSourceOverridesType[];
 };
 
 export type SettingsLanguageType = {
@@ -249,7 +255,6 @@ export type SettingsServerType = {
     & SettingsAnidbDownloadType
     & SettingsAnidbUpdateType
     & { MyList: SettingsAnidbMyListType };
-  Image: SettingsImageType;
   Metadata: SettingsMetadataType;
   Language: SettingsLanguageType;
   Plex: SettingsPlexType;
