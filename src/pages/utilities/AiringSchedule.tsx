@@ -118,8 +118,8 @@ const AiringSchedule = () => {
   const navigate = useNavigateVoid();
   const settings = useSettingsQuery().data;
   const { hideR18Content } = settings.WebUI_Settings.dashboard;
-  // The season view's oldest year and recently aired look back are set in the page's settings modal.
-  const { oldestSeasonYear, recentlyAired } = settings.WebUI_Settings.airingSchedule;
+  // The season view's oldest year, recently aired look back and layout are set in the page's settings modal.
+  const { oldestSeasonYear, recentlyAired, sections } = settings.WebUI_Settings.airingSchedule;
 
   // Without a view in the URL, the page opens on the last one used.
   const lastView = useSelector(state => state.utilities.airingSchedule.lastView);
@@ -235,6 +235,7 @@ const AiringSchedule = () => {
       // The season route leaves reruns out unless asked for every kind.
       episodeKind: showReruns ? allEpisodeKinds : noRerunKinds,
     },
+    sections,
     isSeasonView && channelFilter.enabled,
     clockOffset,
     recentlyAiredAt,

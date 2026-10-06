@@ -1,5 +1,6 @@
 import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 import type { AiringKindType, EpisodeAiringKindType } from '@/core/types/api/airing-schedule';
+import type { SeasonSectionDefinitionType } from '@/core/types/api/airing-season';
 import type { AnimeTypeValues } from '@/core/types/api/series';
 
 export type AiringDataToIncludeType = 'EpisodeTitle' | 'Series' | 'Poster' | 'Thumbnail';
@@ -41,7 +42,7 @@ type AiringSeasonFiltersType = {
   channel?: string;
 };
 
-/** The query of `GET AiringSchedule/Season/{year}/{season}/Sections`: the anime filters, then those of their airings. */
+/** The query of `POST AiringSchedule/Season/{year}/{season}/Sections`: the anime filters, then those of their airings. */
 export type AiringSeasonRequestType = AiringSeasonFiltersType & {
   kind?: AiringKindType[];
   provider?: string[];
@@ -49,6 +50,11 @@ export type AiringSeasonRequestType = AiringSeasonFiltersType & {
   includeEstimates?: boolean;
   /** Include the airings of episodes AniDB does not list yet; on when left out. */
   includeUnresolved?: boolean;
+};
+
+/** The body of `POST AiringSchedule/Season/{year}/{season}/Sections`: the layout to group the anime by. */
+export type AiringSeasonSectionsBodyType = {
+  Sections: SeasonSectionDefinitionType[] | null;
 };
 
 /** The query of `GET AiringSchedule/Season`, the seasons with anime under the same filters. */

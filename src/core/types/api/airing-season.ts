@@ -28,7 +28,7 @@ export type SourceMaterialValues =
 /** Whether a season's anime still has a new episode to air. */
 export type SeasonAiringStatusType = 'Upcoming' | 'Finished' | 'Unknown';
 
-/** One anime of a season, from `GET AiringSchedule/Season/{year}/{season}/Sections`. */
+/** One anime of a season, from `POST AiringSchedule/Season/{year}/{season}/Sections`. */
 export type SeasonAnimeType = {
   /** The AniDB anime ID. */
   ID: number;
@@ -65,13 +65,26 @@ export type SeasonAnimeType = {
 };
 
 /**
- * A section of the season view, as `GET AiringSchedule/Season/{year}/{season}/Sections` sends it: the server's default
- * layout, each section's anime sorted by next airing, the empty sections left out.
+ * A section of the season view, as `GET` or `POST AiringSchedule/Season/{year}/{season}/Sections` sends it: every
+ * section of the layout, in its order, empty ones included, each section's anime sorted by next airing.
  */
 export type SeasonSectionType = {
-  ID: string;
   Title: string;
   Anime: SeasonAnimeType[];
+};
+
+/**
+ * A section of a season view layout, as `GET AiringSchedule/Season/Sections/Default` sends the server's default and
+ * `POST AiringSchedule/Season/{year}/{season}/Sections` takes one. Each anime goes to the first section it fits.
+ */
+export type SeasonSectionDefinitionType = {
+  Title: string;
+  /** The anime types it takes; `null` for every type, which makes it a rest group. */
+  Types: AnimeTypeValues[] | null;
+  /** Only anime still airing, or only those that are not; `null` for either. */
+  Continuing: boolean | null;
+  /** Only anime with half-length episodes, or only those without; `null` for either. */
+  HalfLength: boolean | null;
 };
 
 /**

@@ -14,6 +14,7 @@ import { getAtParam } from '@/core/utilities/clock';
 import type {
   AiringCalendarRequestType,
   AiringSeasonRequestType,
+  AiringSeasonSectionsBodyType,
   AiringSeasonsByYearRequestType,
   AiringSeasonsRequestType,
 } from '@/core/react-query/airing-schedule/types';
@@ -25,6 +26,7 @@ import type {
 import type {
   AiringSeasonType,
   AiringSeasonYearType,
+  SeasonSectionDefinitionType,
   SeasonSectionType,
   SeasonSummaryType,
   SeasonYearType,
@@ -74,24 +76,30 @@ export const useAiringChannelsQuery = (enabled = true) =>
   });
 
 /**
- * The anime of one season with their next new episode, in the server's default sections and order, from
- * `GET AiringSchedule/Season/{year}/{season}/Sections`. A clock offset reads them as of the shifted time, and a recently
- * aired time, an ISO date-time with an offset, as of that time instead, so the next airings may have aired since.
+ * The anime of one season with their next new episode, by section and sorted by next airing, from
+ * `POST AiringSchedule/Season/{year}/{season}/Sections` with the user's layout, or `null` for the server's default.
+ * Every section of the layout comes back, empty ones included. A clock offset reads them as of the shifted time, and a
+ * recently aired time, an ISO date-time with an offset, as of that time instead, so the next airings may have aired
+ * since.
  */
 export const useAiringSeasonSectionsQuery = (
   season: SeasonKey,
   params: AiringSeasonRequestType,
+  sections: SeasonSectionDefinitionType[] | null,
   enabled = true,
   clockOffset: number | null = null,
   recentlyAiredAt: string | null = null,
 ) =>
   useQuery<SeasonSectionType[]>({
-    queryKey: ['airing-schedule', 'season', season.year, season.season, params, clockOffset, recentlyAiredAt],
+    queryKey: ['airing-schedule', 'season', season.year, season.season, params, clockOffset, recentlyAiredAt, sections],
     queryFn: () =>
-      axios.get(`AiringSchedule/Season/${season.year}/${season.season}/Sections`, {
-        params: { ...params, at: recentlyAiredAt ?? getAtParam(clockOffset) },
-      }),
-    // The recently aired time steps on every 15 minutes; the same season keeps its cards until the new read is in.
+      axios.post(
+        `AiringSchedule/Season/${season.year}/${season.season}/Sections`,
+        { Sections: sections } satisfies AiringSeasonSectionsBodyType,
+        { params: { ...params, at: recentlyAiredAt ?? getAtParam(clockOffset) } },
+      ),
+    // The recently aired time steps on every 15 minutes, and the layout changes as it is edited; the same season keeps
+    // its cards until the new read is in.
     placeholderData: (previousData, previousQuery) => {
       const [, , year, name, previousParams, previousOffset] = previousQuery?.queryKey ?? [];
       const isSameRead = year === season.year && name === season.season && isEqual(previousParams, params)
@@ -101,6 +109,15 @@ export const useAiringSeasonSectionsQuery = (
     // The next airings move on as episodes air.
     refetchInterval: 5 * 60_000,
     staleTime: 5 * 60_000,
+    enabled,
+  });
+
+/** The server's default season view layout, from `GET AiringSchedule/Season/Sections/Default`. */
+export const useAiringSeasonSectionDefaultsQuery = (enabled = true) =>
+  useQuery<SeasonSectionDefinitionType[]>({
+    queryKey: ['airing-schedule', 'season-section-defaults'],
+    queryFn: () => axios.get('AiringSchedule/Season/Sections/Default'),
+    staleTime: INFINITE_STALE_TIME,
     enabled,
   });
 

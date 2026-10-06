@@ -1,6 +1,7 @@
 import type { Layout } from 'react-grid-layout';
 
 import type { DataSourceValues } from './common';
+import type { SeasonSectionDefinitionType } from '@/core/types/api/airing-season';
 import type { ReleaseChannelValues } from '@/core/types/api/init';
 import type { ManualLinkProviderType } from '@/core/types/utilities/link-files-with-providers';
 
@@ -481,6 +482,8 @@ export type WebUISettingsType = {
       enabled: boolean;
       hours: number;
     };
+    /** The season view's layout, or `null` to follow the server's default. */
+    sections: SeasonSectionDefinitionType[] | null;
   };
 };
 
