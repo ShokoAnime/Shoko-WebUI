@@ -45,10 +45,10 @@ export const transformAiringCalendar = (days: AiringCalendarDayType[]) =>
     ]),
   );
 
-/** What `GET AiringSchedule/Season/ByYear` takes to send each season's poster and backdrop. */
+/** What `POST AiringSchedule/Season/ByYear` takes to send each season's poster and backdrop. */
 export const airingSeasonImagesInclude: AiringSeasonsByYearRequestType['include'] = ['Images'];
 
-/** The seasons of `GET AiringSchedule/Season` as the views use them. The only place that reads the server's names. */
+/** The seasons of `POST AiringSchedule/Season` as the views use them. The only place that reads the server's names. */
 export const transformAiringSeasons = (seasons: AiringSeasonType[]): SeasonSummaryType[] =>
   seasons.map(item => ({
     key: { year: item.Year, season: item.AnimeSeason },
@@ -58,6 +58,6 @@ export const transformAiringSeasons = (seasons: AiringSeasonType[]): SeasonSumma
     backdrop: item.Backdrop ?? null,
   }));
 
-/** The years of `GET AiringSchedule/Season/ByYear`, newest first, with their seasons as the views use them. */
+/** The years of `POST AiringSchedule/Season/ByYear`, newest first, with their seasons as the views use them. */
 export const transformAiringSeasonYears = (years: AiringSeasonYearType[]): SeasonYearType[] =>
   years.map(item => ({ year: item.Year, seasons: transformAiringSeasons(item.Seasons) }));

@@ -13,8 +13,8 @@ import { getAtParam } from '@/core/utilities/clock';
 
 import type {
   AiringCalendarRequestType,
+  AiringSeasonBodyType,
   AiringSeasonRequestType,
-  AiringSeasonSectionsBodyType,
   AiringSeasonsByYearRequestType,
   AiringSeasonsRequestType,
 } from '@/core/react-query/airing-schedule/types';
@@ -116,7 +116,7 @@ export const useAiringSeasonSectionsQuery = (
     queryFn: () =>
       axios.post(
         `AiringSchedule/Season/${season.year}/${season.season}/Sections`,
-        { Sections: sections } satisfies AiringSeasonSectionsBodyType,
+        { Sections: sections } satisfies AiringSeasonBodyType,
         { params: { ...params, at: recentlyAiredAt ?? getAtParam(clockOffset) } },
       ),
     // The recently aired time steps on every 15 minutes, and the layout changes as it is edited; the same season keeps
@@ -142,28 +142,46 @@ export const useAiringSeasonSectionDefaultsQuery = (enabled = true) =>
     enabled,
   });
 
-/** The seasons with anime under the filters, from `GET AiringSchedule/Season`. */
+/**
+ * The seasons with anime under the filters, from `POST AiringSchedule/Season` with the user's layout, or `null` for
+ * the server's default. Only the anime a section of the layout takes are counted.
+ */
 export const useAiringSeasonsQuery = (
   params: AiringSeasonsRequestType,
+  sections: SeasonSectionDefinitionType[] | null,
   enabled = true,
   clockOffset: number | null = null,
 ) =>
   useQuery<AiringSeasonType[], unknown, SeasonSummaryType[]>({
-    queryKey: ['airing-schedule', 'seasons', params, clockOffset],
-    queryFn: () => axios.get('AiringSchedule/Season', { params: { ...params, at: getAtParam(clockOffset) } }),
+    queryKey: ['airing-schedule', 'seasons', params, clockOffset, sections],
+    queryFn: () =>
+      axios.post(
+        'AiringSchedule/Season',
+        { Sections: sections } satisfies AiringSeasonBodyType,
+        { params: { ...params, at: getAtParam(clockOffset) } },
+      ),
     select: transformAiringSeasons,
     enabled,
   });
 
-/** The years with anime under the filters, newest first, with their seasons, from `GET AiringSchedule/Season/ByYear`. */
+/**
+ * The years with anime under the filters, newest first, with their seasons, from `POST AiringSchedule/Season/ByYear`
+ * with the user's layout, or `null` for the server's default. Only the anime a section of the layout takes are counted.
+ */
 export const useAiringSeasonsByYearQuery = (
   params: AiringSeasonsByYearRequestType,
+  sections: SeasonSectionDefinitionType[] | null,
   enabled = true,
   clockOffset: number | null = null,
 ) =>
   useQuery<AiringSeasonYearType[], unknown, SeasonYearType[]>({
-    queryKey: ['airing-schedule', 'seasons-by-year', params, clockOffset],
-    queryFn: () => axios.get('AiringSchedule/Season/ByYear', { params: { ...params, at: getAtParam(clockOffset) } }),
+    queryKey: ['airing-schedule', 'seasons-by-year', params, clockOffset, sections],
+    queryFn: () =>
+      axios.post(
+        'AiringSchedule/Season/ByYear',
+        { Sections: sections } satisfies AiringSeasonBodyType,
+        { params: { ...params, at: getAtParam(clockOffset) } },
+      ),
     select: transformAiringSeasonYears,
     // The seasons' counts change as anime are added, rarely; opening the browser again keeps them.
     staleTime: 60 * 60_000,

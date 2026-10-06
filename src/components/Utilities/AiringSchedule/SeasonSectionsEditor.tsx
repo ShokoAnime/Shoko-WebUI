@@ -252,7 +252,10 @@ const SeasonSectionsEditor = ({ onChange, sections }: Props) => {
           }))}
         </DnDList>
       </div>
-      {restIndex === -1 && <span className="text-sm opacity-65">Anime no section takes are left out.</span>}
+      {/* The default layout leaves some types out by design, so only a custom one is told. */}
+      {sections !== null && restIndex === -1 && (
+        <span className="text-sm opacity-65">Anime no section takes are left out, counts included.</span>
+      )}
       <Button buttonType="secondary" className="flex items-center justify-center gap-x-2 py-2" onClick={handleAdd}>
         <Icon path={mdiPlusCircleOutline} size={0.833} />
         Add Section

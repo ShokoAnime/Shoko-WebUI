@@ -88,7 +88,7 @@ export type SeasonSectionDefinitionType = {
 };
 
 /**
- * A season with matching anime, as `GET AiringSchedule/Season` sends it; `transformAiringSeasons` is the one place
+ * A season with matching anime, as `POST AiringSchedule/Season` sends it; `transformAiringSeasons` is the one place
  * that reads it. The current season is always listed.
  */
 export type AiringSeasonType = {
@@ -103,7 +103,7 @@ export type AiringSeasonType = {
   Backdrop: ImageType | null;
 };
 
-/** A year with anime, as `GET AiringSchedule/Season/ByYear` sends it, with its listed seasons from winter to fall. */
+/** A year with anime, as `POST AiringSchedule/Season/ByYear` sends it, with its listed seasons from winter to fall. */
 export type AiringSeasonYearType = {
   Year: number;
   Seasons: AiringSeasonType[];
