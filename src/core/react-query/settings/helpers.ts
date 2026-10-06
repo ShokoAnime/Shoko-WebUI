@@ -320,6 +320,7 @@ export const initialSettings: SettingsType = {
         enabled: false,
         hours: 12,
       },
+      sections: null,
     },
   },
   FirstRun: false,

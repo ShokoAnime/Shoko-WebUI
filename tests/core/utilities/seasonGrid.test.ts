@@ -4,9 +4,8 @@ import { getGridColumnCount, getSeasonGridRows, getSkeletonRowCount } from '@/co
 
 import type { SeasonAnimeType, SeasonSectionType } from '@/core/types/api/airing-season';
 
-const section = (id: string, count: number): SeasonSectionType => ({
-  ID: id,
-  Title: id,
+const section = (title: string, count: number): SeasonSectionType => ({
+  Title: title,
   Anime: Array.from({ length: count }, (_, index) => ({ ID: index + 1 }) as SeasonAnimeType),
 });
 
@@ -32,13 +31,13 @@ describe('getSkeletonRowCount', () => {
 
 describe('getSeasonGridRows', () => {
   it('lists each section\'s title, then its cards a row at a time, marking the section\'s last row', () => {
-    const rows = getSeasonGridRows([section('TV', 5), section('Movie', 1)], 2);
+    const rows = getSeasonGridRows([section('TV', 5), section('OVA', 0), section('Movie', 1)], 2);
     expect(rows.map(row => (row.type === 'title' ? row.key : [row.anime.length, row.isSectionEnd]))).toEqual([
-      'title-TV',
+      'title-0',
       [2, false],
       [2, false],
       [1, true],
-      'title-Movie',
+      'title-2',
       [1, true],
     ]);
   });

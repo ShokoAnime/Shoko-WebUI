@@ -18,15 +18,19 @@ export const getGridColumnCount = (width: number, thresholds: number[]) =>
 export const getSkeletonRowCount = (viewHeight: number, rowHeight: number) =>
   Math.max(5, Math.ceil(viewHeight / rowHeight) + 1);
 
-/** The sections as one list of rows: each section's title, then its cards, `columns` to a row. */
+/**
+ * The sections as one list of rows: each section's title, then its cards, `columns` to a row. The empty sections are
+ * left out; each section is keyed by its place in the layout.
+ */
 export const getSeasonGridRows = (sections: SeasonSectionType[], columns: number): SeasonGridRowType[] =>
-  sections.flatMap((section) => {
+  sections.flatMap((section, sectionIndex) => {
+    if (section.Anime.length === 0) return [];
     const rows = chunk(section.Anime, columns);
     return [
-      { type: 'title', key: `title-${section.ID}`, section } as const,
+      { type: 'title', key: `title-${sectionIndex}`, section } as const,
       ...rows.map((anime, index) => ({
         type: 'cards',
-        key: `cards-${section.ID}-${index}`,
+        key: `cards-${sectionIndex}-${index}`,
         anime,
         isSectionEnd: index === rows.length - 1,
       } as const)),

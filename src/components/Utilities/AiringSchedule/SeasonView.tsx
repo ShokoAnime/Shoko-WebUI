@@ -23,7 +23,10 @@ import type { SeasonGridRowType } from '@/core/utilities/seasonGrid';
 import type { BrowserOpenScrollType, SeasonSlideType } from '@/core/utilities/seasonSlider';
 
 type Props = {
-  /** The season's anime by section, each with its next new episode's airings, grouped and sorted by the server. */
+  /**
+   * The season's anime by section, each with its next new episode's airings, grouped and sorted by the server. Every
+   * section of the layout, the empty ones hidden.
+   */
   sections: SeasonSectionType[];
   season: SeasonKey;
   /** The listed seasons for the slider, oldest first, read with the anime's filters so the counts match. */
@@ -459,7 +462,7 @@ const SeasonView = (
     // The anime fade in where the fallback was.
     return (
       <FadeIn className="flex grow flex-col">
-        {sections.length === 0
+        {sections.every(section => section.Anime.length === 0)
           ? (
             <div className="flex grow flex-col items-center justify-center gap-y-2 py-16 text-center font-semibold">
               <span>No anime known for this season.</span>
