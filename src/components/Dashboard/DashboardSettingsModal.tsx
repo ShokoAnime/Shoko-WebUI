@@ -7,6 +7,7 @@ import { toNumber } from 'lodash';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -68,10 +69,13 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     recentlyImportedEpisodesCount,
     recentlyImportedSeriesCount,
     shokoNewsPostsCount,
+    upcomingAnimeDays,
+    upcomingAnimeShowTimes,
+    upcomingAnimeView,
     useThumbnailsForEpisodes,
   } = newSettings.WebUI_Settings.dashboard;
 
-  const updateSetting = (key: string, value: boolean | number) => {
+  const updateSetting = (key: string, value: boolean | number | string) => {
     const tempSettings = produce(newSettings, (draftState) => {
       draftState.WebUI_Settings.dashboard[key] = value;
     });
@@ -94,6 +98,10 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
       event.target.id,
       event.target.type === 'checkbox' ? event.target.checked : Math.min(toNumber(event.target.value), 100),
     );
+  };
+
+  const handleUpcomingAnimeDaysUpdate = (event: ChangeEvent<HTMLInputElement>) => {
+    updateSetting('upcomingAnimeDays', Math.min(Math.max(toNumber(event.target.value), 1), 100));
   };
 
   return (
@@ -221,7 +229,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
           )}
 
           {activeTab === 'options' && (
-            <div className="flex flex-col gap-y-2">
+            <div className="flex flex-col gap-y-2 overflow-y-scroll pr-4">
               <Checkbox
                 justify
                 label="Combine Continue Watching & Next Up"
@@ -273,6 +281,34 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                   className="w-14 px-2 py-0.5 text-center"
                 />
               </div>
+              <SelectSmall
+                id="upcomingAnimeView"
+                label="Upcoming Anime Series"
+                value={upcomingAnimeView}
+                onChange={event => updateSetting('upcomingAnimeView', event.target.value)}
+              >
+                <option value="collection">My Collection</option>
+                <option value="all">All</option>
+              </SelectSmall>
+              <div className="flex items-center justify-between">
+                Upcoming Anime Days Ahead
+                <InputSmall
+                  id="upcomingAnimeDays"
+                  type="number"
+                  value={upcomingAnimeDays}
+                  onChange={handleUpcomingAnimeDaysUpdate}
+                  min={1}
+                  max={100}
+                  className="w-14 px-2 py-0.5 text-center"
+                />
+              </div>
+              <Checkbox
+                justify
+                label="Show Upcoming Anime Air Times"
+                id="upcomingAnimeShowTimes"
+                isChecked={upcomingAnimeShowTimes}
+                onChange={handleUpdate}
+              />
             </div>
           )}
         </div>
