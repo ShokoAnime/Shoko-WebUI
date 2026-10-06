@@ -56,11 +56,11 @@ const SEARCH_THRESHOLD = 8;
 // How long typing or editing must pause before the saved settings are.
 const SAVE_DELAY = 500;
 
-type TabType = 'general' | 'sections';
+type TabType = 'view' | 'channels';
 
 const tabs: { label: string, value: TabType }[] = [
-  { label: 'General', value: 'general' },
-  { label: 'Sections', value: 'sections' },
+  { label: 'View', value: 'view' },
+  { label: 'Channels', value: 'channels' },
 ];
 
 const episodeTypeOptions: { label: string, value: EpisodeTypeValues }[] = [
@@ -80,16 +80,16 @@ type SavedSettingsType = Pick<
 >;
 
 /**
- * The airing schedule's settings, in two tabs. General holds the on-the-fly channel filter, which switches the
- * channels off and on in every view for this session only, the other channel-like restrictions passed as `children`,
- * and the saved season view's oldest year, recently aired look back and episode types. Sections edits the season
- * view's saved layout. Every change applies at once.
+ * The airing schedule's settings, in two tabs. View holds what the views show, all saved: the season view's oldest
+ * year, the recently aired look back, the episode types and the season view's section layout. Channels holds the
+ * channel-like restrictions passed as `children` and the on-the-fly channel filter, which switches the channels off
+ * and on in every view for this session only. Every change applies at once.
  */
 const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onShow, show }: Props) => {
   const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
   const { episodeTypes, oldestSeasonYear, recentlyAired, sections } = settings.WebUI_Settings.airingSchedule;
-  const [tab, setTab] = useState<TabType>('general');
+  const [tab, setTab] = useState<TabType>('view');
   // A number typed digit by digit is saved once typing pauses, or as the modal closes, never half-typed. The changes
   // still to save are saved together, so one never undoes another.
   const [yearDraft, setYearDraft] = useSyncedState(oldestSeasonYear);
@@ -181,9 +181,9 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
       footer={
         <div className="flex items-center justify-between gap-x-6">
           <span className="text-xs opacity-65">
-            {tab === 'general'
+            {tab === 'channels'
               ? 'Switching a channel here changes every view, for this session; it is not saved. The channels hidden in the settings start off.'
-              : 'The layout is saved as you edit it.'}
+              : 'These settings are saved as you edit them.'}
           </span>
           <Button onClick={handleClose} buttonType="secondary" buttonSize="normal">Close</Button>
         </div>
@@ -207,9 +207,8 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
           ))}
         </div>
         <div className="border-r border-panel-border" />
-        {/* Both tabs stay mounted, so the section rows keep their keys and an open editor while General is shown. */}
-        <div className={cx('flex min-w-0 grow flex-col gap-y-6', tab !== 'general' && 'hidden')}>
-          {children && <div className="flex flex-col gap-y-2">{children}</div>}
+        {/* Both tabs stay mounted, so the section rows keep their keys and an open editor while Channels is shown. */}
+        <div className={cx('flex min-w-0 grow flex-col gap-y-6', tab !== 'view' && 'hidden')}>
           <div className="flex flex-col gap-y-1">
             <span className="font-semibold">Season View</span>
             <div className="flex items-center justify-between gap-x-2">
@@ -224,8 +223,7 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
               />
             </div>
             <span className="text-sm opacity-65">
-              The seasons of earlier years are left out of the season view. Leave it empty for every year. Unlike the
-              channels, it is saved.
+              The seasons of earlier years are left out of the season view. Leave it empty for every year.
             </span>
             <Checkbox
               justify
@@ -250,7 +248,7 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
               </div>
             )}
             <span className="text-sm opacity-65">
-              {`In the current and previous seasons, each card keeps its episode for these hours after it airs, from ${RECENTLY_AIRED_MIN_HOURS} to ${RECENTLY_AIRED_MAX_HOURS}. It is saved too.`}
+              {`In the current and previous seasons, each card keeps its episode for these hours after it airs, from ${RECENTLY_AIRED_MIN_HOURS} to ${RECENTLY_AIRED_MAX_HOURS}.`}
             </span>
           </div>
           <div className="flex flex-col gap-y-2">
@@ -261,9 +259,13 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
               onChange={handleEpisodeTypesChange}
             />
             <span className="text-sm opacity-65">
-              The season and calendar views show only the airings of these AniDB episode types. It is saved too.
+              The season and calendar views show only the airings of these AniDB episode types.
             </span>
           </div>
+          <SeasonSectionsEditor sections={sections} onChange={handleSectionsChange} />
+        </div>
+        <div className={cx('flex min-w-0 grow flex-col gap-y-6', tab !== 'channels' && 'hidden')}>
+          {children && <div className="flex flex-col gap-y-2">{children}</div>}
           <div className="flex flex-col gap-y-3">
             <div className="flex items-center justify-between gap-x-2">
               <span className="font-semibold">
@@ -322,9 +324,6 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
               ))}
             </div>
           </div>
-        </div>
-        <div className={cx('flex min-w-0 grow flex-col', tab !== 'sections' && 'hidden')}>
-          <SeasonSectionsEditor sections={sections} onChange={handleSectionsChange} />
         </div>
       </div>
     </ModalPanel>
