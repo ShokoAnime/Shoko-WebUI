@@ -39,9 +39,11 @@ import { useDispatch, useSelector } from '@/core/store';
 import { dayjs } from '@/core/util';
 import {
   DAY_KEY_FORMAT,
+  clampRecentlyAiredHours,
   getCalendarPeriod,
   getLocalTimeZone,
   getPeriodUnit,
+  getRecentlyAiredAt,
   toAiringRequestDates,
 } from '@/core/utilities/airingSchedule';
 import { formatClockOffset } from '@/core/utilities/clock';
@@ -116,8 +118,8 @@ const AiringSchedule = () => {
   const navigate = useNavigateVoid();
   const settings = useSettingsQuery().data;
   const { hideR18Content } = settings.WebUI_Settings.dashboard;
-  // The season view's oldest year is set in the page's settings modal.
-  const { oldestSeasonYear } = settings.WebUI_Settings.airingSchedule;
+  // The season view's oldest year and recently aired look back are set in the page's settings modal.
+  const { oldestSeasonYear, recentlyAired } = settings.WebUI_Settings.airingSchedule;
 
   // Without a view in the URL, the page opens on the last one used.
   const lastView = useSelector(state => state.utilities.airingSchedule.lastView);
@@ -218,6 +220,12 @@ const AiringSchedule = () => {
     isBrowsing && channelFilter.enabled,
     clockOffset,
   );
+  // With the look back on, the season under way and the one before it read as of that long ago, so a card keeps an
+  // episode that aired since. The time steps on every 15 minutes, which reads the season again and moves the cards on.
+  const seasonsFromCurrent = getSeasonIndex(season) - getSeasonIndex(currentSeason);
+  const recentlyAiredAt = recentlyAired.enabled && (seasonsFromCurrent === 0 || seasonsFromCurrent === -1)
+    ? getRecentlyAiredAt(now, clampRecentlyAiredHours(recentlyAired.hours)).format()
+    : null;
   // The season's anime with their next new episode, resolved, grouped and sorted by the server under the same filters.
   const seasonQuery = useAiringSeasonSectionsQuery(
     season,
@@ -229,6 +237,7 @@ const AiringSchedule = () => {
     },
     isSeasonView && channelFilter.enabled,
     clockOffset,
+    recentlyAiredAt,
   );
   const seasonSections = seasonQuery.data ?? [];
   const seasonAnime = seasonSections.flatMap(section => section.Anime);

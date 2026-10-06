@@ -18,6 +18,8 @@ import { dayjs, getAnidbAnimeLink } from '@/core/util';
 import {
   formatCountdown,
   formatDayCountdown,
+  formatDaysSince,
+  formatTimeSince,
   getAiringDisplayTime,
   getAiringVideoCount,
   hasAiringEnded,
@@ -106,8 +108,8 @@ const EpisodeLine = ({ airing, text }: { airing: EpisodeAiringType, text: string
 );
 
 /**
- * The countdown to the next airing, or while it is on air that it is and when it ends. Once over it stays put until
- * the season's next read moves on to the following episode.
+ * The countdown to the next airing, or while it is on air that it is and when it ends, all by the clock. Once over it
+ * says how long ago it aired, in green like the airing now, until the season's next read moves on to the following episode.
  */
 const NextAiringTime = ({ airing, episode, now }: { airing: EpisodeAiringType, episode: string, now: Dayjs }) => {
   const time = getAiringDisplayTime(airing);
@@ -131,12 +133,18 @@ const NextAiringTime = ({ airing, episode, now }: { airing: EpisodeAiringType, e
     );
   }
 
-  if (!airing.IsDateOnly && hasAiringEnded(airing, now)) {
+  // A date-only episode has aired once its day is over, which the recently aired look back may keep.
+  const hasAired = airing.IsDateOnly ? time.isBefore(now, 'day') : hasAiringEnded(airing, now);
+  if (hasAired) {
     return (
       <>
-        <EpisodeLine airing={airing} text={episode} />
-        <span className="text-lg font-semibold" data-tooltip-id="tooltip" data-tooltip-content={tooltip}>
-          Just aired
+        <EpisodeLine airing={airing} text={`${episode} aired`} />
+        <span
+          className="text-lg font-semibold text-panel-text-important"
+          data-tooltip-id="tooltip"
+          data-tooltip-content={tooltip}
+        >
+          {airing.IsDateOnly ? formatDaysSince(time, now) : formatTimeSince(time, now)}
         </span>
       </>
     );

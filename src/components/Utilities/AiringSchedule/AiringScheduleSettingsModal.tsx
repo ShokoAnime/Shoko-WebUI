@@ -3,6 +3,7 @@ import type { ChangeEvent, ReactNode } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import cx from 'classnames';
 import { produce } from 'immer';
+import { isEqual } from 'lodash';
 
 import AiringChannelCountryBadge from '@/components/AiringChannelCountryBadge';
 import Button from '@/components/Input/Button';
@@ -12,8 +13,15 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { matchesChannelSearch } from '@/core/utilities/airingChannels';
+import {
+  RECENTLY_AIRED_MAX_HOURS,
+  RECENTLY_AIRED_MIN_HOURS,
+  clampRecentlyAiredHours,
+} from '@/core/utilities/airingSchedule';
 import useSyncedState from '@/hooks/useSyncedState';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
+
+import type { WebUISettingsType } from '@/core/types/api/settings';
 
 /** One channel of the filter, with how many of the view's airings it carries. */
 export type ChannelFilterItemType = {
@@ -41,47 +49,79 @@ type Props = {
 // Past this many channels, the list gets a search box.
 const SEARCH_THRESHOLD = 8;
 
-// How long typing must pause before the season view's oldest year is saved.
-const YEAR_SAVE_DELAY = 750;
+// How long typing must pause before a season view number is saved.
+const SAVE_DELAY = 750;
+
+type SeasonViewSettingsType = Pick<WebUISettingsType['airingSchedule'], 'oldestSeasonYear' | 'recentlyAired'>;
 
 /**
  * The airing schedule's on-the-fly channel filter: switches the channels off and on in every view, for this session
- * only. It also holds the other channel-like restrictions passed as `children`, and the season view's oldest year,
- * which is saved to the user's WebUI settings. Every change applies at once.
+ * only. It also holds the other channel-like restrictions passed as `children`, and the season view's oldest year and
+ * recently aired look back, which are saved to the user's WebUI settings. Every change applies at once.
  */
 const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onShow, show }: Props) => {
   const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
-  const { oldestSeasonYear } = settings.WebUI_Settings.airingSchedule;
-  // A year typed digit by digit is saved once typing pauses, or as the modal closes, never half-typed.
+  const { oldestSeasonYear, recentlyAired } = settings.WebUI_Settings.airingSchedule;
+  // A number typed digit by digit is saved once typing pauses, or as the modal closes, never half-typed. The changes
+  // still to save are saved together, so one never undoes another.
   const [yearDraft, setYearDraft] = useSyncedState(oldestSeasonYear);
-  const pendingYear = useRef<{ timer: number, year: number | null } | null>(null);
+  const [enabledDraft, setEnabledDraft] = useSyncedState(recentlyAired.enabled);
+  const [hoursDraft, setHoursDraft] = useSyncedState<number, number | null>(recentlyAired.hours);
+  const pendingSave = useRef<{ timer: number, changes: Partial<SeasonViewSettingsType> } | null>(null);
   const [search, setSearch] = useState('');
   const query = search.trim().toLowerCase();
   const shownChannels = channels.filter(channel => matchesChannelSearch(query, [channel.name], channel.countryCode));
   const onCount = channels.filter(channel => channel.isOn).length;
   const shownIds = shownChannels.map(channel => channel.id);
 
-  const saveYear = () => {
-    if (!pendingYear.current) return;
-    const { timer, year } = pendingYear.current;
-    pendingYear.current = null;
+  const savePending = () => {
+    if (!pendingSave.current) return;
+    const { changes, timer } = pendingSave.current;
+    pendingSave.current = null;
     window.clearTimeout(timer);
-    if (year === oldestSeasonYear) return;
-    patchSettings(produce(settings, (draftSettings) => {
-      draftSettings.WebUI_Settings.airingSchedule.oldestSeasonYear = year;
-    }));
+    const newSettings = produce(settings, (draftSettings) => {
+      Object.assign(draftSettings.WebUI_Settings.airingSchedule, changes);
+    });
+    if (isEqual(newSettings.WebUI_Settings.airingSchedule, settings.WebUI_Settings.airingSchedule)) return;
+    patchSettings(newSettings);
+  };
+
+  const queueSave = (changes: Partial<SeasonViewSettingsType>) => {
+    if (pendingSave.current) window.clearTimeout(pendingSave.current.timer);
+    pendingSave.current = {
+      timer: window.setTimeout(savePending, SAVE_DELAY),
+      changes: { ...pendingSave.current?.changes, ...changes },
+    };
   };
 
   const handleYearChange = (event: ChangeEvent<HTMLInputElement>) => {
     const year = event.target.value === '' ? null : Number(event.target.value);
     setYearDraft(year);
-    if (pendingYear.current) window.clearTimeout(pendingYear.current.timer);
-    pendingYear.current = { timer: window.setTimeout(saveYear, YEAR_SAVE_DELAY), year };
+    queueSave({ oldestSeasonYear: year });
+  };
+
+  // The look back's switch saves at once, with any number still waiting.
+  const handleRecentlyAiredToggle = (event: ChangeEvent<HTMLInputElement>) => {
+    setEnabledDraft(event.target.checked);
+    queueSave({ recentlyAired: { enabled: event.target.checked, hours: hoursDraft ?? recentlyAired.hours } });
+    savePending();
+  };
+
+  // Emptied, the hours keep their saved value; out of bounds, they are brought within.
+  const handleHoursChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === '') {
+      setHoursDraft(null);
+      return;
+    }
+    const hours = clampRecentlyAiredHours(Number(event.target.value));
+    setHoursDraft(hours);
+    queueSave({ recentlyAired: { enabled: enabledDraft, hours } });
   };
 
   const handleClose = () => {
-    saveYear();
+    savePending();
+    if (hoursDraft === null) setHoursDraft(recentlyAired.hours);
     onClose();
   };
 
@@ -122,6 +162,31 @@ const AiringScheduleSettingsModal = ({ channels, children, onClose, onHide, onSh
         <span className="text-sm opacity-65">
           The seasons of earlier years are left out of the season view. Leave it empty for every year. Unlike the
           channels, it is saved.
+        </span>
+        <Checkbox
+          justify
+          id="recently-aired"
+          label="Show Recently Aired"
+          isChecked={enabledDraft}
+          onChange={handleRecentlyAiredToggle}
+          className="mt-2"
+        />
+        {enabledDraft && (
+          <div className="flex items-center justify-between gap-x-2">
+            <span>Hours</span>
+            <InputSmall
+              id="recently-aired-hours"
+              type="number"
+              value={hoursDraft ?? ''}
+              onChange={handleHoursChange}
+              min={RECENTLY_AIRED_MIN_HOURS}
+              max={RECENTLY_AIRED_MAX_HOURS}
+              className="w-20 px-3 py-1 text-center"
+            />
+          </div>
+        )}
+        <span className="text-sm opacity-65">
+          {`In the current and previous seasons, each card keeps its episode for these hours after it airs, from ${RECENTLY_AIRED_MIN_HOURS} to ${RECENTLY_AIRED_MAX_HOURS}. It is saved too.`}
         </span>
       </div>
       <div className="flex flex-col gap-y-3">

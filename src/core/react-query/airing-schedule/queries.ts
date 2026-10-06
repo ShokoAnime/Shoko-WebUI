@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { isEqual } from 'lodash';
 
 import { axios } from '@/core/axios';
 import {
@@ -95,20 +96,29 @@ export const useAiringTrackPriorityQuery = () =>
 
 /**
  * The anime of one season with their next new episode, in the server's default sections and order, from
- * `GET AiringSchedule/Season/{year}/{season}/Sections`. A clock offset reads them as of the shifted time.
+ * `GET AiringSchedule/Season/{year}/{season}/Sections`. A clock offset reads them as of the shifted time, and a recently
+ * aired time, an ISO date-time with an offset, as of that time instead, so the next airings may have aired since.
  */
 export const useAiringSeasonSectionsQuery = (
   season: SeasonKey,
   params: AiringSeasonRequestType,
   enabled = true,
   clockOffset: number | null = null,
+  recentlyAiredAt: string | null = null,
 ) =>
   useQuery<SeasonSectionType[]>({
-    queryKey: ['airing-schedule', 'season', season.year, season.season, params, clockOffset],
+    queryKey: ['airing-schedule', 'season', season.year, season.season, params, clockOffset, recentlyAiredAt],
     queryFn: () =>
       axios.get(`AiringSchedule/Season/${season.year}/${season.season}/Sections`, {
-        params: { ...params, at: getAtParam(clockOffset) },
+        params: { ...params, at: recentlyAiredAt ?? getAtParam(clockOffset) },
       }),
+    // The recently aired time steps on every 15 minutes; the same season keeps its cards until the new read is in.
+    placeholderData: (previousData, previousQuery) => {
+      const [, , year, name, previousParams, previousOffset] = previousQuery?.queryKey ?? [];
+      const isSameRead = year === season.year && name === season.season && isEqual(previousParams, params)
+        && previousOffset === clockOffset;
+      return isSameRead ? previousData : undefined;
+    },
     // The next airings move on as episodes air.
     refetchInterval: 5 * 60_000,
     staleTime: 5 * 60_000,

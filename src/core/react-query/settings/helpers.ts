@@ -316,6 +316,10 @@ export const initialSettings: SettingsType = {
     },
     airingSchedule: {
       oldestSeasonYear: null,
+      recentlyAired: {
+        enabled: false,
+        hours: 12,
+      },
     },
   },
   FirstRun: false,

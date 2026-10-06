@@ -478,6 +478,11 @@ export type WebUISettingsType = {
   airingSchedule: {
     /** The oldest year the airing schedule's season view lists, or `null` for every year. */
     oldestSeasonYear: number | null;
+    /** Whether the season view's next airings may be ones that aired in the last `hours`, 1 to 24, in the latest seasons. */
+    recentlyAired: {
+      enabled: boolean;
+      hours: number;
+    };
   };
 };
 
