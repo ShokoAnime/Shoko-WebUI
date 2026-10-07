@@ -33,6 +33,7 @@ import MainPage from '@/pages/main/MainPage';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import SettingsPage from '@/pages/settings/SettingsPage';
+import AiringScheduleSettings from '@/pages/settings/tabs/AiringScheduleSettings';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
@@ -135,6 +136,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="tmdb" element={<TmdbSettings />} />
+            <Route path="airing-schedule" element={<AiringScheduleSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="plugin-management">

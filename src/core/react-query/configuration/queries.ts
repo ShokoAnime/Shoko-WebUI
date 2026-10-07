@@ -12,8 +12,9 @@ export const useConfigurationSchemaQuery = (id: string) =>
     select: resolveSchemaRefs,
   });
 
-export const useConfigurationQuery = (id: string) =>
+export const useConfigurationQuery = (id: string, enabled = true) =>
   useQuery<Record<string, unknown>>({
     queryFn: () => axios.get(`Configuration/${id}`),
     queryKey: ['configuration', id],
+    enabled,
   });

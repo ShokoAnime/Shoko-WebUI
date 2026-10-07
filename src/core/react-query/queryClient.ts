@@ -34,7 +34,7 @@ const extractServerErrorMessage = (data: unknown): string | undefined => {
   return errorData.Message ?? undefined;
 };
 
-const processError = (error: AxiosError | Error) => {
+export const processError = (error: AxiosError | Error) => {
   let errorHeader: string;
   let errorMessage: string;
   let errorStatus = 0;

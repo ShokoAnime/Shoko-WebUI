@@ -132,6 +132,17 @@ export type AiringScheduleProviderType = {
   Plugin: PluginInfoType;
 };
 
+/**
+ * The members of the airing schedule's configuration the "Refresh Anime Airing Soon" scheduled action reads, edited
+ * through `PATCH Configuration/{id}` with the service's other options.
+ */
+export type AiringSoonRefreshOptionsType = {
+  /** How far ahead, in hours, an episode airing makes the action refresh its anime: 1 to 168, 24 by default. */
+  AiringSoonWindowHours: number;
+  /** Whether a date-only airing counts when its UTC day overlaps the window. Off by default. */
+  AiringSoonIncludeDateOnly: boolean;
+};
+
 /** A channel from the shared registry, from `GET AiringSchedule/Channel`. */
 export type AiringChannelType = AiringChannelReferenceType & {
   Aliases: string[];
@@ -140,4 +151,10 @@ export type AiringChannelType = AiringChannelReferenceType & {
   /** Left out of the airing reads unless they ask for hidden channels. */
   IsHidden: boolean;
   CreatedAt: string;
+};
+
+/** One entry of the server's track preference. A `null` language matches any language of the kind. */
+export type AiringTrackPreferenceType = {
+  Kind: AiringKindType;
+  LanguageCode: string | null;
 };
