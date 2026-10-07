@@ -45,6 +45,7 @@ import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
+import AiringSchedule from '@/pages/utilities/AiringSchedule';
 import DuplicateFilesLinkedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesLinkedTab';
 import DuplicateFilesUnrecognizedTab from '@/pages/utilities/DuplicateFilesTabs/DuplicateFilesUnrecognizedTab';
 import FileSearch from '@/pages/utilities/FileSearch';
@@ -103,6 +104,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="duplicate-files/linked" element={<DuplicateFilesLinkedTab />} />
             <Route path="duplicate-files/unrecognized" element={<DuplicateFilesUnrecognizedTab />} />
             <Route path="missing-episodes" element={<MissingEpisodes />} />
+            <Route path="airing-schedule" element={<AiringSchedule />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />

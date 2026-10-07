@@ -1,6 +1,8 @@
 import type { Layout } from 'react-grid-layout';
 
 import type { DataSourceValues } from './common';
+import type { SeasonSectionDefinitionType } from '@/core/types/api/airing-season';
+import type { EpisodeTypeValues } from '@/core/types/api/episode';
 import type { ReleaseChannelValues } from '@/core/types/api/init';
 import type { ManualLinkProviderType } from '@/core/types/utilities/link-files-with-providers';
 
@@ -472,6 +474,19 @@ export type WebUISettingsType = {
     recentlyImportedSeriesCount: number;
     recentlyImportedView: 'episodes' | 'series';
     upcomingAnimeView: 'collection' | 'all';
+  };
+  airingSchedule: {
+    /** The oldest year the airing schedule's season view lists, or `null` for every year. */
+    oldestSeasonYear: number | null;
+    /** Whether the season view's next airings may be ones that aired in the last `hours`, 1 to 24, in the latest seasons. */
+    recentlyAired: {
+      enabled: boolean;
+      hours: number;
+    };
+    /** The season view's layout, or `null` to follow the server's default. */
+    sections: SeasonSectionDefinitionType[] | null;
+    /** The episode types the season and calendar views show, or `null` for every type. */
+    episodeTypes: EpisodeTypeValues[] | null;
   };
 };
 
