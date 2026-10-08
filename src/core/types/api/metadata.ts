@@ -18,13 +18,38 @@ export type MetadataLinkSourceType = {
   Status: MetadataSourceStatusType;
 };
 
-/** Whether a source is configured, and whether it is paused. */
+/** Why a service is suspended. */
+export type SuspensionKindType =
+  | 'RateLimited'
+  | 'Banned'
+  | 'ServerErrors'
+  | 'Overloaded'
+  | 'AuthenticationFailed'
+  | 'SessionInvalid'
+  | 'Maintenance'
+  | 'Other';
+
+/** One suspension holding a source back. */
+export type SuspensionDetailsType = {
+  Kind: SuspensionKindType;
+  /** A detail only the service knows; word it from `Kind` when absent. */
+  Reason: string | null;
+  RaisedAt: string;
+  ResumesAt: string | null;
+  RetryAfterSeconds: number;
+  IsLiftable: boolean;
+};
+
+/** Whether a source is configured, and whether it is suspended. */
 export type MetadataSourceStatusType = {
   IsConfigured: boolean;
   NotConfiguredReason: string | null;
+  /** Whether a suspension holds the source back. */
   IsPaused: boolean;
+  /** The reason of the longest-blocking suspension, when it gives one. */
   Reason: string | null;
   ResumesAt: string | null;
+  Suspensions: SuspensionDetailsType[];
 };
 
 export type MetadataSearchResultType = {
@@ -149,7 +174,6 @@ export type MetadataProviderType = {
   SupportsImages: boolean;
   SupportsAutoLinking: boolean;
   SupportsLookup: boolean;
-  SupportsPausing: boolean;
   /** The kinds of entries the provider can answer for, such as `Show`, `Movie` or `Episode`. */
   AvailableEntityTypes: string[];
   MaxConcurrentJobs: number | null;

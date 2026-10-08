@@ -105,7 +105,7 @@ export type SettingsMetadataSourceOverridesType = {
 };
 
 export type SettingsMetadataType = {
-  /** Days a creator, character, studio or network may go unused before it is purged. */
+  /** Days a creator, character, studio, network or image may go unused before it is purged. */
   PurgeOrphanedAfterDays: number;
   /** Days a series, movie or collection may stay stored with nothing linking to it, or `0` to keep them. */
   AutoPurgeUnlinkedAfterDays: number;

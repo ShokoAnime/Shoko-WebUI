@@ -19,7 +19,12 @@ import type {
   MetadataSourceSummaryType,
 } from '@/core/react-query/metadata/helpers';
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
-import type { MetadataProviderType, MetadataSourceStatusType } from '@/core/types/api/metadata';
+import type {
+  MetadataProviderType,
+  MetadataSourceStatusType,
+  SuspensionDetailsType,
+  SuspensionKindType,
+} from '@/core/types/api/metadata';
 import type { DropResult } from '@hello-pangea/dnd';
 
 type ConfigurableProviderType = MetadataProviderType & { Configuration: ConfigurationInfoType };
@@ -36,16 +41,34 @@ type Props = {
   children?: ReactNode;
 };
 
+const suspensionKindNames: Record<SuspensionKindType, string> = {
+  RateLimited: 'Rate limited',
+  Banned: 'Banned',
+  ServerErrors: 'Server errors',
+  Overloaded: 'Overloaded',
+  AuthenticationFailed: 'Authentication failed',
+  SessionInvalid: 'Session invalid',
+  Maintenance: 'Down for maintenance',
+  Other: 'Other',
+};
+
+// The service's own reason when it gives one, after the kind's name.
+const describeSuspension = ({ Kind, Reason }: SuspensionDetailsType) => {
+  const kindName = suspensionKindNames[Kind] ?? Kind;
+  return Reason ? `${kindName}: ${Reason}.` : `${kindName}.`;
+};
+
 const getStatus = (status: MetadataSourceStatusType) => {
   if (!status.IsConfigured) {
     return { className: 'text-panel-text-danger', label: 'Not Configured', reason: status.NotConfiguredReason };
   }
   if (status.IsPaused) {
+    const suspensions = status.Suspensions.map(describeSuspension).join(' ');
     const resumes = status.ResumesAt ? `Resumes ${dayjs(status.ResumesAt).format('MMMM Do, HH:mm')}.` : null;
     return {
       className: 'text-panel-text-warning',
-      label: 'Paused',
-      reason: [status.Reason, resumes].filter(Boolean).join(' '),
+      label: 'Suspended',
+      reason: [suspensions || status.Reason, resumes].filter(Boolean).join(' '),
     };
   }
   return { className: 'text-panel-text-important', label: 'Configured', reason: null };
@@ -176,7 +199,7 @@ const MetadataSourceSettings = ({ children, metadataDraft, setMetadataDraft, sum
         <div className="text-sm opacity-65">
           The kinds of entries the providers answer for.
           {hasSharedKind
-            && ' Where several can, the first enabled one answers and the others stand by, taking over in order when it is turned off or removed. A paused provider is not skipped.'}
+            && ' Where several can, the first enabled one answers and the others stand by, taking over in order when it is turned off or removed. A suspended provider is not skipped.'}
         </div>
       </div>
 
