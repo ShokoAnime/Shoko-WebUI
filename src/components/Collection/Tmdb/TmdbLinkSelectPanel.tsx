@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from 'react-router';
 import { mdiFilmstrip, mdiLoading, mdiMagnify, mdiOpenInNew, mdiTelevision } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { groupBy, map, startCase, toNumber, uniq, uniqBy } from 'lodash';
+import { groupBy, map, toNumber, uniq, uniqBy } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
@@ -15,13 +15,7 @@ import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/t
 import toast from '@/core/toast';
 
 import type { AnimeTypeValues } from '@/core/types/api/series';
-import type {
-  TmdbAutoSearchOriginValues,
-  TmdbAutoSearchRejectionReasonValues,
-  TmdbAutoSearchRejectionType,
-  TmdbAutoSearchResultType,
-  TmdbSearchResultType,
-} from '@/core/types/api/tmdb';
+import type { TmdbAutoSearchOriginValues, TmdbAutoSearchResultType, TmdbSearchResultType } from '@/core/types/api/tmdb';
 
 const originLabels: Record<TmdbAutoSearchOriginValues, string> = {
   Search: 'Search',
@@ -31,64 +25,17 @@ const originLabels: Record<TmdbAutoSearchOriginValues, string> = {
   CrossSourceLink: 'Cross-source link',
 };
 
-type RejectionText = {
-  description: string;
-  label: string;
-  /** Not a rejection of the candidate, only why the search left it as it is. */
-  isNeutral?: boolean;
-};
-
-const otherRejection: RejectionText = { label: 'Not linked', description: 'The automatic search would not link it.' };
-
-// Short labels and fallback explanations for the server's `MatchRejectionReason` values.
-const rejectionTexts: Partial<Record<TmdbAutoSearchRejectionReasonValues, RejectionText>> = {
-  Outranked: { label: 'Outranked', description: 'Another candidate matched as well and was taken first.' },
-  TitleMismatch: { label: 'Title mismatch', description: 'Its titles did not match closely enough.' },
-  DateMismatch: { label: 'Date mismatch', description: 'Its titles matched, but its dates did not.' },
-  EpisodeCountMismatch: { label: 'Episode count', description: 'Its episode count was further off.' },
-  TypeMismatch: { label: 'Type mismatch', description: 'It is a kind of release the anime is not.' },
-  Restricted: { label: 'Restricted', description: 'It is marked as adult, and adult entries are not allowed.' },
-  ClaimedElsewhere: { label: 'Linked elsewhere', description: 'Another anime already claims it.' },
-  KindDisabled: { label: 'Kind disabled', description: 'Linking this kind of entry automatically is turned off.' },
-  InvalidID: { label: 'Invalid ID', description: 'It names no entry that can be linked to the anime.' },
-  ExistingLink: {
-    label: 'Existing link',
-    description: 'Listed for context: a link the anime or a prequel has.',
-    isNeutral: true,
-  },
-  HintNotNeeded: {
-    label: 'Hint not used',
-    description: 'A hint the automatic search did not need to take.',
-    isNeutral: true,
-  },
-  Other: otherRejection,
-};
-
-const getRejectionInfo = ({ Details, Reason }: TmdbAutoSearchRejectionType) => {
-  const known = rejectionTexts[Reason];
-  const why = Details ?? known?.description ?? otherRejection.description;
-  const isNeutral = known?.isNeutral ?? false;
-  return {
-    label: known?.label ?? startCase(Reason),
-    description: isNeutral ? why : `${why} It can still be linked by hand.`,
-    isNeutral,
-  };
-};
-
 type SearchResultRowProps = {
   linkType: 'Show' | 'Movie';
   origins?: TmdbAutoSearchOriginValues[];
-  rejection?: TmdbAutoSearchRejectionType | null;
   result: TmdbSearchResultType;
   selectLink: (tmdbId: number) => void;
 };
 
-const SearchResultRow = ({ linkType, origins, rejection, result, selectLink }: SearchResultRowProps) => {
+const SearchResultRow = ({ linkType, origins, result, selectLink }: SearchResultRowProps) => {
   const handleClick = () => {
     selectLink(result.ID);
   };
-
-  const rejectionInfo = rejection ? getRejectionInfo(rejection) : null;
 
   return (
     <div className="flex items-center gap-x-4">
@@ -108,29 +55,9 @@ const SearchResultRow = ({ linkType, origins, rejection, result, selectLink }: S
         <span>|</span>
         {result.Title}
       </div>
-      {((origins && origins.length > 0) || rejectionInfo) && (
+      {origins && origins.length > 0 && (
         <div className="ml-auto flex shrink-0 gap-x-1">
-          {rejectionInfo && (
-            <span
-              className="flex"
-              data-tooltip-id="tooltip"
-              data-tooltip-content={rejectionInfo.description}
-              data-tooltip-class-name="max-w-md"
-              data-tooltip-delay-show={500}
-            >
-              <Badge
-                className={cx(
-                  'border bg-panel-background-alt whitespace-nowrap',
-                  rejectionInfo.isNeutral
-                    ? 'border-panel-border'
-                    : 'border-panel-text-warning text-panel-text-warning opacity-80',
-                )}
-              >
-                {rejectionInfo.label}
-              </Badge>
-            </span>
-          )}
-          {origins?.map(origin => (
+          {origins.map(origin => (
             <Badge key={origin} className="bg-panel-background-alt whitespace-nowrap">{originLabels[origin]}</Badge>
           ))}
         </div>
@@ -157,19 +84,14 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
 
     // The server lists every scored candidate, accepted ones first, and may list one entry once per origin,
     // so each entry is shown once with every origin that found it. `uniqBy` keeps the server's order, which
-    // `groupBy` would lose by sorting the numeric IDs. An entry counts as rejected only when every origin's
-    // entry is, and then shows the first rejection.
+    // `groupBy` would lose by sorting the numeric IDs.
     const getId = (candidate: TmdbAutoSearchResultType) => candidate[linkType].ID;
     const candidates = autoSearchQuery.data.filter(result => result.IsMovie === (linkType === 'Movie'));
     const candidatesById = groupBy(candidates, getId);
-    return uniqBy(candidates, getId).map((candidate) => {
-      const group = candidatesById[getId(candidate)];
-      return {
-        origins: uniq(map(group, 'Origin')),
-        rejection: group.some(entry => entry.Rejection === null) ? null : candidate.Rejection,
-        result: candidate[linkType],
-      };
-    });
+    return uniqBy(candidates, getId).map(candidate => ({
+      origins: uniq(map(candidatesById[getId(candidate)], 'Origin')),
+      result: candidate[linkType],
+    }));
   }, [autoSearchQuery.data, linkType]);
 
   const searchQuery = useTmdbSearchQuery(linkType, debouncedSearch, {
@@ -267,11 +189,10 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
               refreshPending && 'pointer-events-none opacity-65',
             )}
           >
-            {debouncedSearch === '' && autoSearchResults.map(({ origins, rejection, result }) => (
+            {debouncedSearch === '' && autoSearchResults.map(({ origins, result }) => (
               <SearchResultRow
                 key={result.ID}
                 origins={origins}
-                rejection={rejection}
                 result={result}
                 linkType={linkType}
                 selectLink={selectLink}
