@@ -156,7 +156,7 @@ const EpisodeSelect = (props: Props) => {
             value={searchText}
             onChange={event => setSearchText(event.target.value)}
             onKeyDown={event => event.stopPropagation()}
-            placeholder="Search by number, S1E5, Special 3 or title..."
+            placeholder="Enter Episode Title or Season/Episode Number..."
             inputClassName="!p-4"
             startIcon={mdiMagnify}
           />
