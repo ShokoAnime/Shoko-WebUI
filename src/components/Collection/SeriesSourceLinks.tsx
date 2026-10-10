@@ -11,6 +11,8 @@ type Props = {
   /** The IDs the series is linked to on the source, from the series' `IDs.Linked`. */
   linkedIds: string[];
   name: string;
+  /** Whether the links can only be shown, for a source the linking page does not know. */
+  readOnly: boolean;
   seriesId: number;
   source: string;
 };
@@ -19,9 +21,13 @@ const isLinkType = (entityType: string): entityType is MetadataLinkType =>
   entityType === 'Show' || entityType === 'Movie';
 
 /** A series' links to one source other than AniDB and TMDB, and a row to add one. */
-const SeriesSourceLinks = ({ canLink, linkedIds, name, seriesId, source }: Props) => {
+const SeriesSourceLinks = ({ canLink, linkedIds, name, readOnly, seriesId, source }: Props) => {
   // The series only lists the linked IDs, so the cross-references tell whether each is a series or a movie.
-  const crossReferencesQuery = useSeriesMetadataCrossReferencesQuery(seriesId, source, linkedIds.length > 0);
+  const crossReferencesQuery = useSeriesMetadataCrossReferencesQuery(
+    seriesId,
+    source,
+    linkedIds.length > 0 && !readOnly,
+  );
 
   const links: { id: string, type?: MetadataLinkType }[] = crossReferencesQuery.data
     ? uniqBy(
@@ -39,6 +45,7 @@ const SeriesSourceLinks = ({ canLink, linkedIds, name, seriesId, source }: Props
         <SeriesMetadataLink
           key={`${source}-${link.type}-${link.id}`}
           id={link.id}
+          readOnly={readOnly}
           seriesId={seriesId}
           source={source}
           sourceName={name}

@@ -50,7 +50,8 @@ const SeriesOverview = () => {
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(series.IDs.ID).data;
 
-  // Sources other than AniDB and TMDB: the ones that can be linked, and any other the series is still linked to.
+  // Sources other than AniDB and TMDB: the ones that can be linked, and any other the series is still linked to,
+  // which the linking page does not know, so those are shown read-only.
   const sourcesQuery = useMetadataLinkSourcesQuery();
   const linkedIds = series.IDs.Linked;
   const findLinkedIds = (source: string) =>
@@ -62,13 +63,14 @@ const SeriesOverview = () => {
         canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
         linkedIds: findLinkedIds(item.Source),
         name: item.Name,
+        readOnly: false,
         source: item.Source,
       })),
     ...Object.entries(linkedIds)
       .filter(([key]) =>
         !isTmdbSource(key) && !isAnidbSource(key) && !sourcesQuery.data?.some(item => isSameKey(item.Source, key))
       )
-      .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, source: key })),
+      .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, readOnly: true, source: key })),
   ];
   // The AniDB row and the row to add a TMDB link, then one row per link and per source that can be linked.
   const linkRowCount = 2 + series.IDs.TMDB.Movie.length + series.IDs.TMDB.Show.length
@@ -124,6 +126,7 @@ const SeriesOverview = () => {
                     canLink={item.canLink}
                     linkedIds={item.linkedIds}
                     name={item.name}
+                    readOnly={item.readOnly}
                     seriesId={series.IDs.ID}
                     source={item.source}
                   />

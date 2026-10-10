@@ -22,6 +22,8 @@ type Props = {
   /** `AniDB`, or the source as the metadata routes take it. */
   source: string;
   id?: number | string;
+  /** Shows the entry without a link to the linking page or any action. */
+  readOnly?: boolean;
   /** The source's display name, when it differs from `source`. */
   sourceName?: string;
   type?: MetadataLinkType;
@@ -37,7 +39,7 @@ const getSiteLink = (source: string, id: number | string, type?: MetadataLinkTyp
   return undefined;
 };
 
-const SeriesMetadataLink = ({ id, seriesId, source, sourceName = source, type }: Props) => {
+const SeriesMetadataLink = ({ id, readOnly = false, seriesId, source, sourceName = source, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteLink } = useSeriesMetadataDeleteLinkMutation(seriesId, source, type ?? 'Movie');
 
@@ -86,14 +88,15 @@ const SeriesMetadataLink = ({ id, seriesId, source, sourceName = source, type }:
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )}
-          {id && !siteLink && (
+          {id && !siteLink && readOnly && <span className="font-semibold text-panel-text-primary">{label}</span>}
+          {id && !siteLink && !readOnly && (
             <Link to={editLinkingPage} className="flex gap-x-2 font-semibold text-panel-text-primary">
               {label}
             </Link>
           )}
           {!id && (isAnidb ? 'Series Not Linked' : `Add ${sourceName} Link`)}
         </div>
-        {!isAnidb && (
+        {!isAnidb && !readOnly && (
           <div className="flex gap-x-2">
             {id
               ? type && (
