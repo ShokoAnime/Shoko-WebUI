@@ -19,5 +19,9 @@ export const isAnidbSource = (source: string) => isSameKey(source, 'AniDB');
 /** Whether a series or a movie can be linked to the source now. */
 export const isLinkableSource = (source: MetadataLinkSourceType) => source.IsSeriesEnabled || source.IsMovieEnabled;
 
+/** Whether a source can be searched now, which it cannot while it is not configured or paused. */
+export const isSearchableSource = (source: MetadataLinkSourceType) =>
+  source.Status.IsConfigured && !source.Status.IsPaused;
+
 /** Whether a source is TMDB, which the series page lists first. */
 export const isTmdbSource = (source: string) => isSameKey(source, 'tmdb');

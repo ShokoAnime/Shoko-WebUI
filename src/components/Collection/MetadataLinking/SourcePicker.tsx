@@ -1,8 +1,9 @@
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
-import { isSameKey } from '@/core/react-query/metadata/helpers';
+import { isSameKey, isSearchableSource } from '@/core/react-query/metadata/helpers';
 
 import type { MetadataLinkSourceType } from '@/core/types/api/metadata';
 
@@ -43,18 +44,27 @@ const SourcePicker = ({ isLoading, linkedIds, onPick, sources }: Props) => {
         {!isLoading && sources.length === 0 && (
           <div className="p-2 opacity-65">No source can be linked to right now.</div>
         )}
-        {!isLoading && sources.map(item => (
-          <button
-            key={item.Source}
-            type="button"
-            className="flex items-center gap-x-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-panel-toggle-background-hover"
-            onClick={() => onPick(item.Source)}
-          >
-            <MetadataSourceIcon hasIcon={item.HasIcon} source={item.Source} />
-            <span className="font-semibold">{item.Name}</span>
-            <span className="ml-auto text-sm opacity-65">{getHint(item, isLinked(item.Source))}</span>
-          </button>
-        ))}
+        {!isLoading && sources.map((item) => {
+          // Searching a source that is not configured or paused is refused, so it cannot be picked.
+          const isUnavailable = !isSearchableSource(item);
+
+          return (
+            <button
+              key={item.Source}
+              type="button"
+              className={cx(
+                'flex items-center gap-x-3 rounded-lg px-3 py-2 text-left transition-colors',
+                isUnavailable ? 'cursor-not-allowed opacity-65' : 'hover:bg-panel-toggle-background-hover',
+              )}
+              disabled={isUnavailable}
+              onClick={() => onPick(item.Source)}
+            >
+              <MetadataSourceIcon hasIcon={item.HasIcon} source={item.Source} />
+              <span className="font-semibold">{item.Name}</span>
+              <span className="ml-auto text-sm opacity-65">{getHint(item, isLinked(item.Source))}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

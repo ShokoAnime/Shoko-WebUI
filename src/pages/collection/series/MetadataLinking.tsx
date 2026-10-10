@@ -17,7 +17,12 @@ import TopPanel from '@/components/Collection/MetadataLinking/TopPanel';
 import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import MetadataSeriesSettingsModal from '@/components/Dialogs/MetadataSeriesSettingsModal';
 import Button from '@/components/Input/Button';
-import { episodePickerParams, isLinkableSource, isSameKey } from '@/core/react-query/metadata/helpers';
+import {
+  episodePickerParams,
+  isLinkableSource,
+  isSameKey,
+  isSearchableSource,
+} from '@/core/react-query/metadata/helpers';
 import {
   useSeriesMetadataAddLinkMutation,
   useSeriesMetadataDeleteLinkMutation,
@@ -76,7 +81,9 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
     [setSearchParams],
   );
   // With only one source to link, there is nothing to pick.
-  const onlySource = !source && linkableSources?.length === 1 ? linkableSources[0].Source : undefined;
+  const onlySource = !source && linkableSources?.length === 1 && isSearchableSource(linkableSources[0])
+    ? linkableSources[0].Source
+    : undefined;
   useEffect(() => {
     if (onlySource) pickSource(onlySource);
   }, [onlySource, pickSource]);
