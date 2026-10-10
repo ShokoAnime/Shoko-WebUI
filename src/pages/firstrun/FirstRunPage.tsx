@@ -9,6 +9,7 @@ import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
 import ToastContainer from '@/components/ToastContainer';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
+import { emptyMetadataDraft, isMetadataDraftEmpty, saveMetadataDraft } from '@/core/react-query/metadata/draft';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
@@ -68,6 +69,8 @@ const FirstRunPage = () => {
   // Draft re-syncs to the server value when the settings query refetches (initial load and after
   // each save), while preserving in-progress edits between saves.
   const [newSettings, setNewSettings] = useSyncedState(settings);
+  // The metadata step's provider changes, sent with the settings.
+  const [metadataDraft, setMetadataDraft] = useState(emptyMetadataDraft);
 
   const updateSetting = (
     type: string,
@@ -81,8 +84,10 @@ const FirstRunPage = () => {
     setNewSettings({ ...newSettings, [type]: tempSettings });
   };
 
+  // A provider change that fails shows its error and stays in the draft for another try.
   const saveSettings = async () => {
     await patchSettings(newSettings);
+    if (!isMetadataDraftEmpty(metadataDraft)) setMetadataDraft(await saveMetadataDraft(metadataDraft));
   };
 
   let parsedVersion: ReactNode = <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
@@ -142,8 +147,10 @@ const FirstRunPage = () => {
             <Outlet
               context={{
                 fetching: settingsQuery.isFetching,
+                metadataDraft,
                 newSettings,
                 setIsPersistent,
+                setMetadataDraft,
                 setNewSettings,
                 updateSetting,
                 saveSettings,

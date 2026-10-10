@@ -1,3 +1,4 @@
+import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 import type { PaginationType } from '@/core/types/api';
 
 /** The kind of entry a series is linked to, as the linking page names it. */
@@ -48,4 +49,38 @@ export type MetadataEpisodeLinkRequestType = {
 export type MetadataEditEpisodeLinksRequestType = {
   UnsetAll?: boolean;
   Mapping: MetadataEpisodeLinkRequestType[];
+};
+
+/**
+ * The new order of one or more kinds' providers, for `PUT Metadata/Source/{source}/Providers`. Kinds left out are
+ * kept, and providers left out of a kind keep their place after the given ones.
+ */
+export type MetadataSourceProvidersUpdateRequestType = {
+  EntityType: string;
+  Providers: { ProviderID: string, IsEnabled: boolean, Priority: number }[];
+}[];
+
+export type MetadataCrossReferenceSectionType = 'Movie' | 'Series' | 'Episode';
+
+export type MetadataExportRequestType = {
+  /** The sections to write, or every one when empty. */
+  Sections: MetadataCrossReferenceSectionType[];
+  /** `false` keeps only the links a person made, `only` only the automatic ones. */
+  Automatic: IncludeOnlyFilterType;
+  /** Filters series and episode links by whether they are mapped to an episode. */
+  WithEpisodes: IncludeOnlyFilterType;
+  IncludeComments: boolean;
+  AnidbAnimeID?: number;
+  AnidbEpisodeID?: number;
+  /** The source's own IDs. */
+  SeriesID?: string;
+  EpisodeID?: string;
+  MovieID?: string;
+};
+
+export type MetadataImportRequestType = {
+  file: File;
+  removeExisting: boolean;
+  addMissingSeries: boolean;
+  addMissingMovies: boolean;
 };

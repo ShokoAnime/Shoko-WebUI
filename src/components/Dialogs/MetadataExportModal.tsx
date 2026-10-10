@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { mapValues } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
@@ -7,36 +8,44 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useTmdbExportXrefsMutation } from '@/core/react-query/tmdb/mutations';
+import { useExportMetadataCrossReferencesMutation } from '@/core/react-query/metadata/mutations';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
-import type { TmdbCrossReferenceSectionType } from '@/core/react-query/tmdb/types';
+import type { MetadataCrossReferenceSectionType } from '@/core/react-query/metadata/types';
 import type { IncludeOnlyFilterType } from '@/core/react-query/types';
 
 type Props = {
   show: boolean;
   onClose: () => void;
+  /** The source, as routes take it. */
+  source: string;
+  sourceName: string;
 };
 
-type FilterKeyType = 'AnidbAnimeID' | 'AnidbEpisodeID' | 'TmdbMovieID' | 'TmdbShowID' | 'TmdbEpisodeID';
+type AnidbFilterKeyType = 'AnidbAnimeID' | 'AnidbEpisodeID';
+type SourceFilterKeyType = 'SeriesID' | 'EpisodeID' | 'MovieID';
+type FilterKeyType = AnidbFilterKeyType | SourceFilterKeyType;
 
-const sections: { label: string, value: TmdbCrossReferenceSectionType }[] = [
+const sections: { label: string, value: MetadataCrossReferenceSectionType }[] = [
   { label: 'Movie Links', value: 'Movie' },
-  { label: 'Show Links', value: 'Show' },
+  { label: 'Series Links', value: 'Series' },
   { label: 'Episode Links', value: 'Episode' },
 ];
 
-// A TMDB episode ID of 0 is how unmapped AniDB episodes are stored, so it is a valid filter.
-const filters: { label: string, value: FilterKeyType, min: number }[] = [
-  { label: 'AniDB Anime ID', value: 'AnidbAnimeID', min: 1 },
-  { label: 'AniDB Episode ID', value: 'AnidbEpisodeID', min: 1 },
-  { label: 'TMDB Show ID', value: 'TmdbShowID', min: 1 },
-  { label: 'TMDB Episode ID', value: 'TmdbEpisodeID', min: 0 },
-  { label: 'TMDB Movie ID', value: 'TmdbMovieID', min: 1 },
+const anidbFilters: { label: string, value: AnidbFilterKeyType }[] = [
+  { label: 'AniDB Anime ID', value: 'AnidbAnimeID' },
+  { label: 'AniDB Episode ID', value: 'AnidbEpisodeID' },
+];
+
+// The source's own IDs are text, as a source may use any form of ID.
+const sourceFilters: { label: string, value: SourceFilterKeyType }[] = [
+  { label: 'Series ID', value: 'SeriesID' },
+  { label: 'Episode ID', value: 'EpisodeID' },
+  { label: 'Movie ID', value: 'MovieID' },
 ];
 
 type ExportOptionsType = {
-  SectionSet: TmdbCrossReferenceSectionType[];
+  Sections: MetadataCrossReferenceSectionType[];
   Automatic: IncludeOnlyFilterType;
   WithEpisodes: IncludeOnlyFilterType;
   IncludeComments: boolean;
@@ -44,21 +53,21 @@ type ExportOptionsType = {
 };
 
 const defaultOptions: ExportOptionsType = {
-  SectionSet: ['Movie', 'Show', 'Episode'],
+  Sections: ['Movie', 'Series', 'Episode'],
   Automatic: 'true',
   WithEpisodes: 'true',
   IncludeComments: true,
   filters: {
     AnidbAnimeID: '',
     AnidbEpisodeID: '',
-    TmdbMovieID: '',
-    TmdbShowID: '',
-    TmdbEpisodeID: '',
+    SeriesID: '',
+    EpisodeID: '',
+    MovieID: '',
   },
 };
 
-const TmdbExportModal = ({ onClose, show }: Props) => {
-  const { isPending, mutate: exportXrefs } = useTmdbExportXrefsMutation();
+const MetadataExportModal = ({ onClose, show, source, sourceName }: Props) => {
+  const { isPending, mutate: exportXrefs } = useExportMetadataCrossReferencesMutation(source, sourceName);
 
   const [options, setOptions] = useImmer(defaultOptions);
 
@@ -66,32 +75,38 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
     if (!show) setOptions(defaultOptions);
   }, [setOptions, show]);
 
-  const canExport = options.SectionSet.length > 0 && !isPending;
+  const canExport = options.Sections.length > 0 && !isPending;
 
   const handleClose = () => {
     if (!isPending) onClose();
   };
 
-  const handleSectionToggle = (section: TmdbCrossReferenceSectionType, checked: boolean) => {
+  const handleSectionToggle = (section: MetadataCrossReferenceSectionType, checked: boolean) => {
     setOptions((draft) => {
       const next = checked
-        ? [...draft.SectionSet, section]
-        : draft.SectionSet.filter(value => value !== section);
-      draft.SectionSet = sections.map(({ value }) => value).filter(value => next.includes(value));
+        ? [...draft.Sections, section]
+        : draft.Sections.filter(value => value !== section);
+      draft.Sections = sections.map(({ value }) => value).filter(value => next.includes(value));
     });
   };
 
   const handleExport = () => {
     if (!canExport) return;
+    const filters = mapValues(options.filters, value => value.trim());
     exportXrefs({
-      SectionSet: options.SectionSet,
+      Sections: options.Sections,
       Automatic: options.Automatic,
       WithEpisodes: options.WithEpisodes,
       IncludeComments: options.IncludeComments,
       ...Object.fromEntries(
-        filters
-          .filter(({ value }) => options.filters[value] !== '')
-          .map(({ value }) => [value, Number(options.filters[value])]),
+        anidbFilters
+          .filter(({ value }) => filters[value] !== '')
+          .map(({ value }) => [value, Number(filters[value])]),
+      ),
+      ...Object.fromEntries(
+        sourceFilters
+          .filter(({ value }) => filters[value] !== '')
+          .map(({ value }) => [value, filters[value]]),
       ),
     }, {
       onSuccess: ({ isEmpty }) => {
@@ -109,7 +124,7 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
       show={show}
       onRequestClose={handleClose}
       size="sm"
-      header="Export TMDB Cross-References"
+      header={`Export ${sourceName} Cross-References`}
       footer={
         <div className="flex justify-end gap-x-3">
           <Button buttonType="secondary" buttonSize="normal" onClick={onClose} disabled={isPending}>
@@ -128,8 +143,8 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
       }
     >
       <div>
-        Download your AniDB to TMDB links as a CSV file. The file can be imported again later, or into another Shoko
-        Server.
+        Download your AniDB to {sourceName}{' '}
+        links as a CSV file. The file can be imported again later, or into another Shoko Server.
       </div>
 
       <div className="flex flex-col gap-y-2">
@@ -138,15 +153,15 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
           {sections.map(({ label, value }) => (
             <Checkbox
               key={value}
-              id={`tmdb-export-section-${value}`}
+              id={`metadata-export-section-${value}`}
               label={label}
               labelRight
-              isChecked={options.SectionSet.includes(value)}
+              isChecked={options.Sections.includes(value)}
               onChange={event => handleSectionToggle(value, event.target.checked)}
             />
           ))}
         </div>
-        {options.SectionSet.length === 0 && (
+        {options.Sections.length === 0 && (
           <div className="text-xs text-panel-text-danger">Select at least one section to export.</div>
         )}
       </div>
@@ -155,7 +170,7 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
         <div className="font-semibold">Options</div>
         <div className="flex flex-col gap-y-1">
           <SelectSmall
-            id="tmdb-export-automatic"
+            id="metadata-export-automatic"
             label="Automatic Links"
             value={options.Automatic}
             onChange={event =>
@@ -173,8 +188,8 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
         </div>
         <div className="flex flex-col gap-y-1">
           <SelectSmall
-            id="tmdb-export-with-episodes"
-            label="TMDB Episode Mapping"
+            id="metadata-export-with-episodes"
+            label="Episode Mapping"
             value={options.WithEpisodes}
             onChange={event =>
               setOptions((draft) => {
@@ -186,13 +201,13 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
             <option value="only">Mapped Only</option>
           </SelectSmall>
           <div className="text-xs opacity-65">
-            Filters show and episode links by whether they are mapped to a TMDB episode. Movie links are not affected.
+            Filters series and episode links by whether they are mapped to an episode. Movie links are not affected.
           </div>
         </div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
-            id="tmdb-export-include-comments"
+            id="metadata-export-include-comments"
             label="Include Comments"
             isChecked={options.IncludeComments}
             onChange={event =>
@@ -201,8 +216,7 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
               })}
           />
           <div className="text-xs opacity-65">
-            Adds the AniDB and TMDB titles above each link to make the file easier to read. Comments are ignored when
-            importing.
+            Adds the titles above each link to make the file easier to read. Comments are ignored when importing.
           </div>
         </div>
       </div>
@@ -216,13 +230,28 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
           Only export links matching all of the given IDs. Each ID only filters the sections that contain it.
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-          {filters.map(({ label, min, value }) => (
+          {anidbFilters.map(({ label, value }) => (
             <div key={value} className="flex items-center justify-between">
               {label}
               <InputSmall
-                id={`tmdb-export-filter-${value}`}
+                id={`metadata-export-filter-${value}`}
                 type="number"
-                min={min}
+                min={1}
+                value={options.filters[value]}
+                onChange={event =>
+                  setOptions((draft) => {
+                    draft.filters[value] = event.target.value;
+                  })}
+                className="w-24 px-3 py-1"
+              />
+            </div>
+          ))}
+          {sourceFilters.map(({ label, value }) => (
+            <div key={value} className="flex items-center justify-between">
+              {`${sourceName} ${label}`}
+              <InputSmall
+                id={`metadata-export-filter-${value}`}
+                type="text"
                 value={options.filters[value]}
                 onChange={event =>
                   setOptions((draft) => {
@@ -238,4 +267,4 @@ const TmdbExportModal = ({ onClose, show }: Props) => {
   );
 };
 
-export default TmdbExportModal;
+export default MetadataExportModal;

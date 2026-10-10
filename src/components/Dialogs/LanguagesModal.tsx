@@ -16,22 +16,28 @@ import type { SettingsType } from '@/core/types/api/settings';
 type Props = {
   type: 'Series' | 'Episode' | 'Description' | 'Image' | null;
   onClose: () => void;
+  /** For `Image`: the order to start from, as each metadata source can have its own. */
+  imageOrder?: string[];
+  /** For `Image`: takes the picked languages into the unsaved settings instead of saving them. */
+  onImageOrderChange?: (languages: string[]) => void;
 };
 
-const getLanguagePreference = (type: Props['type'], settings: SettingsType) => {
+const getLanguagePreference = (type: Props['type'], settings: SettingsType, imageOrder: string[]) => {
   switch (type) {
     case 'Episode':
       return settings.Language.EpisodeTitleLanguageOrder;
     case 'Description':
       return settings.Language.DescriptionLanguageOrder;
     case 'Image':
-      return settings.TMDB.ImageLanguageOrder;
+      return imageOrder;
     default:
       return settings.Language.SeriesTitleLanguageOrder;
   }
 };
 
-const LanguagesModal = ({ onClose, type }: Props) => {
+const noLanguages: string[] = [];
+
+const LanguagesModal = ({ imageOrder = noLanguages, onClose, onImageOrderChange, type }: Props) => {
   const settings = useSettingsQuery().data;
 
   const languagesQuery = useSupportedLanguagesQuery();
@@ -39,7 +45,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
     ? addNoLanguageOption(languagesQuery.data ?? {})
     : languagesQuery.data ?? {};
 
-  const LanguagePreference = getLanguagePreference(type, settings);
+  const LanguagePreference = getLanguagePreference(type, settings, imageOrder);
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useSyncedState<string[] | null, string[]>(
@@ -49,15 +55,8 @@ const LanguagesModal = ({ onClose, type }: Props) => {
 
   const handleSave = () => {
     if (type === 'Image') {
-      patchSettings({
-        ...settings,
-        TMDB: {
-          ...settings.TMDB,
-          ImageLanguageOrder: languages,
-        },
-      }, {
-        onSuccess: onClose,
-      });
+      onImageOrderChange?.(languages);
+      onClose();
       return;
     }
 
@@ -121,7 +120,7 @@ const LanguagesModal = ({ onClose, type }: Props) => {
           onClick={handleSave}
           buttonType="primary"
           className="px-5 py-2"
-          // An empty image language order is meaningful on the server: TMDB images are
+          // An empty image language order is meaningful on the server: images are
           // downloaded in all languages when the order is empty. Other language orders
           // have no such fallback, so an empty list is invalid there.
           disabled={languages.length === 0 && type !== 'Image'}

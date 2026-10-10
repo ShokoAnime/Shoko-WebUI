@@ -1,10 +1,14 @@
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { MatchRatingValues } from '@/core/types/api/episode';
+import type { PluginInfoType } from '@/core/types/api/plugin';
 
 /** A source series or movies can be linked to, from `GET Metadata/Source`. */
 export type MetadataLinkSourceType = {
   /** The source, as routes take it (e.g. `TMDB`). */
   Source: string;
   Name: string;
+  /** The plugin of the source's first registered provider. */
+  PluginID: string;
   /** Whether the source has an icon, served at `Metadata/Source/{source}/Icon`. */
   HasIcon: boolean;
   SupportsSeries: boolean;
@@ -14,13 +18,38 @@ export type MetadataLinkSourceType = {
   Status: MetadataSourceStatusType;
 };
 
-/** Whether a source is configured, and whether it is paused. */
+/** Why a service is suspended. */
+export type SuspensionKindType =
+  | 'RateLimited'
+  | 'Banned'
+  | 'ServerErrors'
+  | 'Overloaded'
+  | 'AuthenticationFailed'
+  | 'SessionInvalid'
+  | 'Maintenance'
+  | 'Other';
+
+/** One suspension holding a source back. */
+export type SuspensionDetailsType = {
+  Kind: SuspensionKindType;
+  /** A detail only the service knows; word it from `Kind` when absent. */
+  Reason: string | null;
+  RaisedAt: string;
+  ResumesAt: string | null;
+  RetryAfterSeconds: number;
+  IsLiftable: boolean;
+};
+
+/** Whether a source is configured, and whether it is suspended. */
 export type MetadataSourceStatusType = {
   IsConfigured: boolean;
   NotConfiguredReason: string | null;
+  /** Whether a suspension holds the source back. */
   IsPaused: boolean;
+  /** The reason of the longest-blocking suspension, when it gives one. */
   Reason: string | null;
   ResumesAt: string | null;
+  Suspensions: SuspensionDetailsType[];
 };
 
 export type MetadataSearchResultType = {
@@ -123,4 +152,75 @@ export type MetadataSeriesOrderingType = {
   EpisodeCount: number;
   HiddenEpisodeCount: number;
   SeasonCount: number;
+};
+
+/** A metadata provider, from `GET Metadata/Provider`. */
+export type MetadataProviderType = {
+  ID: string;
+  Name: string;
+  Description: string;
+  Version: string;
+  /** The source the provider answers for, as routes take it. */
+  Source: string;
+  Plugin: PluginInfoType;
+  PluginID: string;
+  /** Whether the provider's source has an icon, served at `Metadata/Source/{source}/Icon`. */
+  HasIcon: boolean;
+  /** The provider's own configuration, saved through `Configuration/{id}`, if it has one. */
+  Configuration: ConfigurationInfoType | null;
+  SupportsSeries: boolean;
+  SupportsMovies: boolean;
+  SupportsCollections: boolean;
+  SupportsImages: boolean;
+  SupportsAutoLinking: boolean;
+  SupportsLookup: boolean;
+  /** The kinds of entries the provider can answer for, such as `Show`, `Movie` or `Episode`. */
+  AvailableEntityTypes: string[];
+  MaxConcurrentJobs: number | null;
+  IsEnabled: boolean;
+  /** The kinds of entries the provider is on for. */
+  EnabledEntityTypes: string[];
+  IsConfigured: boolean;
+  NotConfiguredReason: string | null;
+  /** Whether this is the provider that works out what an anime is for its source. */
+  IsAutoLinker: boolean;
+  /** Whether the source links new anime on its own. */
+  AutoLink: boolean;
+  /** Whether the source's automatic links may point at restricted entries. */
+  AutoLinkRestricted: boolean;
+  Status: MetadataSourceStatusType;
+};
+
+/** One provider's place in the order of a kind, from `GET Metadata/Source/{source}/Providers`. */
+export type MetadataSourceProviderType = {
+  ProviderID: string;
+  Name: string;
+  PluginID: string;
+  /** The place in the order, from 0 for the first. */
+  Priority: number;
+  /** Whether it may answer, now or once those before it are off. */
+  IsEnabled: boolean;
+  /** Whether it is the one answering: the first enabled one. The other enabled ones stand by. */
+  IsActive: boolean;
+};
+
+/** The providers claiming one kind of a source, in the order they are tried, from `GET Metadata/Source/{source}/Providers`. */
+export type MetadataSourceProvidersType = {
+  EntityType: string;
+  Providers: MetadataSourceProviderType[];
+};
+
+/** What an import of a cross-reference file did, from `POST Metadata/{source}/CrossReferences/Import`. */
+export type MetadataImportSummaryType = {
+  LinkCount: number;
+  MoviesAdded: number;
+  MoviesUpdated: number;
+  MoviesKept: number;
+  MoviesRemoved: number;
+  SeriesAdded: number;
+  EpisodesAdded: number;
+  EpisodesUpdated: number;
+  EpisodesKept: number;
+  EpisodesRemoved: number;
+  RefreshesQueued: number;
 };

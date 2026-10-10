@@ -11,25 +11,28 @@ import Button from '@/components/Input/Button';
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useTmdbImportXrefsMutation } from '@/core/react-query/tmdb/mutations';
+import { useImportMetadataCrossReferencesMutation } from '@/core/react-query/metadata/mutations';
 import toast from '@/core/toast';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 type Props = {
   show: boolean;
   onClose: () => void;
+  /** The source, as routes take it. */
+  source: string;
+  sourceName: string;
 };
 
-type ImportOptionKeyType = 'removeExisting' | 'addMissingMovies' | 'addMissingShows';
+type ImportOptionKeyType = 'removeExisting' | 'addMissingMovies' | 'addMissingSeries';
 
 // Defaults match the server's defaults for the import endpoint.
 const defaultOptions: Record<ImportOptionKeyType, boolean> = {
   removeExisting: true,
   addMissingMovies: true,
-  addMissingShows: true,
+  addMissingSeries: true,
 };
 
-const optionDetails: { key: ImportOptionKeyType, label: string, description: string }[] = [
+const getOptionDetails = (sourceName: string): { key: ImportOptionKeyType, label: string, description: string }[] => [
   {
     key: 'removeExisting',
     label: 'Remove Existing',
@@ -39,17 +42,17 @@ const optionDetails: { key: ImportOptionKeyType, label: string, description: str
   {
     key: 'addMissingMovies',
     label: 'Add Missing Movies',
-    description: 'Queue TMDB movies that are not downloaded yet for series in your collection.',
+    description: `Queue the ${sourceName} movies the file links that are not downloaded yet.`,
   },
   {
-    key: 'addMissingShows',
-    label: 'Add Missing Shows',
-    description: 'Queue TMDB shows that are not downloaded yet for series in your collection.',
+    key: 'addMissingSeries',
+    label: 'Add Missing Series',
+    description: `Queue the ${sourceName} series the file links that are not downloaded yet.`,
   },
 ];
 
-const TmdbImportModal = ({ onClose, show }: Props) => {
-  const { isPending, mutate: importXrefs } = useTmdbImportXrefsMutation();
+const MetadataImportModal = ({ onClose, show, source, sourceName }: Props) => {
+  const { isPending, mutate: importXrefs } = useImportMetadataCrossReferencesMutation(source, sourceName);
 
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -94,7 +97,7 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
         setOptions(defaultOptions);
       }}
       size="sm"
-      header="Import TMDB Cross-References"
+      header={`Import ${sourceName} Cross-References`}
       footer={
         <div className="flex justify-end gap-x-3">
           <Button buttonType="secondary" buttonSize="normal" onClick={onClose} disabled={isPending}>
@@ -113,8 +116,8 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
       }
     >
       <div>
-        Add AniDB to TMDB links from a CSV file exported by Shoko. Links you have verified are never downgraded to
-        automatic links.
+        Add AniDB to {sourceName}{' '}
+        links from a CSV file exported by Shoko. Links you have verified are never downgraded to automatic links.
       </div>
 
       <div
@@ -160,11 +163,11 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
 
       <div className="flex flex-col gap-y-2">
         <div className="font-semibold">Options</div>
-        {optionDetails.map(({ description, key, label }) => (
+        {getOptionDetails(sourceName).map(({ description, key, label }) => (
           <div key={key} className="flex flex-col gap-y-1">
             <Checkbox
               justify
-              id={`tmdb-import-${key}`}
+              id={`metadata-import-${key}`}
               label={label}
               isChecked={options[key]}
               disabled={isPending}
@@ -185,4 +188,4 @@ const TmdbImportModal = ({ onClose, show }: Props) => {
   );
 };
 
-export default TmdbImportModal;
+export default MetadataImportModal;

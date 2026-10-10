@@ -18,8 +18,10 @@ import type {
   MetadataEpisodeType,
   MetadataLinkSourceType,
   MetadataMovieType,
+  MetadataProviderType,
   MetadataSearchResultType,
   MetadataSeriesOrderingType,
+  MetadataSourceProvidersType,
 } from '@/core/types/api/metadata';
 
 export const useMetadataLinkSourcesQuery = (enabled = true) =>
@@ -27,6 +29,21 @@ export const useMetadataLinkSourcesQuery = (enabled = true) =>
     queryKey: ['metadata', 'source'],
     queryFn: () => axios.get('Metadata/Source'),
     enabled,
+  });
+
+export const useMetadataProvidersQuery = (enabled = true) =>
+  useQuery<MetadataProviderType[]>({
+    queryKey: ['metadata', 'provider'],
+    queryFn: () => axios.get('Metadata/Provider'),
+    enabled,
+  });
+
+/** The providers of each kind of a source, in the order they are tried. */
+export const useMetadataSourceProvidersQuery = (source: string, enabled = true) =>
+  useQuery<MetadataSourceProvidersType[]>({
+    queryKey: ['metadata', 'source', source, 'providers'],
+    queryFn: () => axios.get(`Metadata/Source/${encodeURIComponent(source)}/Providers`),
+    enabled: enabled && !!source,
   });
 
 /**
