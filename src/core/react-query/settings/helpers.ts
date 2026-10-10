@@ -284,7 +284,7 @@ export const initialSettings: SettingsType = {
         showRandomPoster: false,
         useThumbnailFallback: false,
       },
-      tmdb: {
+      metadata: {
         includeRestricted: false,
       },
       anidb: {

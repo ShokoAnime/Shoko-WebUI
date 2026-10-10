@@ -445,7 +445,7 @@ export type WebUISettingsType = {
       showRandomBackdrop: boolean;
       useThumbnailFallback: boolean;
     };
-    tmdb: {
+    metadata: {
       includeRestricted: boolean;
     };
     anidb: {

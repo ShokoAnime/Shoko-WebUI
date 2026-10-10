@@ -1,62 +1,63 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router';
 import { mdiLinkOff, mdiLinkPlus, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { find, map, toNumber } from 'lodash';
+import { find } from 'lodash';
 
-import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
+import AniDBEpisode from '@/components/Collection/MetadataLinking/AniDBEpisode';
 import Button from '@/components/Input/Button';
-import { useTmdbBulkMoviesOnlineQuery, useTmdbShowOrMovieQuery } from '@/core/react-query/tmdb/queries';
+import { useMetadataLookupQuery, useSeriesMetadataMoviesQuery } from '@/core/react-query/metadata/queries';
 
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { TmdbMovieXrefType } from '@/core/types/api/tmdb';
+import type { MetadataCrossReferenceType } from '@/core/types/api/metadata';
 import type { Updater } from 'use-immer';
 
 type Props = {
   episode: EpisodeType;
   isOdd: boolean;
-  overrides: Record<number, number[]>;
-  setLinkOverrides: Updater<Record<number, number[]>>;
-  xrefs?: TmdbMovieXrefType[];
+  /** The movie being linked. */
+  linkId: string;
+  /** The movie each AniDB episode is changed to link to, or an empty string to unlink it. */
+  overrides: Record<number, string>;
+  seriesId: number;
+  setLinkOverrides: Updater<Record<number, string>>;
+  source: string;
+  xrefs?: MetadataCrossReferenceType[];
 };
 
 const MovieRow = (props: Props) => {
   const {
     episode,
     isOdd,
+    linkId,
     overrides,
+    seriesId,
     setLinkOverrides,
+    source,
     xrefs,
   } = props;
-
-  const [searchParams] = useSearchParams();
-  const tmdbId = toNumber(searchParams.get('id'));
 
   const xref = useMemo(
     () => xrefs?.find(ref => ref.AnidbEpisodeID === episode.IDs.AniDB),
     [episode.IDs.AniDB, xrefs],
   );
 
-  const tmdbMovieQuery = useTmdbShowOrMovieQuery(tmdbId, 'Movie');
-  const tmdbBulkMoviesQuery = useTmdbBulkMoviesOnlineQuery(
-    { IDs: map(xrefs, item => item.TmdbMovieID) },
-  );
-  const tmdbMovie = useMemo(() => {
-    if (!tmdbMovieQuery.data && !tmdbBulkMoviesQuery.data) return undefined;
-
+  const movieQuery = useMetadataLookupQuery(source, 'Movie', linkId);
+  const linkedMoviesQuery = useSeriesMetadataMoviesQuery(seriesId, source, !!xrefs && xrefs.length > 0);
+  const movie = useMemo(() => {
     const override = overrides[episode.IDs.AniDB];
-    if (override?.[0] === 0) return undefined;
+    if (override === '') return undefined;
 
-    const tmdbMovies = [tmdbMovieQuery.data, ...(tmdbBulkMoviesQuery.data ?? [])];
+    const movies = [movieQuery.data, ...(linkedMoviesQuery.data ?? [])];
 
-    if (override?.[0]) {
-      return find(tmdbMovies, { ID: override[0] });
+    if (override) {
+      return find(movies, { ID: override });
     }
 
-    if (!xref) return undefined;
-    return find(tmdbMovies, { ID: xref.TmdbMovieID });
-  }, [episode.IDs.AniDB, overrides, tmdbBulkMoviesQuery.data, tmdbMovieQuery.data, xref]);
+    if (!xref?.ID) return undefined;
+    // A linked movie that is not stored yet is shown by its ID.
+    return find(movies, { ID: xref.ID }) ?? { ID: xref.ID, Title: null, ReleaseDate: null };
+  }, [episode.IDs.AniDB, linkedMoviesQuery.data, movieQuery.data, overrides, xref]);
 
   const isPending = useMemo(
     () => {
@@ -64,26 +65,26 @@ const MovieRow = (props: Props) => {
       if (!xrefs) return true;
       // Xrefs are loaded but episode doesn't have an xref
       if (!xref) return false;
-      return tmdbBulkMoviesQuery.isPending || tmdbMovieQuery.isPending;
+      return linkedMoviesQuery.isPending || movieQuery.isPending;
     },
-    [tmdbBulkMoviesQuery.isPending, tmdbMovieQuery.isPending, xref, xrefs],
+    [linkedMoviesQuery.isPending, movieQuery.isPending, xref, xrefs],
   );
 
   const handleOverrideLink = () => {
     setLinkOverrides((draftState) => {
       const anidbEpisodeId = episode.IDs.AniDB;
-      const newTmdbId = tmdbMovie?.ID ? 0 : tmdbId;
+      const newId = movie?.ID ? '' : linkId;
       // If already linked episode was unlinked and linked again, remove override
-      if (draftState[anidbEpisodeId]?.[0] === 0 && newTmdbId === tmdbId) delete draftState[anidbEpisodeId];
+      if (draftState[anidbEpisodeId] === '' && newId === linkId) delete draftState[anidbEpisodeId];
       // If new link was created and removed, remove override
-      else if (draftState[anidbEpisodeId]?.[0] === tmdbId && newTmdbId === 0) delete draftState[anidbEpisodeId];
-      else draftState[anidbEpisodeId] = [newTmdbId];
+      else if (draftState[anidbEpisodeId] === linkId && newId === '') delete draftState[anidbEpisodeId];
+      else draftState[anidbEpisodeId] = newId;
     });
   };
 
   const lockMovie = useMemo(
-    () => (tmdbMovie?.ID ? tmdbMovie?.ID !== tmdbId : false),
-    [tmdbId, tmdbMovie],
+    () => (movie?.ID ? movie?.ID !== linkId : false),
+    [linkId, movie],
   );
 
   return (
@@ -107,13 +108,13 @@ const MovieRow = (props: Props) => {
               <div
                 className="flex grow flex-col text-left"
                 data-tooltip-id="tooltip"
-                data-tooltip-content={tmdbMovie?.Title ?? ''}
+                data-tooltip-content={movie?.Title ?? ''}
               >
                 <div className="line-clamp-1 text-xs font-semibold opacity-65">
-                  {tmdbMovie?.Title ? tmdbMovie?.ReleasedAt ?? 'Airdate Unknown' : ''}
+                  {movie ? movie.ReleaseDate ?? 'Airdate Unknown' : ''}
                 </div>
                 <div className="line-clamp-1">
-                  {tmdbMovie?.Title ?? 'Entry Not Linked'}
+                  {movie ? movie.Title ?? movie.ID : 'Entry Not Linked'}
                 </div>
               </div>
             </div>
@@ -121,12 +122,12 @@ const MovieRow = (props: Props) => {
               && (
                 <Button
                   onClick={handleOverrideLink}
-                  tooltip={tmdbMovie ? 'Remove Link' : 'Add Link'}
+                  tooltip={movie ? 'Remove Link' : 'Add Link'}
                 >
                   <Icon
-                    path={tmdbMovie ? mdiLinkOff : mdiLinkPlus}
+                    path={movie ? mdiLinkOff : mdiLinkPlus}
                     size={1}
-                    className={cx(tmdbMovie ? 'text-panel-text-danger' : 'text-panel-text-primary')}
+                    className={cx(movie ? 'text-panel-text-danger' : 'text-panel-text-primary')}
                   />
                 </Button>
               )}
