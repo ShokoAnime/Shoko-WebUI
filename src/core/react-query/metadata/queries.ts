@@ -161,7 +161,7 @@ export const useSeriesMetadataMoviesQuery = (seriesId: number, source: string, e
 export const useSeriesMetadataEpisodeCrossReferencesQuery = (
   seriesId: number,
   source: string,
-  isNewLink: boolean,
+  isNewLink: boolean | undefined,
   linkId: string,
   enabled = true,
 ) =>

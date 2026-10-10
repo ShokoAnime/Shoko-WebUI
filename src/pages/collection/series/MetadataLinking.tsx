@@ -71,8 +71,10 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
   const [createInProgress, setCreateInProgress] = useState(false);
 
   const crossReferencesQuery = useSeriesMetadataCrossReferencesQuery(seriesId, source, !!seriesId);
+  // `undefined` while the series' links are not known, which is not the same as the entry not being linked.
   const isNewLink = useMemo(() => {
-    if (!linkId || !type || !crossReferencesQuery.data) return false;
+    if (!linkId || !type) return false;
+    if (!crossReferencesQuery.data) return undefined;
     return !crossReferencesQuery.data.some(xref => xref.EntityType === type && xref.ID === linkId);
   }, [crossReferencesQuery.data, linkId, type]);
 
@@ -336,6 +338,9 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
   };
 
   const disableCreateLink = useMemo(() => {
+    // Without the series' links it is unknown what saving would change.
+    if (!crossReferencesQuery.data) return true;
+
     if (type === 'Movie') {
       return Object.keys(movieOverrides).length === 0;
     }
@@ -345,7 +350,7 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
     if (!showEpisodeMapping) return true;
 
     return Object.keys(linkOverrides).length === 0;
-  }, [isNewLink, linkOverrides, movieOverrides, showEpisodeMapping, type]);
+  }, [crossReferencesQuery.data, isNewLink, linkOverrides, movieOverrides, showEpisodeMapping, type]);
 
   const handleNewLinkEdit = () => {
     setSearchParams({ source });
@@ -364,7 +369,8 @@ const MetadataLinkingContent = ({ source }: { source: string }) => {
         xrefsCount={showEpisodeMapping ? undefined : movieXrefCount}
       />
       <div className="flex grow flex-col rounded-lg border border-panel-border bg-panel-background px-4 py-6">
-        {(seriesQuery.isPending || episodesQuery.isPending || linkedEpisodesQuery.isLoading) && (
+        {(seriesQuery.isPending || episodesQuery.isPending || crossReferencesQuery.isPending
+          || linkedEpisodesQuery.isLoading) && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
