@@ -40,7 +40,7 @@ import type { SeriesContextType } from '@/components/Collection/constants';
 import type { MetadataEpisodeLinkRequestType, MetadataLinkType } from '@/core/react-query/metadata/types';
 import type { MetadataCrossReferenceType } from '@/core/types/api/metadata';
 
-const MetadataLinking = () => {
+const MetadataLinkingContent = ({ source }: { source: string }) => {
   const seriesId = toNumber(useParams().seriesId);
 
   const navigate = useNavigateVoid();
@@ -49,7 +49,6 @@ const MetadataLinking = () => {
   }
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const source = searchParams.get('source') ?? 'TMDB';
   const isTmdb = isTmdbSource(source);
   const type = useMemo(() => searchParams.get('type') ?? null, [searchParams]) as MetadataLinkType | null;
   const linkType = type ?? 'Show';
@@ -600,6 +599,25 @@ const MetadataLinking = () => {
       </div>
     </div>
   );
+};
+
+// The source comes from the URL, so it is only used once it matches one the server lists.
+const MetadataLinking = () => {
+  const [searchParams] = useSearchParams();
+  const sourcesQuery = useMetadataLinkSourcesQuery();
+
+  if (sourcesQuery.isPending) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={4} spin />
+      </div>
+    );
+  }
+
+  const requestedSource = searchParams.get('source') ?? 'TMDB';
+  const source = sourcesQuery.data?.find(item => isSameKey(item.Source, requestedSource))?.Source ?? 'TMDB';
+
+  return <MetadataLinkingContent source={source} />;
 };
 
 export default MetadataLinking;
