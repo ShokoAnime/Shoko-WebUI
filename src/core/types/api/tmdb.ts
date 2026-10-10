@@ -43,8 +43,12 @@ export type TmdbSearchResultType = {
   Title: string;
 };
 
+export type TmdbAutoSearchOriginValues = 'Search' | 'CurrentLink' | 'PrequelLink' | 'AnidbResource' | 'CrossSourceLink';
+
 export type TmdbAutoSearchResultType = {
   IsMovie: boolean;
   Show: TmdbSearchResultType;
   Movie: TmdbSearchResultType;
+  /** Where the match came from. */
+  Origin: TmdbAutoSearchOriginValues;
 };

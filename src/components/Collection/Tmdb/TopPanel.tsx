@@ -58,14 +58,16 @@ const TopPanel = (props: Props) => {
           <span>|</span>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
-              {(matchRatingCounts.DateAndTitleMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)}
+              {(matchRatingCounts.DateAndTitleMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)
+                + (matchRatingCounts.DateAndNumberMatches ?? 0)}
             </div>
             Perfect
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
               {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
-                + (matchRatingCounts.TitleKindaMatches ?? 0) + (matchRatingCounts.DateKindaMatches ?? 0)}
+                + (matchRatingCounts.TitleKindaMatches ?? 0) + (matchRatingCounts.DateKindaMatches ?? 0)
+                + (matchRatingCounts.DateOffsetMatches ?? 0)}
             </div>
             Approximate
           </div>

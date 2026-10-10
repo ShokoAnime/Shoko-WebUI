@@ -3,9 +3,10 @@ import { useParams, useSearchParams } from 'react-router';
 import { mdiFilmstrip, mdiLoading, mdiMagnify, mdiOpenInNew, mdiTelevision } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { toNumber } from 'lodash';
+import { groupBy, map, toNumber, uniq, uniqBy } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
+import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -14,15 +15,24 @@ import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/t
 import toast from '@/core/toast';
 
 import type { AnimeTypeValues } from '@/core/types/api/series';
-import type { TmdbSearchResultType } from '@/core/types/api/tmdb';
+import type { TmdbAutoSearchOriginValues, TmdbAutoSearchResultType, TmdbSearchResultType } from '@/core/types/api/tmdb';
+
+const originLabels: Record<TmdbAutoSearchOriginValues, string> = {
+  Search: 'Search',
+  CurrentLink: 'Current link',
+  PrequelLink: 'Prequel link',
+  AnidbResource: 'AniDB resource',
+  CrossSourceLink: 'Cross-source link',
+};
 
 type SearchResultRowProps = {
   linkType: 'Show' | 'Movie';
+  origins?: TmdbAutoSearchOriginValues[];
   result: TmdbSearchResultType;
   selectLink: (tmdbId: number) => void;
 };
 
-const SearchResultRow = ({ linkType, result, selectLink }: SearchResultRowProps) => {
+const SearchResultRow = ({ linkType, origins, result, selectLink }: SearchResultRowProps) => {
   const handleClick = () => {
     selectLink(result.ID);
   };
@@ -45,6 +55,13 @@ const SearchResultRow = ({ linkType, result, selectLink }: SearchResultRowProps)
         <span>|</span>
         {result.Title}
       </div>
+      {origins && origins.length > 0 && (
+        <div className="ml-auto flex shrink-0 gap-x-1">
+          {origins.map(origin => (
+            <Badge key={origin} className="bg-panel-background-alt whitespace-nowrap">{originLabels[origin]}</Badge>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -65,9 +82,16 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
   const autoSearchResults = useMemo(() => {
     if (!autoSearchQuery.data) return [];
 
-    return autoSearchQuery.data
-      .filter(result => result.IsMovie === (linkType === 'Movie'))
-      .map(result => result[linkType]);
+    // The server lists every scored candidate, accepted ones first, and may list one entry once per origin,
+    // so each entry is shown once with every origin that found it. `uniqBy` keeps the server's order, which
+    // `groupBy` would lose by sorting the numeric IDs.
+    const getId = (candidate: TmdbAutoSearchResultType) => candidate[linkType].ID;
+    const candidates = autoSearchQuery.data.filter(result => result.IsMovie === (linkType === 'Movie'));
+    const candidatesById = groupBy(candidates, getId);
+    return uniqBy(candidates, getId).map(candidate => ({
+      origins: uniq(map(candidatesById[getId(candidate)], 'Origin')),
+      result: candidate[linkType],
+    }));
   }, [autoSearchQuery.data, linkType]);
 
   const searchQuery = useTmdbSearchQuery(linkType, debouncedSearch, {
@@ -165,9 +189,10 @@ const TmdbLinkSelectPanel = ({ seriesType }: { seriesType?: AnimeTypeValues }) =
               refreshPending && 'pointer-events-none opacity-65',
             )}
           >
-            {debouncedSearch === '' && autoSearchResults.map(result => (
+            {debouncedSearch === '' && autoSearchResults.map(({ origins, result }) => (
               <SearchResultRow
                 key={result.ID}
+                origins={origins}
                 result={result}
                 linkType={linkType}
                 selectLink={selectLink}
