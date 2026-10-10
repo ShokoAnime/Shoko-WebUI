@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useOutletContext } from 'react-router';
-import { mdiEarth, mdiOpenInNew, mdiPlus } from '@mdi/js';
+import { mdiEarth, mdiLoading, mdiOpenInNew, mdiPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, map, round, sortBy } from 'lodash';
@@ -71,8 +71,10 @@ const SeriesOverview = () => {
     item => !isTmdbSource(item.source),
   );
   const canAddLink = sourcesQuery.data?.some(isLinkableSource) ?? false;
+  // The "Add link" button is shown, disabled, while the sources load.
+  const showAddLink = sourcesQuery.isPending || canAddLink;
   // The AniDB row, the "Add link" button when a source can be linked, then one row per link.
-  const linkRowCount = 1 + (canAddLink ? 1 : 0)
+  const linkRowCount = 1 + (showAddLink ? 1 : 0)
     + linkedSources.reduce((count, item) => count + item.linkedIds.length, 0);
 
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
@@ -119,6 +121,12 @@ const SeriesOverview = () => {
                     source={item.source}
                   />
                 ))}
+                {sourcesQuery.isPending && (
+                  <div className="flex w-full shrink-0 cursor-wait items-center justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 font-semibold text-panel-text-primary opacity-65">
+                    Add link
+                    <Icon path={mdiLoading} size={1} spin />
+                  </div>
+                )}
                 {canAddLink && (
                   <Link
                     to="../metadata-linking"
