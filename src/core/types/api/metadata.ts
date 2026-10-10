@@ -5,10 +5,22 @@ export type MetadataLinkSourceType = {
   /** The source, as routes take it (e.g. `TMDB`). */
   Source: string;
   Name: string;
+  /** Whether the source has an icon, served at `Metadata/Source/{source}/Icon`. */
+  HasIcon: boolean;
   SupportsSeries: boolean;
   SupportsMovies: boolean;
   IsSeriesEnabled: boolean;
   IsMovieEnabled: boolean;
+  Status: MetadataSourceStatusType;
+};
+
+/** Whether a source is configured, and whether it is paused. */
+export type MetadataSourceStatusType = {
+  IsConfigured: boolean;
+  NotConfiguredReason: string | null;
+  IsPaused: boolean;
+  Reason: string | null;
+  ResumesAt: string | null;
 };
 
 export type MetadataSearchResultType = {
@@ -18,6 +30,8 @@ export type MetadataSearchResultType = {
   /** `Show` for a series, or `Movie`. */
   Type: string;
   Guid: string;
+  /** The entry's page on its source's site, or `null` when it has none. */
+  SiteUrl: string | null;
   IsLocal: boolean;
   Title: string;
   AirDate?: string;
@@ -46,6 +60,8 @@ export type MetadataCrossReferenceType = {
   AnidbEpisodeID?: number;
   /** The source's ID of the linked entry, or `null` when linked to nothing. */
   ID: string | null;
+  /** The linked entry's page on its source's site, or `null` when it has none. */
+  SiteUrl: string | null;
   /** The source's ID of the series an episode link points into, if known. */
   ParentID?: string;
   SeasonID?: string;
@@ -60,6 +76,8 @@ export type MetadataEpisodeType = {
   ID: string;
   Source: string;
   Guid: string;
+  /** The episode's page on its source's site, or `null` when it has none. */
+  SiteUrl: string | null;
   Title: string | null;
   /** The source's ID of the series the episode belongs to. */
   SeriesID: string;
@@ -73,6 +91,8 @@ export type MetadataEpisodeType = {
 
 export type MetadataMovieType = {
   ID: string;
+  /** The movie's page on its source's site, or `null` when it has none. */
+  SiteUrl: string | null;
   Title: string | null;
   ReleaseDate: string | null;
 };
