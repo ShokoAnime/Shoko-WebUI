@@ -11,7 +11,7 @@ import { Icon } from '@mdi/react';
 import Button from '@/components/Input/Button';
 import { isAnidbSource, isTmdbSource } from '@/core/react-query/metadata/helpers';
 import { useSeriesMetadataDeleteLinkMutation } from '@/core/react-query/metadata/mutations';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
 import { getAnidbAnimeLink } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -58,7 +58,11 @@ const SeriesMetadataLink = ({ id, seriesId, source, sourceName = source, type }:
   const removeLink = () => {
     if (!id || !type) return;
     deleteLink({ ID: id.toString() }, {
-      onSuccess: () => invalidateQueries(['series', seriesId]),
+      onSuccess: () => {
+        invalidateQueries(['series', seriesId]);
+        // The cross-references query is disabled once no link is left, so invalidating would keep its old data.
+        resetQueries(['series', seriesId, 'metadata', source, 'cross-references']);
+      },
     });
   };
 
