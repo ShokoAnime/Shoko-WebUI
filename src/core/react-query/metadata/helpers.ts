@@ -12,5 +12,8 @@ export const episodePickerParams = { search: '', pageSize: 30 };
 /** Whether two keys the server matches ignoring case, such as sources, are the same. */
 export const isSameKey = (first: string, second: string) => first.toLowerCase() === second.toLowerCase();
 
+/** Whether a source is AniDB, which every series is linked to. */
+export const isAnidbSource = (source: string) => isSameKey(source, 'AniDB');
+
 /** Whether a source is TMDB, which has extras of its own on the linking page. */
 export const isTmdbSource = (source: string) => isSameKey(source, 'tmdb');
