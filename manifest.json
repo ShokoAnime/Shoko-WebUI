@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.149",
+      "minServerVersion": "6.0.0-dev.503",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.149/Shoko-WebUI-v2.6.0-dev.149.zip",
+      "checksum": "sha256:8e8d597cffc47126615a4dc45221155dd41b6879ac34fb0b26959d64d83686c3",
+      "commit": "77b58bd49de739fd41237bac6b8b5e981076fab4",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.503** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.503** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix(tmdb): match the TMDB linking to the server by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1485\n* feat(metadata): link series and map their episodes for any metadata source by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1486\n* feat(series): list links to every metadata source by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1487\n* refactor(metadata): add source site links and icons, pick the source on the linking page by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1488\n* refactor(settings): replace the TMDB tab with settings for every metadata source by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1489\n* Staging by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1503\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.148...v2.6.0-dev.149\n"
+    },
+    {
       "version": "2.6.0-dev.148",
       "minServerVersion": "6.0.0-dev.479",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.148/Shoko-WebUI-v2.6.0-dev.148.zip",
