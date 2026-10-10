@@ -52,12 +52,13 @@ const SeriesOverview = () => {
 
   // Sources other than AniDB and TMDB: the ones that can be linked, and any other the series is still linked to,
   // which the linking page does not know, so those are shown read-only.
+  // Nothing is listed until the sources are known, as a linked source cannot be told from an unlisted one before.
   const sourcesQuery = useMetadataLinkSourcesQuery();
   const linkedIds = series.IDs.Linked;
   const findLinkedIds = (source: string) =>
     Object.entries(linkedIds).find(([key]) => isSameKey(key, source))?.[1] ?? [];
-  const otherSources = [
-    ...(sourcesQuery.data ?? [])
+  const otherSources = !sourcesQuery.isSuccess ? [] : [
+    ...sourcesQuery.data
       .filter(item => !isTmdbSource(item.Source))
       .map(item => ({
         canLink: item.IsSeriesEnabled || item.IsMovieEnabled,
@@ -68,7 +69,7 @@ const SeriesOverview = () => {
       })),
     ...Object.entries(linkedIds)
       .filter(([key]) =>
-        !isTmdbSource(key) && !isAnidbSource(key) && !sourcesQuery.data?.some(item => isSameKey(item.Source, key))
+        !isTmdbSource(key) && !isAnidbSource(key) && !sourcesQuery.data.some(item => isSameKey(item.Source, key))
       )
       .map(([key, ids]) => ({ canLink: false, linkedIds: ids, name: key, readOnly: true, source: key })),
   ];
