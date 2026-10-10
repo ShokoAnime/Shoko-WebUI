@@ -55,6 +55,12 @@ pnpm lint           # dprint -> oxlint -> stylelint
 
 This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The compiler automatically memoizes components and values, so **do not use `useMemo`, `useCallback`, or `React.memo` unless absolutely required** (e.g., for a library boundary or a measured performance issue).
 
+### Inline Component Complexity
+
+- **A simple inline child component is fine.** A small presentational component defined alongside its parent — one that just maps its props straight into JSX — can stay in the same file. No rule against this by itself.
+- **Extract it once it stops being pure prop-to-JSX mapping.** If an inline component starts deriving its own display data — calling a helper/lookup function, branching across more than one independent conditional rendering block, building its own tooltip/badge state from raw inputs — move it to its own file under `src/components/`.
+- **Cap non-JSX preamble.** If the code above a component's function signature (types, constants, helper functions) exceeds ~15-20 lines, that's a signal something above should be extracted.
+
 ## Code Style
 
 - **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` and `tests/**`. Line width 120, single quotes (double quotes in JSX), always semicolons.

@@ -33,6 +33,8 @@ export type SeriesIDsType = {
     Movie: number[];
     Show: number[];
   };
+  /** The IDs the series is linked to on each source, by source. */
+  Linked: Record<string, string[]>;
 };
 
 export type AniDBSeriesType = {

@@ -204,11 +204,6 @@ input:autofill {
   }
 
   /* stylelint-disable-next-line selector-class-pattern */
-  &.TMDB {
-    background-image: url('/images/community/24-TMDB.png');
-  }
-
-  /* stylelint-disable-next-line selector-class-pattern */
   &.MAL {
     background-image: url('/images/community/24-MAL.png');
   }

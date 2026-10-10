@@ -1,29 +1,30 @@
 import { useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router';
-import { mdiEarth, mdiOpenInNew } from '@mdi/js';
+import { Link, useOutletContext } from 'react-router';
+import { mdiEarth, mdiLoading, mdiOpenInNew, mdiPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { flatMap, get, map, round } from 'lodash';
+import { get, map, round, sortBy } from 'lodash';
 
 import CharacterImage from '@/components/CharacterImage';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
-import SeriesMetadata from '@/components/Collection/SeriesMetadata';
+import SeriesMetadataLink from '@/components/Collection/SeriesMetadataLink';
+import SeriesSourceLinks from '@/components/Collection/SeriesSourceLinks';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import SeriesPoster from '@/components/SeriesPoster';
+import { isAnidbSource, isLinkableSource, isSameKey, isTmdbSource } from '@/core/react-query/metadata/helpers';
+import { useMetadataLinkSourcesQuery } from '@/core/react-query/metadata/queries';
 import {
   useRelatedAnimeQuery,
   useSeriesCastQuery,
   useSeriesNextUpQuery,
   useSimilarAnimeQuery,
 } from '@/core/react-query/series/queries';
+import { getAnidbAnimeLink } from '@/core/util';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
-
-// Links
-const MetadataLinks = ['AniDB', 'TMDB'] as const;
 
 const SeriesOverview = () => {
   const { series } = useOutletContext<SeriesContextType>();
@@ -50,6 +51,32 @@ const SeriesOverview = () => {
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(series.IDs.ID).data;
 
+  // Every source but AniDB the series is linked to, TMDB first.
+  // Nothing is listed until the sources are known, as a linked source cannot be told from an unlisted one before.
+  // A source the linking page does not know is shown read-only.
+  const sourcesQuery = useMetadataLinkSourcesQuery();
+  const linkedSources = sortBy(
+    !sourcesQuery.isSuccess ? [] : Object.entries(series.IDs.Linked)
+      .filter(([key, ids]) => !isAnidbSource(key) && ids.length > 0)
+      .map(([key, ids]) => {
+        const sourceInfo = sourcesQuery.data.find(item => isSameKey(item.Source, key));
+        return {
+          hasIcon: sourceInfo?.HasIcon ?? false,
+          linkedIds: ids,
+          name: sourceInfo?.Name ?? key,
+          readOnly: !sourceInfo,
+          source: key,
+        };
+      }),
+    item => !isTmdbSource(item.source),
+  );
+  const canAddLink = sourcesQuery.data?.some(isLinkableSource) ?? false;
+  // The "Add link" button is shown, disabled, while the sources load.
+  const showAddLink = sourcesQuery.isPending || canAddLink;
+  // The AniDB row, the "Add link" button when a source can be linked, then one row per link.
+  const linkRowCount = 1 + (showAddLink ? 1 : 0)
+    + linkedSources.reduce((count, item) => count + item.linkedIds.length, 0);
+
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
     const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
     if (thumbnail === null) return null;
@@ -74,46 +101,41 @@ const SeriesOverview = () => {
               <div
                 className={cx(
                   'flex h-62.5 flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
-                  // TODO: The below needs to check for how many links are rendered, not how many types of links can exist
-                  MetadataLinks.length > 4 ? 'pr-4' : '',
+                  linkRowCount > 4 ? 'pr-4' : '',
                 )}
               >
-                {MetadataLinks.map((site) => {
-                  if (site === 'TMDB') {
-                    const tmdbIds = series.IDs.TMDB;
-                    if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
-                      return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
-                    }
-
-                    return [
-                      ...flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
-                        ids.map(id => (
-                          id
-                            ? (
-                              <SeriesMetadata
-                                key={`${site}-${type}-${id}`}
-                                site={site}
-                                id={id}
-                                seriesId={series.IDs.ID}
-                                type={type}
-                              />
-                            )
-                            : null
-                        ))),
-                      /* Show row to add new TMDB links */
-                      <SeriesMetadata key="TMDB-add-new" site="TMDB" seriesId={series.IDs.ID} />,
-                    ];
-                  }
-
-                  // Site is not TMDB, so it's either a single ID or an array of IDs
-                  const idOrIds = series?.IDs[site] ?? [0];
-                  const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
-                  if (linkIds.length === 0) linkIds.push(0);
-
-                  return linkIds.map(id => (
-                    <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
-                  ));
-                })}
+                <SeriesMetadataLink
+                  source="AniDB"
+                  id={series.IDs.AniDB}
+                  seriesId={series.IDs.ID}
+                  siteUrl={getAnidbAnimeLink(series.IDs.AniDB)}
+                />
+                {linkedSources.map(item => (
+                  <SeriesSourceLinks
+                    key={item.source}
+                    hasIcon={item.hasIcon}
+                    linkedIds={item.linkedIds}
+                    name={item.name}
+                    readOnly={item.readOnly}
+                    seriesId={series.IDs.ID}
+                    source={item.source}
+                  />
+                ))}
+                {sourcesQuery.isPending && (
+                  <div className="flex w-full shrink-0 cursor-wait items-center justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 font-semibold text-panel-text-primary opacity-65">
+                    Add link
+                    <Icon path={mdiLoading} size={1} spin />
+                  </div>
+                )}
+                {canAddLink && (
+                  <Link
+                    to="../metadata-linking"
+                    className="flex w-full shrink-0 items-center justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 font-semibold text-panel-text-primary transition-colors hover:bg-panel-toggle-background-hover"
+                  >
+                    Add link
+                    <Icon path={mdiPlus} size={1} />
+                  </Link>
+                )}
               </div>
             )}
             {series && currentTab === 'links' && (

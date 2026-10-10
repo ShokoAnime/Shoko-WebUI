@@ -1,8 +1,8 @@
 import { useOutletContext } from 'react-router';
 
-import type { SettingsContextType } from '@/core/types/context';
+import type { SettingsPageContextType } from '@/core/types/context';
 
-type ContextType = SettingsContextType & {
+type ContextType = SettingsPageContextType & {
   fetching: boolean;
   saveSettings: () => Promise<void>;
 };

@@ -11,13 +11,13 @@ import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
+import MetadataLinking from '@/pages/collection/series/MetadataLinking';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
 import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
 import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
 import SeriesImages from '@/pages/collection/series/SeriesImages';
 import SeriesOverview from '@/pages/collection/series/SeriesOverview';
 import SeriesTags from '@/pages/collection/series/SeriesTags';
-import TmdbLinking from '@/pages/collection/series/TmdbLinking';
 import DashboardPage from '@/pages/dashboard/DashboardPage';
 import Acknowledgement from '@/pages/firstrun/Acknowledgement';
 import AniDBAccount from '@/pages/firstrun/AniDBAccount';
@@ -40,8 +40,8 @@ import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
+import MetadataSettings from '@/pages/settings/tabs/MetadataSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
-import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
@@ -124,7 +124,7 @@ const router = sentryCreateBrowserRouter(
               <Route path="files" element={<SeriesFileSummary />} />
               <Route path="tags" element={<SeriesTags />} />
             </Route>
-            <Route path="series/:seriesId/tmdb-linking" element={<TmdbLinking />} />
+            <Route path="series/:seriesId/metadata-linking" element={<MetadataLinking />} />
           </Route>
           <Route path="settings" element={<SettingsPage />}>
             <Route index element={<Navigate to="general" replace />} />
@@ -132,7 +132,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="import" element={<ImportSettings />} />
             <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
-            <Route path="tmdb" element={<TmdbSettings />} />
+            <Route path="metadata" element={<MetadataSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="plugin-management">
