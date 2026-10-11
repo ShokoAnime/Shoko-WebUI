@@ -7,6 +7,7 @@ import { useToggle } from 'usehooks-ts';
 
 import DynamicForm from '@/components/Dynamic/DynamicForm';
 import Button from '@/components/Input/Button';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import { useUpdateConfigurationMutation } from '@/core/react-query/configuration/mutations';
 import { useConfigurationQuery } from '@/core/react-query/configuration/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
@@ -54,7 +55,7 @@ const MetadataProviderConfiguration = ({ configuration, providerName }: Props) =
   };
 
   return (
-    <div className="flex flex-col rounded-lg border border-panel-border bg-panel-input">
+    <InsetPanel className="flex flex-col">
       <button
         type="button"
         className="flex items-center justify-between px-4 py-2 text-left"
@@ -115,7 +116,7 @@ const MetadataProviderConfiguration = ({ configuration, providerName }: Props) =
           )}
         </div>
       </AnimateHeight>
-    </div>
+    </InsetPanel>
   );
 };
 

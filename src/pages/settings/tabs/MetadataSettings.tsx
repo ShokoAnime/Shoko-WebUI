@@ -11,6 +11,7 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import MetadataSearchSettings from '@/components/Settings/MetadataSitesSettings/MetadataSearchSettings';
 import MetadataSourceList from '@/components/Settings/MetadataSitesSettings/MetadataSourceList';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useMetadataLinkSourcesQuery } from '@/core/react-query/metadata/queries';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
@@ -32,15 +33,11 @@ const MetadataSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Metadata | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Metadata</div>
-        <div>
-          Choose the sources and providers Shoko gets information and images from for the series in your collection.
-          Everything here, the providers and auto-linking included, waits for Save at the bottom of the page, except
-          each provider&apos;s own settings, which are saved with their own button.
-        </div>
-      </div>
+      <SettingsHeader title="Metadata">
+        Choose the sources and providers Shoko gets information and images from for the series in your collection.
+        Everything here, the providers and auto-linking included, waits for Save at the bottom of the page, except each
+        provider&apos;s own settings, which are saved with their own button.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 

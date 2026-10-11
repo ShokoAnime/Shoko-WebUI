@@ -4,6 +4,7 @@ import { Icon } from '@mdi/react';
 
 import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
+import InsetPanel from '@/components/Panels/InsetPanel';
 
 import type { DropResult } from '@hello-pangea/dnd';
 
@@ -58,7 +59,7 @@ const OrderList = ({
           <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
         </Button>
       </div>
-      <div className="flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+      <InsetPanel className="flex min-h-10 px-4 py-2">
         {isPending && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
 
         {errorMessage && <div className="text-sm text-panel-text-danger">{errorMessage}</div>}
@@ -84,7 +85,7 @@ const OrderList = ({
         {isReady && items.length === 0
           && emptyStateMessage
           && <div className="text-sm opacity-65">{emptyStateMessage}</div>}
-      </div>
+      </InsetPanel>
     </div>
   );
 };

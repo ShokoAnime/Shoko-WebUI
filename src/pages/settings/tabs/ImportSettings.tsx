@@ -6,6 +6,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import ManagedFolder from '@/components/Settings/ManagedFolder';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setStatus } from '@/core/slices/modals/managedFolder';
 import { useDispatch } from '@/core/store';
@@ -48,14 +49,10 @@ const ImportSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Import | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Import</div>
-        <div>
-          Configure how Shoko imports files into your collection, specifying file types and enabling options for
-          renaming and moving them as needed.
-        </div>
-      </div>
+      <SettingsHeader title="Import">
+        Configure how Shoko imports files into your collection, specifying file types and enabling options for renaming
+        and moving them as needed.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 

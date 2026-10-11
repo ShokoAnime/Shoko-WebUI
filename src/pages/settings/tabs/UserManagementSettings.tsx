@@ -10,8 +10,10 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import AddUserModal from '@/components/Settings/AddUserModal';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
 import { useDeleteUserMutation, usePutUserMutation } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
@@ -148,14 +150,10 @@ const UserManagementSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; User Management | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">User Management</div>
-        <div>
-          Configure Shoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is
-          restricted from viewing.
-        </div>
-      </div>
+      <SettingsHeader title="User Management">
+        Configure Shoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is
+        restricted from viewing.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 
@@ -274,7 +272,7 @@ const UserManagementSettings = () => {
             value={tagSearch}
             onChange={event => setTagSearch(event.target.value)}
           />
-          <div className="mt-2 w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
+          <InsetPanel className="mt-2 w-full p-4 capitalize">
             {tagsQuery.isPending && (
               <div className="flex h-64 items-center justify-center text-panel-text-primary">
                 <Icon path={mdiLoading} spin size={3} />
@@ -293,11 +291,11 @@ const UserManagementSettings = () => {
                 ))}
               </div>
             )}
-          </div>
+          </InsetPanel>
         </div>
         <div>
           <div className="mb-2 font-semibold">Selected Tags</div>
-          <div className="flex min-h-32 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
+          <InsetPanel className="flex min-h-32 flex-col p-4">
             {selectedUser.RestrictedTags?.length
               ? selectedUser.RestrictedTags?.map(tag => (
                 <div className="mt-2 flex justify-between capitalize first:mt-0" key={`selectedTag-${tag}`}>
@@ -314,7 +312,7 @@ const UserManagementSettings = () => {
                 </div>
               ))
               : <div className="flex grow items-center justify-center font-semibold">No Restricted Tags!</div>}
-          </div>
+          </InsetPanel>
         </div>
       </div>
 

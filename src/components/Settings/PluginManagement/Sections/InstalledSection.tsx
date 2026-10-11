@@ -8,6 +8,7 @@ import { Badge } from '@/components/Badge';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import { useDeleteAllPluginVersionsMutation, useUpdatePluginMutation } from '@/core/react-query/plugin/mutations';
 import { usePluginsQuery } from '@/core/react-query/plugin/queries';
 import toast from '@/core/toast';
@@ -33,7 +34,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
 
   const thumbnailUrl = plugin.Thumbnail ? `/api/v3/Plugin/${plugin.ID}/Thumbnail` : null;
   return (
-    <div className="flex gap-x-4 rounded-lg border border-panel-border bg-panel-input p-4">
+    <InsetPanel className="flex gap-x-4 p-4">
       <div className="h-24 w-44 shrink-0 rounded-lg">
         {thumbnailUrl
           ? <img src={thumbnailUrl} alt={plugin.Name} className="max-h-24 w-44 rounded-lg object-contain" />
@@ -114,7 +115,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
           ?
         </div>
 
-        <div className="rounded-lg border border-panel-border bg-panel-input px-4 py-3">
+        <InsetPanel className="px-4 py-3">
           <Checkbox
             id="plugin-uninstall-purge-configuration"
             isChecked={purgeConfiguration}
@@ -125,9 +126,9 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
           <div className="mt-2 text-sm opacity-65">
             Leave unchecked to keep configuration if the plugin is reinstalled later.
           </div>
-        </div>
+        </InsetPanel>
       </ConfirmationPromptModal>
-    </div>
+    </InsetPanel>
   );
 };
 
@@ -144,17 +145,17 @@ const InstalledSection = ({ query }: Props) => {
 
   if (pluginsQuery.isError) {
     return (
-      <div className="flex flex-col gap-y-2 rounded-lg border border-panel-border bg-panel-input p-6">
+      <InsetPanel className="flex flex-col gap-y-2 p-6">
         <div className="text-lg font-semibold">Installed plugins unavailable</div>
         <div className="opacity-65">
           Installed plugin data could not be loaded.
         </div>
-      </div>
+      </InsetPanel>
     );
   }
 
   if (pluginsQuery.data?.length === 0) {
-    return <div className="rounded-lg border border-panel-border bg-panel-input p-6">No installed plugins found.</div>;
+    return <InsetPanel className="p-6">No installed plugins found.</InsetPanel>;
   }
 
   return (

@@ -6,6 +6,7 @@ import { map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useCreateApiToken, useDeleteApiToken } from '@/core/react-query/auth/mutations';
 import { useApiKeyQuery } from '@/core/react-query/auth/queries';
 import toast from '@/core/toast';
@@ -97,14 +98,10 @@ const ApiKeys = () => {
 
   return (
     <>
-      <title>Settings &gt; API Keys | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">API Keys</div>
-        <div>
-          Below are all the API keys utilized by Shoko and other programs/plugins. You can create new ones or remove
-          existing ones as needed.
-        </div>
-      </div>
+      <SettingsHeader title="API Keys">
+        Below are all the API keys utilized by Shoko and other programs/plugins. You can create new ones or remove
+        existing ones as needed.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 

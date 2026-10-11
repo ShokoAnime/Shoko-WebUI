@@ -5,6 +5,7 @@ import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import RepositoryModal from '@/components/Settings/PluginManagement/Dialogs/RepositoryModal';
 import {
   useDeletePluginPackageRepositoryMutation,
@@ -38,7 +39,7 @@ const RepositoryCard = ({ repository }: { repository: PackageRepositoryInfoType 
 
   return (
     <>
-      <div className="flex flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-input p-4">
+      <InsetPanel className="flex flex-col gap-y-4 p-4">
         <div className="flex flex-col">
           <div className="flex justify-between">
             <div className="font-semibold">{repository.Name}</div>
@@ -57,7 +58,7 @@ const RepositoryCard = ({ repository }: { repository: PackageRepositoryInfoType 
           Last sync:&nbsp;
           {formatDate(repository.LastFetchedAt, 'MMMM Do, YYYY HH:mm') || 'Never'}
         </div>
-      </div>
+      </InsetPanel>
 
       <ConfirmationPromptModal
         show={confirmDelete}
@@ -133,12 +134,12 @@ const RepositoriesSection = ({ query }: Props) => {
       </div>
 
       {(repositoriesQuery.isError || repositoriesQuery.data?.length === 0) && (
-        <div className="flex flex-col gap-y-2 rounded-lg border border-panel-border bg-panel-input p-6">
+        <InsetPanel className="flex flex-col gap-y-2 p-6">
           <div className="text-lg font-semibold">Repositories unavailable</div>
           <div className="opacity-65">
             {repositoriesQuery.isError ? 'Repository data could not be loaded.' : 'No repositories are configured'}
           </div>
-        </div>
+        </InsetPanel>
       )}
 
       <div className="flex flex-col gap-y-3">

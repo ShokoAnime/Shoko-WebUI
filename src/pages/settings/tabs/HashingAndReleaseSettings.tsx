@@ -9,8 +9,10 @@ import HashTypesModal from '@/components/Dialogs/HashTypesModal';
 import ProviderInfoModal from '@/components/Dialogs/ProviderInfoModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import ReleaseManagementSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseManagementSettings';
 import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseSettings';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
 import { useUpdateReleaseInfoProvidersMutation } from '@/core/react-query/release-info/mutations';
@@ -160,13 +162,9 @@ const HashingAndReleaseSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Hashing & Release | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Hashing & Release</div>
-        <div>
-          Configure how Shoko hashes files and handles releases.
-        </div>
-      </div>
+      <SettingsHeader title="Hashing & Release">
+        Configure how Shoko hashes files and handles releases.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 
@@ -203,7 +201,7 @@ const HashingAndReleaseSettings = () => {
             Hashing Providers
           </div>
 
-          <div className="flex min-h-10 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
+          <InsetPanel className="flex min-h-10 flex-col p-4">
             {hashingProvidersQuery.data.map(provider => (
               <div key={provider.ID} className="flex justify-between">
                 {provider.Name}
@@ -228,7 +226,7 @@ const HashingAndReleaseSettings = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </InsetPanel>
         </div>
       </div>
 

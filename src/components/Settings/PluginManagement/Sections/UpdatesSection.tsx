@@ -6,6 +6,7 @@ import { useToggle } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import PluginInstallModal from '@/components/Settings/PluginManagement/Dialogs/PluginInstallModal';
 import { useCheckPluginPackageUpdatesMutation } from '@/core/react-query/plugin-package/mutations';
 import { usePluginPackageUpdatesQuery } from '@/core/react-query/plugin-package/queries';
@@ -39,12 +40,12 @@ const UpdatesSection = ({ query }: Props) => {
 
   if (pluginUpdatesQuery.isError) {
     return (
-      <div className="flex flex-col gap-y-2 rounded-lg border border-panel-border bg-panel-input p-6">
+      <InsetPanel className="flex flex-col gap-y-2 p-6">
         <div className="text-lg font-semibold">Updates unavailable</div>
         <div className="opacity-65">
           Plugin update data could not be loaded.
         </div>
-      </div>
+      </InsetPanel>
     );
   }
 
@@ -67,17 +68,14 @@ const UpdatesSection = ({ query }: Props) => {
 
       {pluginUpdates.length === 0
         ? (
-          <div className="rounded-lg border border-panel-border bg-panel-input p-6">
+          <InsetPanel className="p-6">
             No plugin updates are currently available.
-          </div>
+          </InsetPanel>
         )
         : (
           <div className="flex flex-col gap-y-3">
             {pluginUpdates.map(update => (
-              <div
-                key={update.PackageID}
-                className="rounded-lg border border-panel-border bg-panel-input p-4"
-              >
+              <InsetPanel key={update.PackageID} className="p-4">
                 <div className="flex justify-between">
                   <div>
                     <div className="flex gap-x-2 font-semibold">
@@ -106,7 +104,7 @@ const UpdatesSection = ({ query }: Props) => {
                     Upgrade
                   </Button>
                 </div>
-              </div>
+              </InsetPanel>
             ))}
           </div>
         )}

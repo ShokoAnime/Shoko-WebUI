@@ -9,6 +9,7 @@ import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModa
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useServerRestartMutation, useServerShutdownMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
@@ -144,11 +145,10 @@ const GeneralSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; General | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="flex items-center justify-between">
-          <div className="text-xl font-semibold">General</div>
-          <div className="flex items-center gap-2">
+      <SettingsHeader
+        title="General"
+        actions={
+          <>
             {serverStatusQuery.data?.CanRestart && (
               <>
                 <Button
@@ -191,13 +191,12 @@ const GeneralSettings = () => {
                 </ConfirmationPromptModal>
               </>
             )}
-          </div>
-        </div>
-        <div>
-          Here you can find settings for version details, theme customization, notification management, and log
-          configurations.
-        </div>
-      </div>
+          </>
+        }
+      >
+        Here you can find settings for version details, theme customization, notification management, and log
+        configurations.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 
