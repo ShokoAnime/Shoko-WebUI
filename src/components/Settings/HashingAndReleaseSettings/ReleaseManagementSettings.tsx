@@ -5,6 +5,7 @@ import DnDList from '@/components/DnDList/DnDList';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import { signalLabels } from '@/core/utilities/releaseManagementHelpers';
 
 import type { ReleaseComparisonPreferencesType, ReleaseSignalTypeValues } from '@/core/types/api/settings';
@@ -107,7 +108,7 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
           </div>
         </div>
 
-        <div className="flex min-h-10 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
+        <InsetPanel className="flex min-h-10 flex-col p-4">
           <DnDList onDragEnd={handleSignalReorder}>
             {orderedSignals.map(signal => ({
               key: signal,
@@ -119,7 +120,7 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
               ),
             }))}
           </DnDList>
-        </div>
+        </InsetPanel>
       </div>
 
       <div className="border-t border-panel-border" />

@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { reorderProvider, toggleProvider } from '@/core/slices/settings/release';
@@ -51,7 +52,7 @@ const ReleaseSettings = () => {
           <span className="text-xs opacity-65">(Drag to Reorder)</span>
         </div>
 
-        <div className="flex min-h-10 rounded-lg border border-panel-border bg-panel-input p-4">
+        <InsetPanel className="flex min-h-10 p-4">
           <DnDList onDragEnd={result => handleProviderReorder(result, 'server')}>
             {providers.map(provider => ({
               key: provider.ID,
@@ -90,7 +91,7 @@ const ReleaseSettings = () => {
               ),
             }))}
           </DnDList>
-        </div>
+        </InsetPanel>
         <div className="text-sm text-panel-text opacity-65">
           Enabled auto-search release providers in the automated linking process, in priority order.
         </div>
@@ -102,7 +103,7 @@ const ReleaseSettings = () => {
           <span className="text-xs opacity-65">(Drag to Reorder)</span>
         </div>
 
-        <div className="flex min-h-10 rounded-lg border border-panel-border bg-panel-input p-4">
+        <InsetPanel className="flex min-h-10 p-4">
           <DnDList onDragEnd={result => handleProviderReorder(result, 'webui')}>
             {webuiProviders.map(provider => ({
               key: provider.ID,
@@ -141,7 +142,7 @@ const ReleaseSettings = () => {
               ),
             }))}
           </DnDList>
-        </div>
+        </InsetPanel>
         <div className="text-sm text-panel-text opacity-65">
           Enabled auto-search release providers in the manual linking process, in priority order.
         </div>

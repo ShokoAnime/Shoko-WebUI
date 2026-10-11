@@ -7,6 +7,7 @@ import { useToggle } from 'usehooks-ts';
 
 import { Badge } from '@/components/Badge';
 import Button from '@/components/Input/Button';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import PluginInstallModal from '@/components/Settings/PluginManagement/Dialogs/PluginInstallModal';
 import { usePluginPackageManifestsQuery } from '@/core/react-query/plugin-package/queries';
 import { formatDate } from '@/core/util';
@@ -76,7 +77,7 @@ const Package = ({ plugin }: { plugin: PackageManifestInfoType }) => {
   const installedVersion = find(plugin.Releases, release => release.IsInstalled)?.Version;
 
   return (
-    <div className="flex flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-input p-4">
+    <InsetPanel className="flex flex-col gap-y-4 p-4">
       <div className="flex gap-x-4">
         <div className="h-24 w-44 shrink-0 rounded-lg">
           {thumbnailUrl
@@ -131,7 +132,7 @@ const Package = ({ plugin }: { plugin: PackageManifestInfoType }) => {
           </AnimateHeight>
         </>
       )}
-    </div>
+    </InsetPanel>
   );
 };
 
@@ -148,12 +149,12 @@ const BrowseSection = ({ query }: Props) => {
 
   if (manifestsQuery.isError) {
     return (
-      <div className="flex flex-col gap-y-2 rounded-lg border border-panel-border bg-panel-input p-6">
+      <InsetPanel className="flex flex-col gap-y-2 p-6">
         <div className="text-lg font-semibold">Catalog unavailable</div>
         <div className="opacity-65">
           The plugin catalog could not be loaded.
         </div>
-      </div>
+      </InsetPanel>
     );
   }
 

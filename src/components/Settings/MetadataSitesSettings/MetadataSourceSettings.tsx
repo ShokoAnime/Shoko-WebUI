@@ -4,6 +4,7 @@ import cx from 'classnames';
 import MetadataSourceIcon from '@/components/Collection/MetadataSourceIcon';
 import DnDList from '@/components/DnDList/DnDList';
 import Checkbox from '@/components/Input/Checkbox';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import MetadataAutoLinkSettings from '@/components/Settings/MetadataSitesSettings/MetadataAutoLinkSettings';
 import MetadataProviderConfiguration from '@/components/Settings/MetadataSitesSettings/MetadataProviderConfiguration';
 import { applyKindDrafts, withAutoLinkDraft, withKindDraft } from '@/core/react-query/metadata/draft';
@@ -193,9 +194,9 @@ const MetadataSourceSettings = ({ children, metadataDraft, setMetadataDraft, sum
 
       <div className={cx('flex flex-col gap-y-2', isPending && 'pointer-events-none opacity-65')}>
         <div>Providers</div>
-        <div className="flex flex-col gap-y-2 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+        <InsetPanel className="flex flex-col gap-y-2 px-4 py-2">
           {kinds.map(renderKind)}
-        </div>
+        </InsetPanel>
         <div className="text-sm opacity-65">
           The kinds of entries the providers answer for.
           {hasSharedKind

@@ -1,6 +1,7 @@
 import Button from '@/components/Input/Button';
 import InputSmall from '@/components/Input/InputSmall';
 import AniDBSettingsControls from '@/components/Settings/AniDBSettings';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import toast from '@/core/toast';
 import useSettingsContext from '@/hooks/useSettingsContext';
@@ -25,14 +26,10 @@ const AniDBSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; AniDB | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">AniDB</div>
-        <div>
-          Configure the information Shoko retrieves from AniDB for the series in your collection, and set your
-          preferences for MyList options and the general updating of AniDB data.
-        </div>
-      </div>
+      <SettingsHeader title="AniDB">
+        Configure the information Shoko retrieves from AniDB for the series in your collection, and set your preferences
+        for MyList options and the general updating of AniDB data.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 

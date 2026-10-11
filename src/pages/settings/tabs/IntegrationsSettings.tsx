@@ -1,14 +1,11 @@
 import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 
 const IntegrationsSettings = () => (
   <>
-    <title>Settings &gt; Integrations | Shoko</title>
-    <div className="flex flex-col gap-y-1">
-      <div className="text-xl font-semibold">Integrations</div>
-      <div>
-        Customize the integrations that Shoko uses to scrobble your media
-      </div>
-    </div>
+    <SettingsHeader title="Integrations">
+      Customize the integrations that Shoko uses to scrobble your media
+    </SettingsHeader>
 
     <div className="border-b border-panel-border" />
 

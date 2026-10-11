@@ -1,4 +1,5 @@
 import Button from '@/components/Input/Button';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import ShokoMarkdown from '@/components/ShokoMarkdown';
 import { useInstallPluginPackageMutation } from '@/core/react-query/plugin-package/mutations';
@@ -84,11 +85,11 @@ const PluginInstallModal = (props: Props) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-6 overflow-auto rounded-lg border border-panel-border bg-panel-input p-4">
+      <InsetPanel className="flex flex-col gap-y-6 overflow-auto p-4">
         <ShokoMarkdown>
           {newPackage.Release.ReleaseNotes ?? 'No release notes available'}
         </ShokoMarkdown>
-      </div>
+      </InsetPanel>
     </ModalPanel>
   );
 };

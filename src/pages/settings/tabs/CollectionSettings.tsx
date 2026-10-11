@@ -5,8 +5,10 @@ import { keys } from 'lodash';
 import LanguagesModal from '@/components/Dialogs/LanguagesModal';
 import TextSourcesModal from '@/components/Dialogs/TextSourcesModal';
 import Checkbox from '@/components/Input/Checkbox';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import LanguageOrderList from '@/components/Settings/LanguageOrderList';
 import OrderList from '@/components/Settings/OrderList';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import TextSourceLabel from '@/components/Settings/TextSourceLabel';
 import { getTextSourceOrder, getTextSources } from '@/core/react-query/metadata/helpers';
 import { useMetadataLinkSourcesQuery, useMetadataProvidersQuery } from '@/core/react-query/metadata/queries';
@@ -145,14 +147,10 @@ const CollectionSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Collection | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Collection</div>
-        <div>
-          Set your preferred languages and sources for the titles and descriptions in your collection, and determine how
-          Shoko groups related series within your collection.
-        </div>
-      </div>
+      <SettingsHeader title="Collection">
+        Set your preferred languages and sources for the titles and descriptions in your collection, and determine how
+        Shoko groups related series within your collection.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 
@@ -230,7 +228,7 @@ const CollectionSettings = () => {
               setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })}
           />
           Exclude following relations
-          <div className="mt-2 flex flex-col gap-y-1.5 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+          <InsetPanel className="mt-2 flex flex-col gap-y-1.5 px-4 py-2">
             {keys(exclusionMapping).map((item: keyof typeof exclusionMapping) => (
               <Checkbox
                 justify
@@ -241,7 +239,7 @@ const CollectionSettings = () => {
                 key={item}
               />
             ))}
-          </div>
+          </InsetPanel>
         </div>
       </div>
       <div className="border-b border-panel-border" />

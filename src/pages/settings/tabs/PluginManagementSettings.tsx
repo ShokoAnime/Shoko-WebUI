@@ -12,6 +12,7 @@ import BrowseSection from '@/components/Settings/PluginManagement/Sections/Brows
 import InstalledSection from '@/components/Settings/PluginManagement/Sections/InstalledSection';
 import RepositoriesSection from '@/components/Settings/PluginManagement/Sections/RepositoriesSection';
 import UpdatesSection from '@/components/Settings/PluginManagement/Sections/UpdatesSection';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const sections = [
@@ -37,18 +38,16 @@ const PluginManagementSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Plugin Management | Shoko</title>
-      <div className="flex flex-col gap-y-2">
-        <div className="flex items-center justify-between">
-          <div className="text-xl font-semibold">Plugin Management</div>
+      <SettingsHeader
+        title="Plugin Management"
+        actions={
           <Button onClick={toggleSettingsModal} tooltip="Settings">
             <Icon className="text-panel-icon-action" path={mdiCogOutline} size={1} />
           </Button>
-        </div>
-        <div>
-          Manage plugin repositories, browse plugin packages, review installed plugins, and manually apply updates.
-        </div>
-      </div>
+        }
+      >
+        Manage plugin repositories, browse plugin packages, review installed plugins, and manually apply updates.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 
