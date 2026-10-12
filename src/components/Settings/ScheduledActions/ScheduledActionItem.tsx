@@ -2,7 +2,6 @@ import { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiChevronDown, mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { isAxiosError } from 'axios';
 import cx from 'classnames';
 import { isEqual } from 'lodash';
 import { useToggle } from 'usehooks-ts';
@@ -15,7 +14,11 @@ import TriggerEditor from '@/components/Settings/ScheduledActions/TriggerEditor'
 import {
   createTrigger,
   describeMinutes,
+  describeNextRun,
   describeTrigger,
+  formatRunTime,
+  getStateBadge,
+  getValidationErrors,
   isBusy,
   timeSpanToMinutes,
   triggerTypes,
@@ -27,47 +30,12 @@ import {
   useSetScheduledActionTriggersMutation,
 } from '@/core/react-query/scheduled-action/mutations';
 import toast from '@/core/toast';
-import { dayjs } from '@/core/util';
 import useSyncedState from '@/hooks/useSyncedState';
 
 import type { ScheduledActionTriggerType, ScheduledActionType } from '@/core/types/api/scheduled-action';
 
 type Props = {
   action: ScheduledActionType;
-};
-
-const RUN_TIME_FORMAT = 'MMMM Do, HH:mm';
-
-const formatRunTime = (time: string) => dayjs(time).format(RUN_TIME_FORMAT);
-
-// Without a next run time, the triggers have no time of their own (start-up, the queue being cleared), or there are
-// none.
-const describeNextRun = (nextRunAt: string | null, triggersText: string) => {
-  if (!nextRunAt) return triggersText || 'Only by hand';
-  return dayjs(nextRunAt).isBefore(dayjs()) ? 'Due now' : formatRunTime(nextRunAt);
-};
-
-const getStateBadge = (action: ScheduledActionType) => {
-  switch (action.State) {
-    case 'Waiting':
-      return { className: 'text-panel-text-warning', label: 'Waiting in Queue' };
-    case 'Running':
-      return {
-        className: 'text-panel-text-primary',
-        label: action.Progress === null ? 'Running' : `Running ${Math.round(action.Progress)}%`,
-      };
-    case 'CancellationRequested':
-      return { className: 'text-panel-text-danger', label: 'Cancelling' };
-    default:
-      return null;
-  }
-};
-
-// The server's validation problem, by member: `[0]` for the first trigger, the empty key for the triggers as a whole.
-const getValidationErrors = (error: unknown): Record<string, string[]> => {
-  if (!isAxiosError(error)) return {};
-  const data = error.response?.data as { errors?: Record<string, string[]> } | undefined;
-  return data?.errors ?? {};
 };
 
 let nextTriggerKey = 0;

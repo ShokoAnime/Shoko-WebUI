@@ -1,12 +1,14 @@
+import { isAxiosError } from 'axios';
 import { toNumber } from 'lodash';
 
-import { convertTimeSpanToMs, padNumber } from '@/core/util';
+import { convertTimeSpanToMs, dayjs, padNumber } from '@/core/util';
 
 import type {
   ActionTriggerTypeValues,
   DayOfWeekValues,
   ScheduledActionStateValues,
   ScheduledActionTriggerType,
+  ScheduledActionType,
 } from '@/core/types/api/scheduled-action';
 
 /** The fields a trigger type takes. */
@@ -146,3 +148,37 @@ export const createTrigger = (type: ActionTriggerTypeValues, minimumMinutes: num
 
 /** Whether a run is in the queue: waiting, running or being cancelled. */
 export const isBusy = (state: ScheduledActionStateValues) => state !== 'Idle';
+
+const RUN_TIME_FORMAT = 'MMMM Do, HH:mm';
+
+export const formatRunTime = (time: string) => dayjs(time).format(RUN_TIME_FORMAT);
+
+// Without a next run time, the triggers have no time of their own (start-up, the queue being cleared), or there are
+// none.
+export const describeNextRun = (nextRunAt: string | null, triggersText: string) => {
+  if (!nextRunAt) return triggersText || 'Only by hand';
+  return dayjs(nextRunAt).isBefore(dayjs()) ? 'Due now' : formatRunTime(nextRunAt);
+};
+
+export const getStateBadge = (action: ScheduledActionType) => {
+  switch (action.State) {
+    case 'Waiting':
+      return { className: 'text-panel-text-warning', label: 'Waiting in Queue' };
+    case 'Running':
+      return {
+        className: 'text-panel-text-primary',
+        label: action.Progress === null ? 'Running' : `Running ${Math.round(action.Progress)}%`,
+      };
+    case 'CancellationRequested':
+      return { className: 'text-panel-text-danger', label: 'Cancelling' };
+    default:
+      return null;
+  }
+};
+
+// The server's validation problem, by member: `[0]` for the first trigger, the empty key for the triggers as a whole.
+export const getValidationErrors = (error: unknown): Record<string, string[]> => {
+  if (!isAxiosError(error)) return {};
+  const data = error.response?.data as { errors?: Record<string, string[]> } | undefined;
+  return data?.errors ?? {};
+};
