@@ -10,6 +10,7 @@ import { useToggle } from 'usehooks-ts';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import SelectSmall from '@/components/Input/SelectSmall';
+import InsetPanel from '@/components/Panels/InsetPanel';
 import TriggerEditor from '@/components/Settings/ScheduledActions/TriggerEditor';
 import {
   createTrigger,
@@ -138,7 +139,7 @@ const ScheduledActionItem = ({ action }: Props) => {
   const summary = action.NextRunAt ? `Next: ${nextRunText} | ${triggersText}` : nextRunText;
 
   return (
-    <div className="flex flex-col rounded-lg border border-panel-border bg-panel-input">
+    <InsetPanel className="flex flex-col">
       <div className="flex items-center gap-x-3 px-4 py-2">
         <button
           type="button"
@@ -282,7 +283,7 @@ const ScheduledActionItem = ({ action }: Props) => {
       >
         {action.ConfirmationMessage ?? `Run "${action.Name}" now?`}
       </ConfirmationPromptModal>
-    </div>
+    </InsetPanel>
   );
 };
 

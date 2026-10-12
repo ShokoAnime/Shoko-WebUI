@@ -3,6 +3,7 @@ import { Icon } from '@mdi/react';
 import { groupBy, map } from 'lodash';
 
 import ScheduledActionItem from '@/components/Settings/ScheduledActions/ScheduledActionItem';
+import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useScheduledActionsQuery } from '@/core/react-query/scheduled-action/queries';
 
 const ScheduledActionsSettings = () => {
@@ -11,14 +12,10 @@ const ScheduledActionsSettings = () => {
 
   return (
     <>
-      <title>Settings &gt; Scheduled Actions | Shoko</title>
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">Scheduled Actions</div>
-        <div>
-          Work Shoko runs on its own on the triggers you set, in the server&apos;s time zone. Run one now, cancel its
-          run, or open it to edit its triggers; each action&apos;s triggers are saved with its own button.
-        </div>
-      </div>
+      <SettingsHeader title="Scheduled Actions">
+        Work Shoko runs on its own on the triggers you set, in the server&apos;s time zone. Run one now, cancel its run,
+        or open it to edit its triggers; each action&apos;s triggers are saved with its own button.
+      </SettingsHeader>
 
       <div className="border-b border-panel-border" />
 
