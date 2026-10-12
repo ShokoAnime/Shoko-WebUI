@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import { mdiChevronDown, mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { isEqual } from 'lodash';
+import { isEqual, uniqueId } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
@@ -38,12 +38,7 @@ type Props = {
   action: ScheduledActionType;
 };
 
-let nextTriggerKey = 0;
-const withKeys = (triggers: ScheduledActionTriggerType[]) =>
-  triggers.map((trigger) => {
-    nextTriggerKey += 1;
-    return { key: nextTriggerKey, trigger };
-  });
+const withKeys = (triggers: ScheduledActionTriggerType[]) => triggers.map(trigger => ({ key: uniqueId(), trigger }));
 
 /** A scheduled action: its state and runs, run now and cancel, and its triggers, edited and saved apart. */
 const ScheduledActionItem = ({ action }: Props) => {
@@ -89,10 +84,10 @@ const ScheduledActionItem = ({ action }: Props) => {
     setDraft(withKeys(action.Triggers));
   };
 
-  const updateTrigger = (key: number, trigger: ScheduledActionTriggerType) =>
+  const updateTrigger = (key: string, trigger: ScheduledActionTriggerType) =>
     setDraft(draft.map(item => (item.key === key ? { key, trigger } : item)));
 
-  const removeTrigger = (key: number) => {
+  const removeTrigger = (key: string) => {
     setErrors({});
     setDraft(draft.filter(item => item.key !== key));
   };
