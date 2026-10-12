@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { mdiChevronDown, mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
+import { mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { isEqual, uniqueId } from 'lodash';
@@ -128,9 +128,6 @@ const ScheduledActionItem = ({ action }: Props) => {
           tooltip={busy ? 'A run is already in the queue' : 'Run now'}
         >
           <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
-        </Button>
-        <Button onClick={toggleOpen} tooltip={open ? 'Collapse' : 'Edit triggers'}>
-          <Icon path={mdiChevronDown} size={1} className={cx('transition-transform', open && 'rotate-180')} />
         </Button>
       </div>
       {action.State === 'Running' && action.Progress !== null && (
