@@ -35,7 +35,7 @@ const PluginManagementPage = () => {
 
   const { StartupMessage: startupMessage, State: serverState } = serverStatusQuery.data;
   if (serverState === 'Started') return <Navigate to="/webui/settings/plugin-management" replace />;
-  if (serverState === 'Waiting') return <Navigate to="/webui/login" replace />;
+  if (serverState === 'Waiting') return <Navigate to="/webui/firstrun/plugins" replace />;
   if (serverState !== 'Failed') return <Navigate to="/webui/status" replace />;
 
   return (

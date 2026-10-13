@@ -26,6 +26,7 @@ import FirstRunPage from '@/pages/firstrun/FirstRunPage';
 import LocalAccount from '@/pages/firstrun/LocalAccount';
 import ManagedFolders from '@/pages/firstrun/ManagedFolders';
 import MetadataSources from '@/pages/firstrun/MetadataSources';
+import Plugins from '@/pages/firstrun/Plugins';
 import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
@@ -78,6 +79,7 @@ const router = sentryCreateBrowserRouter(
           <Route path="local-account" element={<LocalAccount />} />
           <Route path="anidb-account" element={<AniDBAccount />} />
           <Route path="metadata-sources" element={<MetadataSources />} />
+          <Route path="plugins" element={<Plugins />} />
           <Route path="start-server" element={<StartServer />} />
           <Route path="managed-folders" element={<ManagedFolders />} />
           <Route path="data-collection" element={<DataCollection />} />

@@ -13,23 +13,28 @@ const isNetworkError = (error: unknown) => {
   return !error.response || error.code === 'ERR_NETWORK' || error.message === 'Network Error';
 };
 
-// Restart and shutdown requests that hand over to the status page, which follows the server until it is back.
-const useServerLifecycleActions = () => {
+/**
+ * Restart and shutdown requests that hand over to the status page, which follows the server until it is back.
+ * `returnTo` is where the status page goes when a restart ends in first-run setup again.
+ */
+const useServerLifecycleActions = (returnTo?: string) => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
   const { isPending: isRestarting, mutateAsync: requestRestart } = useServerRestartMutation();
   const { isPending: isShuttingDown, mutateAsync: requestShutdown } = useServerShutdownMutation();
 
+  const statusPath = returnTo ? `/webui/status?redirectTo=${encodeURIComponent(returnTo)}` : '/webui/status';
+
   const run = async (action: ServerLifecycleAction, request: () => Promise<unknown>, errorMessage: string) => {
     dispatch(setAction(action));
     try {
       await request();
-      navigate('/webui/status');
+      navigate(statusPath);
     } catch (error) {
       console.error(error);
       if (isNetworkError(error)) {
         // Server likely dropped the connection mid-request; treat as success
-        navigate('/webui/status');
+        navigate(statusPath);
         return;
       }
       dispatch(clearAction());

@@ -9,13 +9,15 @@ import useServerLifecycleActions from '@/hooks/useServerLifecycleActions';
 
 type Props = {
   children: ReactNode;
+  // Where to come back to when the restarted server is in first-run setup again.
+  returnTo?: string;
 };
 
 // Says that plugin changes need a restart and offers what the server allows: restart, shutdown, or doing it by hand.
-const PluginRestartPanel = ({ children }: Props) => {
+const PluginRestartPanel = ({ children, returnTo }: Props) => {
   const serverStatusQuery = useServerStatusQuery();
   const pendingPluginsQuery = usePluginsQuery({ allVersions: true, restartPending: 'only' });
-  const { isRestarting, isShuttingDown, restart, shutdown } = useServerLifecycleActions();
+  const { isRestarting, isShuttingDown, restart, shutdown } = useServerLifecycleActions(returnTo);
 
   const canRestart = serverStatusQuery.data?.CanRestart ?? false;
   const canShutdown = serverStatusQuery.data?.CanShutdown ?? false;

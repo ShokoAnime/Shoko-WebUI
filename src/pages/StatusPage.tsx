@@ -256,9 +256,11 @@ const StatusPage = () => {
 
   useEffect(() => {
     if (serverState === 'Waiting' && lifecycle.action === 'idle') {
-      navigate('/webui/login', { replace: true });
+      // Only the setup wizard is a valid place to return to while the server waits for its first-run setup.
+      const redirectTo = searchParams.get('redirectTo');
+      navigate(redirectTo?.startsWith('/webui/firstrun') ? redirectTo : '/webui/login', { replace: true });
     }
-  }, [lifecycle.action, navigate, serverState]);
+  }, [lifecycle.action, navigate, searchParams, serverState]);
 
   const handleRestartServer = () => {
     dispatch(setAction('restarting'));
