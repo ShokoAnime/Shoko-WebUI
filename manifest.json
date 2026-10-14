@@ -103,6 +103,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.151",
+      "minServerVersion": "6.0.0-dev.503",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.151/Shoko-WebUI-v2.6.0-dev.151.zip",
+      "checksum": "sha256:ca9290b6096990f1947e4ebb98b4fd58994a9adaf0493a4515f46cf424febd83",
+      "commit": "3ad0ca30eea6e482c48f39f922e4a606d6f63c99",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.503** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.503** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(settings): add a scheduled actions page by @revam in https://github.com/ShokoAnime/Shoko-WebUI/pull/1484\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.150...v2.6.0-dev.151\n"
+    },
+    {
       "version": "2.6.0-dev.150",
       "minServerVersion": "6.0.0-dev.503",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.150/Shoko-WebUI-v2.6.0-dev.150.zip",
