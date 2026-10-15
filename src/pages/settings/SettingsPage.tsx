@@ -82,7 +82,7 @@ const SettingsPage = () => {
     return ['user-management', 'api-keys', 'hashing-release', 'dynamic', 'scheduled-actions'].includes(path);
   }, [pathname]);
 
-  const isPluginConfigPage = pathname.includes('settings/plugin/config/');
+  const isPluginPage = pathname.includes('settings/plugin/page/');
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
   useEffect(() => {
@@ -227,7 +227,7 @@ const SettingsPage = () => {
                       page.CanEmbed
                         ? (
                           <NavLink
-                            to={`plugin/config/${groupId}/${page.ID}`}
+                            to={`plugin/page/${groupId}/${page.ID}`}
                             className={({ isActive }) => (isActive
                               ? 'relative w-full text-center bg-panel-menu-item-background py-2 px-10 rounded-lg text-panel-menu-item-text'
                               : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
@@ -272,7 +272,7 @@ const SettingsPage = () => {
       <div
         className={cx(
           'flex min-h-full w-175 flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent',
-          !isPluginConfigPage && 'p-6',
+          !isPluginPage && 'p-6',
         )}
       >
         {settingsQuery.isPending
