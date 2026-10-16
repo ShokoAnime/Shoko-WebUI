@@ -21,11 +21,12 @@ export const generateNodeId = (): string => {
 const TAG_LIKE_EXPRESSIONS = new Set(['HasTag', 'HasCustomTag']);
 
 // Single source of truth for widget selection, replacing the two independent hardcoded
-// heuristics that used to live in Criteria.tsx and buildSidebarFilterCondition.
+// heuristics that used to live in Criteria.tsx and buildSidebarFilterCondition. Any
+// expression taking parameters gets a value widget, whether or not the server lists values.
 export const getWidgetKind = (entry: FilterExpression): 'boolean' | 'multi' | 'multiPair' | 'tag' => {
   if (TAG_LIKE_EXPRESSIONS.has(entry.Expression)) return 'tag';
-  if (entry.PossibleParameterPairs) return 'multiPair';
-  if (entry.PossibleParameters ?? entry.Parameter === 'Number') return 'multi';
+  if (entry.PossibleParameterPairs ?? entry.SecondParameter) return 'multiPair';
+  if (entry.PossibleParameters ?? entry.Parameter) return 'multi';
   return 'boolean';
 };
 
