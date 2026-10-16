@@ -1,16 +1,20 @@
 import { useMemo, useState } from 'react';
-import { mdiLoading, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
+import { mdiLoading, mdiPower, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { useToggle } from 'usehooks-ts';
 
+import { Badge } from '@/components/Badge';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
 import InsetPanel from '@/components/Panels/InsetPanel';
 import RepositoryModal from '@/components/Settings/PluginManagement/Dialogs/RepositoryModal';
 import {
   useDeletePluginPackageRepositoryMutation,
+  useRestoreDefaultPluginPackageRepositoriesMutation,
   useSyncAllPluginPackageRepositoriesMutation,
   useSyncPluginPackageRepositoryMutation,
+  useUpdatePluginPackageRepositoryMutation,
 } from '@/core/react-query/plugin-package/mutations';
 import { usePluginPackageRepositoriesQuery } from '@/core/react-query/plugin-package/queries';
 import toast from '@/core/toast';
@@ -22,7 +26,16 @@ const RepositoryCard = ({ repository }: { repository: PackageRepositoryInfoType 
   const { isPending: isSyncPending, mutate: syncRepository } = useSyncPluginPackageRepositoryMutation();
   const { isPending: isDeletePending, mutateAsync: deleteRepository } = useDeletePluginPackageRepositoryMutation();
 
+  const { isPending: isTogglePending, mutate: updateRepository } = useUpdatePluginPackageRepositoryMutation();
+
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleToggle = () => {
+    updateRepository({ repositoryId: repository.ID, isEnabled: !repository.IsEnabled }, {
+      onError: () =>
+        toast.error(`Failed to ${repository.IsEnabled ? 'disable' : 'enable'} repository`, repository.Name),
+    });
+  };
 
   const handleSync = () => {
     syncRepository(repository.ID, {
@@ -42,9 +55,23 @@ const RepositoryCard = ({ repository }: { repository: PackageRepositoryInfoType 
       <InsetPanel className="flex flex-col gap-y-4 p-4">
         <div className="flex flex-col">
           <div className="flex justify-between">
-            <div className="font-semibold">{repository.Name}</div>
+            <div className="flex items-center gap-x-2 font-semibold">
+              {repository.Name}
+              {!repository.IsEnabled && <Badge className="bg-panel-background-alt">Disabled</Badge>}
+            </div>
             <div className="flex gap-x-2">
-              <Button onClick={handleSync} disabled={isSyncPending} tooltip="Sync">
+              <Button
+                onClick={handleToggle}
+                loading={isTogglePending}
+                tooltip={repository.IsEnabled ? 'Disable' : 'Enable'}
+              >
+                <Icon
+                  path={mdiPower}
+                  size={0.8}
+                  className={cx('text-panel-text-primary', !repository.IsEnabled && 'opacity-65')}
+                />
+              </Button>
+              <Button onClick={handleSync} disabled={isSyncPending || !repository.IsEnabled} tooltip="Sync">
                 <Icon path={mdiRefresh} size={0.8} spin={isSyncPending} />
               </Button>
               <Button onClick={() => setConfirmDelete(true)} disabled={isDeletePending} tooltip="Delete">
@@ -52,6 +79,7 @@ const RepositoryCard = ({ repository }: { repository: PackageRepositoryInfoType 
               </Button>
             </div>
           </div>
+          {repository.Description && <div className="text-sm">{repository.Description}</div>}
           <div className="truncate text-sm opacity-65">{repository.Url}</div>
         </div>
         <div className="text-sm opacity-65">
@@ -85,7 +113,19 @@ type Props = {
 const RepositoriesSection = ({ query }: Props) => {
   const repositoriesQuery = usePluginPackageRepositoriesQuery();
   const { isPending: isSyncAllPending, mutate: syncAll } = useSyncAllPluginPackageRepositoriesMutation();
+  const { isPending: isRestorePending, mutate: restoreDefaults } = useRestoreDefaultPluginPackageRepositoriesMutation();
   const [showRepositoryModal, toggleRepositoryModal] = useToggle(false);
+
+  const handleRestoreDefaults = () => {
+    restoreDefaults(undefined, {
+      onSuccess: restored =>
+        toast.success(
+          restored.length > 0 ? 'Default repositories restored' : 'No default repository was missing',
+          restored.map(repository => repository.Name).join(', '),
+        ),
+      onError: () => toast.error('Failed to restore the default repositories'),
+    });
+  };
 
   const repositories = useMemo(() => {
     if (!repositoriesQuery.data) return [];
@@ -114,6 +154,16 @@ const RepositoriesSection = ({ query }: Props) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex justify-end gap-x-3">
+        <Button
+          buttonType="secondary"
+          buttonSize="normal"
+          onClick={handleRestoreDefaults}
+          loading={isRestorePending}
+          tooltip="Add back the repositories shipped with the server that were removed"
+        >
+          Restore Defaults
+        </Button>
+
         <Button
           buttonType="secondary"
           buttonSize="normal"
