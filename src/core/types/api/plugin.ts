@@ -29,6 +29,9 @@ export type PluginInfoType = {
   IsActive: boolean;
   RestartPending: boolean;
   CanLoad: boolean;
+  CannotLoadReason?: string | null;
+  HasFailed: boolean;
+  FailureReason?: string | null;
   CanUninstall: boolean;
   CanEnableOrDisable: boolean;
   ContainingDirectory?: string;

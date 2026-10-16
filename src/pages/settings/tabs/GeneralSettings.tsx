@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { mdiBrushOutline, mdiOpenInNew, mdiPower, mdiRefresh, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { isAxiosError } from 'axios';
 import cx from 'classnames';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
@@ -10,7 +9,6 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
-import { useServerRestartMutation, useServerShutdownMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import {
@@ -18,26 +16,17 @@ import {
   useWebuiThemesQuery,
   useWebuiUpdateCheckQuery,
 } from '@/core/react-query/webui/queries';
-import { clearAction, setAction } from '@/core/slices/serverLifecycle';
-import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
 import { getUiVersion, isDebug } from '@/core/util';
-import useNavigateVoid from '@/hooks/useNavigateVoid';
+import useServerLifecycleActions from '@/hooks/useServerLifecycleActions';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
 
 const UI_VERSION = getUiVersion();
 
-const isNetworkError = (error: unknown): boolean => {
-  if (!isAxiosError(error)) return false;
-  return !error.response || error.code === 'ERR_NETWORK' || error.message === 'Network Error';
-};
-
 const GeneralSettings = () => {
   const { newSettings, updateSetting } = useSettingsContext();
-  const dispatch = useDispatch();
-  const navigate = useNavigateVoid();
 
   const {
     Logging,
@@ -58,8 +47,8 @@ const GeneralSettings = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const versionQuery = useVersionQuery();
   const serverStatusQuery = useServerStatusQuery();
-  const { isPending: isRestarting, mutateAsync: restartServer } = useServerRestartMutation();
-  const { isPending: isShuttingDown, mutateAsync: shutdownServer } = useServerShutdownMutation();
+  const { isRestarting, isShuttingDown, restart: onConfirmRestart, shutdown: onConfirmShutdown } =
+    useServerLifecycleActions();
   const themesQuery = useWebuiThemesQuery();
   const { isPending: isUploading, mutate: uploadTheme } = useWebuiUploadThemeMutation();
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
@@ -103,40 +92,6 @@ const GeneralSettings = () => {
           .catch(console.error);
       },
     });
-  };
-
-  const onConfirmRestart = async () => {
-    dispatch(setAction('restarting'));
-    try {
-      await restartServer(undefined);
-      navigate('/webui/status');
-    } catch (error) {
-      console.error(error);
-      if (isNetworkError(error)) {
-        // Server likely dropped the connection mid-restart; treat as success
-        navigate('/webui/status');
-        return;
-      }
-      dispatch(clearAction());
-      toast.error('Failed to restart Shoko');
-    }
-  };
-
-  const onConfirmShutdown = async () => {
-    dispatch(setAction('shutting-down'));
-    try {
-      await shutdownServer(undefined);
-      navigate('/webui/status');
-    } catch (error) {
-      console.error(error);
-      if (isNetworkError(error)) {
-        // Server likely dropped the connection mid-shutdown; treat as success
-        navigate('/webui/status');
-        return;
-      }
-      dispatch(clearAction());
-      toast.error('Failed to shutdown Shoko');
-    }
   };
 
   const currentTheme = useMemo(() => (
