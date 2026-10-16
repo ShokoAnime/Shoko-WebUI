@@ -66,15 +66,19 @@ async function setupEnv(isDebug) {
   const gitHash = childProcess.execSync("git log --pretty=format:'%h' -n 1").toString().replace(/["']/g, '');
   const appVersion = pkg.version;
   const minimumServerVersion = '5.3.3.0';
+  // Exclusive upper bound, this Web UI cannot work with Shoko Server 6.x and newer
+  const maximumServerVersion = '6.0.0.0';
 
   process.env.VITE_GITHASH = gitHash;
   process.env.VITE_APPVERSION = appVersion;
   process.env.VITE_MIN_SERVER_VERSION = minimumServerVersion;
+  process.env.VITE_MAX_SERVER_VERSION = maximumServerVersion;
 
   const output = JSON.stringify({
     git: gitHash,
     package: appVersion,
     minimumServerVersion: minimumServerVersion,
+    maximumServerVersion: maximumServerVersion,
     debug: isDebug
   }, null, '  ');
   await writeFile('./public/version.json', output, 'utf8');
