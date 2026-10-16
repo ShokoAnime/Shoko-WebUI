@@ -89,6 +89,7 @@ jobs:
         with:
           files: ./build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip
           tag_name: v${{ github.event.inputs.version }}
+          target_commitish: ${{ github.event.inputs.ref }}
           prerelease: ${{ github.event.inputs.prerelease }}
           fail_on_unmatched_files: true
           body_path: ./release-notes.txt
