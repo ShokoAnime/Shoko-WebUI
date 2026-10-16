@@ -24,11 +24,15 @@ export { default as dayjs } from 'dayjs';
 // Enables immer plugin to support Map and Set
 enableMapSet();
 
-const { DEV, VITE_APPVERSION, VITE_GITHASH, VITE_MIN_SERVER_VERSION } = import.meta.env;
+const { DEV, VITE_APPVERSION, VITE_GITHASH, VITE_MIN_SERVER_VERSION, VITE_MAX_SERVER_VERSION } = import.meta.env;
 
 export const isDebug = () => DEV;
 export const getUiVersion = () => (DEV ? VITE_GITHASH : VITE_APPVERSION);
 export const getMinimumServerVersion = () => VITE_MIN_SERVER_VERSION;
+export const getMaximumServerVersion = () => VITE_MAX_SERVER_VERSION;
+
+// First Web UI version that supports servers at or above the maximum server version
+export const MIN_WEBUI_VERSION_FOR_NEWER_SERVER = '2.6.0';
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
@@ -40,6 +44,22 @@ export const parseServerVersion = (version: string) => {
 };
 
 export const getParsedSupportedServerVersion = () => parseServerVersion(VITE_MIN_SERVER_VERSION)!;
+
+export type ServerSupport = 'supported' | 'tooOld' | 'tooNew';
+
+export const getServerSupport = (serverVersion: string): ServerSupport => {
+  const parsed = parseServerVersion(serverVersion);
+  if (!parsed) return 'supported';
+  if (semver.lt(parsed, parseServerVersion(VITE_MIN_SERVER_VERSION)!)) return 'tooOld';
+  if (semver.gte(parsed, parseServerVersion(VITE_MAX_SERVER_VERSION)!)) return 'tooNew';
+  return 'supported';
+};
+
+// Whether a Web UI release (as reported by the update check) works with servers newer than this Web UI supports
+export const isWebUiNewServerCompatible = (webuiVersion: string) => {
+  const coerced = semver.coerce(webuiVersion);
+  return !!coerced && semver.gte(coerced, MIN_WEBUI_VERSION_FOR_NEWER_SERVER);
+};
 
 export const formatThousand = (num: number) => formatThousands(num, ',');
 

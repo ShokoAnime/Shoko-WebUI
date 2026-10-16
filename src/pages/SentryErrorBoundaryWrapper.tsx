@@ -1,41 +1,33 @@
-import React, { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router';
+import React, { useEffect, useMemo } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router';
 import * as Sentry from '@sentry/react';
-import semver from 'semver';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useVersionQuery } from '@/core/react-query/init/queries';
-import { getParsedSupportedServerVersion, isDebug, parseServerVersion } from '@/core/util';
-import useNavigateVoid from '@/hooks/useNavigateVoid';
+import { getServerSupport, isDebug } from '@/core/util';
 
 const SentryErrorBoundaryWrapper = () => {
   const { pathname } = useLocation();
-  const navigate = useNavigateVoid();
   const versionQuery = useVersionQuery();
 
   useEffect(() => {
     Sentry.setTag('server_release', versionQuery.data?.Server?.Version ?? 'Unknown');
   }, [versionQuery.data]);
 
-  useEffect(() => {
-    if (isDebug()) return;
+  // Computed during render so unsupported servers never mount the real pages (which can crash on newer APIs)
+  const redirectTo = useMemo(() => {
+    if (isDebug() || !versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return null;
 
-    if (!versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
+    const support = getServerSupport(versionQuery.data.Server.Version);
 
-    const serverData = versionQuery.data?.Server;
-
-    let isServerSupported = true;
-
-    const semverVersion = parseServerVersion(serverData.Version);
-    const minimumVersion = getParsedSupportedServerVersion();
-    if (semverVersion && semver.lt(semverVersion, minimumVersion)) isServerSupported = false;
-
-    if (!isServerSupported) {
-      navigate('/webui/unsupported');
-    } else if (pathname === '/webui/unsupported') {
-      navigate('/webui');
+    // Login stays reachable on a too new server, so the user can authenticate and update the Web UI
+    if (support === 'tooOld' || (support === 'tooNew' && pathname !== '/webui/login')) {
+      return pathname === '/webui/unsupported' ? null : '/webui/unsupported';
     }
-  }, [navigate, pathname, versionQuery.data]);
+    return support === 'supported' && pathname === '/webui/unsupported' ? '/webui' : null;
+  }, [pathname, versionQuery.data]);
+
+  if (redirectTo) return <Navigate to={redirectTo} replace />;
 
   return (
     <Sentry.ErrorBoundary

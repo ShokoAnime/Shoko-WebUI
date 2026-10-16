@@ -22,6 +22,7 @@ import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { ImageTypeEnum } from '@/core/types/api/common';
+import { getServerSupport } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
@@ -97,6 +98,9 @@ const LoginPage = () => {
     );
   };
 
+  const isServerTooNew = !!versionQuery.data && versionQuery.data.Server.ReleaseChannel !== 'Debug'
+    && getServerSupport(versionQuery.data.Server.Version) === 'tooNew';
+
   const parsedVersion = useMemo(() => {
     if (versionQuery.isFetching || !versionQuery.data) {
       return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-text-primary" />;
@@ -128,6 +132,14 @@ const LoginPage = () => {
             <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
             <div className="font-semibold text-panel-text-danger">
               Invalid Username or Password. Try again.
+            </div>
+          </div>
+        )}
+        {isServerTooNew && (
+          <div className="flex w-full max-w-200 items-center justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
+            <Icon className="shrink-0 text-panel-text-warning" path={mdiAlertCircleOutline} size={1} />
+            <div className="font-semibold text-panel-text-warning">
+              This Web UI is outdated and does not support this version of Shoko Server. Log in to update it.
             </div>
           </div>
         )}
