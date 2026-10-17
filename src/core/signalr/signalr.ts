@@ -78,10 +78,6 @@ const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniD
 
 // Restart Events, shown by RestartNotice
 
-const onRestartRequiredUpdate = (dispatch: typeof store.dispatch) => (state: RestartRequiredType) => {
-  dispatch(setConfigurationRestartRequired(state.RequiresRestart));
-};
-
 const onRestartReasonsUpdate = (state: RestartReasonsEventType) => {
   queryClient.setQueryData(['init', 'restart-reasons'], state.Reasons);
 };
