@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import ReleaseManagementSeriesDetail from '@/components/Utilities/ReleaseManagement/ReleaseManagementSeriesDetail';
+import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
@@ -155,7 +156,9 @@ const Router = () => {
   const apikey = useSelector(state => state.apiSession.apikey);
   const webuiPreviewTheme = useSelector(state => state.misc.webuiPreviewTheme);
 
-  const settingsQuery = useSettingsQuery(!!apikey);
+  // Settings rejects every apikey until the server has started, so it is not requested before then.
+  const isServerStarted = useServerStatusQuery().data?.State === 'Started';
+  const settingsQuery = useSettingsQuery(!!apikey && isServerStarted);
   const { theme } = settingsQuery.data.WebUI_Settings;
   const bodyRef = useRef<HTMLDivElement>(null);
   const [bodyVisible, setBodyVisible] = useState(false);

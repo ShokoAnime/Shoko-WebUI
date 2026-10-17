@@ -100,7 +100,6 @@ const handleResponseError = (error: AxiosError) => {
     status === 401
     && !AUTH_URL_PATTERN.test(url)
     && fullPath.startsWith('/api')
-    && fullPath !== '/api/v3/Settings'
     && store.getState().apiSession.apikey
   ) {
     store.dispatch({ type: Events.AUTH_LOGOUT });
