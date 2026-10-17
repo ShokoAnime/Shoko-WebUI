@@ -134,11 +134,7 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      // The restart feed is for admins only, so only they join it.
-      const { isAdmin } = (action.payload ?? {}) as { isAdmin?: boolean };
-      const feeds = ['anidb', 'file', 'metadata', 'release', 'queue', 'network', 'avdump', 'configuration'];
-      if (isAdmin) feeds.push('restart');
-      const connectionHub = `/signalr/aggregate?feeds=${feeds.join(',')}`;
+      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration,restart';
 
       const protocol = new JsonHubProtocol();
 
