@@ -50,7 +50,6 @@ const RestartNotice = () => {
   useEffect(() => {
     if (!isIdle || !restartRequired) {
       toast.dismiss(restartToastId);
-      shownReasonKeys.current = null;
       return;
     }
     if (toast.isActive(restartToastId)) return;
