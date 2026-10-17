@@ -11,7 +11,6 @@ import ToastContainer from '@/components/ToastContainer';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useDispatch } from '@/core/store';
-import useFreshCurrentUser from '@/hooks/useFreshCurrentUser';
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -24,12 +23,9 @@ const MainPage = () => {
   // This is kind of a hack but it works
   const isSettingsLoaded = settingsQuery.data.WebUI_Settings.settingsRevision > 0;
 
-  // SignalR waits for the user, as only admins join the restart feed.
-  const { isAdmin, isLoaded: isUserLoaded } = useFreshCurrentUser();
-
   useEffect(() => {
-    if (isSettingsLoaded && isUserLoaded) dispatch({ type: Events.MAINPAGE_LOADED, payload: { isAdmin } });
-  }, [dispatch, isAdmin, isSettingsLoaded, isUserLoaded]);
+    if (isSettingsLoaded) dispatch({ type: Events.MAINPAGE_LOADED);
+  }, [dispatch, isSettingsLoaded]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
