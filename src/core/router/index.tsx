@@ -27,10 +27,12 @@ import FirstRunPage from '@/pages/firstrun/FirstRunPage';
 import LocalAccount from '@/pages/firstrun/LocalAccount';
 import ManagedFolders from '@/pages/firstrun/ManagedFolders';
 import MetadataSources from '@/pages/firstrun/MetadataSources';
+import Plugins from '@/pages/firstrun/Plugins';
 import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
+import PluginManagementPage from '@/pages/PluginManagementPage';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import SettingsPage from '@/pages/settings/SettingsPage';
@@ -72,12 +74,14 @@ const router = sentryCreateBrowserRouter(
         <Route path="index.html" element={<Navigate to="/webui" replace />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="status" element={<StatusPage />} />
+        <Route path="plugin-management" element={<PluginManagementPage />} />
         <Route path="firstrun" element={<FirstRunPage />}>
           <Route index element={<Navigate to="acknowledgement" replace />} />
           <Route path="acknowledgement" element={<Acknowledgement />} />
           <Route path="local-account" element={<LocalAccount />} />
           <Route path="anidb-account" element={<AniDBAccount />} />
           <Route path="metadata-sources" element={<MetadataSources />} />
+          <Route path="plugins" element={<Plugins />} />
           <Route path="start-server" element={<StartServer />} />
           <Route path="managed-folders" element={<ManagedFolders />} />
           <Route path="data-collection" element={<DataCollection />} />
