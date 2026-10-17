@@ -43,16 +43,12 @@ export type VersionType = {
   WebUI?: ComponentVersionType;
 };
 
-/** Where a restart reason came from: changed settings, plugins to load or unload, or a plugin that asked. */
 export type RestartReasonSourceValues = 'Configuration' | 'PluginState' | 'Plugin';
 
-/** One reason the server needs a restart, from `GET Init/RestartReasons` or the `restart` feed. */
 export type RestartReasonType = {
   Source: RestartReasonSourceValues;
   PluginID: string;
-  /** The plugin's name, if it is still known. */
-  PluginName: string | null;
-  /** Stays the same while the reason stands, unique within its source and plugin. */
+  PluginName?: string;
   Key: string;
   Description: string;
   RaisedAt: string;
