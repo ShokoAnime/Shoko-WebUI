@@ -45,6 +45,8 @@ export type FilterExpression = {
   Right?: string;
   Parameter?: string;
   SecondParameter?: string;
+  ParameterName?: string;
+  SecondParameterName?: string;
   PossibleParameters?: string[];
   PossibleSecondParameters?: string[];
   PossibleParameterPairs?: string[][];
