@@ -137,7 +137,8 @@ const Package = ({ plugin }: { plugin: PackageManifestInfoType }) => {
 };
 
 const BrowseSection = ({ query }: Props) => {
-  const manifestsQuery = usePluginPackageManifestsQuery({ pageSize: 0, query });
+  // Stale repositories are synced on the way, since nothing else syncs them before the server has started.
+  const manifestsQuery = usePluginPackageManifestsQuery({ allowSync: true, pageSize: 0, query });
 
   if (manifestsQuery.isPending) {
     return (
@@ -158,10 +159,23 @@ const BrowseSection = ({ query }: Props) => {
     );
   }
 
+  if (manifestsQuery.data.List.length === 0) {
+    return (
+      <InsetPanel className="flex flex-col gap-y-2 p-6">
+        <div className="text-lg font-semibold">No plugins found</div>
+        <div className="opacity-65">
+          {query
+            ? 'No plugin in the catalog matches the search.'
+            : 'The catalog is empty. Sync the repositories in the Repositories section to fill it.'}
+        </div>
+      </InsetPanel>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-y-4">
       {map(
-        manifestsQuery.data?.List,
+        manifestsQuery.data.List,
         pluginPackage => <Package key={pluginPackage.PackageID} plugin={pluginPackage} />,
       )}
     </div>

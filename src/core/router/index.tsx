@@ -31,6 +31,7 @@ import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
+import PluginManagementPage from '@/pages/PluginManagementPage';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import SettingsPage from '@/pages/settings/SettingsPage';
@@ -72,6 +73,7 @@ const router = sentryCreateBrowserRouter(
         <Route path="index.html" element={<Navigate to="/webui" replace />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="status" element={<StatusPage />} />
+        <Route path="plugin-management" element={<PluginManagementPage />} />
         <Route path="firstrun" element={<FirstRunPage />}>
           <Route index element={<Navigate to="acknowledgement" replace />} />
           <Route path="acknowledgement" element={<Acknowledgement />} />
