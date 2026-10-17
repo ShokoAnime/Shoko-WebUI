@@ -13,7 +13,6 @@ import queryClient from '@/core/react-query/queryClient';
 import { handleEvent } from '@/core/signalr/eventHandlers';
 import {
   resetQueueStatus,
-  setConfigurationRestartRequired,
   setFetched,
   setHttpBanStatus,
   setNetworkStatus,
