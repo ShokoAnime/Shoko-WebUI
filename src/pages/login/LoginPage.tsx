@@ -14,8 +14,10 @@ import ToastContainer from '@/components/ToastContainer';
 import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
+import { usePluginFeaturesQuery } from '@/core/react-query/plugin/queries';
 import { useSelector } from '@/core/store';
 import toast from '@/core/toast';
+import { getLoginMethodHref, getLoginMethods } from '@/core/utilities/loginMethods';
 import useDocsUrl from '@/hooks/useDocsUrl';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -34,6 +36,8 @@ const LoginPage = () => {
   const { isPending: isLoginPending, mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);
   const imageMetadataQuery = useRandomImageMetadataQuery('Backdrop');
+  const pluginFeaturesQuery = usePluginFeaturesQuery(serverStatusQuery.data?.State === 'Started');
+  const loginMethods = getLoginMethods(pluginFeaturesQuery.data);
   const docsUrl = useDocsUrl();
 
   let loginImage = { imageUrl: '', seriesName: '', seriesId: 0 };
@@ -159,6 +163,27 @@ const LoginPage = () => {
                   >
                     Login
                   </Button>
+                  {loginMethods.length > 0 && (
+                    <>
+                      <div className="flex items-center gap-x-3 text-panel-text">
+                        <div className="h-px grow bg-panel-border" />
+                        or
+                        <div className="h-px grow bg-panel-border" />
+                      </div>
+                      {loginMethods.map(method => (
+                        <Button
+                          key={method.pluginId + method.loginUrl}
+                          buttonType="secondary"
+                          buttonSize="normal"
+                          className="w-full"
+                          onClick={() =>
+                            window.location.assign(getLoginMethodHref(method, searchParams.get('redirectTo')))}
+                        >
+                          Sign in with {method.displayName}
+                        </Button>
+                      ))}
+                    </>
+                  )}
                 </form>
               )}
               {serverStatusQuery.data?.State === 'Waiting' && (
