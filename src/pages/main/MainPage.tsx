@@ -6,6 +6,7 @@ import { Icon } from '@mdi/react';
 
 import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import TopNav from '@/components/Layout/TopNav';
+import RestartNotice from '@/components/RestartNotice';
 import ToastContainer from '@/components/ToastContainer';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -39,6 +40,7 @@ const MainPage = () => {
   return (
     <>
       <ToastContainer toastPosition={toastPosition} />
+      <RestartNotice />
       <Tooltip
         id="tooltip"
         render={({ content }) => content}
