@@ -24,7 +24,7 @@ const MainPage = () => {
   const isSettingsLoaded = settingsQuery.data.WebUI_Settings.settingsRevision > 0;
 
   useEffect(() => {
-    if (isSettingsLoaded) dispatch({ type: Events.MAINPAGE_LOADED);
+    if (isSettingsLoaded) dispatch({ type: Events.MAINPAGE_LOADED });
   }, [dispatch, isSettingsLoaded]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
