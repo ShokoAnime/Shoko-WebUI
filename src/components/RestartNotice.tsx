@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { useRestartReasonsQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
