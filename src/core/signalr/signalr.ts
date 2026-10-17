@@ -30,7 +30,6 @@ import type {
   NetworkAvailabilityValues,
   QueueStatusType,
   RestartReasonsEventType,
-  RestartRequiredType,
   SeriesUpdateEventType,
 } from '@/core/signalr/types';
 import type store from '@/core/store';
