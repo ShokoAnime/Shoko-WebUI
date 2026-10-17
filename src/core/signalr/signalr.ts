@@ -216,8 +216,6 @@ async (action: UnknownAction) => {
       startSignalRConnection(connectionEvents).catch(console.error);
     } else if (action.type === Events.AUTH_LOGOUT) {
       await connectionEvents?.stop();
-      // The query cache outlives a logout, and the next user may not be an admin.
-      queryClient.removeQueries({ queryKey: ['init', 'restart-reasons'] });
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : undefined;
