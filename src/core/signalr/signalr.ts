@@ -134,7 +134,7 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration,restart';
+      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,restart';
 
       const protocol = new JsonHubProtocol();
 
@@ -156,7 +156,7 @@ async (action: UnknownAction) => {
         .build();
 
       // event handlers, you can use these to dispatch actions to update your Redux store
-      connectionEvents.on('Queue:connected', onQueueConnected(dispatch));
+      connectionEvents.on('queue:connected', onQueueConnected(dispatch));
       connectionEvents.on('queue:state.changed', onQueueStateChange(dispatch));
 
       connectionEvents.on('anidb:connected', onAniDBConnected(dispatch));
@@ -186,9 +186,6 @@ async (action: UnknownAction) => {
       connectionEvents.on('metadata:series.added', onSeriesEvent);
       connectionEvents.on('metadata:series.updated', onSeriesEvent);
       connectionEvents.on('metadata:series.removed', onSeriesEvent);
-
-      connectionEvents.on('configuration:connected', onRestartRequiredUpdate(dispatch));
-      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate(dispatch));
 
       connectionEvents.on('restart:connected', onRestartReasonsUpdate);
       connectionEvents.on('restart:reasonsChanged', onRestartReasonsUpdate);
