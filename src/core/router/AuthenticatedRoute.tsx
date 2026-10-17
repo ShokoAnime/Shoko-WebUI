@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSelector } from '@/core/store';
@@ -30,8 +32,13 @@ const AuthenticatedRoute = ({ children }: Props) => {
     return isAuthenticated ? children : <Navigate to={loginRedirect} replace />;
   }
   if (serverState === 'Starting' || serverState === 'Failed') return <StatusPage />;
-  // State not yet loaded — optimistically render children when authenticated.
-  return isAuthenticated ? children : <Navigate to={loginRedirect} replace />;
+  // State not yet loaded — hold the children back, as nothing may be requested before the server has started.
+  if (!isAuthenticated) return <Navigate to={loginRedirect} replace />;
+  return (
+    <div className="flex grow items-center justify-center text-panel-text-primary">
+      <Icon path={mdiLoading} size={4} spin />
+    </div>
+  );
 };
 
 export default AuthenticatedRoute;

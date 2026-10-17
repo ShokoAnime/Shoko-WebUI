@@ -8,15 +8,13 @@ import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import TopNav from '@/components/Layout/TopNav';
 import ToastContainer from '@/components/ToastContainer';
 import Events from '@/core/events';
-import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useDispatch } from '@/core/store';
 
 const MainPage = () => {
   const dispatch = useDispatch();
 
-  const isServerStarted = useServerStatusQuery().data?.State === 'Started';
-  const settingsQuery = useSettingsQuery(isServerStarted);
+  const settingsQuery = useSettingsQuery();
   const { toastPosition } = settingsQuery.data.WebUI_Settings;
 
   // settingsQuery.isSuccess is always true due to the existence of initialData
