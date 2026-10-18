@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import AgendaView from '@/components/AiringSchedule/AgendaView';
 import MonthView from '@/components/AiringSchedule/MonthView';
-import PaneState from '@/components/AiringSchedule/PaneState';
+import PaneState, { PaneMessage } from '@/components/AiringSchedule/PaneState';
 import WeekView from '@/components/AiringSchedule/WeekView';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
@@ -33,28 +33,18 @@ const CalendarContent = (
   // An empty month or week still shows its grid; only the agenda, which lists days with airings, says so.
   if (view === 'agenda') {
     if (entries.size > 0) return <AgendaView start={start} end={end} entries={entries} now={now} />;
+    if (hasEnabledProvider) {
+      return (
+        <PaneMessage title="Nothing airs in this period.">
+          Try another period, or include more series with the filters above.
+        </PaneMessage>
+      );
+    }
     return (
-      <div className="m-auto flex flex-col items-center gap-y-2 text-center font-semibold">
-        {hasEnabledProvider
-          ? (
-            <>
-              <span>Nothing airs in this period.</span>
-              <span className="opacity-65">Try another period, or include more series with the filters above.</span>
-            </>
-          )
-          : (
-            <>
-              <span>No airing schedule provider is enabled.</span>
-              <span className="opacity-65">
-                An admin can enable one in the&nbsp;
-                <Link to="/webui/settings/airing-schedule" className="text-panel-text-primary">
-                  airing schedule settings
-                </Link>
-                .
-              </span>
-            </>
-          )}
-      </div>
+      <PaneMessage title="No airing schedule provider is enabled.">
+        An admin can enable one in the&nbsp;
+        <Link to="/webui/settings/airing-schedule" className="text-panel-text-primary">airing schedule settings</Link>.
+      </PaneMessage>
     );
   }
 

@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
-import type { RefObject } from 'react';
-import { useOutletContext } from 'react-router';
 import useMeasure from 'react-use-measure';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 
+import { PaneMessage } from '@/components/AiringSchedule/PaneState';
+import VirtualRows from '@/components/AiringSchedule/VirtualRows';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { pxPerRem } from '@/core/util';
 import { getLastListedIndex, getYearSeasons, isSameSeason } from '@/core/utilities/season';
@@ -71,7 +69,6 @@ const SeasonBrowserCard = (
 );
 
 const SeasonBrowser = ({ onSeasonSelect, season, years }: Props) => {
-  const { scrollRef } = useOutletContext<{ scrollRef: RefObject<HTMLDivElement | null> }>();
   const [containerRef, { width }] = useMeasure();
 
   // The cards keep their frame's shape, so a year's height follows from the width.
@@ -81,43 +78,32 @@ const SeasonBrowser = ({ onSeasonSelect, season, years }: Props) => {
   const yearHeight = (yearTitleHeight + yearGap) * pxPerRem + cardHeight;
   const lastListedIndex = getLastListedIndex(years);
 
-  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
-  const rowVirtualizer = useVirtualizer({
-    // None until the width is known.
-    count: width > 0 ? years.length : 0,
-    getScrollElement: () => scrollRef.current,
-    getItemKey: index => years[index].year,
-    estimateSize: () => yearHeight,
-    initialOffset: () => scrollRef.current?.scrollTop ?? 0,
-    // The list starts below the page's toolbar, which the virtualizer does not count.
-    overscan: 2,
-  });
-
-  useEffect(() => {
-    rowVirtualizer.measure();
-  }, [yearHeight, rowVirtualizer]);
-
   if (years.length === 0) {
     return (
-      <div className="m-auto flex flex-col items-center gap-y-2 text-center font-semibold">
-        <span>No anime known for any season.</span>
-        <span className="opacity-65">Only anime the server has AniDB data for are listed.</span>
-      </div>
+      <PaneMessage title="No anime known for any season.">
+        Only anime the server has AniDB data for are listed.
+      </PaneMessage>
     );
   }
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-      {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-        const year = years[virtualRow.index];
+    <VirtualRows
+      containerRef={containerRef}
+      // None until the width is known.
+      count={width > 0 ? years.length : 0}
+      getKey={index => years[index].year}
+      estimateSize={() => yearHeight}
+      overscan={2}
+      sizeKey={yearHeight}
+      renderRow={(index) => {
+        const year = years[index];
         return (
-          <div
-            key={virtualRow.key}
-            className="absolute top-0 left-0 w-full"
-            style={{ height: virtualRow.size, transform: `translateY(${virtualRow.start}px)` }}
-          >
+          <>
             <div className="flex h-7 items-center text-lg font-semibold">{year.year}</div>
-            <div className="mt-3 grid grid-cols-4 gap-4">
+            <div
+              className="mt-3 grid"
+              style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gap: `${cardGap}rem` }}
+            >
               {getYearSeasons(year, lastListedIndex).map(summary => (
                 <SeasonBrowserCard
                   key={summary.key.season}
@@ -129,10 +115,10 @@ const SeasonBrowser = ({ onSeasonSelect, season, years }: Props) => {
                 />
               ))}
             </div>
-          </div>
+          </>
         );
-      })}
-    </div>
+      }}
+    />
   );
 };
 

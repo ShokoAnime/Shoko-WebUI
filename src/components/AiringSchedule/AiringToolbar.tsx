@@ -1,13 +1,13 @@
 import { mdiCalendarToday, mdiChevronLeft, mdiChevronRight, mdiCog, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 import AiringFilters from '@/components/AiringSchedule/AiringFilters';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import { getPeriodUnit } from '@/core/utilities/airingSchedule';
 import useAiringScheduleParams from '@/hooks/useAiringScheduleParams';
-
-import type { AiringScheduleProviderType } from '@/core/types/api/airing-schedule';
 
 type Props = {
   isRefreshing: boolean;
@@ -15,9 +15,6 @@ type Props = {
   onRefresh: () => void;
   onSettings: () => void;
   onStep: (offset: 1 | -1) => void;
-  onToday: () => void;
-  providers: AiringScheduleProviderType[];
-  unit: string;
 };
 
 const viewStates = [
@@ -30,16 +27,15 @@ const viewStates = [
 const groupClassName =
   'flex items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-2 py-2';
 
-const AiringToolbar = (
-  { isRefreshing, nextDisabledReason, onRefresh, onSettings, onStep, onToday, providers, unit }: Props,
-) => {
+const AiringToolbar = ({ isRefreshing, nextDisabledReason, onRefresh, onSettings, onStep }: Props) => {
   const { setParams, view } = useAiringScheduleParams();
+  const unit = view === 'season' ? 'season' : getPeriodUnit(view);
 
   return (
     <div className="flex items-center justify-between gap-x-3">
-      <div className={`${groupClassName} px-4`}>
+      <div className={cx(groupClassName, 'px-4')}>
         <MenuButton onClick={onRefresh} icon={mdiRefresh} name="Refresh" loading={isRefreshing} keybinding="R" />
-        <AiringFilters providers={providers} />
+        <AiringFilters />
       </div>
       <div className="flex items-center gap-x-3">
         <MultiStateButton
@@ -54,7 +50,10 @@ const AiringToolbar = (
           <Button onClick={() => onStep(-1)} tooltip={`Previous ${unit}`}>
             <Icon path={mdiChevronLeft} size={1} className="text-panel-icon-action" />
           </Button>
-          <Button onClick={onToday} tooltip={view === 'season' ? 'Current Season' : 'Today'}>
+          <Button
+            onClick={() => setParams(view === 'season' ? { season: null } : { date: null })}
+            tooltip={view === 'season' ? 'Current Season' : 'Today'}
+          >
             <Icon path={mdiCalendarToday} size={1} className="text-panel-icon-action" />
           </Button>
           <Button

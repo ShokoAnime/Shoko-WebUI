@@ -3,7 +3,7 @@ import type { RefObject } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useOutletContext } from 'react-router';
 
-import PaneState from '@/components/AiringSchedule/PaneState';
+import PaneState, { PaneMessage } from '@/components/AiringSchedule/PaneState';
 import SeasonBrowser from '@/components/AiringSchedule/SeasonBrowser';
 import SeasonGrid from '@/components/AiringSchedule/SeasonGrid';
 import SeasonSlider from '@/components/AiringSchedule/SeasonSlider';
@@ -42,10 +42,9 @@ const SeasonPane = (
 
   if (sections.every(section => section.Anime.length === 0)) {
     return (
-      <div className="m-auto flex flex-col items-center gap-y-2 text-center font-semibold">
-        <span>No anime known for this season.</span>
-        <span className="opacity-65">Only anime the server has AniDB data for are listed.</span>
-      </div>
+      <PaneMessage title="No anime known for this season.">
+        Only anime the server has AniDB data for are listed.
+      </PaneMessage>
     );
   }
 

@@ -104,9 +104,14 @@ export const formatDaysSince = (day: Dayjs, now: Dayjs) => {
 
 export const UNRESOLVED_AIRING_HINT = 'Not on AniDB yet';
 
+export const getAiringEpisodeNumber = (
+  airing: EpisodeAiringType,
+) => (airing.Number === null ? null : `${getEpisodePrefix(airing.Type ?? undefined)}${airing.Number}`);
+
+/** `5 - Title`, `S2 - Title`, or whatever part of it is known; `Ep 14` for an unresolved airing. */
 export const getAiringEpisodeLabel = (airing: EpisodeAiringType) => {
-  if (!airing.IsResolved) return airing.Number === null ? '' : `Ep ${airing.Number}`;
-  const number = airing.Number === null ? null : `${getEpisodePrefix(airing.Type ?? undefined)}${airing.Number}`;
+  const number = getAiringEpisodeNumber(airing);
+  if (!airing.IsResolved) return number === null ? '' : `Ep ${number}`;
   if (number && airing.EpisodeTitle) return `${number} - ${airing.EpisodeTitle}`;
   return number ?? airing.EpisodeTitle ?? '';
 };

@@ -6,12 +6,12 @@ import {
   formatDaysSince,
   formatTimeSince,
   getAiringDisplayTime,
+  getAiringEpisodeNumber,
   getEntrySource,
   getSeasonAnimeLabel,
   hasAiringEnded,
   isAiringNow,
 } from '@/core/utilities/airingSchedule';
-import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { EpisodeAiringType } from '@/core/types/api/airing-schedule';
 import type { SeasonAnimeType } from '@/core/types/api/airing-season';
@@ -92,9 +92,8 @@ const SeasonCardAiring = ({ anime, now }: { anime: SeasonAnimeType, now: Dayjs }
   if (!airing) return <span className="text-lg font-semibold">{getSeasonAnimeLabel(anime, now)}</span>;
 
   // An unresolved airing is a regular episode numbered by its place, so it reads the same.
-  const episode = airing.Number === null
-    ? 'Next episode'
-    : `Ep ${getEpisodePrefix(airing.Type ?? undefined)}${airing.Number}`;
+  const number = getAiringEpisodeNumber(airing);
+  const episode = number === null ? 'Next episode' : `Ep ${number}`;
   return (
     <div className="flex min-w-0 flex-col">
       <NextAiringTime airing={airing} episode={episode} now={now} />

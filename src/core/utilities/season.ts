@@ -3,7 +3,7 @@ import { maxBy, minBy } from 'lodash';
 import type { SeasonSummaryType, SeasonYearType } from '@/core/react-query/airing-schedule/types';
 import type { SeasonKey, YearlySeasonValues } from '@/core/types/api/airing-season';
 
-export const seasonOrder: YearlySeasonValues[] = ['Winter', 'Spring', 'Summer', 'Fall'];
+const seasonOrder: YearlySeasonValues[] = ['Winter', 'Spring', 'Summer', 'Fall'];
 
 const seasonValuePattern = new RegExp(`^([1-9]\\d{3})-(${seasonOrder.join('|')})$`);
 

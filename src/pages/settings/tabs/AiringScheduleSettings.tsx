@@ -1,6 +1,4 @@
-import { mdiLoading } from '@mdi/js';
-import { Icon } from '@mdi/react';
-
+import { PaneSpinner } from '@/components/AiringSchedule/PaneState';
 import DynamicField from '@/components/Dynamic/DynamicField';
 import AiringProviderList from '@/components/Settings/AiringScheduleSettings/AiringProviderList';
 import { sortAiringProviders, withAiringOption, withAiringProviders } from '@/core/react-query/airing-schedule/draft';
@@ -15,7 +13,7 @@ import type { FormSchemaType } from '@/core/types/api/configuration';
 
 const loadError = <div className="m-auto font-semibold text-panel-text-danger">Failed to load the settings.</div>;
 
-const loading = <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
+const loading = <PaneSpinner />;
 
 /** The plain members the schema shows; the lists and records have editors of their own, or none. */
 const getOptionKeys = (schema: FormSchemaType) =>

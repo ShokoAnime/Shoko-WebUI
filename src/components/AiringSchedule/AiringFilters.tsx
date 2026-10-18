@@ -5,9 +5,8 @@ import { Icon } from '@mdi/react';
 import { Badge } from '@/components/Badge';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
+import { useAiringProvidersQuery } from '@/core/react-query/airing-schedule/queries';
 import useAiringScheduleParams from '@/hooks/useAiringScheduleParams';
-
-import type { AiringScheduleProviderType } from '@/core/types/api/airing-schedule';
 
 const releaseTypes = [
   { label: 'All Releases', value: 'All' },
@@ -16,7 +15,8 @@ const releaseTypes = [
   { label: 'Dubbed', value: 'Dubbed' },
 ];
 
-const AiringFilters = ({ providers }: { providers: AiringScheduleProviderType[] }) => {
+const AiringFilters = () => {
+  const providers = useAiringProvidersQuery().data ?? [];
   const { hideEstimates, kind, provider, scope, setParams, showReruns } = useAiringScheduleParams();
   // A filter with nothing to choose from is left out, unless the URL already sets it, so it is never set unseen.
   const showReleaseTypes = new Set(providers.flatMap(item => item.EnabledKinds)).size > 1 || kind !== 'All';

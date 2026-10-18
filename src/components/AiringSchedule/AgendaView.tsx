@@ -1,9 +1,7 @@
-import type { RefObject } from 'react';
-import { useOutletContext } from 'react-router';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 
 import { RowEntry } from '@/components/AiringSchedule/AiringEntries';
+import VirtualRows from '@/components/AiringSchedule/VirtualRows';
 import { pxPerRem } from '@/core/util';
 import { getAgendaRows } from '@/core/utilities/airingSchedule';
 
@@ -28,42 +26,25 @@ const getRowHeight = (row: AgendaRowType) =>
   + (row.isDayEnd ? dayGap : 0);
 
 const AgendaView = ({ end, entries, now, start }: Props) => {
-  const { scrollRef } = useOutletContext<{ scrollRef: RefObject<HTMLDivElement | null> }>();
   const rows = getAgendaRows(start, end, entries);
 
-  // oxlint-disable-next-line react/incompatible-library -- @tanstack/react-virtual attaches refs during render, which is incompatible with the React Compiler
-  const rowVirtualizer = useVirtualizer({
-    count: rows.length,
-    getScrollElement: () => scrollRef.current,
-    getItemKey: index => rows[index].key,
-    estimateSize: index => getRowHeight(rows[index]) * pxPerRem,
-    initialOffset: () => scrollRef.current?.scrollTop ?? 0,
-    // The list starts below the page's toolbar, which the virtualizer does not count.
-    overscan: 10,
-  });
-
   return (
-    <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-      {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-        const row = rows[virtualRow.index];
+    <VirtualRows
+      count={rows.length}
+      getKey={index => rows[index].key}
+      estimateSize={index => getRowHeight(rows[index]) * pxPerRem}
+      overscan={10}
+      renderRow={(index) => {
+        const row = rows[index];
+        if (row.type === 'entry') return <RowEntry entry={row.entry} isStriped={row.isStriped} now={now} />;
         return (
-          <div
-            key={virtualRow.key}
-            className="absolute top-0 left-0 w-full"
-            style={{ height: virtualRow.size, transform: `translateY(${virtualRow.start}px)` }}
-          >
-            {row.type === 'day'
-              ? (
-                <div className={cx('font-semibold', row.day.isSame(now, 'day') && 'text-panel-text-primary')}>
-                  {row.day.format('dddd, MMMM D')}
-                  {row.day.isSame(now, 'day') && <span className="opacity-65">&nbsp;(Today)</span>}
-                </div>
-              )
-              : <RowEntry entry={row.entry} isStriped={row.isStriped} now={now} />}
+          <div className={cx('font-semibold', row.day.isSame(now, 'day') && 'text-panel-text-primary')}>
+            {row.day.format('dddd, MMMM D')}
+            {row.day.isSame(now, 'day') && <span className="opacity-65">&nbsp;(Today)</span>}
           </div>
         );
-      })}
-    </div>
+      }}
+    />
   );
 };
 
