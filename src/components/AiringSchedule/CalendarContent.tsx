@@ -1,0 +1,76 @@
+import { Link } from 'react-router';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
+
+import AgendaView from '@/components/AiringSchedule/AgendaView';
+import MonthView from '@/components/AiringSchedule/MonthView';
+import WeekView from '@/components/AiringSchedule/WeekView';
+import Button from '@/components/Input/Button';
+
+import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
+import type { Dayjs } from '@/core/util';
+import type { CalendarViewType } from '@/core/utilities/airingSchedule';
+
+type Props = {
+  date: Dayjs;
+  end: Dayjs;
+  entries: Map<string, CalendarEntryType[]>;
+  hasEnabledProvider: boolean;
+  isError: boolean;
+  isPending: boolean;
+  now: Dayjs;
+  onRetry: () => void;
+  onShowDay: (day: Dayjs) => void;
+  start: Dayjs;
+  view: CalendarViewType;
+};
+
+const CalendarContent = (
+  { date, end, entries, hasEnabledProvider, isError, isPending, now, onRetry, onShowDay, start, view }: Props,
+) => {
+  if (isPending) return <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
+
+  if (isError) {
+    return (
+      <div className="m-auto flex flex-col items-center gap-y-4 font-semibold">
+        <span className="text-panel-text-danger">Failed to load the airing schedule.</span>
+        <Button buttonType="secondary" buttonSize="normal" onClick={onRetry}>Try Again</Button>
+      </div>
+    );
+  }
+
+  // An empty month or week still shows its grid; only the agenda, which lists days with airings, says so.
+  if (view === 'agenda') {
+    if (entries.size > 0) return <AgendaView start={start} end={end} entries={entries} now={now} />;
+    return (
+      <div className="m-auto flex flex-col items-center gap-y-2 text-center font-semibold">
+        {hasEnabledProvider
+          ? (
+            <>
+              <span>Nothing airs in this period.</span>
+              <span className="opacity-65">Try another period, or include more series with the filters above.</span>
+            </>
+          )
+          : (
+            <>
+              <span>No airing schedule provider is enabled.</span>
+              <span className="opacity-65">
+                An admin can enable one in the&nbsp;
+                <Link to="/webui/settings/airing-schedule" className="text-panel-text-primary">
+                  airing schedule settings
+                </Link>
+                .
+              </span>
+            </>
+          )}
+      </div>
+    );
+  }
+
+  if (view === 'month') {
+    return <MonthView date={date} start={start} end={end} entries={entries} now={now} onShowDay={onShowDay} />;
+  }
+  return <WeekView start={start} end={end} entries={entries} now={now} />;
+};
+
+export default CalendarContent;

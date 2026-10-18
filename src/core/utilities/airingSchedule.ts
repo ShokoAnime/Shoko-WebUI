@@ -4,10 +4,14 @@ import { dayjs } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
-import type { EpisodeAiringType } from '@/core/types/api/airing-schedule';
+import type { AiringKindType, EpisodeAiringType } from '@/core/types/api/airing-schedule';
 import type { Dayjs } from '@/core/util';
 
 export type CalendarViewType = 'month' | 'week' | 'agenda';
+
+export const CALENDAR_VIEWS: CalendarViewType[] = ['month', 'week', 'agenda'];
+
+export const AIRING_KINDS: AiringKindType[] = ['Original', 'Subtitled', 'Dubbed'];
 
 export const DAY_KEY_FORMAT = 'YYYY-MM-DD';
 
@@ -28,6 +32,14 @@ export const getCalendarPeriod = (view: CalendarViewType, date: Dayjs) => {
 
   const start = startOfWeek(monthStart);
   return { start, end: start.add(MONTH_GRID_WEEKS, 'week') };
+};
+
+export const getPeriodTitle = (view: CalendarViewType, date: Dayjs, start: Dayjs, end: Dayjs) => {
+  if (view !== 'week') return date.format('MMMM YYYY');
+  const last = end.subtract(1, 'day');
+  if (start.isSame(last, 'month')) return `${start.format('MMMM D')} - ${last.format('D, YYYY')}`;
+  if (start.isSame(last, 'year')) return `${start.format('MMMM D')} - ${last.format('MMMM D, YYYY')}`;
+  return `${start.format('MMMM D, YYYY')} - ${last.format('MMMM D, YYYY')}`;
 };
 
 export const getPeriodUnit = (view: CalendarViewType) => (view === 'week' ? 'week' : 'month');
