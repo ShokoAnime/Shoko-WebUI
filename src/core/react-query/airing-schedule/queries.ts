@@ -19,6 +19,7 @@ import type {
   SeasonSectionDefinitionType,
   SeasonSectionType,
 } from '@/core/types/api/airing-season';
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 
 export const useAiringCalendarQuery = (params: AiringCalendarRequestType, enabled = true) =>
   useQuery<AiringCalendarDayType[], unknown, Map<string, CalendarEntryType[]>>({
@@ -95,4 +96,10 @@ export const useAiringSeasonSectionDefaultsQuery = () =>
     queryKey: ['airing-schedule', 'season-section-defaults'],
     queryFn: () => axios.get('AiringSchedule/Season/Sections/Default'),
     staleTime: INFINITE_STALE_TIME,
+  });
+
+export const useAiringScheduleConfigurationQuery = () =>
+  useQuery<ConfigurationInfoType>({
+    queryKey: ['airing-schedule', 'configuration'],
+    queryFn: () => axios.get('AiringSchedule/Configuration'),
   });

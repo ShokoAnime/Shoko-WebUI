@@ -80,3 +80,10 @@ export type SeasonYearType = {
   year: number;
   seasons: SeasonSummaryType[];
 };
+
+export type UpdateAiringProvidersRequestType = {
+  ID: string;
+  Priority: number;
+  EnabledKinds: AiringKindType[];
+  SweepInterval: string;
+};
