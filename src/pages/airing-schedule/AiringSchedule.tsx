@@ -92,6 +92,11 @@ const AiringSchedule = () => {
   const seasons = seasonsQuery.data?.flatMap(item => item.seasons) ?? [];
   const currentSeason = seasons.find(item => item.isCurrent)?.key;
   const lastSeason = maxBy(seasons, item => getSeasonIndex(item.key))?.key;
+  const browserQuery = useAiringSeasonsByYearQuery(
+    { ...filters, include: ['Images'] },
+    null,
+    isSeasonView && isBrowsing,
+  );
   const season = seasonParam ?? currentSeason;
   const isLastSeason = !season || !lastSeason || getSeasonIndex(season) >= getSeasonIndex(lastSeason);
 
@@ -111,15 +116,17 @@ const AiringSchedule = () => {
   const sections = sectionsQuery.data ?? [];
   const animeCount = sumBy(sections, section => section.Anime.length);
 
+  let isRefreshing = calendarQuery.isFetching;
+  if (isSeasonView) isRefreshing = isBrowsing ? browserQuery.isFetching : sectionsQuery.isFetching;
+
   const handleRefresh = () => {
-    if (isSeasonView) {
-      if (seasonsQuery.isFetching || sectionsQuery.isFetching) return;
+    if (isRefreshing) return;
+    if (!isSeasonView) calendarQuery.refetch().catch(console.error);
+    else if (isBrowsing) browserQuery.refetch().catch(console.error);
+    else {
       seasonsQuery.refetch().catch(console.error);
       if (season) sectionsQuery.refetch().catch(console.error);
-      return;
     }
-    if (calendarQuery.isFetching) return;
-    calendarQuery.refetch().catch(console.error);
   };
 
   useHotkeys('r', handleRefresh, { scopes: 'primary' });
@@ -133,6 +140,8 @@ const AiringSchedule = () => {
   // Opening the season browser adds a history entry, so Back closes it; closing and picking replace it.
   const handleBrowseToggle = () => setParams({ browse: isBrowsing ? null : 'true' }, { replace: isBrowsing });
   const handleSeasonChange = (key: SeasonKey) => setParams({ season: toSeasonParam(key) });
+  const handleSeasonPick = (key: SeasonKey) =>
+    setParams({ browse: null, season: toSeasonParam(key) }, { replace: true });
 
   const handleStep = (offset: 1 | -1) => {
     if (!isSeasonView) setParams({ date: toDateParam(date.add(offset, periodUnit)) });
@@ -155,7 +164,7 @@ const AiringSchedule = () => {
           fullHeight={false}
         >
           <AiringToolbar
-            isRefreshing={isSeasonView ? sectionsQuery.isFetching : calendarQuery.isFetching}
+            isRefreshing={isRefreshing}
             nextDisabledReason={isSeasonView && isLastSeason ? 'Later seasons are not announced yet' : undefined}
             onRefresh={handleRefresh}
             onStep={handleStep}
@@ -169,6 +178,11 @@ const AiringSchedule = () => {
           {isSeasonView
             ? (
               <SeasonView
+                browser={{
+                  isError: browserQuery.isError,
+                  isPending: browserQuery.isPending,
+                  years: browserQuery.data ?? [],
+                }}
                 isBrowsing={isBrowsing}
                 isError={seasonsQuery.isError || sectionsQuery.isError}
                 isPending={seasonsQuery.isPending || (!!season && sectionsQuery.isPending)}
@@ -176,6 +190,7 @@ const AiringSchedule = () => {
                 onBrowseToggle={handleBrowseToggle}
                 onRetry={handleRefresh}
                 onSeasonChange={handleSeasonChange}
+                onSeasonPick={handleSeasonPick}
                 season={season}
                 seasons={seasons}
                 sections={sections}

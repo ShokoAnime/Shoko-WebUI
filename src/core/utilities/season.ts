@@ -1,6 +1,6 @@
 import { maxBy, minBy } from 'lodash';
 
-import type { SeasonSummaryType } from '@/core/react-query/airing-schedule/types';
+import type { SeasonSummaryType, SeasonYearType } from '@/core/react-query/airing-schedule/types';
 import type { SeasonKey, YearlySeasonValues } from '@/core/types/api/airing-season';
 
 export const seasonOrder: YearlySeasonValues[] = ['Winter', 'Spring', 'Summer', 'Fall'];
@@ -41,3 +41,15 @@ export const getSeasonBounds = (seasons: SeasonSummaryType[], selected: SeasonKe
     lastListed,
   };
 };
+
+export const getLastListedIndex = (years: SeasonYearType[]) =>
+  Math.max(...years.flatMap(item => item.seasons).map(item => getSeasonIndex(item.key)));
+
+export const getYearSeasons = (year: SeasonYearType, lastListedIndex: number): SeasonSummaryType[] =>
+  seasonOrder
+    .map(season => ({ year: year.year, season }))
+    .filter(key => getSeasonIndex(key) <= lastListedIndex)
+    .map(key =>
+      year.seasons.find(item => isSameSeason(item.key, key))
+        ?? { key, count: 0, isCurrent: false, poster: null, backdrop: null }
+    );
