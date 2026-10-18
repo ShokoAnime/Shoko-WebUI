@@ -2,6 +2,9 @@ import { useSearchParams } from 'react-router';
 
 import { dayjs } from '@/core/util';
 import { AIRING_KINDS, CALENDAR_VIEWS, DAY_KEY_FORMAT } from '@/core/utilities/airingSchedule';
+import { parseSeasonKey } from '@/core/utilities/season';
+
+const views = ['season', ...CALENDAR_VIEWS] as const;
 
 const useAiringScheduleParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +26,10 @@ const useAiringScheduleParams = () => {
     kind: AIRING_KINDS.find(kind => kind === searchParams.get('kind')) ?? 'All',
     provider: searchParams.get('provider') ?? '',
     scope: searchParams.get('scope') === 'all' ? 'all' : 'collection',
+    season: parseSeasonKey(searchParams.get('season')),
     setParams,
     showReruns: searchParams.get('showReruns') === 'true',
-    view: CALENDAR_VIEWS.find(view => view === searchParams.get('view')) ?? 'week',
+    view: views.find(view => view === searchParams.get('view')) ?? 'season',
   } as const;
 };
 

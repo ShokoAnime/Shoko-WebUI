@@ -1,11 +1,9 @@
 import { Link } from 'react-router';
-import { mdiLoading } from '@mdi/js';
-import { Icon } from '@mdi/react';
 
 import AgendaView from '@/components/AiringSchedule/AgendaView';
 import MonthView from '@/components/AiringSchedule/MonthView';
+import PaneState from '@/components/AiringSchedule/PaneState';
 import WeekView from '@/components/AiringSchedule/WeekView';
-import Button from '@/components/Input/Button';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
 import type { Dayjs } from '@/core/util';
@@ -28,15 +26,8 @@ type Props = {
 const CalendarContent = (
   { date, end, entries, hasEnabledProvider, isError, isPending, now, onRetry, onShowDay, start, view }: Props,
 ) => {
-  if (isPending) return <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
-
-  if (isError) {
-    return (
-      <div className="m-auto flex flex-col items-center gap-y-4 font-semibold">
-        <span className="text-panel-text-danger">Failed to load the airing schedule.</span>
-        <Button buttonType="secondary" buttonSize="normal" onClick={onRetry}>Try Again</Button>
-      </div>
-    );
+  if (isPending || isError) {
+    return <PaneState errorText="Failed to load the airing schedule." isError={isError} onRetry={onRetry} />;
   }
 
   // An empty month or week still shows its grid; only the agenda, which lists days with airings, says so.

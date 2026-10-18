@@ -11,6 +11,7 @@ import type { AiringScheduleProviderType } from '@/core/types/api/airing-schedul
 
 type Props = {
   isRefreshing: boolean;
+  nextDisabledReason?: string;
   onRefresh: () => void;
   onStep: (offset: 1 | -1) => void;
   onToday: () => void;
@@ -19,6 +20,7 @@ type Props = {
 };
 
 const viewStates = [
+  { label: 'Season', value: 'season' },
   { label: 'Month', value: 'month' },
   { label: 'Week', value: 'week' },
   { label: 'Agenda', value: 'agenda' },
@@ -28,7 +30,7 @@ const groupClassName =
   'flex items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-2 py-2';
 
 const AiringToolbar = (
-  { isRefreshing, onRefresh, onStep, onToday, providers, unit }: Props,
+  { isRefreshing, nextDisabledReason, onRefresh, onStep, onToday, providers, unit }: Props,
 ) => {
   const { setParams, view } = useAiringScheduleParams();
 
@@ -43,7 +45,7 @@ const AiringToolbar = (
           className={groupClassName}
           activeState={view}
           states={viewStates}
-          onStateChange={newView => setParams({ view: newView === 'week' ? null : newView })}
+          onStateChange={newView => setParams({ view: newView === 'season' ? null : newView })}
           alternateColor
           compact
         />
@@ -51,10 +53,14 @@ const AiringToolbar = (
           <Button onClick={() => onStep(-1)} tooltip={`Previous ${unit}`}>
             <Icon path={mdiChevronLeft} size={1} className="text-panel-icon-action" />
           </Button>
-          <Button onClick={onToday} tooltip="Today">
+          <Button onClick={onToday} tooltip={view === 'season' ? 'Current Season' : 'Today'}>
             <Icon path={mdiCalendarToday} size={1} className="text-panel-icon-action" />
           </Button>
-          <Button onClick={() => onStep(1)} tooltip={`Next ${unit}`}>
+          <Button
+            onClick={() => onStep(1)}
+            tooltip={nextDisabledReason ?? `Next ${unit}`}
+            disabled={!!nextDisabledReason}
+          >
             <Icon path={mdiChevronRight} size={1} className="text-panel-icon-action" />
           </Button>
         </div>

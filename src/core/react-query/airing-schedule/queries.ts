@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { transformAiringCalendar, transformAiringSeasonYears } from '@/core/react-query/airing-schedule/helpers';
@@ -44,24 +44,27 @@ export const useAiringProvidersQuery = () =>
  * read as of that time instead of now (the server's `at`), so the next airings may have aired since.
  */
 export const useAiringSeasonSectionsQuery = (
-  season: SeasonKey,
+  season: SeasonKey | undefined,
   params: AiringSeasonRequestType,
   sections: SeasonSectionDefinitionType[] | null,
   asOf?: string,
   enabled = true,
 ) =>
   useQuery<SeasonSectionType[]>({
-    queryKey: ['airing-schedule', 'season', season.year, season.season, params, asOf, sections],
-    queryFn: () =>
-      axios.post(
-        `AiringSchedule/Season/${season.year}/${season.season}/Sections`,
-        { Sections: sections } satisfies AiringSeasonBodyType,
-        { params: { ...params, at: asOf } },
-      ),
+    queryKey: ['airing-schedule', 'season', season?.year, season?.season, params, asOf, sections],
+    // Without a season, which waits for the season under way to be known, nothing is read.
+    queryFn: season
+      ? () =>
+        axios.post(
+          `AiringSchedule/Season/${season.year}/${season.season}/Sections`,
+          { Sections: sections } satisfies AiringSeasonBodyType,
+          { params: { ...params, at: asOf } },
+        )
+      : skipToken,
     // The same season keeps its cards while a filter or the layout changes; another season starts over.
     placeholderData: (previousData, previousQuery) => {
       const [, , year, name] = previousQuery?.queryKey ?? [];
-      return year === season.year && name === season.season ? previousData : undefined;
+      return year === season?.year && name === season?.season ? previousData : undefined;
     },
     refetchInterval: 5 * 60_000,
     staleTime: 5 * 60_000,

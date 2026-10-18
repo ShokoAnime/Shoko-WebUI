@@ -1,10 +1,11 @@
-import { range } from 'lodash';
+import { chunk, range } from 'lodash';
 
-import { dayjs } from '@/core/util';
+import { dayjs, formatDate, getPartialDateEnd } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
 import type { AiringKindType, EpisodeAiringType } from '@/core/types/api/airing-schedule';
+import type { SeasonAnimeType, SeasonSectionType } from '@/core/types/api/airing-season';
 import type { Dayjs } from '@/core/util';
 
 export type CalendarViewType = 'month' | 'week' | 'agenda';
@@ -157,3 +158,33 @@ export const getEntrySource = (
 ) => (IsDateOnly ? 'AniDB air date' : (Source?.Name ?? ''));
 
 export const formatLocalFiles = (count: number) => `${count} local ${count === 1 ? 'file' : 'files'}`;
+
+export type SeasonGridRowType =
+  | { type: 'title', key: string, section: SeasonSectionType }
+  | { type: 'cards', key: string, anime: SeasonAnimeType[], isSectionEnd: boolean };
+
+export const getSeasonGridRows = (sections: SeasonSectionType[], columns: number): SeasonGridRowType[] =>
+  sections.flatMap((section, sectionIndex) => {
+    if (section.Anime.length === 0) return [];
+    const rows = chunk(section.Anime, columns);
+    return [
+      { type: 'title', key: `title-${sectionIndex}`, section } as const,
+      ...rows.map((anime, index) => ({
+        type: 'cards',
+        key: `cards-${sectionIndex}-${index}`,
+        anime,
+        isSectionEnd: index === rows.length - 1,
+      } as const)),
+    ];
+  });
+
+export const getSeasonAnimeLabel = (anime: SeasonAnimeType, now: Dayjs) => {
+  const { AirDate: airDate, EndDate: endDate } = anime;
+  const finished = endDate ? `Finished ${formatDate(endDate)}` : 'Finished';
+  if (anime.AiringStatus === 'Finished') return finished;
+  // A partial end date, such as a year, is over only once its last day is.
+  if (endDate && getPartialDateEnd(endDate).isBefore(now)) return finished;
+  if (airDate && dayjs(airDate).isAfter(now)) return `Starts ${formatDate(airDate)}`;
+  if (airDate) return `Airing since ${formatDate(airDate)}`;
+  return 'Air date unknown';
+};
