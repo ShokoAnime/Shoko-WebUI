@@ -1,9 +1,9 @@
 import useMeasure from 'react-use-measure';
 import cx from 'classnames';
 
-import { PaneMessage } from '@/components/AiringSchedule/PaneState';
-import VirtualRows from '@/components/AiringSchedule/VirtualRows';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import { PaneMessage } from '@/components/Calendar/PaneState';
+import VirtualRows from '@/components/Calendar/VirtualRows';
 import { pxPerRem } from '@/core/util';
 import { getLastListedIndex, getYearSeasons, isSameSeason } from '@/core/utilities/season';
 

@@ -1,6 +1,6 @@
 import cx from 'classnames';
 
-import { CompactEntry } from '@/components/AiringSchedule/AiringEntries';
+import CompactEntry from '@/components/Calendar/Month/CompactEntry';
 import Button from '@/components/Input/Button';
 import { DAY_KEY_FORMAT, getPeriodDays } from '@/core/utilities/airingSchedule';
 

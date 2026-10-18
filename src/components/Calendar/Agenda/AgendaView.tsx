@@ -1,7 +1,7 @@
 import cx from 'classnames';
 
-import { RowEntry } from '@/components/AiringSchedule/AiringEntries';
-import VirtualRows from '@/components/AiringSchedule/VirtualRows';
+import RowEntry from '@/components/Calendar/Agenda/RowEntry';
+import VirtualRows from '@/components/Calendar/VirtualRows';
 import { pxPerRem } from '@/core/util';
 import { getAgendaRows } from '@/core/utilities/airingSchedule';
 

@@ -1,7 +1,7 @@
 import useMeasure from 'react-use-measure';
 
-import SeasonCard from '@/components/AiringSchedule/SeasonCard';
-import VirtualRows from '@/components/AiringSchedule/VirtualRows';
+import SeasonCard from '@/components/Calendar/Season/SeasonCard';
+import VirtualRows from '@/components/Calendar/VirtualRows';
 import { pxPerRem } from '@/core/util';
 import { getSeasonGridRows } from '@/core/utilities/airingSchedule';
 

@@ -2,8 +2,8 @@ import { mdiFileDocumentMultipleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import SeriesLink from '@/components/AiringSchedule/SeriesLink';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import SeriesLink from '@/components/Calendar/SeriesLink';
 import { dayjs } from '@/core/util';
 import {
   UNRESOLVED_AIRING_HINT,

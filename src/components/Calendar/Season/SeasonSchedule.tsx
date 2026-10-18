@@ -1,8 +1,8 @@
 import { useHotkeys } from 'react-hotkeys-hook';
 import { clamp, sumBy } from 'lodash';
 
-import AiringToolbar from '@/components/AiringSchedule/AiringToolbar';
-import SeasonView from '@/components/AiringSchedule/SeasonView';
+import AiringToolbar from '@/components/Calendar/AiringToolbar';
+import SeasonView from '@/components/Calendar/Season/SeasonView';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 import { useAiringSeasonSectionsQuery, useAiringSeasonsByYearQuery } from '@/core/react-query/airing-schedule/queries';

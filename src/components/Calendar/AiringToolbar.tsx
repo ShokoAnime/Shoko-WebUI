@@ -2,7 +2,7 @@ import { mdiCalendarToday, mdiChevronLeft, mdiChevronRight, mdiCog, mdiRefresh }
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import AiringFilters from '@/components/AiringSchedule/AiringFilters';
+import AiringFilters from '@/components/Calendar/AiringFilters';
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';

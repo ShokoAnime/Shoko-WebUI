@@ -3,10 +3,10 @@ import type { RefObject } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useOutletContext } from 'react-router';
 
-import PaneState, { PaneMessage } from '@/components/AiringSchedule/PaneState';
-import SeasonBrowser from '@/components/AiringSchedule/SeasonBrowser';
-import SeasonGrid from '@/components/AiringSchedule/SeasonGrid';
-import SeasonSlider from '@/components/AiringSchedule/SeasonSlider';
+import PaneState, { PaneMessage } from '@/components/Calendar/PaneState';
+import SeasonBrowser from '@/components/Calendar/Season/SeasonBrowser';
+import SeasonGrid from '@/components/Calendar/Season/SeasonGrid';
+import SeasonSlider from '@/components/Calendar/Season/SeasonSlider';
 import TransitionDiv from '@/components/TransitionDiv';
 
 import type { SeasonSummaryType, SeasonYearType } from '@/core/react-query/airing-schedule/types';

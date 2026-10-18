@@ -2,7 +2,7 @@ import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { clamp, toNumber } from 'lodash';
 
-import SeasonSectionsEditor from '@/components/AiringSchedule/SeasonSectionsEditor';
+import SeasonSectionsEditor from '@/components/Calendar/Settings/SeasonSectionsEditor';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import CheckboxGroup from '@/components/Input/CheckboxGroup';

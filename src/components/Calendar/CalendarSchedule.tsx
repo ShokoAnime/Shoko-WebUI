@@ -1,8 +1,8 @@
 import { useHotkeys } from 'react-hotkeys-hook';
 import { sumBy } from 'lodash';
 
-import AiringToolbar from '@/components/AiringSchedule/AiringToolbar';
-import CalendarContent from '@/components/AiringSchedule/CalendarContent';
+import AiringToolbar from '@/components/Calendar/AiringToolbar';
+import CalendarContent from '@/components/Calendar/CalendarContent';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 import { useAiringCalendarQuery } from '@/core/react-query/airing-schedule/queries';

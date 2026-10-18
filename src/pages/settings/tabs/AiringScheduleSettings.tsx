@@ -1,4 +1,4 @@
-import { PaneSpinner } from '@/components/AiringSchedule/PaneState';
+import { PaneSpinner } from '@/components/Calendar/PaneState';
 import DynamicField from '@/components/Dynamic/DynamicField';
 import AiringProviderList from '@/components/Settings/AiringScheduleSettings/AiringProviderList';
 import { sortAiringProviders, withAiringOption, withAiringProviders } from '@/core/react-query/airing-schedule/draft';

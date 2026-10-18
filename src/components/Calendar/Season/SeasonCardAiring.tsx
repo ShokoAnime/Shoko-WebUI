@@ -1,4 +1,4 @@
-import { LocalFilesIcon, UnresolvedHint } from '@/components/AiringSchedule/AiringEntryParts';
+import { LocalFilesIcon, UnresolvedHint } from '@/components/Calendar/AiringEntryParts';
 import { dayjs } from '@/core/util';
 import {
   formatCountdown,

@@ -1,6 +1,6 @@
 import cx from 'classnames';
 
-import { CardEntry } from '@/components/AiringSchedule/AiringEntries';
+import CardEntry from '@/components/Calendar/Week/CardEntry';
 import { DAY_KEY_FORMAT, getPeriodDays } from '@/core/utilities/airingSchedule';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';

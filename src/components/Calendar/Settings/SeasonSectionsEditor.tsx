@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { uniqueId } from 'lodash';
 
-import SeasonSectionEditor from '@/components/AiringSchedule/SeasonSectionEditor';
+import SeasonSectionEditor from '@/components/Calendar/Settings/SeasonSectionEditor';
 import Button from '@/components/Input/Button';
 import OrderList from '@/components/Settings/OrderList';
 import { useAiringSeasonSectionDefaultsQuery } from '@/core/react-query/airing-schedule/queries';

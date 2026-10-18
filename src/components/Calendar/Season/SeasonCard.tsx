@@ -1,9 +1,9 @@
 import { startCase } from 'lodash';
 
-import SeasonCardAiring from '@/components/AiringSchedule/SeasonCardAiring';
-import SeriesLink from '@/components/AiringSchedule/SeriesLink';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { Badge } from '@/components/Badge';
+import SeasonCardAiring from '@/components/Calendar/Season/SeasonCardAiring';
+import SeriesLink from '@/components/Calendar/SeriesLink';
 import CleanDescription from '@/components/Collection/CleanDescription';
 import { convertTimeSpanToMs } from '@/core/util';
 

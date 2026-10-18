@@ -1,9 +1,9 @@
 import { Link } from 'react-router';
 
-import AgendaView from '@/components/AiringSchedule/AgendaView';
-import MonthView from '@/components/AiringSchedule/MonthView';
-import PaneState, { PaneMessage } from '@/components/AiringSchedule/PaneState';
-import WeekView from '@/components/AiringSchedule/WeekView';
+import AgendaView from '@/components/Calendar/Agenda/AgendaView';
+import MonthView from '@/components/Calendar/Month/MonthView';
+import PaneState, { PaneMessage } from '@/components/Calendar/PaneState';
+import WeekView from '@/components/Calendar/Week/WeekView';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
 import type { Dayjs } from '@/core/util';

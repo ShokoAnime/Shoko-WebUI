@@ -1,8 +1,8 @@
 import { useToggle } from 'usehooks-ts';
 
-import AiringScheduleSettingsModal from '@/components/AiringSchedule/AiringScheduleSettingsModal';
-import CalendarSchedule from '@/components/AiringSchedule/CalendarSchedule';
-import SeasonSchedule from '@/components/AiringSchedule/SeasonSchedule';
+import CalendarSchedule from '@/components/Calendar/CalendarSchedule';
+import SeasonSchedule from '@/components/Calendar/Season/SeasonSchedule';
+import AiringScheduleSettingsModal from '@/components/Calendar/Settings/AiringScheduleSettingsModal';
 import useAiringScheduleParams from '@/hooks/useAiringScheduleParams';
 
 const AiringSchedule = () => {
