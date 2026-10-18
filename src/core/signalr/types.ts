@@ -1,3 +1,5 @@
+import type { RestartReasonType } from '@/core/types/api/init';
+
 export type QueueItemType = {
   Key: string;
   Type: string;
@@ -125,6 +127,6 @@ export type SeriesUpdateEventType = {
   ShokoSeriesIDs: number[];
 };
 
-export type RestartRequiredType = {
-  RequiresRestart: boolean;
+export type RestartReasonsEventType = {
+  Reasons: RestartReasonType[];
 };

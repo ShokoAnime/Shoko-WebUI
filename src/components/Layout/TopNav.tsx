@@ -38,6 +38,7 @@ import Button from '@/components/Input/Button';
 import ExternalLinkMenuItem from '@/components/Layout/ExternalLinkMenuItem';
 import LinkMenuItem from '@/components/Layout/LinkMenuItem';
 import MenuItem from '@/components/Layout/MenuItem';
+import RestartNotice from '@/components/RestartNotice';
 import ShokoIcon from '@/components/ShokoIcon';
 import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
@@ -134,6 +135,7 @@ const TopNav = () => {
             <span className="mt-1 text-2xl font-semibold text-header-text">Shoko</span>
           </Link>
           <div className="flex items-center gap-x-6">
+            <RestartNotice />
             <QueueCount />
             <div className="flex items-center gap-x-2">
               <div className="mr-1 flex size-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">

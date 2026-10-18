@@ -16,6 +16,7 @@ import {
   setHttpBanStatus,
   setNetworkStatus,
   setQueueStatus,
+  setRestartReasons,
   setUdpBanStatus,
 } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
@@ -27,7 +28,7 @@ import type {
   AniDBBanItemType,
   NetworkAvailabilityValues,
   QueueStatusType,
-  RestartRequiredType,
+  RestartReasonsEventType,
   SeriesUpdateEventType,
 } from '@/core/signalr/types';
 import type store from '@/core/store';
@@ -73,21 +74,10 @@ const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniD
   dispatch(setHttpBanStatus(state));
 };
 
-let restartToastId: number | string | undefined;
+// Restart Events, shown by RestartNotice
 
-const onRestartRequiredUpdate = (getState: () => RootState) => (state: RestartRequiredType) => {
-  // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then
-  if (getState().serverLifecycle.action !== 'idle') return;
-  if (state.RequiresRestart) {
-    if (restartToastId) return;
-    restartToastId = toast.info('Restart required!', 'A restart is pending. Please restart the application.', {
-      autoClose: false,
-      position: 'top-right',
-    });
-  } else {
-    if (restartToastId) toast.dismiss(restartToastId);
-    restartToastId = undefined;
-  }
+const onRestartReasonsUpdate = (dispatch: typeof store.dispatch) => (state: RestartReasonsEventType) => {
+  dispatch(setRestartReasons(state.Reasons));
 };
 
 // Network Events
@@ -138,7 +128,7 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration';
+      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,restart';
 
       const protocol = new JsonHubProtocol();
 
@@ -160,7 +150,7 @@ async (action: UnknownAction) => {
         .build();
 
       // event handlers, you can use these to dispatch actions to update your Redux store
-      connectionEvents.on('Queue:connected', onQueueConnected(dispatch));
+      connectionEvents.on('queue:connected', onQueueConnected(dispatch));
       connectionEvents.on('queue:state.changed', onQueueStateChange(dispatch));
 
       connectionEvents.on('anidb:connected', onAniDBConnected(dispatch));
@@ -191,8 +181,8 @@ async (action: UnknownAction) => {
       connectionEvents.on('metadata:series.updated', onSeriesEvent);
       connectionEvents.on('metadata:series.removed', onSeriesEvent);
 
-      connectionEvents.on('configuration:connected', onRestartRequiredUpdate(getState));
-      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate(getState));
+      connectionEvents.on('restart:connected', onRestartReasonsUpdate(dispatch));
+      connectionEvents.on('restart:reasonsChanged', onRestartReasonsUpdate(dispatch));
 
       connectionEvents.onreconnecting(() => {
         // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then

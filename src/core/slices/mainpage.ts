@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { AniDBBanItemType, NetworkAvailabilityValues, QueueStatusType } from '@/core/signalr/types';
+import type { RestartReasonType } from '@/core/types/api/init';
 import type { SliceActions } from '@/core/types/util';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
@@ -14,6 +15,7 @@ type State = {
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
   networkStatus: NetworkAvailabilityValues;
+  restartReasons: RestartReasonType[];
   layoutEditMode: boolean;
 };
 
@@ -40,6 +42,7 @@ const initialState: State = {
     },
   } as AniDBBanType,
   networkStatus: 'Internet',
+  restartReasons: [],
   layoutEditMode: false,
 };
 
@@ -72,6 +75,9 @@ const mainpageSlice = createSlice({
     setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailabilityValues>) {
       sliceState.networkStatus = action.payload;
     },
+    setRestartReasons(sliceState, action: PayloadAction<RestartReasonType[]>) {
+      sliceState.restartReasons = action.payload;
+    },
   },
 });
 
@@ -82,6 +88,7 @@ export const {
   setLayoutEditMode,
   setNetworkStatus,
   setQueueStatus,
+  setRestartReasons,
   setUdpBanStatus,
 } = mainpageSlice.actions;
 

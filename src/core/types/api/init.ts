@@ -42,3 +42,14 @@ export type VersionType = {
   };
   WebUI?: ComponentVersionType;
 };
+
+export type RestartReasonSourceValues = 'Configuration' | 'PluginState' | 'Plugin';
+
+export type RestartReasonType = {
+  Source: RestartReasonSourceValues;
+  PluginID: string;
+  PluginName?: string;
+  Key: string;
+  Description: string;
+  RaisedAt: string;
+};
