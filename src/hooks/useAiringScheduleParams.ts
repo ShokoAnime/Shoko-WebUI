@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router';
+import type { NavigateOptions } from 'react-router';
 
 import { dayjs } from '@/core/util';
 import { AIRING_KINDS, CALENDAR_VIEWS, DAY_KEY_FORMAT } from '@/core/utilities/airingSchedule';
@@ -10,7 +11,7 @@ const useAiringScheduleParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const dateParam = searchParams.get('date');
 
-  const setParams = (changes: Record<string, string | null>) =>
+  const setParams = (changes: Record<string, string | null>, options?: NavigateOptions) =>
     setSearchParams((current) => {
       const params = new URLSearchParams(current);
       for (const [key, value] of Object.entries(changes)) {
@@ -18,9 +19,10 @@ const useAiringScheduleParams = () => {
         else params.set(key, value);
       }
       return params;
-    });
+    }, options);
 
   return {
+    isBrowsing: searchParams.get('browse') === 'true',
     date: dateParam && dayjs(dateParam, DAY_KEY_FORMAT, true).isValid() ? dayjs(dateParam, DAY_KEY_FORMAT) : null,
     hideEstimates: searchParams.get('hideEstimates') === 'true',
     kind: AIRING_KINDS.find(kind => kind === searchParams.get('kind')) ?? 'All',

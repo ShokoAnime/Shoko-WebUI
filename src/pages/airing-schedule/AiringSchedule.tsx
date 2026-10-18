@@ -41,6 +41,7 @@ const AiringSchedule = () => {
   const {
     date: dateParam,
     hideEstimates,
+    isBrowsing,
     kind,
     provider: providerId,
     scope,
@@ -129,6 +130,10 @@ const AiringSchedule = () => {
   ) => (currentSeason && isSameSeason(key, currentSeason) ? null : seasonKeyToValue(key));
   const periodUnit = getPeriodUnit(calendarView);
 
+  // Opening the season browser adds a history entry, so Back closes it; closing and picking replace it.
+  const handleBrowseToggle = () => setParams({ browse: isBrowsing ? null : 'true' }, { replace: isBrowsing });
+  const handleSeasonChange = (key: SeasonKey) => setParams({ season: toSeasonParam(key) });
+
   const handleStep = (offset: 1 | -1) => {
     if (!isSeasonView) setParams({ date: toDateParam(date.add(offset, periodUnit)) });
     else if (season) setParams({ season: toSeasonParam(shiftSeason(season, offset)) });
@@ -164,10 +169,15 @@ const AiringSchedule = () => {
           {isSeasonView
             ? (
               <SeasonView
+                isBrowsing={isBrowsing}
                 isError={seasonsQuery.isError || sectionsQuery.isError}
                 isPending={seasonsQuery.isPending || (!!season && sectionsQuery.isPending)}
                 now={now}
+                onBrowseToggle={handleBrowseToggle}
                 onRetry={handleRefresh}
+                onSeasonChange={handleSeasonChange}
+                season={season}
+                seasons={seasons}
                 sections={sections}
                 showCollectionBadge={scope === 'all'}
               />
