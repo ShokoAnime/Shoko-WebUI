@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { Link, NavLink, useLocation } from 'react-router';
 import {
+  mdiCalendarMonthOutline,
   mdiCogOutline,
   mdiDownloadCircleOutline,
   mdiFileDocumentAlertOutline,
@@ -188,6 +189,12 @@ const TopNav = () => {
                 onClick={closeModalsAndSubmenus}
                 path="collection"
                 text="Collection"
+              />
+              <LinkMenuItem
+                icon={mdiCalendarMonthOutline}
+                onClick={closeModalsAndSubmenus}
+                path="airing-schedule"
+                text="Schedule"
               />
               <MenuItem
                 id="utilities"
