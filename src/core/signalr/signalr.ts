@@ -9,7 +9,6 @@ import {
 import { throttle } from 'lodash';
 
 import Events from '@/core/events';
-import queryClient from '@/core/react-query/queryClient';
 import { handleEvent } from '@/core/signalr/eventHandlers';
 import {
   resetQueueStatus,
@@ -17,6 +16,7 @@ import {
   setHttpBanStatus,
   setNetworkStatus,
   setQueueStatus,
+  setRestartReasons,
   setUdpBanStatus,
 } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
@@ -76,8 +76,8 @@ const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniD
 
 // Restart Events, shown by RestartNotice
 
-const onRestartReasonsUpdate = (state: RestartReasonsEventType) => {
-  queryClient.setQueryData(['init', 'restart-reasons'], state.Reasons);
+const onRestartReasonsUpdate = (dispatch: typeof store.dispatch) => (state: RestartReasonsEventType) => {
+  dispatch(setRestartReasons(state.Reasons));
 };
 
 // Network Events
@@ -181,8 +181,8 @@ async (action: UnknownAction) => {
       connectionEvents.on('metadata:series.updated', onSeriesEvent);
       connectionEvents.on('metadata:series.removed', onSeriesEvent);
 
-      connectionEvents.on('restart:connected', onRestartReasonsUpdate);
-      connectionEvents.on('restart:reasonsChanged', onRestartReasonsUpdate);
+      connectionEvents.on('restart:connected', onRestartReasonsUpdate(dispatch));
+      connectionEvents.on('restart:reasonsChanged', onRestartReasonsUpdate(dispatch));
 
       connectionEvents.onreconnecting(() => {
         // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then

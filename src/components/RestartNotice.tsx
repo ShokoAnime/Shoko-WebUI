@@ -6,7 +6,7 @@ import { isAxiosError } from 'axios';
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useServerRestartMutation } from '@/core/react-query/init/mutations';
-import { useRestartReasonsQuery, useServerStatusQuery } from '@/core/react-query/init/queries';
+import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { clearAction, setAction } from '@/core/slices/serverLifecycle';
 import { useDispatch, useSelector } from '@/core/store';
@@ -34,7 +34,7 @@ const isNetworkError = (error: unknown) =>
 const RestartNotice = () => {
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
-  const reasons = useRestartReasonsQuery(true).data ?? [];
+  const reasons = useSelector(state => state.mainpage.restartReasons);
   const isIdle = useSelector(state => state.serverLifecycle.action === 'idle');
   const isAdmin = useCurrentUserQuery().data?.IsAdmin;
   const canRestart = useServerStatusQuery().data?.CanRestart;
