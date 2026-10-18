@@ -45,3 +45,11 @@ export type PluginPageType = {
 export type SharedPluginPageType = PluginPageType & {
   PluginInfo: PluginInfoType;
 };
+
+export type PluginFeatureType = {
+  PluginID: string;
+  Name: string;
+  Version: string;
+  Visibility: 'Anonymous' | 'Authenticated' | 'Admin';
+  Metadata: Record<string, unknown> | null;
+};

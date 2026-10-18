@@ -3,12 +3,19 @@ import { useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 
 import type { PluginListFilterType } from '@/core/react-query/plugin/types';
-import type { PluginInfoType, PluginPageType, SharedPluginPageType } from '@/core/types/api/plugin';
+import type { PluginFeatureType, PluginInfoType, PluginPageType, SharedPluginPageType } from '@/core/types/api/plugin';
 
 export const usePluginsQuery = (filters: PluginListFilterType, enabled = true) =>
   useQuery<PluginInfoType[]>({
     queryKey: ['plugin', 'list', filters],
     queryFn: () => axios.get('Plugin', { params: filters }),
+    enabled,
+  });
+
+export const usePluginFeaturesQuery = (enabled = true) =>
+  useQuery<PluginFeatureType[]>({
+    queryKey: ['plugin', 'features'],
+    queryFn: () => axios.get('Plugin/Features'),
     enabled,
   });
 
