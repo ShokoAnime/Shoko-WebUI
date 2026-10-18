@@ -130,3 +130,7 @@ export type SeriesUpdateEventType = {
 export type RestartReasonsEventType = {
   Reasons: RestartReasonType[];
 };
+
+export type AiringSweepEventType = {
+  IsFinished: boolean;
+};

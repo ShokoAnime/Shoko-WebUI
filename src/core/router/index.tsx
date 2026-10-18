@@ -10,6 +10,7 @@ import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
+import AiringSchedule from '@/pages/airing-schedule/AiringSchedule';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
 import MetadataLinking from '@/pages/collection/series/MetadataLinking';
@@ -92,6 +93,7 @@ const router = sentryCreateBrowserRouter(
         >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="airing-schedule" element={<AiringSchedule />} />
           <Route path="utilities">
             <Route index element={<Navigate to="unrecognized" replace />} />
             <Route path="unrecognized" element={<Navigate to="files" replace />} />
