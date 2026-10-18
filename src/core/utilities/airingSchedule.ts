@@ -1,7 +1,9 @@
 import { range } from 'lodash';
 
 import { dayjs } from '@/core/util';
+import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
+import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
 import type { EpisodeAiringType } from '@/core/types/api/airing-schedule';
 import type { Dayjs } from '@/core/util';
 
@@ -85,3 +87,61 @@ export const formatDaysSince = (day: Dayjs, now: Dayjs) => {
   if (days === 1) return 'Yesterday';
   return `${days} days ago`;
 };
+
+export const UNRESOLVED_AIRING_HINT = 'Not on AniDB yet';
+
+export const getAiringEpisodeLabel = (airing: EpisodeAiringType) => {
+  if (!airing.IsResolved) return airing.Number === null ? '' : `Ep ${airing.Number}`;
+  const number = airing.Number === null ? null : `${getEpisodePrefix(airing.Type ?? undefined)}${airing.Number}`;
+  if (number && airing.EpisodeTitle) return `${number} - ${airing.EpisodeTitle}`;
+  return number ?? airing.EpisodeTitle ?? '';
+};
+
+export const getAiringSeriesIds = (airing: EpisodeAiringType) => ({
+  anidbId: airing.Series?.AnidbID ?? airing.IDs.AnidbAnime,
+  shokoId: airing.Series?.ShokoID ?? airing.IDs.ShokoSeries,
+});
+
+export type AgendaRowType =
+  | { type: 'day', key: string, day: Dayjs, isDayEnd: boolean }
+  | { type: 'entry', key: string, entry: CalendarEntryType, isStriped: boolean, isDayEnd: boolean };
+
+export const getAgendaRows = (start: Dayjs, end: Dayjs, entries: Map<string, CalendarEntryType[]>) =>
+  getPeriodDays(start, end).flatMap((day): AgendaRowType[] => {
+    const dayKey = day.format(DAY_KEY_FORMAT);
+    const dayEntries = entries.get(dayKey);
+    if (!dayEntries) return [];
+    return [
+      { type: 'day', key: dayKey, day, isDayEnd: dayEntries.length === 0 },
+      ...dayEntries.map((entry, index) => ({
+        type: 'entry' as const,
+        key: `${dayKey}-${entry.airing.ID}`,
+        entry,
+        isStriped: index % 2 === 1,
+        isDayEnd: index === dayEntries.length - 1,
+      })),
+    ];
+  });
+
+const SLOT_FORMAT = 'ddd, MMM D, HH:mm';
+
+export const getEntryBadges = ({ airing, movedFrom, movedTo }: CalendarEntryType) => {
+  const badges: { text: string, tooltip: string, warning?: boolean }[] = [];
+  if (movedTo) badges.push({ text: 'Moved', tooltip: `Moved to ${movedTo.format(SLOT_FORMAT)}`, warning: true });
+  if (movedFrom) {
+    badges.push({ text: 'Delayed', tooltip: `Delayed from ${movedFrom.format(SLOT_FORMAT)}`, warning: true });
+  }
+  if (airing.Kind === 'Advance') badges.push({ text: 'Advance', tooltip: 'An advance screening' });
+  if (airing.Kind === 'Rerun') badges.push({ text: 'Rerun', tooltip: 'A rerun, as the provider marked it' });
+  if (airing.Kind === 'DetectedRerun') badges.push({ text: 'Rerun', tooltip: 'A rerun, as Shoko detected it' });
+  if (airing.IsEstimated) badges.push({ text: 'Estimated', tooltip: 'Estimated from the schedule' });
+  return badges;
+};
+
+export const formatEntryTime = (entry: CalendarEntryType) => (entry.isAllDay ? 'All Day' : entry.time.format('HH:mm'));
+
+export const getEntrySource = (
+  { IsDateOnly, Source }: EpisodeAiringType,
+) => (IsDateOnly ? 'AniDB air date' : (Source?.Name ?? ''));
+
+export const formatLocalFiles = (count: number) => `${count} local ${count === 1 ? 'file' : 'files'}`;
