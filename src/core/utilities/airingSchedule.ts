@@ -5,7 +5,8 @@ import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { CalendarEntryType } from '@/core/react-query/airing-schedule/types';
 import type { AiringKindType, EpisodeAiringType } from '@/core/types/api/airing-schedule';
-import type { SeasonAnimeType, SeasonSectionType } from '@/core/types/api/airing-season';
+import type { SeasonAnimeType, SeasonSectionDefinitionType, SeasonSectionType } from '@/core/types/api/airing-season';
+import type { AnimeTypeValues } from '@/core/types/api/series';
 import type { Dayjs } from '@/core/util';
 
 export type CalendarViewType = 'month' | 'week' | 'agenda';
@@ -187,4 +188,29 @@ export const getSeasonAnimeLabel = (anime: SeasonAnimeType, now: Dayjs) => {
   if (airDate && dayjs(airDate).isAfter(now)) return `Starts ${formatDate(airDate)}`;
   if (airDate) return `Airing since ${formatDate(airDate)}`;
   return 'Air date unknown';
+};
+
+export const ANIME_TYPE_OPTIONS: { label: string, value: AnimeTypeValues }[] = [
+  { label: 'TV', value: 'TV' },
+  { label: 'TV Special', value: 'TVSpecial' },
+  { label: 'Web', value: 'Web' },
+  { label: 'Movie', value: 'Movie' },
+  { label: 'OVA', value: 'OVA' },
+  { label: 'Music Video', value: 'MusicVideo' },
+  { label: 'Other', value: 'Other' },
+  { label: 'Unknown', value: 'Unknown' },
+];
+
+/** A section without a condition takes every anime no earlier section took, so none reaches a section after it. */
+export const isRestSection = (section: SeasonSectionDefinitionType) =>
+  section.Types === null && section.Continuing === null && section.HalfLength === null;
+
+export const getSectionSummary = (section: SeasonSectionDefinitionType) => {
+  const types = section.Types === null
+    ? 'Every type'
+    : section.Types.map(type => ANIME_TYPE_OPTIONS.find(option => option.value === type)?.label ?? type).join(', ');
+  const parts = [types];
+  if (section.Continuing !== null) parts.push(section.Continuing ? 'Continuing' : 'Not continuing');
+  if (section.HalfLength !== null) parts.push(section.HalfLength ? 'Half length' : 'Full length');
+  return parts.join(' · ');
 };

@@ -89,3 +89,10 @@ export const useAiringSeasonsByYearQuery = (
     staleTime: 60 * 60_000,
     enabled,
   });
+
+export const useAiringSeasonSectionDefaultsQuery = () =>
+  useQuery<SeasonSectionDefinitionType[]>({
+    queryKey: ['airing-schedule', 'season-section-defaults'],
+    queryFn: () => axios.get('AiringSchedule/Season/Sections/Default'),
+    staleTime: INFINITE_STALE_TIME,
+  });

@@ -1,4 +1,4 @@
-import { mdiCalendarToday, mdiChevronLeft, mdiChevronRight, mdiRefresh } from '@mdi/js';
+import { mdiCalendarToday, mdiChevronLeft, mdiChevronRight, mdiCog, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import AiringFilters from '@/components/AiringSchedule/AiringFilters';
@@ -13,6 +13,7 @@ type Props = {
   isRefreshing: boolean;
   nextDisabledReason?: string;
   onRefresh: () => void;
+  onSettings: () => void;
   onStep: (offset: 1 | -1) => void;
   onToday: () => void;
   providers: AiringScheduleProviderType[];
@@ -30,7 +31,7 @@ const groupClassName =
   'flex items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-2 py-2';
 
 const AiringToolbar = (
-  { isRefreshing, nextDisabledReason, onRefresh, onStep, onToday, providers, unit }: Props,
+  { isRefreshing, nextDisabledReason, onRefresh, onSettings, onStep, onToday, providers, unit }: Props,
 ) => {
   const { setParams, view } = useAiringScheduleParams();
 
@@ -64,6 +65,9 @@ const AiringToolbar = (
             <Icon path={mdiChevronRight} size={1} className="text-panel-icon-action" />
           </Button>
         </div>
+        <Button buttonType="secondary" className="self-center p-3" onClick={onSettings} tooltip="Settings">
+          <Icon path={mdiCog} size={0.8333} />
+        </Button>
       </div>
     </div>
   );

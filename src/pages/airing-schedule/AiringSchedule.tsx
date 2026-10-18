@@ -1,6 +1,8 @@
 import { useHotkeys } from 'react-hotkeys-hook';
-import { maxBy, sumBy } from 'lodash';
+import { clamp, maxBy, sumBy } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
+import AiringScheduleSettingsModal from '@/components/AiringSchedule/AiringScheduleSettingsModal';
 import AiringToolbar from '@/components/AiringSchedule/AiringToolbar';
 import CalendarContent from '@/components/AiringSchedule/CalendarContent';
 import SeasonView from '@/components/AiringSchedule/SeasonView';
@@ -50,7 +52,10 @@ const AiringSchedule = () => {
     showReruns,
     view,
   } = useAiringScheduleParams();
-  const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
+  const webuiSettings = useSettingsQuery().data.WebUI_Settings;
+  const { hideR18Content } = webuiSettings.dashboard;
+  const { episodeTypes, oldestSeasonYear, recentlyAired, sections: layout } = webuiSettings.airingSchedule;
+  const [showSettings, toggleSettings] = useToggle(false);
   const now = useNow();
   const isSeasonView = view === 'season';
   // The date navigation works on the week while the season view is shown.
@@ -82,24 +87,35 @@ const AiringSchedule = () => {
     includeDateOnly: true,
     includeEstimates: !hideEstimates,
     episodeKind: showReruns ? undefined : ['Normal', 'Advance'],
+    type: episodeTypes ?? undefined,
     include: ['EpisodeTitle', 'Series', 'Poster'],
   }, !isSeasonView && isReady);
   const entries = calendarQuery.data ?? noEntries;
   const entryCount = sumBy([...entries.values()], day => day.length);
 
   // The server says which season is under way, and lists up to the one after it.
-  const seasonsQuery = useAiringSeasonsByYearQuery(filters, null, isSeasonView);
+  const seasonsQuery = useAiringSeasonsByYearQuery(
+    { ...filters, fromYear: oldestSeasonYear ?? undefined },
+    layout,
+    isSeasonView,
+  );
   const seasons = seasonsQuery.data?.flatMap(item => item.seasons) ?? [];
   const currentSeason = seasons.find(item => item.isCurrent)?.key;
   const lastSeason = maxBy(seasons, item => getSeasonIndex(item.key))?.key;
   const browserQuery = useAiringSeasonsByYearQuery(
-    { ...filters, include: ['Images'] },
-    null,
+    { ...filters, fromYear: oldestSeasonYear ?? undefined, include: ['Images'] },
+    layout,
     isSeasonView && isBrowsing,
   );
   const season = seasonParam ?? currentSeason;
   const isLastSeason = !season || !lastSeason || getSeasonIndex(season) >= getSeasonIndex(lastSeason);
 
+  // With the look back on, the season under way and the one before it are read as of that long ago, so a card keeps
+  // an episode that aired since. The hour steps on, which reads the season again.
+  const seasonsFromCurrent = season && currentSeason ? getSeasonIndex(season) - getSeasonIndex(currentSeason) : null;
+  const asOf = recentlyAired.enabled && (seasonsFromCurrent === 0 || seasonsFromCurrent === -1)
+    ? now.subtract(clamp(recentlyAired.hours, 1, 24), 'hour').startOf('hour').format()
+    : undefined;
   const sectionsQuery = useAiringSeasonSectionsQuery(
     season,
     {
@@ -108,9 +124,10 @@ const AiringSchedule = () => {
       provider: provider && [provider.ID],
       includeEstimates: !hideEstimates,
       episodeKind: showReruns ? ['Normal', 'Advance', 'Rerun', 'DetectedRerun'] : ['Normal', 'Advance'],
+      episodeType: episodeTypes ?? undefined,
     },
-    null,
-    undefined,
+    layout,
+    asOf,
     isSeasonView && isReady,
   );
   const sections = sectionsQuery.data ?? [];
@@ -167,6 +184,7 @@ const AiringSchedule = () => {
             isRefreshing={isRefreshing}
             nextDisabledReason={isSeasonView && isLastSeason ? 'Later seasons are not announced yet' : undefined}
             onRefresh={handleRefresh}
+            onSettings={toggleSettings}
             onStep={handleStep}
             onToday={() => setParams(isSeasonView ? { season: null } : { date: null })}
             providers={providers}
@@ -214,6 +232,8 @@ const AiringSchedule = () => {
             )}
         </div>
       </div>
+
+      <AiringScheduleSettingsModal show={showSettings} onClose={toggleSettings} />
     </>
   );
 };
