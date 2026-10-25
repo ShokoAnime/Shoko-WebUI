@@ -59,9 +59,24 @@ export const saveState = (state: RootState) => {
 };
 
 export const clearSessionStorage = () => {
-  globalThis.sessionStorage.clear();
+  try {
+    globalThis.sessionStorage.clear();
+  } catch (_) { // Ignore storage errors, nothing was persisted.
+  }
 };
 
 export const clearApiSession = () => {
-  globalThis.localStorage.removeItem('apiSession');
+  try {
+    globalThis.localStorage.removeItem('apiSession');
+  } catch (_) { // Ignore storage errors, nothing was persisted.
+  }
+};
+
+// Browsers can throw on any storage access (e.g. Firefox's NS_ERROR_FAILURE when site storage is unusable).
+export const getStoredTheme = () => {
+  try {
+    return globalThis.localStorage.getItem('theme');
+  } catch (_) {
+    return null;
+  }
 };

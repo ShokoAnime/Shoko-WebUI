@@ -1,4 +1,3 @@
-/* global globalThis */
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
@@ -6,6 +5,7 @@ import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import ReleaseManagementSeriesDetail from '@/components/Utilities/ReleaseManagement/ReleaseManagementSeriesDetail';
+import { getStoredTheme } from '@/core/localStorage';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
@@ -164,9 +164,7 @@ const Router = () => {
   const [bodyVisible, setBodyVisible] = useState(false);
 
   useEffect(() => {
-    document.body.className = `${
-      apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme || theme)
-    } theme-shoko-gray`;
+    document.body.className = `${apikey === '' ? getStoredTheme() : (webuiPreviewTheme || theme)} theme-shoko-gray`;
     const timeoutId = setTimeout(() => {
       if (bodyRef.current) {
         bodyRef.current.style.visibility = 'initial';
