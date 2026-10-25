@@ -18,10 +18,12 @@ const RECOVERY_THROTTLE_MS = 5000;
 // later commit's removeChild/insertBefore then targets a node that's already gone. It isn't caused by our code —
 // seen on unrelated screens with frequent re-renders, e.g. /webui/firstrun/start-server (status polling) and
 // /webui/collection/filter/live (debounced search) — so we recover instead of showing the crash page.
+// Chrome and Firefox word the message differently ("Failed to execute 'insertBefore' on 'Node': …" vs
+// "Node.insertBefore: …"), so match the part they share.
 const isRecoverableDomRaceError = (error: unknown): error is Error =>
   error instanceof Error
   && error.name === 'NotFoundError'
-  && /Failed to execute '(removeChild|insertBefore)' on 'Node'/.test(error.message);
+  && error.message.includes('not a child of this node');
 
 type RaceRecoveryFallbackProps = {
   error?: Error;
