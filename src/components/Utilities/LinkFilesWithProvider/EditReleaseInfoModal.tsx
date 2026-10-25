@@ -110,6 +110,8 @@ const Title = ({ selectedLinks }: { selectedLinks: ManualLinkType[] }) => {
   );
 };
 
+const FULL_PERCENTAGE_RANGE = { PercentageStart: 0, PercentageEnd: 100 };
+
 const buildConcreteEpisodeOptions = (episodes: AniDBEpisodeType[], selectedEpisodeIds: number[], rowIdx: number) =>
   map(episodes, episode => ({
     label: episode.Title,
@@ -181,6 +183,18 @@ const EditReleaseInfoModal = (props: Props) => {
   ];
 
   const episodeRows = formState.selectedEpisodeIds.length ? formState.selectedEpisodeIds : [0];
+
+  // The part of an episode a file covers can only be edited for one file at a time
+  const isSingleFile = selectedLinks.length === 1;
+
+  const getPercentageRange = (episodeId: number) => formState.percentageRanges[episodeId] ?? FULL_PERCENTAGE_RANGE;
+
+  const getValidPercentageRange = (episodeId: number) => {
+    const { PercentageEnd, PercentageStart } = getPercentageRange(episodeId);
+    return PercentageStart === '' || PercentageEnd === '' || PercentageStart >= PercentageEnd
+      ? undefined
+      : { PercentageEnd, PercentageStart };
+  };
 
   const seriesName = hasDifferent.series
     ? 'Multiple series selected'
@@ -277,6 +291,20 @@ const EditReleaseInfoModal = (props: Props) => {
     });
   };
 
+  const handlePercentageChange = (
+    episodeId: number,
+    field: 'PercentageEnd' | 'PercentageStart',
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    markTouched('CrossReferences');
+    setFormState((draft) => {
+      draft.percentageRanges[episodeId] = {
+        ...(draft.percentageRanges[episodeId] ?? FULL_PERCENTAGE_RANGE),
+        [field]: Number.isNaN(event.target.valueAsNumber) ? '' : event.target.valueAsNumber,
+      };
+    });
+  };
+
   const handleReleaseGroupChange = (group?: ReleaseGroupType) => {
     markTouched('Group');
     setHasDifferent((draft) => {
@@ -367,7 +395,9 @@ const EditReleaseInfoModal = (props: Props) => {
   const saveDisabled = !show
     || touchedFields.size === 0
     || formState.selectedEpisodeIds.slice(1).some(episodeId => episodeId <= 0)
-    || (formState.selectedEpisodeIds[0] === RANGE_FILL_EPISODE_ID && !formState.rangeFill);
+    || (formState.selectedEpisodeIds[0] === RANGE_FILL_EPISODE_ID && !formState.rangeFill)
+    || (isSingleFile
+      && formState.selectedEpisodeIds.some(episodeId => episodeId > 0 && !getValidPercentageRange(episodeId)));
 
   const handleSave = () => {
     if (saveDisabled) return;
@@ -408,6 +438,14 @@ const EditReleaseInfoModal = (props: Props) => {
         episodeIds = [firstEpisodeId];
       }
 
+      const percentageRanges: CrossReferenceType['percentageRanges'] = {};
+      if (isSingleFile) {
+        for (const episodeId of filter(episodeIds, id => id > 0)) {
+          const percentageRange = getValidPercentageRange(episodeId);
+          if (percentageRange) percentageRanges[episodeId] = percentageRange;
+        }
+      }
+
       crossReference = {
         seriesId: formState.selectedSeriesId,
         episodeIds,
@@ -415,6 +453,7 @@ const EditReleaseInfoModal = (props: Props) => {
         ...(firstEpisodeId === RANGE_FILL_EPISODE_ID && formState.rangeFill
           ? { rangeFill: formState.rangeFill }
           : {}),
+        percentageRanges,
       };
     }
 
@@ -515,6 +554,35 @@ const EditReleaseInfoModal = (props: Props) => {
                         disabled={hasDifferent.series}
                       />
                     </div>
+
+                    {isSingleFile && rowValue > 0 && (
+                      <div
+                        className="flex items-center gap-x-1"
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content="The part of the episode this file covers"
+                      >
+                        <InputSmall
+                          id={`episode-${rowIdx}-percentage-start`}
+                          type="number"
+                          value={getPercentageRange(rowValue).PercentageStart}
+                          onChange={event => handlePercentageChange(rowValue, 'PercentageStart', event)}
+                          min={0}
+                          max={99}
+                          className="w-16 px-3 py-1 text-center"
+                        />
+                        -
+                        <InputSmall
+                          id={`episode-${rowIdx}-percentage-end`}
+                          type="number"
+                          value={getPercentageRange(rowValue).PercentageEnd}
+                          onChange={event => handlePercentageChange(rowValue, 'PercentageEnd', event)}
+                          min={1}
+                          max={100}
+                          className="w-16 px-3 py-1 text-center"
+                        />
+                        %
+                      </div>
+                    )}
 
                     {rowValue === RANGE_FILL_EPISODE_ID && (
                       <Button onClick={toggleRangeFill} disabled={hasDifferent.series}>

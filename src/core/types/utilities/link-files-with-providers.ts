@@ -1,5 +1,5 @@
 import type { AniDBEpisodeType, EpisodeTypeValues } from '@/core/types/api/episode';
-import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
+import type { FileType, ReleaseCrossReferenceType, ReleaseInfoType } from '@/core/types/api/file';
 
 export type LinkStateType = 'init' | 'searching' | 'ready' | 'submitting' | 'submitted' | 'fetching';
 
@@ -31,6 +31,11 @@ export type CrossReferenceType = {
   episodeIds: number[];
   episodes: AniDBEpisodeType[];
   rangeFill?: RangeFillType;
+  /**
+   * The part of each episode the file covers, by episode ID. Only filled when editing a single file; an episode
+   * without one is covered in full.
+   */
+  percentageRanges: Record<number, Pick<ReleaseCrossReferenceType, 'PercentageEnd' | 'PercentageStart'>>;
 };
 
 export type TouchableField =

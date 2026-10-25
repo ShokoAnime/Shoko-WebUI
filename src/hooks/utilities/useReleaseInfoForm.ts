@@ -11,6 +11,7 @@ type FormState = {
   selectedSeriesId?: number;
   selectedEpisodeIds: number[];
   rangeFill?: RangeFillType;
+  percentageRanges: Record<number, { PercentageStart: number | '', PercentageEnd: number | '' }>;
   version: ReleaseInfoType['Version'] | '';
   isChaptered?: ReleaseInfoType['IsChaptered'];
   isCensored?: ReleaseInfoType['IsCensored'];
@@ -25,6 +26,7 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
 
   const [formState, setFormState] = useImmer<FormState>({
     selectedEpisodeIds: [],
+    percentageRanges: {},
     version: 1,
     source: 'Unknown',
     comment: '',
@@ -87,6 +89,12 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
     setFormState({
       selectedSeriesId: initialSeriesId,
       selectedEpisodeIds: initialEpisodeIds,
+      percentageRanges: Object.fromEntries(
+        first.CrossReferences.map(xref => [
+          xref.AnidbEpisodeID,
+          { PercentageStart: xref.PercentageStart, PercentageEnd: xref.PercentageEnd },
+        ]),
+      ),
       version: hasDifferentVersion ? '' : first.Version,
       isChaptered: first.IsChaptered,
       isCensored: first.IsCensored,
