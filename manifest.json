@@ -115,6 +115,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.154",
+      "minServerVersion": "6.0.0-dev.503",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.154/Shoko-WebUI-v2.6.0-dev.154.zip",
+      "checksum": "sha256:498cb69a29f881aad23db9f496e2982e1d5ef97247cc1ee726f4e9f6b065f016",
+      "commit": "aca1aed67f4f510a36d1ec2d9efa27437c5a4b35",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.503** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.503** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix(error-boundary): recover from the DOM race on Firefox too by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1519\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.153...v2.6.0-dev.154\n"
+    },
+    {
       "version": "2.6.0-dev.153",
       "minServerVersion": "6.0.0-dev.503",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.153/Shoko-WebUI-v2.6.0-dev.153.zip",
