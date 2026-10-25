@@ -21,13 +21,14 @@ import {
 import { clearAction, setAction } from '@/core/slices/serverLifecycle';
 import { useDispatch } from '@/core/store';
 import toast from '@/core/toast';
-import { getUiVersion, isDebug } from '@/core/util';
+import { getUiCommitHash, getUiVersion, isDebug } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 let themeUpdateCounter = 0;
 
 const UI_VERSION = getUiVersion();
+const UI_COMMIT_HASH = getUiCommitHash();
 
 const isNetworkError = (error: unknown): boolean => {
   if (!isAxiosError(error)) return false;
@@ -253,7 +254,7 @@ const GeneralSettings = () => {
                 href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${isDebug() ? '' : 'v'}${UI_VERSION}...master`}
                 rel="noreferrer"
               >
-                {`(${UI_VERSION})`}
+                {`(${UI_COMMIT_HASH})`}
                 <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </a>
             </div>
