@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { mdiInformationOutline, mdiMinus, mdiPencilCircleOutline, mdiPlus, mdiRefresh } from '@mdi/js';
+import { mdiDragVertical, mdiInformationOutline, mdiMinus, mdiPencilCircleOutline, mdiPlus, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { filter, findIndex, map } from 'lodash';
+import { filter, find, findIndex, map } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
+import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
@@ -20,6 +21,7 @@ import { useReleaseInfoReleaseGroupsQuery } from '@/core/react-query/release-inf
 import { useGetSeriesAniDBMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesAniDBEpisodesQuery, useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import toast from '@/core/toast';
+import { extractFileNameFromPath } from '@/core/util';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import { AUTO_MATCH_EPISODE_ID, RANGE_FILL_EPISODE_ID } from '@/core/utilities/releaseInfoHelpers';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
@@ -36,6 +38,7 @@ import type {
   ManualLinkType,
   TouchableField,
 } from '@/core/types/utilities/link-files-with-providers';
+import type { DropResult } from '@hello-pangea/dnd';
 
 type Props = {
   show: boolean;
@@ -112,6 +115,12 @@ const Title = ({ selectedLinks }: { selectedLinks: ManualLinkType[] }) => {
 
 const FULL_PERCENTAGE_RANGE = { PercentageStart: 0, PercentageEnd: 100 };
 
+// An even share of an episode for the part at `index` of `count`
+const getSplitPercentageRange = (index: number, count: number) => ({
+  PercentageStart: Math.round((index * 100) / count),
+  PercentageEnd: Math.round(((index + 1) * 100) / count),
+});
+
 const buildConcreteEpisodeOptions = (episodes: AniDBEpisodeType[], selectedEpisodeIds: number[], rowIdx: number) =>
   map(episodes, episode => ({
     label: episode.Title,
@@ -184,8 +193,9 @@ const EditReleaseInfoModal = (props: Props) => {
 
   const episodeRows = formState.selectedEpisodeIds.length ? formState.selectedEpisodeIds : [0];
 
-  // The part of an episode a file covers can only be edited for one file at a time
+  // The part of an episode a file covers is set by hand for one file; several files can only split it evenly
   const isSingleFile = selectedLinks.length === 1;
+  const canSplit = !isSingleFile && !hasDifferent.series && (formState.selectedEpisodeIds[0] ?? 0) > 0;
 
   const getPercentageRange = (episodeId: number) => formState.percentageRanges[episodeId] ?? FULL_PERCENTAGE_RANGE;
 
@@ -302,6 +312,23 @@ const EditReleaseInfoModal = (props: Props) => {
         ...(draft.percentageRanges[episodeId] ?? FULL_PERCENTAGE_RANGE),
         [field]: Number.isNaN(event.target.valueAsNumber) ? '' : event.target.valueAsNumber,
       };
+    });
+  };
+
+  const handleSplitChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markTouched('CrossReferences');
+    setFormState((draft) => {
+      draft.splitBetweenFiles = event.target.checked;
+    });
+  };
+
+  const handlePartReorder = (result: DropResult) => {
+    if (!result.destination || result.destination.index === result.source.index) return;
+    const destinationIndex = result.destination.index;
+    markTouched('CrossReferences');
+    setFormState((draft) => {
+      const [linkId] = draft.partOrder.splice(result.source.index, 1);
+      draft.partOrder.splice(destinationIndex, 0, linkId);
     });
   };
 
@@ -438,12 +465,19 @@ const EditReleaseInfoModal = (props: Props) => {
         episodeIds = [firstEpisodeId];
       }
 
+      const concreteEpisodeIds = filter(episodeIds, id => id > 0);
       const percentageRanges: CrossReferenceType['percentageRanges'] = {};
       if (isSingleFile) {
-        for (const episodeId of filter(episodeIds, id => id > 0)) {
-          const percentageRange = getValidPercentageRange(episodeId);
-          if (percentageRange) percentageRanges[episodeId] = percentageRange;
-        }
+        percentageRanges[selectedLinks[0].id] = Object.fromEntries(
+          concreteEpisodeIds.map(episodeId => [episodeId, getValidPercentageRange(episodeId) ?? FULL_PERCENTAGE_RANGE]),
+        );
+      } else if (canSplit && formState.splitBetweenFiles) {
+        formState.partOrder.forEach((linkId, index) => {
+          const percentageRange = getSplitPercentageRange(index, formState.partOrder.length);
+          percentageRanges[linkId] = Object.fromEntries(
+            concreteEpisodeIds.map(episodeId => [episodeId, percentageRange]),
+          );
+        });
       }
 
       crossReference = {
@@ -613,6 +647,43 @@ const EditReleaseInfoModal = (props: Props) => {
                 ),
               )}
             </div>
+            {canSplit && (
+              <div className="flex flex-col gap-y-2">
+                <Checkbox
+                  id="release-split"
+                  label="Split each episode evenly between the files"
+                  isChecked={formState.splitBetweenFiles}
+                  onChange={handleSplitChange}
+                  justify
+                />
+                {formState.splitBetweenFiles && (
+                  <DnDList onDragEnd={handlePartReorder}>
+                    {formState.partOrder.map((linkId, index) => {
+                      const { PercentageEnd, PercentageStart } = getSplitPercentageRange(
+                        index,
+                        formState.partOrder.length,
+                      );
+                      const path = find(selectedLinks, ['id', linkId])?.file.Locations[0]?.RelativePath ?? '';
+                      return {
+                        key: linkId.toString(),
+                        item: (
+                          <div
+                            className="mb-2 flex items-center gap-x-2 rounded-lg border border-panel-border bg-panel-input px-4 py-2"
+                            data-tooltip-id="tooltip"
+                            data-tooltip-content={path}
+                          >
+                            <Icon path={mdiDragVertical} size={0.833} className="shrink-0 opacity-65" />
+                            <span className="shrink-0 font-semibold">{`Part ${index + 1}`}</span>
+                            <span className="grow truncate">{extractFileNameFromPath(path).fileName}</span>
+                            <span className="shrink-0 opacity-65">{`${PercentageStart}-${PercentageEnd}%`}</span>
+                          </div>
+                        ),
+                      };
+                    })}
+                  </DnDList>
+                )}
+              </div>
+            )}
             <div className="flex flex-col gap-y-2">
               <span className="font-semibold">Release Group</span>
               <SelectReleaseGroup

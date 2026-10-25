@@ -12,6 +12,8 @@ type FormState = {
   selectedEpisodeIds: number[];
   rangeFill?: RangeFillType;
   percentageRanges: Record<number, { PercentageStart: number | '', PercentageEnd: number | '' }>;
+  splitBetweenFiles: boolean;
+  partOrder: number[];
   version: ReleaseInfoType['Version'] | '';
   isChaptered?: ReleaseInfoType['IsChaptered'];
   isCensored?: ReleaseInfoType['IsCensored'];
@@ -27,6 +29,8 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
   const [formState, setFormState] = useImmer<FormState>({
     selectedEpisodeIds: [],
     percentageRanges: {},
+    splitBetweenFiles: false,
+    partOrder: [],
     version: 1,
     source: 'Unknown',
     comment: '',
@@ -72,6 +76,19 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
         : [AUTO_MATCH_EPISODE_ID];
     }
 
+    // Files sharing their episodes in parts start split, in the order of their parts; the links are already sorted
+    // by path, which breaks the ties
+    const isSplit = isBulk && !hasDifferentEpisodes
+      && selectedLinks.every(link =>
+        link.release.CrossReferences.some(xref => xref.PercentageStart !== 0 || xref.PercentageEnd !== 100)
+      );
+    const partOrder = selectedLinks
+      .toSorted((linkA, linkB) =>
+        (linkA.release.CrossReferences[0]?.PercentageStart ?? 0)
+        - (linkB.release.CrossReferences[0]?.PercentageStart ?? 0)
+      )
+      .map(link => link.id);
+
     const hasDifferentSource = isBulk && !allSame(link => link.Source);
     const hasDifferentVersion = isBulk && !allSame(link => link.Version);
     const hasDifferentComment = isBulk && !allSame(link => link.Comment);
@@ -95,6 +112,8 @@ const useReleaseInfoForm = (selectedLinks: ManualLinkType[], show: boolean) => {
           { PercentageStart: xref.PercentageStart, PercentageEnd: xref.PercentageEnd },
         ]),
       ),
+      splitBetweenFiles: isSplit,
+      partOrder,
       version: hasDifferentVersion ? '' : first.Version,
       isChaptered: first.IsChaptered,
       isCensored: first.IsCensored,

@@ -32,10 +32,13 @@ export type CrossReferenceType = {
   episodes: AniDBEpisodeType[];
   rangeFill?: RangeFillType;
   /**
-   * The part of each episode the file covers, by episode ID. Only filled when editing a single file; an episode
-   * without one is covered in full.
+   * The part of each episode a file covers, by link ID and then episode ID: set by hand for a single file, or split
+   * evenly between several files in part order. An episode without one is covered in full.
    */
-  percentageRanges: Record<number, Pick<ReleaseCrossReferenceType, 'PercentageEnd' | 'PercentageStart'>>;
+  percentageRanges: Record<
+    number,
+    Record<number, Pick<ReleaseCrossReferenceType, 'PercentageEnd' | 'PercentageStart'>>
+  >;
 };
 
 export type TouchableField =

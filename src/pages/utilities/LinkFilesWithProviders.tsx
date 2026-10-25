@@ -218,12 +218,12 @@ const LinkFilesWithProviders = () => {
         const concreteIds = filter(episodeIds, id => id > 0);
         if (crossReference && concreteIds.length) {
           // A file is assumed to cover each of its episodes in full, so an
-          // xref gets the whole 0-100% range unless the form set its range
+          // xref gets the whole 0-100% range unless the form gave it one
           draft[link.id].release.CrossReferences = concreteIds.map(id => ({
             AnidbEpisodeID: id,
             AnidbAnimeID: crossReference.seriesId,
-            PercentageStart: crossReference.percentageRanges[id]?.PercentageStart ?? 0,
-            PercentageEnd: crossReference.percentageRanges[id]?.PercentageEnd ?? 100,
+            PercentageStart: crossReference.percentageRanges[link.id]?.[id]?.PercentageStart ?? 0,
+            PercentageEnd: crossReference.percentageRanges[link.id]?.[id]?.PercentageEnd ?? 100,
           }));
           draft[link.id].state = 'ready';
         }
