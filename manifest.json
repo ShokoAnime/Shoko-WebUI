@@ -115,6 +115,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.155",
+      "minServerVersion": "6.0.0-dev.503",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.155/Shoko-WebUI-v2.6.0-dev.155.zip",
+      "checksum": "sha256:23f0c9f10a1a5e4a098b7cf729b4558acfd62a2d15ef2ff21dc0a36a7e8cc5c5",
+      "commit": "bb86724e4b37cec3656918dcbe6901e1c8e1060f",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.503** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.503** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix(storage): don't crash when the browser's storage is unusable by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1520\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.154...v2.6.0-dev.155\n"
+    },
+    {
       "version": "2.6.0-dev.154",
       "minServerVersion": "6.0.0-dev.503",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.154/Shoko-WebUI-v2.6.0-dev.154.zip",
