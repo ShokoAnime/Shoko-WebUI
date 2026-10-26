@@ -115,6 +115,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.158",
+      "minServerVersion": "6.0.0-dev.503",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.158/Shoko-WebUI-v2.6.0-dev.158.zip",
+      "checksum": "sha256:b79cac2b076adca95ae0d180a92946b728f67b0c72b482d1e740f45b407bdde9",
+      "commit": "b9e3406ddcb66c968aedaaa4085c7c968576ff9b",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.503** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.503** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* feat(settings): edit scheduled action triggers in a modal by @harshithmohan in https://github.com/ShokoAnime/Shoko-WebUI/pull/1521\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.157...v2.6.0-dev.158\n"
+    },
+    {
       "version": "2.6.0-dev.157",
       "minServerVersion": "6.0.0-dev.503",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.157/Shoko-WebUI-v2.6.0-dev.157.zip",
