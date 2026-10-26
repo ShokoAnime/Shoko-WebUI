@@ -10,6 +10,7 @@ import { useServerRestartMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { clearAction, setAction } from '@/core/slices/serverLifecycle';
 import { useDispatch, useSelector } from '@/core/store';
+import { dayjs } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { ServerLifecycleAction } from '@/core/slices/serverLifecycle';
@@ -150,11 +151,15 @@ const StatusPage = () => {
 
   const lastSeenStartedAtRef = useRef(serverStatusQuery.dataUpdatedAt);
   const sawDisruptionRef = useRef(false);
+  const sawOutageRef = useRef(false);
+  // The server process the restart was asked of, to tell it from the one that comes back.
+  const bootstrappedAtBeforeRestartRef = useRef(serverStatusQuery.data?.BootstrappedAt);
 
   const serverState = serverStatusQuery.data?.State;
   const startupMessage = serverStatusQuery.data?.StartupMessage;
   const isDatabaseBlocked = serverStatusQuery.data?.DatabaseBlocked?.Blocked ?? false;
   const blockedReason = serverStatusQuery.data?.DatabaseBlocked?.Reason;
+  const bootstrappedAt = serverStatusQuery.data?.BootstrappedAt;
   const { dataUpdatedAt } = serverStatusQuery;
   const canRestart = serverStatusQuery.data?.CanRestart ?? false;
   const hasFailedMessage = !!startupMessage || isDatabaseBlocked;
@@ -178,6 +183,7 @@ const StatusPage = () => {
   useEffect(() => {
     if (serverStatusQuery.fetchStatus !== 'idle') return;
     if (serverStatusQuery.isError) {
+      sawOutageRef.current = true;
       // oxlint-disable-next-line react/set-state-in-effect -- counts consecutive failed polls; a successful poll resets it (drives the shutdown Phase A -> B transition)
       setConsecutiveErrors(prev => prev + 1);
     } else {
@@ -226,6 +232,27 @@ const StatusPage = () => {
     serverStatusQuery.data?.State,
     serverStatusQuery.isError,
   ]);
+
+  // A restart that ends in a failed start or in first-run setup never reaches Started: stop waiting for it
+  // once the answer comes from a new server process.
+  useEffect(() => {
+    if (lifecycle.action === 'idle') {
+      sawOutageRef.current = false;
+      if (bootstrappedAt) bootstrappedAtBeforeRestartRef.current = bootstrappedAt;
+      return;
+    }
+    if (lifecycle.action !== 'restarting' || serverStatusQuery.isError) return;
+    if (serverState !== 'Failed' && serverState !== 'Waiting') return;
+    const previous = bootstrappedAtBeforeRestartRef.current;
+    // After a page reload nothing of the old process is left to compare with, so go by when it was asked.
+    const bootedAfterRequest = !!bootstrappedAt && lifecycle.initiatedAt !== null
+      && dayjs(bootstrappedAt).valueOf() > lifecycle.initiatedAt;
+    if (
+      sawOutageRef.current || bootedAfterRequest || (!!previous && !!bootstrappedAt && previous !== bootstrappedAt)
+    ) {
+      dispatch(clearAction());
+    }
+  }, [bootstrappedAt, dispatch, lifecycle.action, lifecycle.initiatedAt, serverState, serverStatusQuery.isError]);
 
   useEffect(() => {
     if (serverState === 'Waiting' && lifecycle.action === 'idle') {
@@ -284,7 +311,14 @@ const StatusPage = () => {
             {variant === 'failed'
               ? (
                 <div className="flex flex-col gap-y-4">
-                  {canRestart && <div className="text-lg">{detail.body}</div>}
+                  <div className="text-lg">
+                    {canRestart
+                      ? detail.body
+                      : 'This server cannot restart itself. Restart Shoko Server by hand once the problem is fixed.'}
+                  </div>
+                  <div>
+                    If a plugin is the cause, you can disable, update or uninstall it under Manage Plugins.
+                  </div>
                   <div>
                     Still stuck? Hop on our&nbsp;
                     <a
@@ -321,15 +355,28 @@ const StatusPage = () => {
               </pre>
             )}
 
-            {showButton && (
-              <Button
-                buttonType="primary"
-                buttonSize="normal"
-                loading={buttonPending}
-                onClick={handleButtonClick}
-              >
-                {detail.button}
-              </Button>
+            {(showButton || variant === 'failed') && (
+              <div className="flex gap-x-3">
+                {variant === 'failed' && (
+                  <Button
+                    buttonType="secondary"
+                    buttonSize="normal"
+                    onClick={() => navigate('/webui/plugin-management')}
+                  >
+                    Manage Plugins
+                  </Button>
+                )}
+                {showButton && (
+                  <Button
+                    buttonType="primary"
+                    buttonSize="normal"
+                    loading={buttonPending}
+                    onClick={handleButtonClick}
+                  >
+                    {detail.button}
+                  </Button>
+                )}
+              </div>
             )}
 
             {detail.whisper && <div className="text-sm opacity-65">{detail.whisper}</div>}
