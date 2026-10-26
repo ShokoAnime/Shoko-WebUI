@@ -13,13 +13,12 @@ import {
   daysOfWeek,
   describeMinutes,
   fromTimeInput,
-  getTriggerLabel,
-  getTriggerType,
   maximumIntervalMinutes,
   minutesToTimeSpan,
   parseDaysOfMonth,
   timeSpanToMinutes,
   toTimeInput,
+  triggerTypes,
 } from '@/core/react-query/scheduled-action/helpers';
 
 import type { ScheduledActionTriggerType } from '@/core/types/api/scheduled-action';
@@ -46,8 +45,7 @@ const getUnit = (minutes: number) =>
 
 /** One trigger of a scheduled action, with the fields its type takes. */
 const TriggerEditor = ({ errors, id, minimumMinutes, onChange, onRemove, trigger }: Props) => {
-  const definition = getTriggerType(trigger.Type);
-  const fields = definition?.fields ?? [];
+  const fields = triggerTypes[trigger.Type]?.fields ?? [];
 
   const intervalMinutes = timeSpanToMinutes(trigger.Interval);
   const [unitMinutes, setUnitMinutes] = useState(() => getUnit(intervalMinutes).minutes);
@@ -76,7 +74,7 @@ const TriggerEditor = ({ errors, id, minimumMinutes, onChange, onRemove, trigger
       )}
     >
       <div className="flex items-center justify-between">
-        <span className="font-semibold">{getTriggerLabel(trigger.Type)}</span>
+        <span className="font-semibold">{triggerTypes[trigger.Type]?.label ?? trigger.Type}</span>
         <Button onClick={onRemove} tooltip="Remove Trigger">
           <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
         </Button>

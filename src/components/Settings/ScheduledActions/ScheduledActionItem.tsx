@@ -1,60 +1,42 @@
 import { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
+import { mdiChevronDown, mdiPencilCircleOutline, mdiPlayCircleOutline, mdiStopCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { isEqual, uniqueId } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
 import Button from '@/components/Input/Button';
-import SelectSmall from '@/components/Input/SelectSmall';
 import InsetPanel from '@/components/Panels/InsetPanel';
-import TriggerEditor from '@/components/Settings/ScheduledActions/TriggerEditor';
 import {
-  createTrigger,
   describeMinutes,
   describeNextRun,
   describeTrigger,
   formatRunTime,
   getStateBadge,
-  getValidationErrors,
   isBusy,
   timeSpanToMinutes,
-  triggerTypes,
 } from '@/core/react-query/scheduled-action/helpers';
 import {
   useCancelScheduledActionMutation,
   useInvokeScheduledActionMutation,
-  useResetScheduledActionTriggersMutation,
-  useSetScheduledActionTriggersMutation,
 } from '@/core/react-query/scheduled-action/mutations';
 import toast from '@/core/toast';
-import useSyncedState from '@/hooks/useSyncedState';
 
-import type { ScheduledActionTriggerType, ScheduledActionType } from '@/core/types/api/scheduled-action';
+import type { ScheduledActionType } from '@/core/types/api/scheduled-action';
 
 type Props = {
   action: ScheduledActionType;
+  onEditTriggers: (id: string) => void;
 };
 
-const withKeys = (triggers: ScheduledActionTriggerType[]) => triggers.map(trigger => ({ key: uniqueId(), trigger }));
-
-/** A scheduled action: its state and runs, run now and cancel, and its triggers, edited and saved apart. */
-const ScheduledActionItem = ({ action }: Props) => {
+/** A scheduled action row: its state and runs, run now and cancel, and a read-only accordion of its details. */
+const ScheduledActionItem = ({ action, onEditTriggers }: Props) => {
   const [open, toggleOpen] = useToggle(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
-
-  // Keyed, so a trigger's editor keeps its own inputs when one before it is removed.
-  const [draft, setDraft] = useSyncedState(action.Triggers, withKeys);
-  const draftTriggers = draft.map(item => item.trigger);
-  const isEdited = !isEqual(draftTriggers, action.Triggers);
 
   const { isPending: isInvokePending, mutate: invoke } = useInvokeScheduledActionMutation();
   const { isPending: isCancelPending, mutate: cancel } = useCancelScheduledActionMutation();
-  const { isPending: isSavePending, mutate: saveTriggers } = useSetScheduledActionTriggersMutation();
-  const { isPending: isResetPending, mutate: resetTriggers } = useResetScheduledActionTriggersMutation();
 
   const minimumMinutes = timeSpanToMinutes(action.MinimumInterval);
   const busy = isBusy(action.State);
@@ -64,37 +46,9 @@ const ScheduledActionItem = ({ action }: Props) => {
 
   const handleCancel = () => cancel(action.ID, { onSuccess: () => toast.info(`Cancelling "${action.Name}".`) });
 
-  const handleSave = () => {
-    setErrors({});
-    saveTriggers({ id: action.ID, triggers: draftTriggers }, {
-      onSuccess: () => toast.success(`Triggers of "${action.Name}" saved!`),
-      onError: error => setErrors(getValidationErrors(error)),
-    });
-  };
-
-  const handleReset = () => {
-    setErrors({});
-    resetTriggers(action.ID, {
-      onSuccess: () => toast.success(`Triggers of "${action.Name}" reset to its defaults!`),
-    });
-  };
-
-  const handleDiscard = () => {
-    setErrors({});
-    setDraft(withKeys(action.Triggers));
-  };
-
-  const updateTrigger = (key: string, trigger: ScheduledActionTriggerType) =>
-    setDraft(draft.map(item => (item.key === key ? { key, trigger } : item)));
-
-  const removeTrigger = (key: string) => {
-    setErrors({});
-    setDraft(draft.filter(item => item.key !== key));
-  };
-
-  const addTrigger = (type: string) => {
-    if (!type) return;
-    setDraft([...draft, ...withKeys([createTrigger(type, minimumMinutes)])]);
+  const handleRun = () => {
+    if (action.RequiresConfirmation) setShowConfirm(true);
+    else handleInvoke();
   };
 
   const triggersText = action.Triggers.map(describeTrigger).join(', ');
@@ -103,33 +57,55 @@ const ScheduledActionItem = ({ action }: Props) => {
 
   return (
     <InsetPanel className="flex flex-col">
-      <div className="flex items-center gap-x-3 px-4 py-2">
-        <button
-          type="button"
-          className="flex grow flex-col gap-y-0.5 text-left"
-          onClick={toggleOpen}
-          aria-expanded={open}
-        >
-          <span className="flex items-center gap-x-2">
-            <span className="font-semibold">{action.Name}</span>
-            {badge && <span className={cx('text-sm font-semibold', badge.className)}>{badge.label}</span>}
-          </span>
+      <div className="flex items-center gap-x-2 px-4 py-2">
+        <div className="flex grow flex-col gap-y-0.5">
+          <div className="flex items-center gap-x-2">
+            <div
+              className="truncate font-semibold"
+              data-tooltip-content={action.Name}
+              data-tooltip-id="tooltip"
+            >
+              {action.Name}
+            </div>
+            {badge && (
+              <span className={cx('shrink-0 text-xs font-semibold opacity-65', badge.className)}>{badge.label}</span>
+            )}
+          </div>
           <span className="text-sm opacity-65">{summary}</span>
-        </button>
+        </div>
+
         {busy && action.IsCancellable && (
           <Button onClick={handleCancel} loading={isCancelPending} tooltip="Cancel the current run">
             <Icon className="text-panel-text-danger" path={mdiStopCircleOutline} size={1} />
           </Button>
         )}
+
+        <Button onClick={() => onEditTriggers(action.ID)} tooltip="Edit triggers">
+          <Icon className="text-panel-text-primary" path={mdiPencilCircleOutline} size={1} />
+        </Button>
+
         <Button
-          onClick={() => (action.RequiresConfirmation ? setShowConfirm(true) : handleInvoke())}
+          onClick={handleRun}
           loading={isInvokePending}
           disabled={busy}
           tooltip={busy ? 'A run is already in the queue' : 'Run now'}
         >
           <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
         </Button>
+
+        <Button
+          onClick={toggleOpen}
+          aria-expanded={open}
+          tooltip={open ? 'Hide details' : 'Show details'}
+        >
+          <Icon
+            className={cx('transition-transform', open && 'rotate-180')}
+            path={mdiChevronDown}
+            size={1}
+          />
+        </Button>
       </div>
+
       {action.State === 'Running' && action.Progress !== null && (
         <div className="mx-4 mb-2 h-1 rounded-full bg-panel-background-alt">
           <div
@@ -144,92 +120,23 @@ const ScheduledActionItem = ({ action }: Props) => {
           {action.Description && <div className="text-sm">{action.Description}</div>}
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-            <span className="opacity-65">Last Run</span>
-            <span>{action.LastRunAt ? formatRunTime(action.LastRunAt) : 'Never'}</span>
-            <span className="opacity-65">Last Run by a Trigger</span>
-            <span>{action.LastScheduledRunAt ? formatRunTime(action.LastScheduledRunAt) : 'Never'}</span>
-            <span className="opacity-65">Next Run</span>
-            <span>{nextRunText}</span>
-            <span className="opacity-65">Minimum Interval</span>
-            <span>{describeMinutes(minimumMinutes)}</span>
+            <div className="opacity-65">Last Run</div>
+            <div>{action.LastRunAt ? formatRunTime(action.LastRunAt) : 'Never'}</div>
+
+            <div className="opacity-65">Last Run by a Trigger</div>
+            <div>{action.LastScheduledRunAt ? formatRunTime(action.LastScheduledRunAt) : 'Never'}</div>
+
+            <div className="opacity-65">Next Run</div>
+            <div>{nextRunText}</div>
+
+            <div className="opacity-65">Minimum Interval</div>
+            <div>{describeMinutes(minimumMinutes)}</div>
           </div>
+
           <div className="text-sm opacity-65">
             {action.ScheduleCountsManualRuns
-              ? 'A run by hand counts for the schedule, so the triggers count from the last run of any kind.'
-              : 'The triggers count from the last run a trigger started; a run by hand is not held back.'}
-          </div>
-
-          <div className="flex flex-col gap-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-x-1">
-                Triggers
-                <span className="text-xs opacity-65">
-                  {action.HasCustomTriggers ? '(Your Own)' : '(Defaults)'}
-                </span>
-              </div>
-              <SelectSmall
-                id={`scheduled-action-${action.ID}-add`}
-                value=""
-                onChange={event => addTrigger(event.target.value)}
-              >
-                <option value="" disabled>Add Trigger…</option>
-                {triggerTypes.map(item => <option key={item.type} value={item.type}>{item.label}</option>)}
-              </SelectSmall>
-            </div>
-            {draft.length === 0 && (
-              <div className="text-sm opacity-65">
-                No triggers. It only runs when run by hand.
-              </div>
-            )}
-            {draft.map((item, index) => (
-              <TriggerEditor
-                key={item.key}
-                id={`scheduled-action-${action.ID}-${item.key}`}
-                trigger={item.trigger}
-                minimumMinutes={minimumMinutes}
-                errors={errors[`[${index}]`]}
-                onChange={trigger => updateTrigger(item.key, trigger)}
-                onRemove={() => removeTrigger(item.key)}
-              />
-            ))}
-            {errors['']?.map(error => <div key={error} className="text-sm text-panel-text-danger">{error}</div>)}
-            <div className="text-xs opacity-65">
-              {`Times are in the server's time zone. Daily, weekly and monthly triggers must be at least ${
-                describeMinutes(minimumMinutes)
-              } apart. Defaults: ${
-                action.DefaultTriggers.length > 0 ? action.DefaultTriggers.map(describeTrigger).join(', ') : 'none'
-              }.`}
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-x-3 font-semibold">
-            <Button
-              buttonType="secondary"
-              buttonSize="normal"
-              onClick={handleReset}
-              loading={isResetPending}
-              disabled={!action.HasCustomTriggers || isResetPending || isSavePending}
-              tooltip={action.HasCustomTriggers ? '' : 'The defaults are in effect'}
-            >
-              Reset to Defaults
-            </Button>
-            <Button
-              buttonType="secondary"
-              buttonSize="normal"
-              onClick={handleDiscard}
-              disabled={!isEdited || isSavePending}
-            >
-              Discard
-            </Button>
-            <Button
-              buttonType="primary"
-              buttonSize="normal"
-              onClick={handleSave}
-              loading={isSavePending}
-              disabled={!isEdited || isSavePending}
-            >
-              Save Triggers
-            </Button>
+              ? 'A manual run counts toward the schedule, so the triggers count from the last run of any kind.'
+              : 'The triggers count from the last run a trigger started; a manual run is not held back.'}
           </div>
         </div>
       </AnimateHeight>
