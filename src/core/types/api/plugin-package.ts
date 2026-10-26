@@ -4,9 +4,11 @@ import type { PackageThumbnailInfoType, PluginInfoType } from '@/core/types/api/
 export type PackageRepositoryInfoType = {
   ID: string;
   Name: string;
+  Description?: string | null;
   Url: string;
   LastFetchedAt?: string;
   StaleTime?: string;
+  IsEnabled: boolean;
 };
 
 export type PackageArchiveInfoType = {

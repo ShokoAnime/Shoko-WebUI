@@ -21,6 +21,11 @@ export type AddPackageRepositoryRequestType = {
   staleTime?: string;
 };
 
+export type UpdatePackageRepositoryRequestType = {
+  repositoryId: string;
+  isEnabled: boolean;
+};
+
 export type CheckForPluginUpdatesRequestType = {
   forceSync?: boolean;
   performUpgrade?: boolean;
