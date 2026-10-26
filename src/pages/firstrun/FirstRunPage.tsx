@@ -118,6 +118,7 @@ const FirstRunPage = () => {
               <MenuItem text="Local Account" id="local-account" />
               <MenuItem text="AniDB Account" id="anidb-account" />
               <MenuItem text="Metadata Sources" id="metadata-sources" />
+              <MenuItem text="Plugins" id="plugins" />
               <MenuItem text="Start Server" id="start-server" />
               <MenuItem text="Managed Folders" id="managed-folders" />
               <MenuItem text="Data Collection" id="data-collection" />

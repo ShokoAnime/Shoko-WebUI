@@ -26,5 +26,8 @@ export const usePluginPackageManifestsQuery = (filters: PluginPackageListFilters
 export const usePluginPackageUpdatesQuery = () =>
   useQuery<ListResultType<PluginPackageUpdateInfoType>>({
     queryKey: ['plugin-package', 'updates'],
-    queryFn: () => axios.get('Plugin/Package/Updates', { params: { pageSize: 0 } }),
+    // Inactive plugins too: one that failed or still waits for a restart is not loaded, and updating it is the fix.
+    // Stale repositories are synced on the way, since nothing else syncs them before the server has started.
+    queryFn: () =>
+      axios.get('Plugin/Package/Updates', { params: { allowSync: true, includeInactive: true, pageSize: 0 } }),
   });

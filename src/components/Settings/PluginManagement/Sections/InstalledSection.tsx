@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { mdiLoading, mdiPower, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { map } from 'lodash';
+import { find, map, sortBy } from 'lodash';
 
 import { Badge } from '@/components/Badge';
 import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModal';
@@ -19,7 +19,13 @@ type Props = {
   query: string;
 };
 
-const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
+type PluginProps = {
+  // Another version of the plugin that takes this one's place on the next restart, after an update.
+  pendingVersion?: string;
+  plugin: PluginInfoType;
+};
+
+const Plugin = ({ pendingVersion, plugin }: PluginProps) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [purgeConfiguration, setPurgeConfiguration] = useState(false);
 
@@ -40,7 +46,7 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
           ? <img src={thumbnailUrl} alt={plugin.Name} className="max-h-24 w-44 rounded-lg object-contain" />
           : <div className="size-full rounded-lg bg-panel-background-alt" />}
       </div>
-      <div className="flex grow flex-col gap-y-2">
+      <div className="flex min-w-0 grow flex-col gap-y-2">
         <div className="flex items-center justify-between gap-x-2">
           <div className="flex items-center gap-x-2 text-lg font-semibold">
             {plugin.Name}
@@ -86,10 +92,29 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
           {plugin.Description}
         </div>
 
+        {plugin.HasFailed && (
+          <div className="rounded-lg border border-panel-text-danger px-3 py-2 text-sm wrap-anywhere">
+            <span className="font-semibold text-panel-text-danger">Failed to start:&nbsp;</span>
+            {plugin.FailureReason ?? 'No reason was given. See the server log.'}
+          </div>
+        )}
+
         <div className="flex gap-x-2">
-          {plugin.RestartPending && (
+          {plugin.HasFailed && (
+            <Badge className="bg-panel-text-danger text-button-primary-text">
+              Failed
+            </Badge>
+          )}
+
+          {(!plugin.IsInstalled || !plugin.IsEnabled) && (
+            <Badge className="bg-panel-background-alt">
+              {plugin.IsInstalled ? 'Disabled' : 'Uninstalled'}
+            </Badge>
+          )}
+
+          {(plugin.RestartPending || pendingVersion) && (
             <Badge className="bg-panel-text-warning text-button-primary-text">
-              Restart required
+              {pendingVersion ? `Restart required to load ${pendingVersion}` : 'Restart required'}
             </Badge>
           )}
 
@@ -134,6 +159,8 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
 
 const InstalledSection = ({ query }: Props) => {
   const pluginsQuery = usePluginsQuery({ query });
+  // The list holds one version of each plugin, so an installed update is only found among all versions.
+  const pendingPluginsQuery = usePluginsQuery({ allVersions: true, restartPending: 'only' });
 
   if (pluginsQuery.isPending) {
     return (
@@ -154,13 +181,25 @@ const InstalledSection = ({ query }: Props) => {
     );
   }
 
-  if (pluginsQuery.data?.length === 0) {
+  // Failed plugins first: they are what keeps the server from starting.
+  const plugins = sortBy(pluginsQuery.data, plugin => !plugin.HasFailed);
+
+  if (plugins.length === 0) {
     return <InsetPanel className="p-6">No installed plugins found.</InsetPanel>;
   }
 
   return (
     <div className="flex flex-col gap-y-4">
-      {map(pluginsQuery.data, plugin => <Plugin key={plugin.ID} plugin={plugin} />)}
+      {map(plugins, plugin => (
+        <Plugin
+          key={plugin.ID}
+          plugin={plugin}
+          pendingVersion={find(
+            pendingPluginsQuery.data,
+            pending => pending.ID === plugin.ID && pending.Version !== plugin.Version,
+          )?.Version}
+        />
+      ))}
     </div>
   );
 };
