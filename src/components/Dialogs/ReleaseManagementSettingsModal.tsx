@@ -4,7 +4,7 @@ import { produce } from 'immer';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import ReleaseManagementSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseManagementSettings';
+import ReleaseComparisonSettings from '@/components/Settings/ReleaseComparisonSettings';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
@@ -54,7 +54,7 @@ const ReleaseManagementSettingsModal = ({ onClose, show }: Props) => {
       }
     >
       <div className="overflow-y-auto px-4">
-        <ReleaseManagementSettings preferences={preferences} onChange={setPreferences} />
+        <ReleaseComparisonSettings preferences={preferences} onChange={setPreferences} />
       </div>
     </ModalPanel>
   );
