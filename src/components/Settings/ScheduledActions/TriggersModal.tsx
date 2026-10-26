@@ -28,12 +28,13 @@ import type { ScheduledActionTriggerType, ScheduledActionType } from '@/core/typ
 type Props = {
   action: ScheduledActionType;
   onClose: () => void;
+  show: boolean;
 };
 
 const withKeys = (triggers: ScheduledActionTriggerType[]) => triggers.map(trigger => ({ key: uniqueId(), trigger }));
 
 /** The triggers of one scheduled action, edited and saved apart from the action's read-only row. */
-const TriggersModal = ({ action, onClose }: Props) => {
+const TriggersModal = ({ action, onClose, show }: Props) => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   // Keyed, so a trigger's editor keeps its own inputs when one before it is removed. Live-synced, so a reset (which
@@ -87,14 +88,15 @@ const TriggersModal = ({ action, onClose }: Props) => {
     setDraft([...draft, ...withKeys([createTrigger(type, minimumMinutes)])]);
   };
 
-  useToggleModalKeybinds(true, 'modal');
+  useToggleModalKeybinds(!show, 'primary');
+  useToggleModalKeybinds(show, 'modal');
   useHotkeys('escape', () => {
     if (!isSavePending && !isResetPending) onClose();
   }, { scopes: 'modal' });
 
   return (
     <ModalPanel
-      show
+      show={show}
       size="md"
       onRequestClose={isSavePending || isResetPending ? undefined : onClose}
       header={

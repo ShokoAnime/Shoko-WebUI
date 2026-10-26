@@ -2,20 +2,26 @@ import { useState } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { groupBy, map } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import ScheduledActionItem from '@/components/Settings/ScheduledActions/ScheduledActionItem';
 import TriggersModal from '@/components/Settings/ScheduledActions/TriggersModal';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useScheduledActionsQuery } from '@/core/react-query/scheduled-action/queries';
-import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 const ScheduledActionsSettings = () => {
   const actionsQuery = useScheduledActionsQuery();
-  const [selectedActionID, setSelectedActionID] = useState<string | null>(null);
   const categories = groupBy(actionsQuery.data, action => action.CategoryName);
-  const selectedAction = actionsQuery.data?.find(action => action.ID === selectedActionID);
 
-  useToggleModalKeybinds(!selectedActionID, 'primary');
+  const [selectedActionId, setSelectedActionId] = useState<string | null>(null);
+  const [showTriggersModal, toggleTriggersModal] = useToggle(false);
+
+  const selectedAction = actionsQuery.data?.find(action => action.ID === selectedActionId);
+
+  const handleEdit = (actionId: string) => {
+    setSelectedActionId(actionId);
+    toggleTriggersModal();
+  };
 
   return (
     <>
@@ -44,14 +50,19 @@ const ScheduledActionsSettings = () => {
           <div className="border-b border-panel-border" />
           <div className="flex flex-col gap-y-2">
             <div className="font-semibold">{categoryName}</div>
-            {actions.map(action => (
-              <ScheduledActionItem key={action.ID} action={action} onEditTriggers={setSelectedActionID} />
-            ))}
+            {actions.map(action => <ScheduledActionItem key={action.ID} action={action} onEditTriggers={handleEdit} />)}
           </div>
         </div>
       ))}
 
-      {selectedAction && <TriggersModal action={selectedAction} onClose={() => setSelectedActionID(null)} />}
+      {selectedAction && (
+        <TriggersModal
+          key={selectedAction.ID}
+          action={selectedAction}
+          onClose={toggleTriggersModal}
+          show={showTriggersModal}
+        />
+      )}
     </>
   );
 };
