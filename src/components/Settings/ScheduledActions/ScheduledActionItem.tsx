@@ -46,6 +46,11 @@ const ScheduledActionItem = ({ action, onEditTriggers }: Props) => {
 
   const handleCancel = () => cancel(action.ID, { onSuccess: () => toast.info(`Cancelling "${action.Name}".`) });
 
+  const handleRun = () => {
+    if (action.RequiresConfirmation) setShowConfirm(true);
+    else handleInvoke();
+  };
+
   const triggersText = action.Triggers.map(describeTrigger).join(', ');
   const nextRunText = describeNextRun(action.NextRunAt, triggersText);
   const summary = action.NextRunAt ? `Next: ${nextRunText} | ${triggersText}` : nextRunText;
@@ -53,7 +58,7 @@ const ScheduledActionItem = ({ action, onEditTriggers }: Props) => {
   return (
     <InsetPanel className="flex flex-col">
       <div className="flex items-center gap-x-2 px-4 py-2">
-        <div className="flex grow flex-col gap-y-0.5 text-left">
+        <div className="flex grow flex-col gap-y-0.5">
           <div className="flex items-center gap-x-2">
             <div
               className="truncate font-semibold"
@@ -80,10 +85,7 @@ const ScheduledActionItem = ({ action, onEditTriggers }: Props) => {
         </Button>
 
         <Button
-          onClick={() => {
-            if (action.RequiresConfirmation) setShowConfirm(true);
-            else handleInvoke();
-          }}
+          onClick={handleRun}
           loading={isInvokePending}
           disabled={busy}
           tooltip={busy ? 'A run is already in the queue' : 'Run now'}
