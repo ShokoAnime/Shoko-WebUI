@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout';
 import { useLocation } from 'react-router';
 import { mdiMenuDown } from '@mdi/js';
@@ -88,13 +88,15 @@ const DashboardPage = () => {
     window.dispatchEvent(new Event('resize'));
   }, [settingsQuery.isSuccess]);
 
-  const cancelLayoutChange = useCallback(() => {
+  // An effect event, not a callback keyed on the settings: the unmount cleanup below must not re-run when settings
+  // refetch after a save, or it resets the grid to the stale pre-save layout until a second save.
+  const cancelLayoutChange = useEffectEvent(() => {
     setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
     // Force the grid to re-measure after the layout is swapped programmatically.
     window.dispatchEvent(new Event('resize'));
     dispatch(setLayoutEditMode(false));
     toast.dismiss('layoutEditMode');
-  }, [dispatch, setCurrentLayout, settings.WebUI_Settings.layout.dashboard]);
+  });
 
   const saveLayout = useEffectEvent((reset = false) => {
     const newSettings = produce(settings, (draftState) => {
@@ -149,9 +151,9 @@ const DashboardPage = () => {
       },
       true,
     );
-  }, [cancelLayoutChange, layoutEditMode]);
+  }, [layoutEditMode]);
 
-  useEffect(() => () => cancelLayoutChange(), [cancelLayoutChange]);
+  useEffect(() => () => cancelLayoutChange(), []);
 
   return (
     <>
