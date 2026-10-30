@@ -38,12 +38,12 @@ export type ScheduledActionType = {
   CategoryName: string;
   RequiresConfirmation: boolean;
   ConfirmationMessage: string | null;
-  /** The triggers in effect: the admin's, or the defaults. Empty when it only runs by hand. */
+  /** The triggers in effect: the admin's, or the defaults. Empty when it can only be run manually. */
   Triggers: ScheduledActionTriggerType[];
   DefaultTriggers: ScheduledActionTriggerType[];
   /** The shortest time between runs on its own, as a .NET TimeSpan string. */
   MinimumInterval: string;
-  /** Whether a run by hand counts for the schedule, so the triggers count from `LastRunAt`. */
+  /** Whether a manual run counts toward the schedule, so the triggers count from `LastRunAt`. */
   ScheduleCountsManualRuns: boolean;
   HasCustomTriggers: boolean;
   LastRunAt: string | null;

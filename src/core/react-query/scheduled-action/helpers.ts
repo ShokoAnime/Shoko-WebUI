@@ -15,28 +15,22 @@ import type {
 export type TriggerFieldValues = 'interval' | 'timeOfDay' | 'daysOfWeek' | 'daysOfMonth';
 
 type TriggerTypeDefinitionType = {
-  type: ActionTriggerTypeValues;
   label: string;
   fields: TriggerFieldValues[];
 };
 
 /**
- * The trigger types the editor can add, with the fields each takes. A new server type is one more entry; a type
- * missing here is still shown by name, and kept as it is when the triggers are saved.
+ * The trigger types the editor knows, keyed by type, with the fields each takes. The server may report a type that is
+ * missing here, so lookups are guarded and fall back to the raw type, which is then kept as it is on save.
  */
-export const triggerTypes: TriggerTypeDefinitionType[] = [
-  { type: 'Interval', label: 'Interval', fields: ['interval'] },
-  { type: 'Daily', label: 'Daily', fields: ['timeOfDay'] },
-  { type: 'Weekly', label: 'Weekly', fields: ['daysOfWeek', 'timeOfDay'] },
-  { type: 'Monthly', label: 'Monthly', fields: ['daysOfMonth', 'timeOfDay'] },
-  { type: 'Startup', label: 'At start-up', fields: [] },
-  { type: 'QueueCleared', label: 'When the queue is cleared', fields: [] },
-];
-
-export const getTriggerType = (type: ActionTriggerTypeValues) => triggerTypes.find(item => item.type === type);
-
-/** A trigger type's label, or its name for a type the WebUI does not know. */
-export const getTriggerLabel = (type: ActionTriggerTypeValues) => getTriggerType(type)?.label ?? type;
+export const triggerTypes: Record<ActionTriggerTypeValues, TriggerTypeDefinitionType> = {
+  Interval: { label: 'Interval', fields: ['interval'] },
+  Daily: { label: 'Daily', fields: ['timeOfDay'] },
+  Weekly: { label: 'Weekly', fields: ['daysOfWeek', 'timeOfDay'] },
+  Monthly: { label: 'Monthly', fields: ['daysOfMonth', 'timeOfDay'] },
+  Startup: { label: 'At start-up', fields: [] },
+  QueueCleared: { label: 'When the queue is cleared', fields: [] },
+};
 
 export const daysOfWeek: DayOfWeekValues[] = [
   'Monday',
@@ -128,7 +122,7 @@ export const describeTrigger = (trigger: ScheduledActionTriggerType) => {
       return `Monthly on ${(trigger.DaysOfMonth ?? []).map(describeDayOfMonth).join(', ')} at ${time}`;
     case 'Startup':
     case 'QueueCleared':
-      return getTriggerLabel(trigger.Type);
+      return triggerTypes[trigger.Type]?.label ?? trigger.Type;
     default:
       return trigger.Type;
   }
@@ -136,7 +130,7 @@ export const describeTrigger = (trigger: ScheduledActionTriggerType) => {
 
 /** A new trigger of a type, with fields to start from that respect the action's minimum interval. */
 export const createTrigger = (type: ActionTriggerTypeValues, minimumMinutes: number): ScheduledActionTriggerType => {
-  const fields = getTriggerType(type)?.fields ?? [];
+  const fields = triggerTypes[type]?.fields ?? [];
   return {
     Type: type,
     Interval: fields.includes('interval') ? minutesToTimeSpan(Math.max(minimumMinutes, 60)) : null,
@@ -156,7 +150,7 @@ export const formatRunTime = (time: string) => dayjs(time).format(RUN_TIME_FORMA
 // Without a next run time, the triggers have no time of their own (start-up, the queue being cleared), or there are
 // none.
 export const describeNextRun = (nextRunAt: string | null, triggersText: string) => {
-  if (!nextRunAt) return triggersText || 'Only by hand';
+  if (!nextRunAt) return triggersText || 'Manual only';
   return dayjs(nextRunAt).isBefore(dayjs()) ? 'Due now' : formatRunTime(nextRunAt);
 };
 
