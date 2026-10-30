@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import prettyBytes from 'pretty-bytes';
 
 import { extractFileNameFromPath, formatDate, getManagedFolderName } from '@/core/util';
+import getFileHash from '@/core/utilities/getFileHash';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -83,7 +84,7 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
     id: 'crc32',
     name: 'CRC32',
     className: 'w-32',
-    item: file => file.Hashes.find(hash => hash.Type === 'CRC32')?.Value,
+    item: file => getFileHash(file, 'CRC32'),
   },
   {
     id: 'size',

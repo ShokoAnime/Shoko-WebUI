@@ -19,6 +19,7 @@ import toast from '@/core/toast';
 import { copyToClipboard, processError } from '@/core/util';
 import { Crc32Regex } from '@/core/utilities/auto-match-regexes';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
+import getFileHash from '@/core/utilities/getFileHash';
 
 import type { FileType } from '@/core/types/api/file';
 import type { AxiosError } from 'axios';
@@ -90,7 +91,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     const crc32Result = relativePath && Crc32Regex.exec(relativePath)?.[1]?.toUpperCase();
 
     if (crc32Result) {
-      return crc32Result === file.Hashes.find(hash => hash.Type === 'CRC32')?.Value
+      return crc32Result === getFileHash(file, 'CRC32')
         ? {
           path: mdiFileDocumentCheckOutline,
           color: 'text-panel-text-primary',
