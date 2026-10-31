@@ -67,6 +67,7 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **Name regions by role, not appearance** — `SettingsSidebar`, not `LeftColumn` or `Card`.
 - **A bare `<div>` is fine for spacing or flex plumbing inside a region.** Once a container has its own role (border, background, sticky positioning, fixed width), give it a name.
 - **Reuse existing primitives first** (`ShokoPanel`, `InsetPanel`, `ModalPanel`) before creating a new region component.
+- **Settings tabs:** use `SettingsSection` (title, optional `actions` slot) for each titled section and `SettingsDivider` between sections, both from `@/components/Settings/`, instead of hand-writing the wrapper, title row, or `border-b` div.
 
 ## Code Style
 
