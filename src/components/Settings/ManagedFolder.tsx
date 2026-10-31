@@ -5,6 +5,7 @@ import cx from 'classnames';
 import prettyBytes from 'pretty-bytes';
 
 import Button from '@/components/Input/Button';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import { useRescanManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
 import { setEdit } from '@/core/slices/modals/managedFolder';
 import { useDispatch } from '@/core/store';
@@ -43,7 +44,7 @@ const ManagedFolder = (props: ManagedFolderProps) => {
 
   return (
     <Fragment key={folder.ID}>
-      {index !== 0 && <div className="border-b border-panel-border" />}
+      {index !== 0 && <SettingsDivider />}
 
       <div className={cx('flex flex-col', className)}>
         <div className="mb-3 flex items-center justify-between">

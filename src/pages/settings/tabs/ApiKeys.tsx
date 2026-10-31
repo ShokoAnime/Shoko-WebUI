@@ -6,7 +6,9 @@ import { map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useCreateApiToken, useDeleteApiToken } from '@/core/react-query/auth/mutations';
 import { useApiKeyQuery } from '@/core/react-query/auth/queries';
 import toast from '@/core/toast';
@@ -103,10 +105,9 @@ const ApiKeys = () => {
         existing ones as needed.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Generate API Key</div>
+      <SettingsSection title="Generate API Key">
         <div className="flex flex-row justify-between gap-x-2">
           <Input
             id="key-input"
@@ -135,16 +136,15 @@ const ApiKeys = () => {
             Generate
           </Button>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Issued API Keys</div>
+      <SettingsSection title="Issued API Keys">
         <div className="flex flex-col gap-y-1">
           {map(tokens, token => <UserApiTokens key={token.Device} token={token} />)}
         </div>
-      </div>
+      </SettingsSection>
     </>
   );
 };

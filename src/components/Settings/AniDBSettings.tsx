@@ -3,6 +3,8 @@ import type { ChangeEventHandler, ReactNode } from 'react';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
+import SettingsSection from '@/components/Settings/SettingsSection';
 
 import type { SettingsAnidbMyListType } from '@/core/types/api/settings';
 import type { SettingsContextType } from '@/core/types/context';
@@ -27,11 +29,12 @@ const Section = ({ children, isFirstRun, title }: {
 
   return (
     <>
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">{title}</div>
+      <SettingsSection
+        title={title}
+      >
         <div className="flex flex-col gap-y-1">{children}</div>
-      </div>
-      <div className="border-b border-panel-border" />
+      </SettingsSection>
+      <SettingsDivider />
     </>
   );
 };

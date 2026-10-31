@@ -12,6 +12,7 @@ import BrowseSection from '@/components/Settings/PluginManagement/Sections/Brows
 import InstalledSection from '@/components/Settings/PluginManagement/Sections/InstalledSection';
 import RepositoriesSection from '@/components/Settings/PluginManagement/Sections/RepositoriesSection';
 import UpdatesSection from '@/components/Settings/PluginManagement/Sections/UpdatesSection';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -49,7 +50,7 @@ const PluginManagementSettings = () => {
         Manage plugin repositories, browse plugin packages, review installed plugins, and manually apply updates.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <MultiStateButton
         activeState={section}
