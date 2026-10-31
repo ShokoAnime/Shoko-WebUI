@@ -10,6 +10,7 @@ import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
+import AiringSchedule from '@/pages/airing-schedule/AiringSchedule';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
 import MetadataLinking from '@/pages/collection/series/MetadataLinking';
@@ -34,6 +35,7 @@ import MainPage from '@/pages/main/MainPage';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import PluginPageEmbed from '@/pages/settings/plugin/PluginPageEmbed';
 import SettingsPage from '@/pages/settings/SettingsPage';
+import AiringScheduleSettings from '@/pages/settings/tabs/AiringScheduleSettings';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
@@ -92,6 +94,7 @@ const router = sentryCreateBrowserRouter(
         >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="airing-schedule" element={<AiringSchedule />} />
           <Route path="utilities">
             <Route index element={<Navigate to="unrecognized" replace />} />
             <Route path="unrecognized" element={<Navigate to="files" replace />} />
@@ -135,6 +138,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="metadata" element={<MetadataSettings />} />
+            <Route path="airing-schedule" element={<AiringScheduleSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="scheduled-actions" element={<ScheduledActionsSettings />} />

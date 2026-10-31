@@ -4,6 +4,15 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { SeriesUpdateEventType } from '@/core/signalr/types';
 
+// A sweep can land many airings at once, and an episode airing moves every countdown along.
+const invalidateAirings = debounce(
+  () => {
+    invalidateQueries(['airing-schedule', 'calendar']);
+    invalidateQueries(['airing-schedule', 'season']);
+  },
+  5000,
+);
+
 const invalidateDashboard = debounce(
   () => invalidateQueries(['dashboard']),
   1000,
@@ -69,6 +78,9 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
       break;
     case 'FileRenamed':
       invalidateFiles();
+      break;
+    case 'AiringsUpdated':
+      invalidateAirings();
       break;
     case 'QueueStateChanged':
       invalidateQueueItems();

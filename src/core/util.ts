@@ -27,6 +27,7 @@ dayjs.extend(durationPlugin);
 dayjs.extend(customParseFormatPlugin);
 
 export { default as dayjs } from 'dayjs';
+export type { Dayjs } from 'dayjs';
 
 export * from '@/core/anidbUtils';
 

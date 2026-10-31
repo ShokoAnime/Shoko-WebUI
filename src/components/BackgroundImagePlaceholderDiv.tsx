@@ -12,6 +12,7 @@ type Props = {
   children?: ReactNode;
   className?: string;
   contain?: boolean;
+  position?: string;
   image?: ImageLinkType;
   hidePlaceholderOnHover?: boolean;
   overlayOnHover?: boolean;
@@ -30,6 +31,7 @@ const BackgroundImagePlaceholderDiv = (props: Props) => {
     inCollection,
     linkToImage,
     overlayOnHover,
+    position = 'center',
     zoomOnHover,
   } = props;
   const fit = contain ? 'contain' : 'cover';
@@ -92,7 +94,9 @@ const BackgroundImagePlaceholderDiv = (props: Props) => {
           'absolute top-0 left-0 z-[-1] flex size-full flex-col rounded-lg text-center',
           zoomOnHover && 'transition-transform duration-600 group-hover:scale-105',
         )}
-        style={{ background: backgroundImage ? `center / ${fit} no-repeat url('${backgroundImage.src}')` : undefined }}
+        style={{
+          background: backgroundImage ? `${position} / ${fit} no-repeat url('${backgroundImage.src}')` : undefined,
+        }}
       >
         {imageError && (
           <div
