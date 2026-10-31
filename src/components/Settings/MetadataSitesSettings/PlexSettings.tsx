@@ -9,6 +9,7 @@ import { map, pull, toNumber } from 'lodash';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import {
   useChangePlexLibrariesMutation,
   useChangePlexServerMutation,
@@ -154,11 +155,10 @@ const PlexSettings = () => {
   };
 
   return (
-    <div className="flex flex-col gap-y-6">
-      <div className="flex justify-between">
-        <div className="flex items-center font-semibold">Plex Options</div>
-        <PlexLinkButton />
-      </div>
+    <SettingsSection
+      title="Plex Options"
+      actions={<PlexLinkButton />}
+    >
       <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-65')}>
         <SelectSmall
           label="Server"
@@ -206,7 +206,7 @@ const PlexSettings = () => {
           </div>
         </AnimateHeight>
       </div>
-    </div>
+    </SettingsSection>
   );
 };
 

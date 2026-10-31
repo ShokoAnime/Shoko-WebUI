@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 /* global globalThis */
-import { NavLink, Outlet, useLocation } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import useMeasure from 'react-use-measure';
-import { mdiLoading, mdiOpenInNew } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import cx from 'classnames';
-import { groupBy, isEmpty, isEqual, map } from 'lodash';
+import { isEqual } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
-import Button from '@/components/Input/Button';
+import SettingsActionBar from '@/components/Settings/SettingsActionBar';
+import SettingsBackground from '@/components/Settings/SettingsBackground';
+import SettingsContentPanel from '@/components/Settings/SettingsContentPanel';
+import SettingsSidebar from '@/components/Settings/SettingsSidebar';
 import { emptyMetadataDraft, isMetadataDraftEmpty, saveMetadataDraft } from '@/core/react-query/metadata/draft';
-import { usePluginPagesQuery } from '@/core/react-query/plugin/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
@@ -20,21 +19,6 @@ import useSyncedState from '@/hooks/useSyncedState';
 
 import type { SettingValueType } from '@/core/types/context';
 
-const items = [
-  { name: 'General', path: 'general' },
-  { name: 'Import', path: 'import' },
-  { name: 'Hashing & Release', path: 'hashing-release' },
-  { name: 'AniDB', path: 'anidb' },
-  { name: 'Metadata', path: 'metadata' },
-  { name: 'Collection', path: 'collection' },
-  { name: 'Integrations', path: 'integrations' },
-  { name: 'Scheduled Actions', path: 'scheduled-actions' },
-  { name: 'Plugin Management', path: 'plugin-management' },
-  // { name: 'Display', path: 'display' },
-  { name: 'User Management', path: 'user-management' },
-  // { name: 'Themes', path: 'themes' },
-  { name: 'API Keys', path: 'api-keys' },
-];
 const SettingsPage = () => {
   const dispatch = useDispatch();
 
@@ -45,10 +29,6 @@ const SettingsPage = () => {
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
   const { isPending: settingsPatchPending, mutateAsync: patchSettings } = usePatchSettingsMutation();
-
-  const pluginPages = usePluginPagesQuery().data;
-
-  const pluginGroups = groupBy(pluginPages, page => page.PluginInfo.ID);
 
   const [newSettings, setNewSettings] = useSyncedState(settings);
   // The metadata page's provider changes, kept here so they wait for Save like the settings.
@@ -198,127 +178,19 @@ const SettingsPage = () => {
 
   return (
     <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
-      <div className="relative top-0 z-10 flex w-87.5 flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
-        <div className="sticky top-6">
-          <div className="mb-8 text-center text-xl">
-            Core Settings
-          </div>
-          <div className="flex flex-col items-center gap-y-2">
-            {items.map(item => (
-              <NavLink
-                to={item.path}
-                className={({ isActive }) => (isActive
-                  ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
-                  : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
-                key={item.path}
-              >
-                {item.name}
-              </NavLink>
-            ))}
-            {!isEmpty(pluginGroups) && (
-              <div className="mt-6 w-full border-t border-panel-border pt-6">
-                <div className="mb-4 text-center text-lg">Plugins</div>
-                {map(pluginGroups, (group, groupId) => (
-                  <div className="mb-4 flex flex-col gap-y-2" key={groupId}>
-                    <div className="px-2 text-center text-sm text-panel-text-primary opacity-60">
-                      {group[0].PluginInfo.Name}
-                    </div>
-                    {group.map(page => (
-                      page.CanEmbed
-                        ? (
-                          <NavLink
-                            to={`plugin/config/${groupId}/${page.ID}`}
-                            className={({ isActive }) => (isActive
-                              ? 'relative w-full text-center bg-panel-menu-item-background py-2 px-10 rounded-lg text-panel-menu-item-text'
-                              : 'relative w-full text-center py-2 px-10 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
-                            key={page.ID}
-                          >
-                            {page.Name}
-                            <button
-                              type="button"
-                              data-tooltip-id="tooltip"
-                              data-tooltip-content={`Open ${page.Name} in new tab`}
-                              onClick={(event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-                                window.open(page.Url, '_blank', 'noopener,noreferrer');
-                              }}
-                              className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center justify-center rounded-md p-1 text-panel-text-primary opacity-60 transition-opacity hover:opacity-100"
-                            >
-                              <Icon path={mdiOpenInNew} size={0.7} />
-                            </button>
-                          </NavLink>
-                        )
-                        : (
-                          <a
-                            href={page.Url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex w-full items-center justify-center gap-x-2 rounded-lg p-2 transition-colors hover:bg-panel-menu-item-background-hover"
-                            key={page.ID}
-                          >
-                            {page.Name}
-                            <Icon path={mdiOpenInNew} size={0.7} />
-                          </a>
-                        )
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div
-        className={cx(
-          'flex min-h-full w-175 flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent',
-          !isPluginConfigPage && 'p-6',
+      <SettingsSidebar />
+      <SettingsContentPanel isLoading={settingsQuery.isPending} isPadded={!isPluginConfigPage}>
+        <Outlet context={settingContext} />
+        {!isSpecialPage && (
+          <SettingsActionBar
+            canSave={unsavedChanges}
+            isSaving={settingsPatchPending || isProviderSavePending}
+            onCancel={handleCancel}
+            onSave={validateAndSave}
+          />
         )}
-      >
-        {settingsQuery.isPending
-          ? (
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} spin size={5} />
-            </div>
-          )
-          : (
-            <>
-              <Outlet
-                context={settingContext}
-              />
-              {!isSpecialPage && (
-                <div className="flex justify-end gap-x-3 font-semibold">
-                  <Button
-                    onClick={handleCancel}
-                    buttonType="secondary"
-                    buttonSize="normal"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={validateAndSave}
-                    buttonType="primary"
-                    buttonSize="normal"
-                    loading={settingsPatchPending || isProviderSavePending}
-                    disabled={!unsavedChanges}
-                  >
-                    Save
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
-      </div>
-      <div
-        id="settings-background"
-        className="fixed top-0 left-0 -z-10 w-full bg-cover bg-fixed opacity-20"
-        // If this height feels like a hack, you figure out how to fix it
-        // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
-        style={{
-          backgroundImage: 'url(/api/v3/Image/Random/Backdrop)',
-          height: `calc(${containerBounds.height}px + 3rem)`,
-        }}
-      />
+      </SettingsContentPanel>
+      <SettingsBackground containerHeight={containerBounds.height} />
     </div>
   );
 };
