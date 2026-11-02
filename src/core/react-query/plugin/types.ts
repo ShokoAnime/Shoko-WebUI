@@ -6,6 +6,7 @@ export type PluginListFilterType = {
   installed?: IncludeOnlyFilterType;
   enabled?: IncludeOnlyFilterType;
   restartPending?: IncludeOnlyFilterType;
+  failed?: IncludeOnlyFilterType;
   allVersions?: boolean;
 };
 

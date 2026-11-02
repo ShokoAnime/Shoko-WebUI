@@ -92,7 +92,7 @@ const MetadataSources = () => {
           <TabContent tab={activeTab} />
         </div>
         <Footer
-          nextPage="start-server"
+          nextPage="plugins"
           saveFunction={handleSave}
         />
       </TransitionDiv>
