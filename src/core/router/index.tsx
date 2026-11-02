@@ -42,6 +42,7 @@ import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSe
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import MetadataSettings from '@/pages/settings/tabs/MetadataSettings';
+import PluginConfigurationSettings from '@/pages/settings/tabs/PluginConfigurationSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
 import ScheduledActionsSettings from '@/pages/settings/tabs/ScheduledActionsSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
@@ -144,7 +145,8 @@ const router = sentryCreateBrowserRouter(
             </Route>
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKeys />} />
-            <Route path="plugin/config/:pluginId/:pageId" element={<PluginPageEmbed />} />
+            <Route path="plugin/page/:pluginId/:pageId" element={<PluginPageEmbed />} />
+            <Route path="plugin/config/:configId" element={<PluginConfigurationSettings />} />
           </Route>
         </Route>
       </Route>
