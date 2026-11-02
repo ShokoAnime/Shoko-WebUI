@@ -7,7 +7,9 @@ import type {
   AddPackageRepositoryRequestType,
   CheckForPluginUpdatesRequestType,
   PluginPackageInstallRequestType,
+  UpdatePackageRepositoryRequestType,
 } from '@/core/react-query/plugin-package/types';
+import type { PackageRepositoryInfoType } from '@/core/types/api/plugin-package';
 
 export const invalidatePluginAndPackageQueries = () => {
   invalidateQueries(['plugin']);
@@ -17,6 +19,19 @@ export const invalidatePluginAndPackageQueries = () => {
 export const useAddPluginPackageRepositoryMutation = () =>
   useMutation({
     mutationFn: (body: AddPackageRepositoryRequestType) => axios.post('Plugin/Package/Repository', body),
+    onSuccess: () => invalidateQueries(['plugin-package']),
+  });
+
+export const useUpdatePluginPackageRepositoryMutation = () =>
+  useMutation({
+    mutationFn: ({ isEnabled, repositoryId }: UpdatePackageRepositoryRequestType) =>
+      axios.put(`Plugin/Package/Repository/${repositoryId}`, { IsEnabled: isEnabled }),
+    onSuccess: () => invalidateQueries(['plugin-package']),
+  });
+
+export const useRestoreDefaultPluginPackageRepositoriesMutation = () =>
+  useMutation<PackageRepositoryInfoType[]>({
+    mutationFn: () => axios.post('Plugin/Package/Repository/RestoreDefaults'),
     onSuccess: () => invalidateQueries(['plugin-package']),
   });
 
