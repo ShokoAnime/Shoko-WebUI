@@ -7,9 +7,10 @@ const useFlattenListResult = <T>(data: InfiniteData<ListResultType<T>> | undefin
   useMemo(
     () => {
       if (data) {
+        // flatMap turns a page without a List into a single undefined entry, so drop those before they reach callers
         return [
-          data.pages.flatMap(page => page.List),
-          data.pages[0].Total,
+          data.pages.flatMap(page => page.List ?? []).filter(Boolean),
+          data.pages[0]?.Total ?? 0,
         ];
       }
       return [[] as T[], 0];
