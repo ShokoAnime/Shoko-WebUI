@@ -16,6 +16,10 @@ if (!isDebug()) {
     ignoreErrors: [
       'mt().navigator.clipboard.write',
       /^Canceled$/,
+      // Firefox rejecting history.replaceState from react-router's setSearchParams; unhandled inside the library
+      /^The operation is insecure\.$/,
+      // SignalR's own negotiate timeout aborting its fetch (Chrome wording); start failures are already handled in signalr.ts
+      /^signal is aborted without reason$/,
     ],
     integrations: [
       Sentry.reactRouterV7BrowserTracingIntegration({

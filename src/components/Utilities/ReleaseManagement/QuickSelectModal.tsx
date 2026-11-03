@@ -128,11 +128,11 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                     <>
                       <div className="font-semibold">
                         Import Folder:&nbsp;
-                        {`${importFolder.Name} (ID: ${importFolder.ID})`}
+                        {`${importFolder?.Name ?? '<Unknown>'} (ID: ${group.ImportFolder})`}
                       </div>
                       <div className="flex flex-wrap break-all text-sm opacity-65">
                         Location:&nbsp;
-                        {group.FileLocation?.replace(importFolder.Path, '')}
+                        {importFolder ? group.FileLocation?.replace(importFolder.Path, '') : group.FileLocation}
                       </div>
                       <div className="flex flex-wrap text-sm opacity-65">
                         {group.Episodes?.length}
@@ -167,7 +167,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
                       </div>
                       <div className="flex flex-wrap text-sm opacity-65">
                         Import Folder:&nbsp;
-                        {`${importFolder.Name} (ID: ${importFolder.ID})`}
+                        {`${importFolder?.Name ?? '<Unknown>'} (ID: ${group.ImportFolder})`}
                       </div>
                       <div className="flex flex-wrap text-sm opacity-65">
                         {group.FileSource}
