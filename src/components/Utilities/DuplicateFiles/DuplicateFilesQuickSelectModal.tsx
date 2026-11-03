@@ -94,15 +94,14 @@ const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
           fileSummary?.Groups,
           (group, index) => {
             const managedFolder = managedFolders[group.ManagedFolder!];
+            const folderName = getManagedFolderName(managedFoldersQuery.data ?? [], group.ManagedFolder);
 
             return (
               <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
                 <div className="flex flex-col gap-y-1">
                   <div className="font-semibold">
                     Managed Folder:&nbsp;
-                    {`${
-                      getManagedFolderName(managedFoldersQuery.data ?? [], group.ManagedFolder)
-                    } (ID: ${group.ManagedFolder})`}
+                    {`${folderName} (ID: ${group.ManagedFolder})`}
                   </div>
                   <div className="flex flex-wrap text-sm break-all opacity-65">
                     Location:&nbsp;
