@@ -99,11 +99,11 @@ const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                 <div className="flex flex-col gap-y-1">
                   <div className="font-semibold">
                     Managed Folder:&nbsp;
-                    {`${managedFolder.Name} (ID: ${managedFolder.ID})`}
+                    {`${managedFolder?.Name ?? '<Unknown>'} (ID: ${group.ManagedFolder})`}
                   </div>
                   <div className="flex flex-wrap text-sm break-all opacity-65">
                     Location:&nbsp;
-                    {group.FileLocation?.replace(managedFolder.Path, '')}
+                    {managedFolder ? group.FileLocation?.replace(managedFolder.Path, '') : group.FileLocation}
                   </div>
                   <div className="flex flex-wrap text-sm opacity-65">
                     {group.Episodes?.length}
