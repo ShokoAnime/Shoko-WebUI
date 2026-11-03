@@ -115,6 +115,14 @@
   ],
   "Dev": [
     {
+      "version": "2.6.0-dev.160",
+      "minServerVersion": "6.0.0-dev.503",
+      "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.160/Shoko-WebUI-v2.6.0-dev.160.zip",
+      "checksum": "sha256:6277dbe5793dfa8a3e35f0a6357d7ac98c63ee26c01ce6a72adad3c5f78f18f7",
+      "commit": "dcae700ef8a9f974d97b0c1d1dfc43e44ae71a6c",
+      "releaseNotes": "<!-- Minimum Server Version: **6.0.0-dev.503** -->\n> [!Warning]\n> This version requires a **Shoko Server** of at least version **6.0.0-dev.503** to function. Attempting to use this package with a **Shoko Server** which does not meet this requirement will result in a locked UI.\n\n\n\n## What's Changed\n* fix: Sentry triage (unknown folders, list flattening, ignored errors) by @hidden4003 in https://github.com/ShokoAnime/Shoko-WebUI/pull/1529\n\n\n**Full Changelog**: https://github.com/ShokoAnime/Shoko-WebUI/compare/v2.6.0-dev.159...v2.6.0-dev.160\n"
+    },
+    {
       "version": "2.6.0-dev.159",
       "minServerVersion": "6.0.0-dev.503",
       "downloadUrl": "https://github.com/ShokoAnime/Shoko-WebUI/releases/download/v2.6.0-dev.159/Shoko-WebUI-v2.6.0-dev.159.zip",
