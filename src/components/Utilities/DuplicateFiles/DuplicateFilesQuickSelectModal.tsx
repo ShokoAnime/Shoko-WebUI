@@ -11,6 +11,7 @@ import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/querie
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 import toast from '@/core/toast';
+import { getManagedFolderName } from '@/core/util';
 
 import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
@@ -99,7 +100,9 @@ const DuplicateFilesQuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                 <div className="flex flex-col gap-y-1">
                   <div className="font-semibold">
                     Managed Folder:&nbsp;
-                    {`${managedFolder?.Name ?? '<Unknown>'} (ID: ${group.ManagedFolder})`}
+                    {`${
+                      getManagedFolderName(managedFoldersQuery.data ?? [], group.ManagedFolder)
+                    } (ID: ${group.ManagedFolder})`}
                   </div>
                   <div className="flex flex-wrap text-sm break-all opacity-65">
                     Location:&nbsp;
