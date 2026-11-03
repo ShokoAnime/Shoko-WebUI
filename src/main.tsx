@@ -17,6 +17,8 @@ if (!isDebug()) {
     ignoreErrors: [
       'mt().navigator.clipboard.write',
       /^Canceled$/,
+      // Firefox rejecting history.replaceState from react-router's setSearchParams; unhandled inside the library
+      /^The operation is insecure\.$/,
     ],
     integrations: [
       Sentry.reactRouterV7BrowserTracingIntegration({
