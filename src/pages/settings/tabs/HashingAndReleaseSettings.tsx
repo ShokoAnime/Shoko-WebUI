@@ -12,7 +12,9 @@ import Checkbox from '@/components/Input/Checkbox';
 import InsetPanel from '@/components/Panels/InsetPanel';
 import ReleaseManagementSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseManagementSettings';
 import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseSettings';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
 import { useUpdateReleaseInfoProvidersMutation } from '@/core/react-query/release-info/mutations';
@@ -166,11 +168,9 @@ const HashingAndReleaseSettings = () => {
         Configure how Shoko hashes files and handles releases.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Hashing Options</div>
-
+      <SettingsSection title="Hashing Options">
         <div className="flex flex-col">
           <Checkbox
             id="hashing-provider-parallel-mode"
@@ -228,13 +228,13 @@ const HashingAndReleaseSettings = () => {
             ))}
           </InsetPanel>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <ReleaseSettings />
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <div className="flex flex-col gap-y-2">
         <div className="flex items-center font-semibold">Release Management</div>
@@ -244,7 +244,7 @@ const HashingAndReleaseSettings = () => {
         />
       </div>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button

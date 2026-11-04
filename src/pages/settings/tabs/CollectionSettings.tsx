@@ -8,7 +8,9 @@ import Checkbox from '@/components/Input/Checkbox';
 import InsetPanel from '@/components/Panels/InsetPanel';
 import LanguageOrderList from '@/components/Settings/LanguageOrderList';
 import OrderList from '@/components/Settings/OrderList';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import TextSourceLabel from '@/components/Settings/TextSourceLabel';
 import { getTextSourceOrder, getTextSources } from '@/core/react-query/metadata/helpers';
 import { useMetadataLinkSourcesQuery, useMetadataProvidersQuery } from '@/core/react-query/metadata/queries';
@@ -152,11 +154,10 @@ const CollectionSettings = () => {
         Shoko groups related series within your collection.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       {/* Language Settings */}
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Language Options</div>
+      <SettingsSection title="Language Options">
         <div className="flex flex-col gap-y-1">
           <Checkbox
             label="Also Use Synonyms"
@@ -204,13 +205,12 @@ const CollectionSettings = () => {
           onOrderChange={sources => showSourcesModal && handleSourceOrderChange(showSourcesModal, sources)}
           onClose={() => setShowSourcesModal(null)}
         />
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       {/*   Relation Settings */}
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Relation Options</div>
+      <SettingsSection title="Relation Options">
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
@@ -241,8 +241,8 @@ const CollectionSettings = () => {
             ))}
           </InsetPanel>
         </div>
-      </div>
-      <div className="border-b border-panel-border" />
+      </SettingsSection>
+      <SettingsDivider />
     </>
   );
 };

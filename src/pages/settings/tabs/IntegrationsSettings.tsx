@@ -1,4 +1,5 @@
 import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
 
 const IntegrationsSettings = () => (
@@ -7,10 +8,10 @@ const IntegrationsSettings = () => (
       Customize the integrations that Shoko uses to scrobble your media
     </SettingsHeader>
 
-    <div className="border-b border-panel-border" />
+    <SettingsDivider />
 
     <PlexSettings />
-    <div className="border-b border-panel-border" />
+    <SettingsDivider />
   </>
 );
 

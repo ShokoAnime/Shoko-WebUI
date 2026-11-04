@@ -61,6 +61,14 @@ This project uses the **React Compiler** (via `@rolldown/plugin-babel`). The com
 - **Extract it once it stops being pure prop-to-JSX mapping.** If an inline component starts deriving its own display data — calling a helper/lookup function, branching across more than one independent conditional rendering block, building its own tooltip/badge state from raw inputs — move it to its own file under `src/components/`.
 - **Cap non-JSX preamble.** If the code above a component's function signature (types, constants, helper functions) exceeds ~15-20 lines, that's a signal something above should be extracted.
 
+### Named Layout Regions
+
+- **A page's top-level `return` should read as a table of contents.** Compose named region components (sidebar, content panel, action bar, background layer) instead of nesting raw `<div>`s whose role is only visible in the rendered page.
+- **Name regions by role, not appearance** — `SettingsSidebar`, not `LeftColumn` or `Card`.
+- **A bare `<div>` is fine for spacing or flex plumbing inside a region.** Once a container has its own role (border, background, sticky positioning, fixed width), give it a name.
+- **Reuse existing primitives first** (`ShokoPanel`, `InsetPanel`, `ModalPanel`) before creating a new region component.
+- **Settings tabs:** use `SettingsSection` (title, optional `actions` slot) for each titled section and `SettingsDivider` between sections, both from `@/components/Settings/`, instead of hand-writing the wrapper, title row, or `border-b` div.
+
 ## Code Style
 
 - **Formatter:** `dprint` (`.dprint.json`). Covers `src/**` and `tests/**`. Line width 120, single quotes (double quotes in JSX), always semicolons.

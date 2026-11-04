@@ -11,7 +11,9 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import MetadataSearchSettings from '@/components/Settings/MetadataSitesSettings/MetadataSearchSettings';
 import MetadataSourceList from '@/components/Settings/MetadataSitesSettings/MetadataSourceList';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useMetadataLinkSourcesQuery } from '@/core/react-query/metadata/queries';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
@@ -39,10 +41,9 @@ const MetadataSettings = () => {
         provider&apos;s own settings, which are saved with their own button.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">General Options</div>
+      <SettingsSection title="General Options">
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             Purge Orphaned Metadata After (Days)
@@ -73,9 +74,9 @@ const MetadataSettings = () => {
           </div>
           <MetadataSearchSettings newSettings={newSettings} setNewSettings={setNewSettings} />
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <MetadataSourceList
         metadataDraft={metadataDraft}
@@ -84,8 +85,7 @@ const MetadataSettings = () => {
         setNewSettings={setNewSettings}
       />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="font-semibold">Cross-References</div>
+      <SettingsSection title="Cross-References">
         <div>
           Back up or restore the links between your AniDB anime and the series, movies and episodes of a source, or
           share them with another Shoko Server.
@@ -130,9 +130,9 @@ const MetadataSettings = () => {
               </div>
             </div>
           )}
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       {crossReferenceSource && (
         <>

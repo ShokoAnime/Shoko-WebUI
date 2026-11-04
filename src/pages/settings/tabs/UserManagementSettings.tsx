@@ -13,7 +13,9 @@ import InputSmall from '@/components/Input/InputSmall';
 import InsetPanel from '@/components/Panels/InsetPanel';
 import AddUserModal from '@/components/Settings/AddUserModal';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
 import { useDeleteUserMutation, usePutUserMutation } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
@@ -155,11 +157,11 @@ const UserManagementSettings = () => {
         restricted from viewing.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center justify-between">
-          <span className="font-semibold">Current Users</span>
+      <SettingsSection
+        title="Current Users"
+        actions={
           <Button onClick={handleAddUserButton} tooltip="Add User">
             <Icon
               className="text-panel-icon-action"
@@ -167,7 +169,8 @@ const UserManagementSettings = () => {
               size={0.85}
             />
           </Button>
-        </div>
+        }
+      >
         <div className="flex flex-col gap-y-1">
           {map(usersQuery.data, user => (
             <div className="flex h-8 justify-between" key={`user-${user.ID}`}>
@@ -183,13 +186,13 @@ const UserManagementSettings = () => {
             </div>
           ))}
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center justify-between font-semibold">
-          User Options
+      <SettingsSection
+        title="User Options"
+        actions={
           <div className="flex gap-x-2">
             <label
               htmlFor="avatar"
@@ -217,7 +220,8 @@ const UserManagementSettings = () => {
               Change Password
             </Button>
           </div>
-        </div>
+        }
+      >
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
             <div className="mx-0 my-auto">Display Name</div>
@@ -256,12 +260,11 @@ const UserManagementSettings = () => {
             />
           </div>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Tag Restrictions</div>
+      <SettingsSection title="Tag Restrictions">
         <div>
           <div className="mb-2 font-semibold">Available Tags</div>
           <Input
@@ -314,9 +317,9 @@ const UserManagementSettings = () => {
               : <div className="flex grow items-center justify-center font-semibold">No Restricted Tags!</div>}
           </InsetPanel>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">Cancel</Button>
