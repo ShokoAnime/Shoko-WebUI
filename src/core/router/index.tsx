@@ -38,11 +38,13 @@ import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKeys from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
-import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
+import HashingSettings from '@/pages/settings/tabs/HashingSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import MetadataSettings from '@/pages/settings/tabs/MetadataSettings';
 import PluginManagementSettings from '@/pages/settings/tabs/PluginManagementSettings';
+import ReleaseManagementSettings from '@/pages/settings/tabs/ReleaseManagementSettings';
+import ReleaseSettings from '@/pages/settings/tabs/ReleaseSettings';
 import ScheduledActionsSettings from '@/pages/settings/tabs/ScheduledActionsSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import StatusPage from '@/pages/StatusPage';
@@ -132,12 +134,14 @@ const router = sentryCreateBrowserRouter(
             <Route index element={<Navigate to="general" replace />} />
             <Route path="general" element={<GeneralSettings />} />
             <Route path="import" element={<ImportSettings />} />
-            <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
+            <Route path="hashing" element={<HashingSettings />} />
+            <Route path="releases" element={<ReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="metadata" element={<MetadataSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="scheduled-actions" element={<ScheduledActionsSettings />} />
+            <Route path="release-management" element={<ReleaseManagementSettings />} />
             <Route path="plugin-management">
               <Route index element={<Navigate to="installed" replace />} />
               <Route path=":section" element={<PluginManagementSettings />} />

@@ -18,7 +18,7 @@ type Props = {
   onChange: (updated: ReleaseComparisonPreferencesType) => void;
 };
 
-const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
+const ReleaseComparisonSettings = ({ onChange, preferences }: Props) => {
   const updateSetting = <K extends keyof ReleaseComparisonPreferencesType>(
     key: K,
     value: ReleaseComparisonPreferencesType[K],
@@ -274,4 +274,4 @@ const ReleaseManagementSettings = ({ onChange, preferences }: Props) => {
   );
 };
 
-export default ReleaseManagementSettings;
+export default ReleaseComparisonSettings;
