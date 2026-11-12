@@ -4,6 +4,7 @@ import { useLocation } from 'react-router';
 import { mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { produce } from 'immer';
+import { cloneDeep } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import { initialSettings } from '@/core/react-query/settings/helpers';
@@ -100,11 +101,11 @@ const DashboardPage = () => {
 
   const saveLayout = useEffectEvent((reset = false) => {
     const newSettings = produce(settings, (draftState) => {
+      // currentLayout shares its items with react-grid-layout's internal state (via onLayoutChange). produce freezes
+      // whatever is assigned into the draft, and the grid mutates its items in place while resizing, so copy first.
       draftState.WebUI_Settings.layout.dashboard = Object.assign(
         draftState.WebUI_Settings.layout.dashboard,
-        reset
-          ? initialSettings.WebUI_Settings.layout.dashboard
-          : currentLayout,
+        cloneDeep(reset ? initialSettings.WebUI_Settings.layout.dashboard : currentLayout),
       );
     });
     patchSettings(newSettings, {
