@@ -63,8 +63,10 @@ const SentryErrorBoundaryWrapper = () => {
     Sentry.setTag('server_release', versionQuery.data?.Server?.Version ?? 'Unknown');
   }, [versionQuery.data]);
 
-  // Init/Version errors are expected while the server is still starting, so only judge it once it has started.
-  const isVersionUnreadable = serverStatusQuery.data?.State === 'Started'
+  // Init/Version errors are expected while the server is still starting, so only judge it once it is up
+  // (or waiting for first-run setup).
+  const serverState = serverStatusQuery.data?.State;
+  const isVersionUnreadable = (serverState === 'Started' || serverState === 'Waiting')
     && !versionQuery.isPending
     && !versionQuery.data?.Server?.Version;
 
