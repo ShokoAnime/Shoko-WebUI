@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react';
 import semver from 'semver';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { useVersionQuery } from '@/core/react-query/init/queries';
+import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { getMinimumServerVersion, isDebug } from '@/core/util';
 import useNavigateVoid from '@/hooks/useNavigateVoid';
 
@@ -56,25 +56,38 @@ const SentryErrorBoundaryWrapper = () => {
   const { pathname } = useLocation();
   const navigate = useNavigateVoid();
   const versionQuery = useVersionQuery();
+  const serverStatusQuery = useServerStatusQuery();
   const lastAutoRecoveredAtRef = useRef(0);
 
   useEffect(() => {
     Sentry.setTag('server_release', versionQuery.data?.Server?.Version ?? 'Unknown');
   }, [versionQuery.data]);
 
+  // Init/Version errors are expected while the server is still starting, so only judge it once it has started.
+  const isVersionUnreadable = serverStatusQuery.data?.State === 'Started'
+    && !versionQuery.isPending
+    && !versionQuery.data?.Server?.Version;
+
   useEffect(() => {
     if (isDebug()) return;
 
-    if (!versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
+    // A server whose version we can't read can't be checked against the minimum, so treat it as unsupported.
+    if (isVersionUnreadable) {
+      if (pathname !== '/webui/unsupported') navigate('/webui/unsupported');
+      return;
+    }
 
-    const isServerSupported = semver.gte(versionQuery.data.Server.Version, getMinimumServerVersion());
+    const server = versionQuery.data?.Server;
+    if (!server || server.ReleaseChannel === 'Debug') return;
+
+    const isServerSupported = semver.gte(server.Version, getMinimumServerVersion());
 
     if (!isServerSupported) {
       navigate('/webui/unsupported');
     } else if (pathname === '/webui/unsupported') {
       navigate('/webui');
     }
-  }, [navigate, pathname, versionQuery.data]);
+  }, [isVersionUnreadable, navigate, pathname, versionQuery.data]);
 
   return (
     <Sentry.ErrorBoundary

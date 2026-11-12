@@ -11,6 +11,7 @@ const UnsupportedPage = () => {
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
 
   const versionQuery = useVersionQuery();
+  const isVersionUnreadable = !versionQuery.isPending && !versionQuery.data?.Server?.Version;
 
   const handleLogout = () => {
     dispatch({ type: Events.AUTH_LOGOUT });
@@ -30,10 +31,19 @@ const UnsupportedPage = () => {
           <div className="text-2xl text-panel-text md:text-5xl">STOP!</div>
           <div className="text-2xl text-panel-text md:text-5xl">You Shall Not Pass!</div>
           <div className="flex flex-col gap-y-4">
-            <div>
-              It looks like you&apos;re attempting to use a version of the Web UI that is not compatible with the
-              version of Shoko Server you have installed.
-            </div>
+            {isVersionUnreadable
+              ? (
+                <div>
+                  We are unable to read the version of your Shoko Server, so we cannot confirm it is compatible with
+                  this version of the Web UI. Servers that do not report their version are not supported.
+                </div>
+              )
+              : (
+                <div>
+                  It looks like you&apos;re attempting to use a version of the Web UI that is not compatible with the
+                  version of Shoko Server you have installed.
+                </div>
+              )}
             <div>
               If you are using the daily version of Shoko Server, you should update your server to the latest daily. If
               you do not want to update your server, find the daily Web UI version which works and manually downgrade to
@@ -57,7 +67,7 @@ const UnsupportedPage = () => {
               </a>
               &nbsp;server and provide the above error.
             </div>
-            {versionQuery.data && (
+            {versionQuery.data?.Server && (
               <div>
                 Server Version:&nbsp;
                 {versionQuery.data.Server.Version}
