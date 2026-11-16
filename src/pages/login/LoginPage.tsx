@@ -9,6 +9,7 @@ import { siDiscord } from 'simple-icons';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
+import SetupTokenForm from '@/components/SetupTokenForm';
 import ShokoIcon from '@/components/ShokoIcon';
 import ToastContainer from '@/components/ToastContainer';
 import { useLoginMutation } from '@/core/react-query/auth/mutations';
@@ -161,7 +162,10 @@ const LoginPage = () => {
                   </Button>
                 </form>
               )}
-              {serverStatusQuery.data?.State === 'Waiting' && (
+              {serverStatusQuery.data?.State === 'Waiting' && serverStatusQuery.data.RequiresSetupToken && (
+                <SetupTokenForm />
+              )}
+              {serverStatusQuery.data?.State === 'Waiting' && !serverStatusQuery.data.RequiresSetupToken && (
                 <div className="flex flex-col gap-y-6">
                   <div className="flex flex-col gap-y-4">
                     <div>Welcome, and thank you for installing Shoko!</div>
