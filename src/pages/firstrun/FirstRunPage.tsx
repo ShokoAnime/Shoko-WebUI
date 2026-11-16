@@ -6,6 +6,7 @@ import { Icon } from '@mdi/react';
 import { siDiscord } from 'simple-icons';
 
 import Button from '@/components/Input/Button';
+import SetupTokenForm from '@/components/SetupTokenForm';
 import ShokoIcon from '@/components/ShokoIcon';
 import ToastContainer from '@/components/ToastContainer';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
@@ -43,11 +44,13 @@ const FirstRunPage = () => {
   const navigate = useNavigateVoid();
 
   const versionQuery = useVersionQuery();
-  const settingsQuery = useSettingsQuery();
+  const serverStatusQuery = useServerStatusQuery();
+  // Nothing past the status is answered until the server has the setup token it asks for.
+  const requiresSetupToken = serverStatusQuery.data?.RequiresSetupToken ?? false;
+  const settingsQuery = useSettingsQuery(serverStatusQuery.isSuccess && !requiresSetupToken);
   const settings = settingsQuery.data;
   const { mutateAsync: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
-  const serverStatusQuery = useServerStatusQuery();
   const docsUrl = useDocsUrl();
 
   useEffect(() => {
@@ -144,18 +147,26 @@ const FirstRunPage = () => {
           </div>
 
           <div className="flex grow flex-col items-center justify-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
-            <Outlet
-              context={{
-                fetching: settingsQuery.isFetching,
-                metadataDraft,
-                newSettings,
-                setIsPersistent,
-                setMetadataDraft,
-                setNewSettings,
-                updateSetting,
-                saveSettings,
-              }}
-            />
+            {requiresSetupToken
+              ? (
+                <div className="w-full max-w-152">
+                  <SetupTokenForm />
+                </div>
+              )
+              : (
+                <Outlet
+                  context={{
+                    fetching: settingsQuery.isFetching,
+                    metadataDraft,
+                    newSettings,
+                    setIsPersistent,
+                    setMetadataDraft,
+                    setNewSettings,
+                    updateSetting,
+                    saveSettings,
+                  }}
+                />
+              )}
           </div>
         </div>
         <div className="login-image-default fixed top-0 left-0 -z-10 size-full opacity-20" />

@@ -43,7 +43,7 @@ pnpm lint           # dprint -> oxlint -> stylelint
   - `axiosV2` — Shoko API v2 (`/api`)
   - `axiosPlex` — Plex endpoints (`/plex`)
   - `axiosExternal` — Unconfigured base for external calls
-  - v3/v2/Plex clients auto-attach `apikey` from Redux; all unwrap `response.data`. A 401 on an authenticated request dispatches `AUTH_LOGOUT`.
+  - v3/v2/Plex clients auto-attach `apikey` from Redux (the `setupToken` slice's token first: the setup token the server may ask for in setup and failure mode, cleared once it has started); all unwrap `response.data`. A 401 on an authenticated request dispatches `AUTH_LOGOUT`, or, while a setup token is kept, clears it so the prompt asks again.
 - **Real-time:** SignalR client in `src/core/signalr`, integrated as Redux middleware. Connects on `MAINPAGE_LOADED` to `/signalr/aggregate` (feed list via query param), authenticates with the apikey, and stops on `AUTH_LOGOUT`. Event handlers invalidate React Query caches and dispatch slice actions.
 - **Redux:** Single-file store at `src/core/store.ts`. Root reducer clears all state on `AUTH_LOGOUT`. Full store persisted to `sessionStorage`; only `apiSession` persisted to `localStorage` (when `rememberUser` is true). Store is throttled to persist at most once per second. Re-exports typed `useDispatch`/`useSelector` — import from `@/core/store`, never from `react-redux` directly.
 - **React Query:** Organized by API sub-path under `src/core/react-query/<endpoint>/`, typically with `queries.ts`, `mutations.ts`, `types.ts`, and optional `helpers.ts` (subsets are common; shared files live at `src/core/react-query/` top level, e.g. `queryClient.ts`).

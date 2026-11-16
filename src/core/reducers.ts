@@ -8,6 +8,7 @@ import miscReducer from './slices/misc';
 import modalsReducer from './slices/modals';
 import serverLifecycleReducer from './slices/serverLifecycle';
 import settingsReducer from './slices/settings';
+import setupTokenReducer from './slices/setupToken';
 import utilitiesReducer from './slices/utilities';
 
 import type { MainpageActionTypes } from './slices/mainpage';
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   modals: modalsReducer,
   serverLifecycle: serverLifecycleReducer,
   settings: settingsReducer,
+  setupToken: setupTokenReducer,
   utilities: utilitiesReducer,
 });
 

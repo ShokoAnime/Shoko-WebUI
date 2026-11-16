@@ -8,7 +8,8 @@ import ReleaseManagementSeriesDetail from '@/components/Utilities/ReleaseManagem
 import { getStoredTheme } from '@/core/localStorage';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { useSelector } from '@/core/store';
+import { clearSetupToken } from '@/core/slices/setupToken';
+import { useDispatch, useSelector } from '@/core/store';
 import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
@@ -153,15 +154,22 @@ const router = sentryCreateBrowserRouter(
 );
 
 const Router = () => {
+  const dispatch = useDispatch();
   const apikey = useSelector(state => state.apiSession.apikey);
   const webuiPreviewTheme = useSelector(state => state.misc.webuiPreviewTheme);
 
   // Settings rejects every apikey until the server has started, so it is not requested before then.
   const isServerStarted = useServerStatusQuery().data?.State === 'Started';
+  const setupToken = useSelector(state => state.setupToken.token);
   const settingsQuery = useSettingsQuery(!!apikey && isServerStarted);
   const { theme } = settingsQuery.data.WebUI_Settings;
   const bodyRef = useRef<HTMLDivElement>(null);
   const [bodyVisible, setBodyVisible] = useState(false);
+
+  // The setup token only counts in setup and failure mode; once the server has started, the user signs in.
+  useEffect(() => {
+    if (isServerStarted && setupToken) dispatch(clearSetupToken());
+  }, [dispatch, isServerStarted, setupToken]);
 
   useEffect(() => {
     document.body.className = `${apikey === '' ? getStoredTheme() : (webuiPreviewTheme || theme)} theme-shoko-gray`;

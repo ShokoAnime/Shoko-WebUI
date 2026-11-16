@@ -11,7 +11,8 @@ import type { LogEventType, LogReadResultType, LogsSearchParamsType } from '@/co
 const logsQueryKey = ['logs'];
 
 const useLogsSubscription = () => {
-  const apikey = useSelector(state => state.apiSession.apikey);
+  // In setup and failure mode the log hub takes the setup token, when the server asks for one, over the apikey.
+  const apikey = useSelector(state => state.setupToken.token || state.apiSession.apikey);
 
   useEffect(() => {
     const connectionLogHub = '/signalr/logging';

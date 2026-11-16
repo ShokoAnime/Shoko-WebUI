@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
+import SetupTokenForm from '@/components/SetupTokenForm';
 import { useServerRestartMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { clearAction, setAction } from '@/core/slices/serverLifecycle';
@@ -157,6 +158,7 @@ const StatusPage = () => {
   const blockedReason = serverStatusQuery.data?.DatabaseBlocked?.Reason;
   const { dataUpdatedAt } = serverStatusQuery;
   const canRestart = serverStatusQuery.data?.CanRestart ?? false;
+  const requiresSetupToken = serverStatusQuery.data?.RequiresSetupToken ?? false;
   const hasFailedMessage = !!startupMessage || isDatabaseBlocked;
 
   const variant = deriveVariant(
@@ -319,6 +321,12 @@ const StatusPage = () => {
                 )}
                 {startupMessage}
               </pre>
+            )}
+
+            {variant === 'failed' && requiresSetupToken && (
+              <div className="w-full max-w-120 rounded-lg border border-panel-border bg-panel-background-transparent p-6 text-left">
+                <SetupTokenForm />
+              </div>
             )}
 
             {showButton && (

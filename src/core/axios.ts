@@ -2,6 +2,8 @@ import * as Sentry from '@sentry/react';
 import { create } from 'axios';
 
 import Events from '@/core/events';
+import { invalidateQueries } from '@/core/react-query/queryClient';
+import { clearSetupToken } from '@/core/slices/setupToken';
 import store from '@/core/store';
 import { isDebug } from '@/core/util';
 
@@ -26,9 +28,12 @@ export const axiosPlex = create({
 
 export const axiosExternal = create();
 
+// The setup token, kept only in setup and failure mode while the server asks for one, goes first: a stored apikey
+// means nothing until the server has started. A request that names its own apikey keeps it.
 const addApikeyInterceptor = (config: InternalAxiosRequestConfig) => {
   const tempConfig = config;
-  tempConfig.headers.apikey = (store.getState()).apiSession.apikey;
+  const { apiSession, setupToken } = store.getState();
+  tempConfig.headers.apikey ??= setupToken.token || apiSession.apikey;
   return tempConfig;
 };
 
@@ -96,12 +101,14 @@ const handleResponseError = (error: AxiosError) => {
   const status = error.response?.status;
   const url = error.config?.url ?? '';
   const fullPath = `${error.config?.baseURL ?? ''}/${url}`;
-  if (
-    status === 401
-    && !AUTH_URL_PATTERN.test(url)
-    && fullPath.startsWith('/api')
-    && store.getState().apiSession.apikey
-  ) {
+  if (status !== 401 || AUTH_URL_PATTERN.test(url) || !fullPath.startsWith('/api')) return Promise.reject(error);
+
+  if (store.getState().setupToken.token) {
+    // In setup or failure mode the setup token was refused (eg. the server restarted with another one): forget it
+    // and ask again.
+    store.dispatch(clearSetupToken());
+    invalidateQueries(['init', 'server-status']);
+  } else if (store.getState().apiSession.apikey) {
     store.dispatch({ type: Events.AUTH_LOGOUT });
   }
 

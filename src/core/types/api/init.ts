@@ -6,6 +6,8 @@ export type UserType = {
 export type ServerStatusType = {
   StartupMessage: string;
   State: 'Starting' | 'Started' | 'Failed' | 'Waiting';
+  // Set in setup and failure mode while the server has a setup token and the request did not give it.
+  RequiresSetupToken?: boolean;
   CanShutdown?: boolean;
   CanRestart?: boolean;
   BootstrappedAt?: string;
