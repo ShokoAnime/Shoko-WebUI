@@ -6,6 +6,7 @@ import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InsetPanel from '@/components/Panels/InsetPanel';
+import ReleaseProviderAvailability from '@/components/Settings/ReleaseProviderAvailability';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { reorderProvider, toggleProvider } from '@/core/slices/settings/release';
@@ -69,6 +70,7 @@ const ReleaseSettings = () => {
                         {provider.Name}
                         &nbsp;
                         <span className="text-xs opacity-65">{provider.Plugin.Name}</span>
+                        <ReleaseProviderAvailability availability={provider.Availability} />
                       </div>
 
                       <div className="flex items-center gap-x-1">
@@ -120,6 +122,7 @@ const ReleaseSettings = () => {
                         {provider.Name}
                         &nbsp;
                         <span className="text-xs opacity-65">{provider.Plugin.Name}</span>
+                        <ReleaseProviderAvailability availability={provider.Availability} manual />
                       </div>
 
                       <div className="flex items-center gap-x-1">

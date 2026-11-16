@@ -1,4 +1,5 @@
 import type { PluginInfoType } from '@/core/types/api/plugin';
+import type { ProviderAvailabilityType } from '@/core/types/api/provider-availability';
 
 export type UpdateReleaseInfoProvidersType = {
   ID: string;
@@ -13,6 +14,7 @@ export type ReleaseProviderInfoType = {
   Description?: string;
   Priority: number;
   IsEnabled: boolean;
+  Availability: ProviderAvailabilityType;
   Configuration?: object;
   Plugin: PluginInfoType;
 };
