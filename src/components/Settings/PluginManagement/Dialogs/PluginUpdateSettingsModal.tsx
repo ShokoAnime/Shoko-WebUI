@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { produce } from 'immer';
 import { isEqual, toNumber } from 'lodash';
 
@@ -9,6 +8,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { convertMsToTimeSpan, convertTimeSpanToMs, dayjs } from '@/core/util';
+import useSyncedState from '@/hooks/useSyncedState';
 
 import type { PluginUpdatesSettingsType } from '@/core/types/api/settings';
 
@@ -21,7 +21,8 @@ const PluginUpdateSettingsModal = ({ onClose, show }: Props) => {
   const settings = useSettingsQuery().data;
   const { isPending: isSavePending, mutate: patchSettings } = usePatchSettingsMutation();
 
-  const [updatesSettings, setUpdatesSettings] = useState(settings.Plugins.Updates);
+  // Outside the settings page the settings may still be loading when this mounts, so follow the query.
+  const [updatesSettings, setUpdatesSettings] = useSyncedState(settings.Plugins.Updates);
 
   const unsavedChanges = !isEqual(settings.Plugins.Updates, updatesSettings);
 
