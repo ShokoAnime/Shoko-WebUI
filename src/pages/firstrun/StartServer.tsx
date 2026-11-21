@@ -74,6 +74,23 @@ const StartServer = () => {
               ? <span className="font-semibold">Started!</span>
               : (serverStatusQuery.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
           </div>
+          {serverStatusQuery.data?.State === 'Failed' && (
+            <div className="mt-6 flex flex-col gap-y-4">
+              <div className="text-justify">
+                <span className="font-semibold text-panel-text-danger">The server failed to start.&nbsp;</span>
+                If a plugin is the cause, you can disable, update or uninstall it under Manage Plugins. The status page
+                shows the full message and lets you restart the server once the problem is fixed.
+              </div>
+              <div className="flex justify-center gap-x-3 font-semibold">
+                <Button onClick={() => navigate('/webui/status')} buttonType="secondary" className="w-48 py-2">
+                  Server Status
+                </Button>
+                <Button onClick={() => navigate('/webui/plugin-management')} buttonType="primary" className="w-48 py-2">
+                  Manage Plugins
+                </Button>
+              </div>
+            </div>
+          )}
           <div className="mt-24 flex items-center justify-center">
             {pollingInterval === 0
               && ((!serverStatusQuery.isSuccess && !serverStatusQuery.isError)
