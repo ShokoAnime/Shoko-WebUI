@@ -188,11 +188,25 @@ describe('getWidgetKind', () => {
     expect(getWidgetKind(PAIR)).toBe('multiPair');
   });
 
-  it('classifies multi-capable expressions as multi (via PossibleParameters or a Number Parameter)', () => {
+  it('classifies multi-capable expressions as multi (via PossibleParameters or any Parameter)', () => {
     expect(getWidgetKind(MULTI)).toBe('multi');
     expect(getWidgetKind(MULTI_NUMBER)).toBe('multi');
-    // Parameter: 'Number' alone (no PossibleParameters) also selects the multi widget.
+    // A Parameter without PossibleParameters (free text) also selects the multi widget.
     expect(getWidgetKind(makeEntry('InYear', { Parameter: 'Number' }))).toBe('multi');
+    expect(getWidgetKind(makeEntry('HasCharacter', { Parameter: 'String' }))).toBe('multi');
+  });
+
+  it('classifies two-parameter expressions without pairs as multiPair', () => {
+    expect(
+      getWidgetKind(
+        makeEntry('HasCharacterWithAppearance', {
+          Parameter: 'String',
+          PossibleSecondParameters: ['MainCharacter', 'Cameo'],
+          SecondParameter: 'String',
+        }),
+      ),
+    )
+      .toBe('multiPair');
   });
 
   it('classifies plain expressions as boolean', () => {
