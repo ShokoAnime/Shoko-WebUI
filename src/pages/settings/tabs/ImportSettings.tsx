@@ -6,7 +6,9 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import ManagedFolder from '@/components/Settings/ManagedFolder';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setStatus } from '@/core/slices/modals/managedFolder';
 import { useDispatch } from '@/core/store';
@@ -54,10 +56,9 @@ const ImportSettings = () => {
         and moving them as needed.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="mt-0.5 flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Import Options</div>
+      <SettingsSection title="Import Options">
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
@@ -106,12 +107,12 @@ const ImportSettings = () => {
             />
           </div>
         </div>
-      </div>
-      <div className="border-b border-panel-border" />
+      </SettingsSection>
+      <SettingsDivider />
 
-      <div className="mt-0.5 flex flex-col gap-y-6">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">Managed Folders</div>
+      <SettingsSection
+        title="Managed Folders"
+        actions={
           <Button onClick={handleAddButton} tooltip="Add Folder">
             <Icon
               className="text-panel-icon-action"
@@ -119,14 +120,15 @@ const ImportSettings = () => {
               size={0.85}
             />
           </Button>
-        </div>
+        }
+      >
         <div className="flex flex-col gap-y-1">
           {managedFolders.map((folder, index) => (
             <ManagedFolder key={folder.ID} index={index} folder={folder} className="py-4" />
           ))}
         </div>
-      </div>
-      <div className="border-b border-panel-border" />
+      </SettingsSection>
+      <SettingsDivider />
     </>
   );
 };

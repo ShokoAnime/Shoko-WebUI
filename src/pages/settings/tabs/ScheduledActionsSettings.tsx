@@ -6,6 +6,7 @@ import { useToggle } from 'usehooks-ts';
 
 import ScheduledActionItem from '@/components/Settings/ScheduledActions/ScheduledActionItem';
 import TriggersModal from '@/components/Settings/ScheduledActions/TriggersModal';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useScheduledActionsQuery } from '@/core/react-query/scheduled-action/queries';
 
@@ -47,7 +48,7 @@ const ScheduledActionsSettings = () => {
 
       {map(categories, (actions, categoryName) => (
         <div key={categoryName} className="flex flex-col gap-y-6">
-          <div className="border-b border-panel-border" />
+          <SettingsDivider />
           <div className="flex flex-col gap-y-2">
             <div className="font-semibold">{categoryName}</div>
             {actions.map(action => <ScheduledActionItem key={action.ID} action={action} onEditTriggers={handleEdit} />)}

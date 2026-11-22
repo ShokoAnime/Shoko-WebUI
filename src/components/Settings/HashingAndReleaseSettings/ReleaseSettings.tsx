@@ -6,6 +6,7 @@ import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InsetPanel from '@/components/Panels/InsetPanel';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { showProviderInfo } from '@/core/slices/modals/providerInfo';
 import { reorderProvider, toggleProvider } from '@/core/slices/settings/release';
@@ -43,9 +44,7 @@ const ReleaseSettings = () => {
   }
 
   return (
-    <div className="flex flex-col gap-y-6">
-      <div className="flex items-center font-semibold">Release Provider Options</div>
-
+    <SettingsSection title="Release Provider Options">
       <div className="flex flex-col gap-y-2">
         <div className="flex items-center">
           Auto-Linking Release Providers&nbsp;
@@ -147,7 +146,7 @@ const ReleaseSettings = () => {
           Enabled auto-search release providers in the manual linking process, in priority order.
         </div>
       </div>
-    </div>
+    </SettingsSection>
   );
 };
 

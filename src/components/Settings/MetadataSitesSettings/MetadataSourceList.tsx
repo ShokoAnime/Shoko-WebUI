@@ -7,6 +7,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import MetadataImageSettings from '@/components/Settings/MetadataSitesSettings/MetadataImageSettings';
 import MetadataSourceSettings from '@/components/Settings/MetadataSitesSettings/MetadataSourceSettings';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import { getMetadataSources, isSameKey } from '@/core/react-query/metadata/helpers';
 import { useMetadataLinkSourcesQuery, useMetadataProvidersQuery } from '@/core/react-query/metadata/queries';
 
@@ -98,7 +99,7 @@ const MetadataSourceList = ({ metadataDraft, newSettings, setMetadataDraft, setN
         </div>
       </div>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       {providersQuery.isPending && (
         <div className="flex justify-center text-panel-text-primary">
@@ -108,7 +109,7 @@ const MetadataSourceList = ({ metadataDraft, newSettings, setMetadataDraft, setN
       {providersQuery.isSuccess && sources.length === 0 && (
         <>
           <div className="opacity-65">No metadata provider is registered.</div>
-          <div className="border-b border-panel-border" />
+          <SettingsDivider />
         </>
       )}
       {sources.map((summary) => {
@@ -163,7 +164,7 @@ const MetadataSourceList = ({ metadataDraft, newSettings, setMetadataDraft, setN
                 </div>
               )}
             </MetadataSourceSettings>
-            <div className="border-b border-panel-border" />
+            <SettingsDivider />
           </div>
         );
       })}

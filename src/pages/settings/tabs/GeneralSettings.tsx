@@ -9,7 +9,9 @@ import ConfirmationPromptModal from '@/components/Dialogs/ConfirmationPromptModa
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useServerRestartMutation, useServerShutdownMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
@@ -198,11 +200,11 @@ const GeneralSettings = () => {
         configurations.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">Version Information</div>
+      <SettingsSection
+        title="Version Information"
+        actions={
           <Button
             buttonType="primary"
             buttonSize="small"
@@ -220,7 +222,8 @@ const GeneralSettings = () => {
             />
             <span>Refresh</span>
           </Button>
-        </div>
+        }
+      >
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
             <span>Server Version</span>
@@ -270,37 +273,40 @@ const GeneralSettings = () => {
             </SelectSmall>
           </div>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">Theme Options</div>
-          <input
-            ref={fileInputRef}
-            className="hidden"
-            multiple
-            id="file-input-field"
-            name="file"
-            type="file"
-            onChange={onFileChange}
-          />
-          <Button
-            buttonType="secondary"
-            buttonSize="small"
-            className="flex flex-row flex-wrap items-center gap-x-2"
-            onClick={onOpenFileDialog}
-            disabled={isUploading}
-            tooltip="Upload or install a new Theme"
-          >
-            <Icon
-              path={mdiBrushOutline}
-              size={0.85}
+      <SettingsSection
+        title="Theme Options"
+        actions={
+          <>
+            <input
+              ref={fileInputRef}
+              className="hidden"
+              multiple
+              id="file-input-field"
+              name="file"
+              type="file"
+              onChange={onFileChange}
             />
-            <span>Upload Theme</span>
-          </Button>
-        </div>
+            <Button
+              buttonType="secondary"
+              buttonSize="small"
+              className="flex flex-row flex-wrap items-center gap-x-2"
+              onClick={onOpenFileDialog}
+              disabled={isUploading}
+              tooltip="Upload or install a new Theme"
+            >
+              <Icon
+                path={mdiBrushOutline}
+                size={0.85}
+              />
+              <span>Upload Theme</span>
+            </Button>
+          </>
+        }
+      >
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             Theme
@@ -326,20 +332,21 @@ const GeneralSettings = () => {
             {currentTheme?.Author ?? 'Shoko Staff'}
           </div>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex justify-between">
-          <div className="flex items-center font-semibold">Notification Options</div>
+      <SettingsSection
+        title="Notification Options"
+        actions={
           <Checkbox
             label="Enable"
             id="enable-notifications"
             isChecked={WebUI_Settings?.notifications ?? true}
             onChange={event => updateSetting('WebUI_Settings', 'notifications', event.target.checked)}
           />
-        </div>
+        }
+      >
         <div
           className={cx(
             'flex items-center justify-between transition-opacity',
@@ -356,20 +363,21 @@ const GeneralSettings = () => {
             <option value="top-right">Top Right</option>
           </SelectSmall>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="flex flex-col gap-y-6">
-        <div className="flex justify-between">
-          <div className="flex items-center font-semibold">Log Options</div>
+      <SettingsSection
+        title="Log Options"
+        actions={
           <Checkbox
             id="enable-logs"
             label="Enable"
             isChecked={Logging.RotationEnabled}
             onChange={event => updateSetting('Logging', 'RotationEnabled', event.target.checked)}
           />
-        </div>
+        }
+      >
         <div
           className={cx(
             'flex flex-col gap-y-2 transition-opacity',
@@ -421,8 +429,8 @@ const GeneralSettings = () => {
             onChange={event => updateSetting('Logging', 'TraceLog', event.target.checked)}
           />
         </div>
-      </div>
-      <div className="border-b border-panel-border" />
+      </SettingsSection>
+      <SettingsDivider />
     </>
   );
 };

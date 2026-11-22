@@ -1,7 +1,9 @@
 import Button from '@/components/Input/Button';
 import InputSmall from '@/components/Input/InputSmall';
 import AniDBSettingsControls from '@/components/Settings/AniDBSettings';
+import SettingsDivider from '@/components/Settings/SettingsDivider';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
+import SettingsSection from '@/components/Settings/SettingsSection';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import toast from '@/core/toast';
 import useSettingsContext from '@/hooks/useSettingsContext';
@@ -31,11 +33,11 @@ const AniDBSettings = () => {
         for MyList options and the general updating of AniDB data.
       </SettingsHeader>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
-      <div className="mt-0.5 flex flex-col gap-y-6">
-        <div className="flex justify-between">
-          <div className="items-center font-semibold">Login Options</div>
+      <SettingsSection
+        title="Login Options"
+        actions={
           <Button
             onClick={() => testLogin()}
             loading={isAnidbLoginPending}
@@ -44,7 +46,8 @@ const AniDBSettings = () => {
           >
             Test
           </Button>
-        </div>
+        }
+      >
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
             Username
@@ -87,9 +90,9 @@ const AniDBSettings = () => {
             />
           </div>
         </div>
-      </div>
+      </SettingsSection>
 
-      <div className="border-b border-panel-border" />
+      <SettingsDivider />
 
       <AniDBSettingsControls
         newSettings={newSettings}
