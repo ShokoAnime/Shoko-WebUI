@@ -9,6 +9,11 @@ import { groupBy, isEmpty, isEqual, map } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
+import {
+  emptyAiringScheduleDraft,
+  isAiringScheduleDraftEmpty,
+  saveAiringScheduleDraft,
+} from '@/core/react-query/airing-schedule/draft';
 import { emptyMetadataDraft, isMetadataDraftEmpty, saveMetadataDraft } from '@/core/react-query/metadata/draft';
 import { usePluginPagesQuery } from '@/core/react-query/plugin/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
@@ -26,6 +31,7 @@ const items = [
   { name: 'Hashing & Release', path: 'hashing-release' },
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata', path: 'metadata' },
+  { name: 'Airing Schedule', path: 'airing-schedule' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
   { name: 'Scheduled Actions', path: 'scheduled-actions' },
@@ -53,6 +59,7 @@ const SettingsPage = () => {
   const [newSettings, setNewSettings] = useSyncedState(settings);
   // The metadata page's provider changes, kept here so they wait for Save like the settings.
   const [metadataDraft, setMetadataDraft] = useState(emptyMetadataDraft);
+  const [airingScheduleDraft, setAiringScheduleDraft] = useState(emptyAiringScheduleDraft);
   const [isProviderSavePending, setIsProviderSavePending] = useState(false);
 
   // Clear any leftover theme preview when (re)entering the settings page.
@@ -68,7 +75,8 @@ const SettingsPage = () => {
     },
     [newSettings, settings, settingsQuery.isSuccess],
   );
-  const unsavedChanges = settingsChanged || !isMetadataDraftEmpty(metadataDraft);
+  const unsavedChanges = settingsChanged || !isMetadataDraftEmpty(metadataDraft)
+    || !isAiringScheduleDraftEmpty(airingScheduleDraft);
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   const isSpecialPage = useMemo(() => {
@@ -124,8 +132,10 @@ const SettingsPage = () => {
   };
 
   const settingContext = {
+    airingScheduleDraft,
     metadataDraft,
     newSettings,
+    setAiringScheduleDraft,
     setMetadataDraft,
     setNewSettings,
     updateSetting,
@@ -145,8 +155,8 @@ const SettingsPage = () => {
     }
   };
 
-  // The settings go first, then the provider changes, a source at a time. A failed part shows its error and stays
-  // unsaved for another try, while the rest are still sent.
+  // The settings go first, then the provider changes, a source at a time, then the airing schedule's. A failed part
+  // shows its error and stays unsaved for another try, while the rest are still sent.
   const saveAll = async () => {
     if (settingsChanged) {
       try {
@@ -162,6 +172,13 @@ const SettingsPage = () => {
       setIsProviderSavePending(true);
       const remaining = await saveMetadataDraft(metadataDraft).catch(() => metadataDraft);
       setMetadataDraft(remaining);
+      setIsProviderSavePending(false);
+    }
+
+    if (!isAiringScheduleDraftEmpty(airingScheduleDraft)) {
+      setIsProviderSavePending(true);
+      const remaining = await saveAiringScheduleDraft(airingScheduleDraft).catch(() => airingScheduleDraft);
+      setAiringScheduleDraft(remaining);
       setIsProviderSavePending(false);
     }
   };
@@ -191,6 +208,7 @@ const SettingsPage = () => {
   const handleCancel = () => {
     setNewSettings(settings);
     setMetadataDraft(emptyMetadataDraft);
+    setAiringScheduleDraft(emptyAiringScheduleDraft);
     dispatch(setMiscItem({ webuiPreviewTheme: '' }));
   };
 

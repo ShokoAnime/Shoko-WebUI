@@ -1,3 +1,4 @@
+import type { AiringScheduleDraftType } from '@/core/react-query/airing-schedule/draft';
 import type { MetadataProviderDraftType } from '@/core/react-query/metadata/draft';
 import type { PluginRenamerSettingsType, SettingsAnidbMyListType, SettingsType } from '@/core/types/api/settings';
 
@@ -23,4 +24,10 @@ export type SettingsContextType = {
 export type SettingsPageContextType = SettingsContextType & {
   metadataDraft: MetadataProviderDraftType;
   setMetadataDraft: (draft: MetadataProviderDraftType) => void;
+};
+
+/** The unsaved airing schedule changes of the settings page, which the first run has no page for. */
+export type AiringScheduleDraftContextType = {
+  airingScheduleDraft: AiringScheduleDraftType;
+  setAiringScheduleDraft: (draft: AiringScheduleDraftType) => void;
 };

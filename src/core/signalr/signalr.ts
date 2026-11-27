@@ -25,6 +25,7 @@ import toast from '@/core/toast';
 import type {
   AVDumpEventType,
   AVDumpRestoreType,
+  AiringSweepEventType,
   AniDBBanItemType,
   NetworkAvailabilityValues,
   QueueStatusType,
@@ -128,7 +129,7 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,restart';
+      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,restart,airing';
 
       const protocol = new JsonHubProtocol();
 
@@ -183,6 +184,13 @@ async (action: UnknownAction) => {
 
       connectionEvents.on('restart:connected', onRestartReasonsUpdate(dispatch));
       connectionEvents.on('restart:reasonsChanged', onRestartReasonsUpdate(dispatch));
+
+      // A provider's sweep lands its airings once it is finished; an episode airing moves every countdown along.
+      connectionEvents.on(
+        'airing:provider.swept',
+        (event: AiringSweepEventType) => event.IsFinished && handleEvent('AiringsUpdated'),
+      );
+      connectionEvents.on('airing:episode.aired', () => handleEvent('AiringsUpdated'));
 
       connectionEvents.onreconnecting(() => {
         // Suppress during a user-initiated restart/shutdown; StatusPage is the canonical UX then

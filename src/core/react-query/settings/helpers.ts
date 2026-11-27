@@ -312,6 +312,15 @@ export const initialSettings: SettingsType = {
       recentlyImportedView: 'episodes',
       upcomingAnimeView: 'collection',
     },
+    airingSchedule: {
+      oldestSeasonYear: null,
+      recentlyAired: {
+        enabled: false,
+        hours: 12,
+      },
+      sections: null,
+      episodeTypes: null,
+    },
   },
   FirstRun: false,
   Database: {
