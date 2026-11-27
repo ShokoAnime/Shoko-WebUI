@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { mdiLoading, mdiPower, mdiTrashCanOutline } from '@mdi/js';
+import { mdiCogOutline, mdiLoading, mdiPower, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
@@ -12,6 +12,7 @@ import InsetPanel from '@/components/Panels/InsetPanel';
 import { useDeleteAllPluginVersionsMutation, useUpdatePluginMutation } from '@/core/react-query/plugin/mutations';
 import { usePluginsQuery } from '@/core/react-query/plugin/queries';
 import toast from '@/core/toast';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { PluginInfoType } from '@/core/types/api/plugin';
 
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
+  const navigate = useNavigateVoid();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [purgeConfiguration, setPurgeConfiguration] = useState(false);
 
@@ -49,6 +51,15 @@ const Plugin = ({ plugin }: { plugin: PluginInfoType }) => {
             </Badge>
           </div>
           <div className="flex gap-x-2">
+            {plugin.Configuration && (
+              <Button
+                onClick={() => navigate(`/webui/settings/plugin/config/${plugin.Configuration?.ID}`)}
+                disabled={!plugin.IsActive}
+                tooltip={plugin.IsActive ? 'Settings' : 'Settings are unavailable while the plugin is inactive'}
+              >
+                <Icon path={mdiCogOutline} size={0.9} className="text-panel-text-primary" />
+              </Button>
+            )}
             <Button
               onClick={() => updatePlugin({ pluginId: plugin.ID, isEnabled: !plugin.IsEnabled })}
               loading={isUpdatePending}

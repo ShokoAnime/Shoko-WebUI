@@ -1,3 +1,4 @@
+import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 import type { ReleaseChannelValues } from '@/core/types/api/init';
 
 export type PackageThumbnailInfoType = {
@@ -31,6 +32,7 @@ export type PluginInfoType = {
   CanLoad: boolean;
   CanUninstall: boolean;
   CanEnableOrDisable: boolean;
+  Configuration?: Omit<ConfigurationInfoType, 'Plugin'> | null;
   ContainingDirectory?: string;
   DLLs: string[];
 };
