@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { mdiCog, mdiInformationVariantCircleOutline, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
-import { produce } from 'immer';
-import { isEqual } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import HashTypesModal from '@/components/Dialogs/HashTypesModal';
@@ -10,58 +8,26 @@ import ProviderInfoModal from '@/components/Dialogs/ProviderInfoModal';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InsetPanel from '@/components/Panels/InsetPanel';
-import ReleaseManagementSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseManagementSettings';
-import ReleaseSettings from '@/components/Settings/HashingAndReleaseSettings/ReleaseSettings';
 import SettingsHeader from '@/components/Settings/SettingsHeader';
 import { useUpdateHashingSettingsMutation } from '@/core/react-query/hashing/mutations';
 import { useHashingProvidersQuery, useHashingSummaryQuery } from '@/core/react-query/hashing/queries';
-import { useUpdateReleaseInfoProvidersMutation } from '@/core/react-query/release-info/mutations';
-import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
-import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
-import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { hideProviderInfo, showProviderInfo } from '@/core/slices/modals/providerInfo';
-import { clearReleaseSettings, setProviders } from '@/core/slices/settings/release';
 import { useDispatch, useSelector } from '@/core/store';
 import toast from '@/core/toast';
 import useSyncedState from '@/hooks/useSyncedState';
 import useToggleModalKeybinds from '@/hooks/useToggleModalKeybinds';
 
 import type { HashProviderInfoType, HashingSummaryType } from '@/core/react-query/hashing/types';
-import type { ReleaseProviderInfoType } from '@/core/react-query/release-info/types';
-import type { SettingsType } from '@/core/types/api/settings';
 
 const DEFAULT_HASHING_SETTINGS: HashingSummaryType = { ParallelMode: false };
 
-const buildProviderState = (settings: SettingsType, providersData: ReleaseProviderInfoType[]) => {
-  const cleanWebuiProviders = settings.WebUI_Settings.releaseInfoProviders
-    .map((webuiProvider) => {
-      const foundProvider = providersData.find(provider => provider.ID === webuiProvider.id);
-      if (!foundProvider) return undefined;
-      return { ...foundProvider, IsEnabled: webuiProvider.enabled };
-    })
-    .filter(webuiProvider => !!webuiProvider);
-
-  const existingIds = new Set(cleanWebuiProviders.map(provider => provider.ID));
-  const newProviders = providersData.filter(provider => !existingIds.has(provider.ID));
-
-  return {
-    providers: providersData,
-    webuiProviders: [...cleanWebuiProviders, ...newProviders],
-  };
-};
-
-const HashingAndReleaseSettings = () => {
+const HashingSettings = () => {
   const dispatch = useDispatch();
-  const { initialized, providers, webuiProviders } = useSelector(state => state.settings.release);
   const { show: showProviderInfoModal } = useSelector(state => state.modals.providerInfo);
 
-  const settings = useSettingsQuery().data;
-  const releaseProvidersQuery = useReleaseInfoProvidersQuery();
   const hashingProvidersQuery = useHashingProvidersQuery();
   const hashingSummaryQuery = useHashingSummaryQuery();
 
-  const { mutate: patchSettings } = usePatchSettingsMutation();
-  const { mutate: updateReleaseInfoProviders } = useUpdateReleaseInfoProvidersMutation();
   const { mutate: updateHashingSettings } = useUpdateHashingSettingsMutation();
 
   const [showHashTypesModal, setShowHashTypesModal] = useState(false);
@@ -70,47 +36,19 @@ const HashingAndReleaseSettings = () => {
     hashingSummaryQuery.data,
     data => data ?? DEFAULT_HASHING_SETTINGS,
   );
-  const [releaseComparisonPreferences, setReleaseComparisonPreferences] = useSyncedState(
-    settings.ReleaseComparisonPreferences,
-  );
-
-  const newWebuiProviderOrder = webuiProviders
-    .map(provider => ({ id: provider.ID, enabled: provider.IsEnabled }));
-
-  useEffect(() => {
-    if (!releaseProvidersQuery.data) return;
-    dispatch(setProviders(buildProviderState(settings, releaseProvidersQuery.data)));
-  }, [dispatch, releaseProvidersQuery.data, settings]);
 
   const handleCancel = () => {
     if (hashingSummaryQuery.data) setHashingSettings(hashingSummaryQuery.data);
-    setReleaseComparisonPreferences(settings.ReleaseComparisonPreferences);
-    if (releaseProvidersQuery.data) {
-      dispatch(setProviders(buildProviderState(settings, releaseProvidersQuery.data)));
-    }
   };
 
   useEffect(() => () => {
-    dispatch(clearReleaseSettings());
     dispatch(hideProviderInfo());
   }, [dispatch]);
 
   const toastId = useRef<number | string>(undefined);
 
-  const hashingSettingsChanged = hashingSummaryQuery.data?.ParallelMode !== hashingSettings.ParallelMode;
-  const releaseProvidersChanged = !isEqual(releaseProvidersQuery.data, providers);
-  const webuiProvidersChanged = !isEqual(settings.WebUI_Settings.releaseInfoProviders, newWebuiProviderOrder);
-  const releaseComparisonPreferencesChanged = !isEqual(
-    settings.ReleaseComparisonPreferences,
-    releaseComparisonPreferences,
-  );
-  const unsavedChanges = initialized
-    && (
-      hashingSettingsChanged
-      || releaseProvidersChanged
-      || webuiProvidersChanged
-      || releaseComparisonPreferencesChanged
-    );
+  const unsavedChanges = hashingSummaryQuery.isSuccess
+    && hashingSummaryQuery.data.ParallelMode !== hashingSettings.ParallelMode;
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
@@ -133,37 +71,19 @@ const HashingAndReleaseSettings = () => {
   }, []);
 
   const handleSave = () => {
-    if (hashingSettingsChanged) {
-      updateHashingSettings({ ParallelMode: hashingSettings.ParallelMode });
-    }
-
-    if (releaseProvidersChanged) {
-      updateReleaseInfoProviders(providers);
-    }
-
-    if (webuiProvidersChanged || releaseComparisonPreferencesChanged) {
-      const newSettings = produce(settings, (draft) => {
-        if (webuiProvidersChanged) {
-          draft.WebUI_Settings.releaseInfoProviders = newWebuiProviderOrder;
-        }
-        if (releaseComparisonPreferencesChanged) {
-          draft.ReleaseComparisonPreferences = releaseComparisonPreferences;
-        }
-      });
-      patchSettings(newSettings);
-    }
+    updateHashingSettings({ ParallelMode: hashingSettings.ParallelMode });
   };
 
   useToggleModalKeybinds(!showHashTypesModal && !showProviderInfoModal, 'primary');
 
-  if (!initialized || !hashingProvidersQuery.data) {
+  if (!hashingSummaryQuery.isSuccess || !hashingProvidersQuery.data) {
     return <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
   }
 
   return (
     <>
-      <SettingsHeader title="Hashing & Release">
-        Configure how Shoko hashes files and handles releases.
+      <SettingsHeader title="Hashing">
+        Configure how Shoko hashes files.
       </SettingsHeader>
 
       <div className="border-b border-panel-border" />
@@ -232,20 +152,6 @@ const HashingAndReleaseSettings = () => {
 
       <div className="border-b border-panel-border" />
 
-      <ReleaseSettings />
-
-      <div className="border-b border-panel-border" />
-
-      <div className="flex flex-col gap-y-2">
-        <div className="flex items-center font-semibold">Release Management</div>
-        <ReleaseManagementSettings
-          preferences={releaseComparisonPreferences}
-          onChange={setReleaseComparisonPreferences}
-        />
-      </div>
-
-      <div className="border-b border-panel-border" />
-
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button
           onClick={handleCancel}
@@ -276,4 +182,4 @@ const HashingAndReleaseSettings = () => {
   );
 };
 
-export default HashingAndReleaseSettings;
+export default HashingSettings;

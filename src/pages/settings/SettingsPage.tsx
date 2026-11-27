@@ -23,12 +23,14 @@ import type { SettingValueType } from '@/core/types/context';
 const items = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
-  { name: 'Hashing & Release', path: 'hashing-release' },
+  { name: 'Hashing', path: 'hashing' },
+  { name: 'Releases', path: 'releases' },
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata', path: 'metadata' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
   { name: 'Scheduled Actions', path: 'scheduled-actions' },
+  { name: 'Release Management', path: 'release-management' },
   { name: 'Plugin Management', path: 'plugin-management' },
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
@@ -79,7 +81,7 @@ const SettingsPage = () => {
       || pathname.includes('settings/plugin-management')
       || pathname.includes('settings/plugin/')
     ) return true;
-    return ['user-management', 'api-keys', 'hashing-release', 'dynamic', 'scheduled-actions'].includes(path);
+    return ['user-management', 'api-keys', 'hashing', 'releases', 'dynamic', 'scheduled-actions'].includes(path);
   }, [pathname]);
 
   const isPluginConfigPage = pathname.includes('settings/plugin/config/');
